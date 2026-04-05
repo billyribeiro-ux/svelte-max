@@ -49,6 +49,24 @@
 			project: 'Dynamic Product Listing',
 			status: 'ready',
 			href: '/module-4/4-1-if'
+		},
+		{
+			id: 5,
+			title: 'Events & Interaction',
+			summary:
+				'Typed DOM events, on() from svelte/events, closures, debounce/throttle, bindings deep dive, keyboard a11y.',
+			project: 'Validated Form',
+			status: 'ready',
+			href: '/module-5/5-1-event-handlers'
+		},
+		{
+			id: 6,
+			title: 'Styling Mastery',
+			summary:
+				'PE7 @layer depth, OKLCH, container queries, Svelte transitions, Tween + Spring, custom transitions, reduced motion.',
+			project: 'Animated Landing Page',
+			status: 'ready',
+			href: '/module-6/6-1-layer-architecture'
 		}
 	] as const;
 

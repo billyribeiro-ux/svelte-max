@@ -163,6 +163,8 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 2. **Module 2 — Reactivity** ✅ shipped — runes deep dive, reactive built-ins (Lessons 2.1–2.15, Interactive Dashboard)
 3. **Module 3 — Components & Props** ✅ shipped — see expanded detail below (Lessons 3.1–3.11, UI Component Library Part 1)
 4. **Module 4 — Control Flow & Special Elements** ✅ shipped — see expanded detail below (Lessons 4.1–4.12, Dynamic Product Listing)
+5. **Module 5 — Events & Interaction** ✅ shipped — see expanded detail below (Lessons 5.1–5.12, Interactive Form with Live Validation)
+6. **Module 6 — Styling Mastery** ✅ shipped — see expanded detail below (Lessons 6.1–6.18, Animated Landing Page)
 5. **Module 5 — Events & Interaction** — typed events, `on()`, bindings, accessibility (Lessons 5.1–5.12, Validated Form)
 6. **Module 6 — Styling Mastery** — full PE7 architecture, transitions, Tween/Spring (Lessons 6.1–6.18, Animated Landing Page)
 7. **Module 7 — GSAP Integration** — timelines, ScrollTrigger, actions, `{@attach}` (Lessons 7.1–7.14, Marketing Page)
@@ -220,6 +222,55 @@ See the original curriculum briefing for full per-lesson content, mini-build des
 - **4.11 — `<svelte:window>` / `<svelte:document>` / `<svelte:body>`** — cleanup-free, SSR-safe event listeners; bindable properties (`innerWidth`, `scrollY`, `visibilitychange`). Mini-build: keyboard shortcut overlay detecting `Ctrl+K` via `<svelte:window onkeydown>`, displaying current window dimensions via bindings.
 - **4.12 — `<svelte:element>` / `<svelte:options>`** — runtime-determined element tags, per-component compiler options. Mini-build: a dynamic `Heading` component that renders `h1`–`h6` based on a typed `level` prop via `<svelte:element this={...}>`.
 - **Module 4 Project — Dynamic Product Listing**. `src/routes/module-4/project/+page.svelte` — filterable, searchable product grid. Typed `Product[]` hardcoded. `{#each}` with stable IDs. `{#if}` branches for empty state and no-results. `{#await}` loading state with skeleton cards (600 ms fake fetch). `<svelte:window onkeydown>` for `/` focusing search and `Escape` clearing. OKLCH personality `oklch(66% 0.17 35)` (warm orange). Mobile-first; 480px, 768px, 1024px breakpoints.
+
+---
+
+## Module 5 — Events & Interaction (expanded)
+
+**Goal**: Student handles every user interaction pattern with fully typed DOM events.
+**JS/TS concepts**: Functions deeply, arrow functions, closures, TypeScript event types, debounce, throttle.
+
+- **5.1 — Event handlers in Svelte 5**. The modern `onclick`/`oninput`/`onchange` attribute syntax (NOT `on:click`). Inline vs named handlers. Mini-build: a like button with click counter and animated heart.
+- **5.2 — JS functions deeply**. Declarations vs arrow functions. Typed parameters and returns. Functions as first-class values. Mini-build: a toolbar with several named handlers, each typed.
+- **5.3 — Typed DOM events**. `MouseEvent`, `KeyboardEvent`, `InputEvent`, `FocusEvent`, `SubmitEvent`. `e.target` narrowing with `instanceof HTMLInputElement`. Mini-build: keyboard shortcut detector with typed `KeyboardEvent`.
+- **5.4 — preventDefault and stopPropagation**. Default browser behaviors, `e.preventDefault()`, `e.stopPropagation()`. Mini-build: custom dropdown that doesn't close when clicking inside (stopPropagation on inner click).
+- **5.5 — Forwarding events**. The Svelte 5 pattern — accept `onclick?: (e: MouseEvent) => void` as a prop and attach it to the inner element. Mini-build: reusable Button that forwards its click event to any parent handler.
+- **5.6 — `on()` from svelte/events**. Programmatic event attachment for dynamic/conditional listeners. `on(window, 'keydown', handler)` returns a cleanup. Preserves ordering with declarative handlers. Mini-build: a global keyboard listener that attaches/detaches based on a toggle.
+- **5.7 — Closures in handlers**. What a closure is. Why closures in `{#each}` work correctly in Svelte. Mini-build: multi-item accordion where each item's toggle closes over its own open state.
+- **5.8 — Debounce and throttle**. The problem with firing on every keystroke. Implementing debounce (wait until typing stops) and throttle (fire at most every N ms) with `setTimeout`. Mini-build: search input with 300ms debounce showing a visible "searching..." state before the final query fires.
+- **5.9 — Callback prop pattern**. Custom events in Svelte 5 are just typed callback props — no `createEventDispatcher`. `onselect?: (item: Item) => void`. Mini-build: a toast notification system where child components trigger toasts via a callback prop.
+- **5.10 — Bindings deep dive**. `bind:group` for radios/checkboxes, media bindings (`bind:currentTime`, `bind:paused`, `bind:volume`), dimension bindings (`bind:clientWidth`), `bind:this` for DOM refs, `<details bind:open>`. Mini-build: a custom audio player with seek/volume/time bound to an `<audio>` element.
+- **5.11 — Touch and pointer events**. `ontouchstart`/`ontouchend`/`onpointerdown`. `@media (hover: hover)` to differentiate. 44px touch targets. Mini-build: a swipe handler that works with mouse or touch via pointer events.
+- **5.12 — Keyboard accessibility**. `tabindex`, `aria-*`, focus management, `onfocus`/`onblur`. Building interactions that work without a mouse. Mini-build: a fully keyboard-navigable custom select — Tab, Arrow, Enter, Escape all work.
+- **Module 5 Project — Interactive Form with Live Validation**. Multi-field registration form with real-time debounced validation, typed event handlers, `bind:group` for preferences, animated error states, full keyboard accessibility, touch-friendly, zero dependencies. Per-page OKLCH personality `oklch(62% 0.19 155)` (mint green).
+
+---
+
+## Module 6 — Styling Mastery (expanded)
+
+**Goal**: Student masters PE7 CSS architecture in depth AND Svelte's complete animation system.
+**CSS concepts**: Every layer's purpose, OKLCH, container queries, CSS Grid, Flexbox, logical properties.
+**Svelte APIs**: `transition:`, `in:`/`out:`, `animate:flip`, `svelte/motion` (Tween, Spring, prefersReducedMotion), custom transitions.
+
+- **6.1 — @layer architecture in depth**. Each layer's purpose — reset, tokens, base, layout, components, animations. Why order matters. Adding to layers from component `<style>` blocks. Mini-build: a layer visualization page showing selectors in each layer with visible specificity notes.
+- **6.2 — OKLCH in depth**. Lightness, Chroma, Hue. Perceptual uniformity vs hex/HSL. Building a ramp programmatically. Mini-build: an OKLCH ramp generator — adjust L/C/H to generate a consistent 9-step palette, display side by side.
+- **6.3 — Full token system**. Every category composed. Motion tokens. Mini-build: a page that demonstrates every `--text-*`, `--space-*`, `--dur-*`, `--radius-*`, `--shadow-*` with a visible sample.
+- **6.4 — Native CSS nesting in Svelte**. `&` combinator, nested rules in scoped styles. Cleanly nesting hover/focus/active states. Mini-build: a navigation component with every state nested cleanly inside one selector.
+- **6.5 — Logical properties**. `margin-inline-*`, `padding-block-*`, `inset-inline-*`. Why physical properties break in RTL. Mini-build: a card that correctly mirrors in RTL using `dir="rtl"` attribute, proving logical props work both ways.
+- **6.6 — CSS Grid patterns**. `auto-fill` vs `auto-fit`, `minmax()`, when Grid beats Flexbox. Mini-build: a card grid that reflows from 1 column on mobile to 4 on desktop with zero media queries using `grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr))`.
+- **6.7 — Flexbox patterns**. `flex-wrap` for intrinsic layouts, holy grail patterns, `gap` with fluid tokens. Mini-build: a responsive sidebar that collapses to stacked on mobile and sidebar+main on tablet+.
+- **6.8 — Container queries**. `@container (min-width: ...)` + `container-type: inline-size`. Why they solve the "same component in multiple contexts" problem. Mini-build: a widget that reflows correctly whether in a narrow sidebar or wide main, proven by rendering it twice on the same page in different containers.
+- **6.9 — Per-page color personalities**. Overriding semantic color tokens in a scoped `<style>` block on the page's root element. Mini-build: three mini-pages on one route each with a distinct OKLCH palette (teal, rose, amber) from one shared component library.
+- **6.10 — CSS transitions with motion tokens**. `transition: property var(--dur-base) var(--ease-out)`. Multi-property, `transition-delay`, reduced-motion respect. Mini-build: a button with smooth hover/focus/active/disabled state transitions all driven by motion tokens.
+- **6.11 — Svelte `transition:` directive**. Built-in `fade`, `fly`, `slide`, `scale`, `blur`, `draw`. Parameters, delay, easing from `svelte/easing`. Mini-build: a notification stack where each notification uses `fly` on enter and `fade` on exit via a single bidirectional `transition:`.
+- **6.12 — `in:` and `out:` directives**. Different enter/exit animations. `in:fly={{ y: -20 }}` plus `out:fade`. Mini-build: a modal that flies in from below on open and fades out on close.
+- **6.13 — `animate:flip`**. The FLIP technique (First, Last, Invert, Play) for list reordering. Combining with keyed `{#each}`. Mini-build: a reorderable task list where items smoothly animate to their new positions via `animate:flip={{ duration: 300 }}`.
+- **6.14 — `Tween` class**. `new Tween(initial, options)` from `svelte/motion`. `Tween.of(() => number)` for reactive binding. Easing functions. Mini-build: an animated progress bar that smoothly tweens from 0 to any target percentage.
+- **6.15 — `Spring` class**. `new Spring(value, { stiffness, damping })` for physics-based motion. `prefersReducedMotion.current` from `svelte/motion`. Mini-build: a card that follows the cursor with spring physics; springs disable when the OS reduced-motion preference is on.
+- **6.16 — Custom transitions**. Transition function signature `(node, params) => TransitionConfig`. Returning `css` or `tick` functions. Mini-build: a typewriter entrance transition that reveals text character by character.
+- **6.17 — Stagger patterns**. Fine-tuning parameters, calculating delays from the `{#each}` index, staggered grid entrances. Mini-build: a grid of cards that fly in one by one with an index-based delay offset.
+- **6.18 — `prefers-reduced-motion`**. Why some users need reduced motion. Respecting it in CSS (`@media (prefers-reduced-motion: reduce)`) and in Svelte transitions (`prefersReducedMotion.current`). Mini-build: the 6.17 staggered grid rewritten to fully respect the OS preference — no animation when reduced motion is on.
+- **Module 6 Project — Animated Landing Page**. Hero section, feature cards, testimonials, CTA — distinct OKLCH palette (`oklch(58% 0.21 300)`, a violet), full PE7 architecture, container-query responsive grid, Svelte transitions throughout, Spring/Tween animations on scroll, reduced-motion respected, Lighthouse-ready mobile-first.
 
 ---
 

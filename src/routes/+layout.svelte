@@ -95,6 +95,50 @@
 				{ slug: '4-11-svelte-window', title: '4.11 — <svelte:window>' },
 				{ slug: '4-12-svelte-element', title: '4.12 — <svelte:element>' }
 			]
+		},
+		{
+			id: 5,
+			title: 'Module 5 — Events & Interaction',
+			hasProject: true,
+			lessons: [
+				{ slug: '5-1-event-handlers', title: '5.1 — Event handlers' },
+				{ slug: '5-2-functions', title: '5.2 — JS functions deeply' },
+				{ slug: '5-3-typed-events', title: '5.3 — Typed events' },
+				{ slug: '5-4-prevent-stop', title: '5.4 — preventDefault/stopPropagation' },
+				{ slug: '5-5-forwarding', title: '5.5 — Forwarding events' },
+				{ slug: '5-6-on-function', title: '5.6 — on() from svelte/events' },
+				{ slug: '5-7-closures', title: '5.7 — Closures' },
+				{ slug: '5-8-debounce-throttle', title: '5.8 — Debounce & throttle' },
+				{ slug: '5-9-callback-props', title: '5.9 — Callback prop pattern' },
+				{ slug: '5-10-bindings', title: '5.10 — Bindings deep dive' },
+				{ slug: '5-11-touch-pointer', title: '5.11 — Touch & pointer' },
+				{ slug: '5-12-keyboard-a11y', title: '5.12 — Keyboard a11y' }
+			]
+		},
+		{
+			id: 6,
+			title: 'Module 6 — Styling Mastery',
+			hasProject: true,
+			lessons: [
+				{ slug: '6-1-layer-architecture', title: '6.1 — @layer in depth' },
+				{ slug: '6-2-oklch-deep', title: '6.2 — OKLCH in depth' },
+				{ slug: '6-3-token-system', title: '6.3 — Full token system' },
+				{ slug: '6-4-nesting', title: '6.4 — Native CSS nesting' },
+				{ slug: '6-5-logical-props', title: '6.5 — Logical properties' },
+				{ slug: '6-6-grid', title: '6.6 — CSS Grid patterns' },
+				{ slug: '6-7-flexbox', title: '6.7 — Flexbox patterns' },
+				{ slug: '6-8-container-queries', title: '6.8 — Container queries' },
+				{ slug: '6-9-page-personalities', title: '6.9 — Page personalities' },
+				{ slug: '6-10-css-transitions', title: '6.10 — CSS transitions' },
+				{ slug: '6-11-svelte-transitions', title: '6.11 — Svelte transition:' },
+				{ slug: '6-12-in-out', title: '6.12 — in:/out: directives' },
+				{ slug: '6-13-animate-flip', title: '6.13 — animate:flip' },
+				{ slug: '6-14-tween', title: '6.14 — Tween class' },
+				{ slug: '6-15-spring', title: '6.15 — Spring class' },
+				{ slug: '6-16-custom-transitions', title: '6.16 — Custom transitions' },
+				{ slug: '6-17-stagger-patterns', title: '6.17 — Stagger patterns' },
+				{ slug: '6-18-reduced-motion', title: '6.18 — Reduced motion' }
+			]
 		}
 	] as const;
 </script>

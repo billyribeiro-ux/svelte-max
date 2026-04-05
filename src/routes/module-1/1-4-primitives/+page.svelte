@@ -57,7 +57,7 @@
 		& h2 {
 			margin: 0;
 			color: var(--color-text);
-			font-size: var(--font-size-xl);
+			font-size: var(--text-xl);
 		}
 
 		@media (min-width: 768px) {
@@ -78,7 +78,7 @@
 		display: inline-block;
 		padding: var(--space-xs) var(--space-md);
 		border-radius: var(--radius-full);
-		font-size: var(--font-size-sm);
+		font-size: var(--text-sm);
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;

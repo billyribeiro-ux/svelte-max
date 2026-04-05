@@ -23,7 +23,7 @@
 </script>
 
 <section class="page">
-	<h1>Lesson 1.9 — Template Expressions</h1>
+	<h1>1.9 — Template expressions</h1>
 
 	<p class="concept">
 		<strong>Concept.</strong> Anything between <code>&#123;</code> and <code>&#125;</code> in Svelte
@@ -88,7 +88,7 @@
 	.page {
 		& .concept {
 			font-size: var(--text-base);
-			color: var(--color-fg-muted);
+			color: var(--color-text-muted);
 			max-inline-size: 65ch;
 		}
 
@@ -117,7 +117,7 @@
 			inset-block-start: -0.75rem;
 			inset-inline-start: 1.5rem;
 			background: var(--color-brand);
-			color: var(--color-bg);
+			color: var(--color-surface);
 			font-size: var(--text-xs);
 			font-weight: 700;
 			text-transform: uppercase;
@@ -141,12 +141,12 @@
 				font-size: var(--text-hero);
 				font-weight: 800;
 				line-height: 1;
-				color: var(--color-fg);
+				color: var(--color-text);
 			}
 
 			& .period {
 				font-size: var(--text-base);
-				color: var(--color-fg-muted);
+				color: var(--color-text-muted);
 			}
 		}
 
@@ -170,7 +170,7 @@
 				align-items: center;
 				gap: 0.6rem;
 				font-size: var(--text-base);
-				color: var(--color-fg);
+				color: var(--color-text);
 			}
 
 			& .check {
@@ -187,7 +187,7 @@
 			border: none;
 			border-radius: 0.6rem;
 			background: var(--color-brand);
-			color: var(--color-bg);
+			color: var(--color-surface);
 			font-size: var(--text-base);
 			font-weight: 600;
 			cursor: pointer;
@@ -201,7 +201,7 @@
 
 	.learned {
 		padding-inline-start: 1.25rem;
-		color: var(--color-fg-muted);
+		color: var(--color-text-muted);
 
 		& li {
 			margin-block: 0.25rem;

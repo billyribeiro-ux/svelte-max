@@ -51,7 +51,7 @@
 
 		& h2 {
 			margin: 0 0 var(--space-sm) 0;
-			font-size: var(--font-size-xl);
+			font-size: var(--text-xl);
 		}
 
 		& p {

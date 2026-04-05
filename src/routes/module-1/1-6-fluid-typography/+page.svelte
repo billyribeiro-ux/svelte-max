@@ -13,7 +13,7 @@
 </script>
 
 <section class="page">
-	<h1>Lesson 1.6 — Fluid Typography</h1>
+	<h1>1.6 — Fluid typography</h1>
 
 	<p class="concept">
 		<strong>Concept.</strong> CSS <code>clamp(min, preferred, max)</code> takes three values: a hard
@@ -51,7 +51,7 @@
 	.page {
 		& .concept {
 			font-size: var(--text-base);
-			color: var(--color-fg-muted);
+			color: var(--color-text-muted);
 			max-inline-size: 65ch;
 		}
 
@@ -94,21 +94,21 @@
 			& .formula {
 				font-family: ui-monospace, monospace;
 				font-size: var(--text-xs);
-				color: var(--color-fg-muted);
+				color: var(--color-text-muted);
 				word-break: break-word;
 			}
 
 			& .sample {
 				margin: 0;
 				line-height: 1.2;
-				color: var(--color-fg);
+				color: var(--color-text);
 			}
 		}
 	}
 
 	.learned {
 		padding-inline-start: 1.25rem;
-		color: var(--color-fg-muted);
+		color: var(--color-text-muted);
 
 		& li {
 			margin-block: 0.25rem;

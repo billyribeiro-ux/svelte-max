@@ -17,7 +17,7 @@
 </script>
 
 <section class="page">
-	<h1>Lesson 1.8 — Interfaces</h1>
+	<h1>1.8 — Interfaces</h1>
 
 	<p class="concept">
 		<strong>Concept.</strong> A TypeScript <code>interface</code> describes the shape of an object
@@ -59,7 +59,7 @@
 	.page {
 		& .concept {
 			font-size: var(--text-base);
-			color: var(--color-fg-muted);
+			color: var(--color-text-muted);
 			max-inline-size: 65ch;
 		}
 
@@ -84,7 +84,7 @@
 			block-size: 5rem;
 			border-radius: 999px;
 			background: var(--color-brand);
-			color: var(--color-bg);
+			color: var(--color-surface);
 			display: grid;
 			place-items: center;
 			font-size: var(--text-2xl);
@@ -111,7 +111,7 @@
 
 			& .bio {
 				font-size: var(--text-base);
-				color: var(--color-fg-muted);
+				color: var(--color-text-muted);
 				margin: 0;
 				line-height: 1.6;
 			}
@@ -131,14 +131,14 @@
 			padding: 0.35rem 0.75rem;
 			border-radius: 999px;
 			background: var(--color-brand-dim);
-			color: var(--color-fg);
+			color: var(--color-text);
 			font-weight: 500;
 		}
 	}
 
 	.learned {
 		padding-inline-start: 1.25rem;
-		color: var(--color-fg-muted);
+		color: var(--color-text-muted);
 
 		& li {
 			margin-block: 0.25rem;

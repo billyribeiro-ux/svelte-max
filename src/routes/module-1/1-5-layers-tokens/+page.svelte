@@ -61,8 +61,8 @@
 			<h2>Colors</h2>
 			<div class="swatches">
 				{#each swatches as swatch (swatch.token)}
-					<figure class="swatch">
-						<div class="swatch__chip" style:background="var({swatch.token})"></div>
+					<figure class="swatch" aria-label="Color token {swatch.token}">
+						<div class="swatch__chip" style:background="var({swatch.token})" aria-hidden="true"></div>
 						<figcaption>{swatch.label}</figcaption>
 					</figure>
 				{/each}
@@ -134,7 +134,7 @@
 		& h2 {
 			margin: 0 0 var(--space-md) 0;
 			color: var(--color-brand);
-			font-size: var(--font-size-lg);
+			font-size: var(--text-lg);
 		}
 	}
 
@@ -163,7 +163,7 @@
 	}
 
 	.swatch figcaption {
-		font-size: var(--font-size-xs);
+		font-size: var(--text-xs);
 		color: var(--color-text-muted);
 		font-family: var(--font-mono, monospace);
 		text-align: center;
@@ -184,7 +184,7 @@
 	.bar-row__label {
 		width: 2.5rem;
 		font-family: var(--font-mono, monospace);
-		font-size: var(--font-size-xs);
+		font-size: var(--text-xs);
 		color: var(--color-text-muted);
 	}
 
@@ -221,7 +221,7 @@
 	}
 
 	.radius figcaption {
-		font-size: var(--font-size-xs);
+		font-size: var(--text-xs);
 		color: var(--color-text-muted);
 		font-family: var(--font-mono, monospace);
 	}

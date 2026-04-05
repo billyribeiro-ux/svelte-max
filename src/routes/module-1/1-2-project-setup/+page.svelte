@@ -78,7 +78,7 @@
 		& h2 {
 			margin: 0 0 var(--space-md) 0;
 			color: var(--color-brand);
-			font-size: var(--font-size-lg);
+			font-size: var(--text-lg);
 		}
 
 		& dl {

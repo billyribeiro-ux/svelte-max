@@ -4,7 +4,7 @@
 </script>
 
 <section class="page">
-	<h1>Lesson 1.7 — Scoped Styles</h1>
+	<h1>1.7 — Scoped styles</h1>
 
 	<p class="concept">
 		<strong>Concept.</strong> Every class you write inside a Svelte component's
@@ -53,7 +53,7 @@
 		& .concept,
 		& .note {
 			max-inline-size: 65ch;
-			color: var(--color-fg-muted);
+			color: var(--color-text-muted);
 		}
 
 		& .note {
@@ -90,7 +90,7 @@
 
 		& p {
 			font-size: var(--text-base);
-			color: var(--color-fg-muted);
+			color: var(--color-text-muted);
 			margin-block: 0 1rem;
 		}
 	}
@@ -100,7 +100,7 @@
 
 		& .button {
 			background: var(--color-brand);
-			color: var(--color-bg);
+			color: var(--color-surface);
 			border: none;
 			padding: 0.65rem 1.2rem;
 			border-radius: 0.5rem;
@@ -116,7 +116,7 @@
 	}
 
 	.card-b {
-		background: var(--color-bg);
+		background: var(--color-surface);
 
 		& .button {
 			background: transparent;
@@ -137,7 +137,7 @@
 
 	.learned {
 		padding-inline-start: 1.25rem;
-		color: var(--color-fg-muted);
+		color: var(--color-text-muted);
 
 		& li {
 			margin-block: 0.25rem;

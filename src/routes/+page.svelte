@@ -4,6 +4,36 @@
 		description: string;
 	}
 
+	interface ModuleCard {
+		id: number;
+		title: string;
+		summary: string;
+		project: string;
+		status: 'ready' | 'soon';
+		href: string;
+	}
+
+	const courseModules: readonly ModuleCard[] = [
+		{
+			id: 1,
+			title: 'Foundation',
+			summary:
+				'Typed components, PE7 CSS tokens, fluid mobile-first layouts, template expressions.',
+			project: 'Personal Portfolio Card',
+			status: 'ready',
+			href: '/module-1/1-1-hello-compiled'
+		},
+		{
+			id: 2,
+			title: 'Reactivity',
+			summary:
+				'$state, $derived, $effect, SvelteMap/Set, MediaQuery — the full Svelte 5 rune system.',
+			project: 'Interactive Dashboard',
+			status: 'ready',
+			href: '/module-2/2-1-what-is-state'
+		}
+	] as const;
+
 	const buildList: readonly BuildItem[] = [
 		{
 			title: 'A compiler-first mental model',
@@ -39,6 +69,21 @@
 			at the top, work through the primitives, and end Module 1 with a project you fully own.
 		</p>
 		<a class="cta" href="/module-1/1-1-hello-compiled">Start here → Lesson 1.1</a>
+	</section>
+
+	<section class="stack">
+		<h2>Modules shipped</h2>
+		<ul class="module-grid">
+			{#each courseModules as m (m.id)}
+				<li class="module-card">
+					<p class="module-eyebrow">Module {m.id} · {m.status === 'ready' ? 'Ready' : 'Soon'}</p>
+					<h3>{m.title}</h3>
+					<p class="module-summary">{m.summary}</p>
+					<p class="module-project">Project: <strong>{m.project}</strong></p>
+					<a href={m.href} class="module-link">Enter Module {m.id} →</a>
+				</li>
+			{/each}
+		</ul>
 	</section>
 
 	<section class="stack">
@@ -114,6 +159,61 @@
 		background: var(--color-brand-dim);
 		color: oklch(99% 0.005 270);
 		transform: translateY(-1px);
+	}
+
+	.module-grid {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		gap: var(--space-md);
+		grid-template-columns: 1fr;
+	}
+
+	.module-card {
+		padding: var(--space-lg);
+		background: var(--color-surface-1);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.module-eyebrow {
+		font-size: var(--text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--color-brand);
+		font-weight: 700;
+	}
+
+	.module-summary {
+		color: var(--color-text-muted);
+		max-inline-size: 60ch;
+	}
+
+	.module-project {
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+
+	.module-link {
+		align-self: start;
+		margin-block-start: var(--space-xs);
+		font-weight: 700;
+		text-decoration: none;
+		color: var(--color-brand);
+	}
+
+	.module-link:hover {
+		color: var(--color-brand-dim);
+	}
+
+	@media (min-width: 768px) {
+		.module-grid {
+			grid-template-columns: 1fr 1fr;
+		}
 	}
 
 	.build-list {

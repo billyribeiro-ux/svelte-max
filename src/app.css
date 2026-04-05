@@ -83,6 +83,7 @@
 		--color-brand: oklch(65% 0.22 270);
 		--color-brand-dim: oklch(55% 0.18 270);
 		--color-surface: oklch(98% 0.01 270);
+		--color-surface-1: oklch(99% 0.005 270);
 		--color-surface-2: oklch(94% 0.02 270);
 		--color-text: oklch(20% 0.02 270);
 		--color-text-muted: oklch(50% 0.02 270);
@@ -104,7 +105,11 @@
 		--ease-expressive: cubic-bezier(0.34, 1.56, 0.64, 1);
 		--ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
+		/* === FONT FAMILIES === */
+		--font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
 		/* === RADII === */
+		--radius-xs: 0.125rem;
 		--radius-sm: 0.25rem;
 		--radius-md: 0.5rem;
 		--radius-lg: 1rem;
@@ -120,6 +125,7 @@
 	@media (prefers-color-scheme: dark) {
 		:root {
 			--color-surface: oklch(18% 0.02 270);
+			--color-surface-1: oklch(25% 0.02 270);
 			--color-surface-2: oklch(22% 0.02 270);
 			--color-text: oklch(95% 0.01 270);
 			--color-text-muted: oklch(70% 0.02 270);

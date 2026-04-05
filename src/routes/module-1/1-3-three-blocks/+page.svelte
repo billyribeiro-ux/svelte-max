@@ -52,7 +52,7 @@
 		border-radius: var(--radius-lg);
 		overflow: hidden;
 		background: var(--color-surface-1);
-		box-shadow: 0 2px 12px oklch(0% 0 0 / 0.15);
+		box-shadow: var(--shadow-md);
 
 		@media (min-width: 768px) {
 			max-width: 24rem;
@@ -70,12 +70,12 @@
 		letter-spacing: 0.1em;
 
 		& span:first-child {
-			font-size: var(--font-size-2xl);
+			font-size: var(--text-2xl);
 			font-weight: 800;
 		}
 
 		& span:last-child {
-			font-size: var(--font-size-sm);
+			font-size: var(--text-sm);
 			opacity: 0.85;
 		}
 	}
@@ -88,7 +88,7 @@
 
 	.name-tag__name {
 		margin: 0 0 var(--space-xs) 0;
-		font-size: var(--font-size-2xl);
+		font-size: var(--text-2xl);
 		font-weight: 700;
 		color: var(--color-text);
 	}
@@ -96,7 +96,7 @@
 	.name-tag__role {
 		margin: 0;
 		color: var(--color-text-muted);
-		font-size: var(--font-size-md);
+		font-size: var(--text-base);
 	}
 
 	ul {

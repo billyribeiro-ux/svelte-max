@@ -1,0 +1,169 @@
+<script lang="ts">
+	interface BuildItem {
+		title: string;
+		description: string;
+	}
+
+	const buildList: readonly BuildItem[] = [
+		{
+			title: 'A compiler-first mental model',
+			description:
+				'Understand how Svelte 5 turns .svelte files into surgical DOM updates, and why runes replace the old reactive label.'
+		},
+		{
+			title: 'A modern CSS foundation',
+			description:
+				'Cascade layers, fluid clamp() type and space scales, OKLCH color, and scoped component styles that never leak.'
+		},
+		{
+			title: 'TypeScript that pulls its weight',
+			description:
+				'Strict mode from day one, interfaces for props, and type-safe template expressions without ceremony.'
+		},
+		{
+			title: 'Nine lessons and a capstone',
+			description:
+				'Module 1 walks from "hello, compiled" to a portfolio project that ties every primitive together.'
+		}
+	] as const;
+</script>
+
+<div class="page">
+	<section class="stack hero">
+		<p class="eyebrow">Module 1 — Foundation</p>
+		<h1>svelte-max</h1>
+		<p class="lede">A Svelte 5 + SvelteKit 2 course, built in the open.</p>
+		<p class="intro">
+			This repository is the source of truth for the course. Every lesson is a real route, every
+			concept ships as runnable code, and every commit is a checkpoint you can diff against. Start
+			at the top, work through the primitives, and end Module 1 with a project you fully own.
+		</p>
+		<a class="cta" href="/module-1/1-1-hello-compiled">Start here → Lesson 1.1</a>
+	</section>
+
+	<section class="stack">
+		<h2>What you will build</h2>
+		<ul class="build-list">
+			{#each buildList as item (item.title)}
+				<li>
+					<h3>{item.title}</h3>
+					<p>{item.description}</p>
+				</li>
+			{/each}
+		</ul>
+	</section>
+
+	<section class="stack note">
+		<h2>How this codebase is wired</h2>
+		<p>
+			The styling foundation uses the <strong>PE7 architecture</strong>: a single declared
+			cascade-layer order — reset, tokens, base, layout, components, animations — so specificity
+			stays predictable no matter how many components we add. Colors are expressed in OKLCH for
+			perceptual uniformity, and the type and space scales are fluid
+			<code>clamp()</code> values so every breakpoint looks intentional without a single utility class.
+		</p>
+		<p>
+			TypeScript runs in <strong>strict mode</strong> from the first lesson. Props are described with
+			<code>interface</code>, template expressions stay narrow, and every Svelte 5 rune carries its
+			type through the compiler untouched. If it type-checks, it ships.
+		</p>
+	</section>
+</div>
+
+<style>
+	.hero {
+		padding-block-end: var(--space-lg);
+		border-block-end: 1px solid var(--color-border);
+		margin-block-end: var(--space-xl);
+	}
+
+	.eyebrow {
+		font-size: var(--text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--color-text-muted);
+		font-weight: 700;
+	}
+
+	.lede {
+		font-size: var(--text-xl);
+		color: var(--color-text-muted);
+		max-inline-size: 50ch;
+	}
+
+	.intro {
+		max-inline-size: 65ch;
+	}
+
+	.cta {
+		align-self: start;
+		display: inline-block;
+		padding: var(--space-sm) var(--space-md);
+		background: var(--color-brand);
+		color: oklch(99% 0.005 270);
+		border-radius: var(--radius-md);
+		font-weight: 700;
+		text-decoration: none;
+		margin-block-start: var(--space-sm);
+		transition:
+			background var(--dur-fast) var(--ease-out),
+			transform var(--dur-fast) var(--ease-expressive);
+	}
+
+	.cta:hover {
+		background: var(--color-brand-dim);
+		color: oklch(99% 0.005 270);
+		transform: translateY(-1px);
+	}
+
+	.build-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		gap: var(--space-md);
+		grid-template-columns: 1fr;
+	}
+
+	.build-list li {
+		padding: var(--space-md);
+		background: var(--color-surface-2);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+	}
+
+	.build-list h3 {
+		margin-block-end: var(--space-xs);
+	}
+
+	.build-list p {
+		color: var(--color-text-muted);
+	}
+
+	@media (min-width: 768px) {
+		.build-list {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	.note {
+		margin-block-start: var(--space-xl);
+		padding: var(--space-lg);
+		background: var(--color-surface-2);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+	}
+
+	.note p {
+		max-inline-size: 72ch;
+	}
+
+	.note code {
+		font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+		font-size: 0.9em;
+		padding: 0.1em 0.35em;
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+	}
+</style>

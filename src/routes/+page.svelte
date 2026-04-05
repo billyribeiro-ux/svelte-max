@@ -87,6 +87,15 @@
 			href: '/module-9/9a-1-what-is-load'
 		},
 		{
+			id: 10,
+			title: 'API Routes & Forms',
+			summary:
+				'+server.ts endpoints, form actions, use:enhance, server validation, env vars, cookie auth, file uploads.',
+			project: 'CRUD Note-Taking App',
+			status: 'ready',
+			href: '/module-10/10-1-server-endpoints'
+		},
+		{
 			id: 13,
 			title: 'SEO',
 			summary:

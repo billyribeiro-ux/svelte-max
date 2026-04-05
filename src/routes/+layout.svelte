@@ -179,6 +179,22 @@
 			]
 		},
 		{
+			id: 10,
+			title: 'Module 10 — API Routes & Forms',
+			hasProject: true,
+			lessons: [
+				{ slug: '10-1-server-endpoints', title: '10.1 — +server.ts endpoints' },
+				{ slug: '10-2-typed-handlers', title: '10.2 — Typed RequestHandler' },
+				{ slug: '10-3-form-actions', title: '10.3 — Form actions' },
+				{ slug: '10-4-named-actions', title: '10.4 — Named actions' },
+				{ slug: '10-5-use-enhance', title: '10.5 — use:enhance' },
+				{ slug: '10-6-validation', title: '10.6 — Server validation' },
+				{ slug: '10-7-env-vars', title: '10.7 — Environment vars' },
+				{ slug: '10-8-auth', title: '10.8 — Cookie auth' },
+				{ slug: '10-9-file-uploads', title: '10.9 — File uploads' }
+			]
+		},
+		{
 			id: 13,
 			title: 'Module 13 — SEO',
 			hasProject: true,

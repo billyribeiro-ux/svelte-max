@@ -167,7 +167,8 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 6. **Module 6 — Styling Mastery** ✅ shipped — see expanded detail below (Lessons 6.1–6.18, Animated Landing Page)
 7. **Module 8 — SvelteKit Routing & Layouts** ✅ shipped — see expanded detail below (Lessons 8.1–8.14, Multi-Page Portfolio Site)
 8. **Module 9A — Data Loading (load)** ✅ shipped — see expanded detail below (Lessons 9A.1–9A.10, Weather Dashboard)
-9. **Module 13 — SEO** ✅ shipped — see expanded detail below (Lessons 13.1–13.14, SEO-Optimized Content Site)
+9. **Module 10 — API Routes & Forms** ✅ shipped — see expanded detail below (Lessons 10.1–10.9, CRUD Note-Taking App)
+10. **Module 13 — SEO** ✅ shipped — see expanded detail below (Lessons 13.1–13.14, SEO-Optimized Content Site)
 5. **Module 5 — Events & Interaction** — typed events, `on()`, bindings, accessibility (Lessons 5.1–5.12, Validated Form)
 6. **Module 6 — Styling Mastery** — full PE7 architecture, transitions, Tween/Spring (Lessons 6.1–6.18, Animated Landing Page)
 7. **Module 7 — GSAP Integration** — timelines, ScrollTrigger, actions, `{@attach}` (Lessons 7.1–7.14, Marketing Page)
@@ -316,6 +317,24 @@ See the original curriculum briefing for full per-lesson content, mini-build des
 - **9A.9 — Streaming with Promise returns**. Returning an unresolved Promise from load streams that data after the initial HTML. The component uses `{#await data.slow}`. Mini-build: a page that renders fast header content immediately, streams a 1.5-second "slow" query after.
 - **9A.10 — SSG prerender**. `export const prerender = true`. `entries()` for dynamic routes. Blogs, docs, marketing. Mini-build: a prerenderable page with `prerender = true` and an explanation of when to use it vs SSR.
 - **Module 9A Project — Weather Dashboard**. Parallel data loading for current + forecast + alerts; layout data for user preferences (units); `depends('app:weather')` + refresh button; streaming for a slow "historical comparison" panel; typed throughout; loading skeletons; OKLCH personality `oklch(72% 0.12 220)` (sky blue). All async is simulated — no real API calls.
+
+---
+
+## Module 10 — API Routes & Forms (expanded)
+
+**Goal**: Student builds the full SvelteKit server layer — endpoints, form actions, progressive enhancement, environment variables, cookie-based auth, file uploads.
+**Concepts**: `+server.ts`, `RequestHandler`, form actions via `+page.server.ts`, named actions, `use:enhance`, `ActionData`, `$env/*`, cookies, `FormData`.
+
+- **10.1 — `+server.ts` endpoints**. Define HTTP method handlers (`GET`, `POST`, `PUT`, `DELETE`). `json()` and `error()` helpers. When to build a public API endpoint vs a form action vs a remote function. Mini-build: a `+server.ts` with a GET returning typed JSON and a POST that accepts and echoes JSON, plus a sibling page that fetches from it.
+- **10.2 — Typed `RequestHandler`**. `import type { RequestHandler } from './$types'`. Destructuring `{ request, params, url, cookies, fetch, locals }`. Reading typed request bodies. Returning typed responses. Mini-build: a fully typed POST endpoint that validates its input shape and returns a typed result.
+- **10.3 — Form actions**. `+page.server.ts` exports an `actions` object. Each action is `async ({ request, cookies }) => ...`. Works without JavaScript — forms post natively and the server returns a redirect or action data. Mini-build: a contact form that submits via native form post, no JS required.
+- **10.4 — Named actions**. Multiple forms on one page via `?/login`, `?/register` querystring routing. The `action` attribute on the form determines which action runs. Mini-build: a page with login and register forms routed via named actions.
+- **10.5 — `use:enhance`**. Progressive enhancement: `use:enhance` wraps a form so JS intercepts the submit and posts in the background, but still works if JS is disabled. The optional callback lets you handle loading/success/error states. Mini-build: the contact form from 10.3 enhanced with pending state and success toast.
+- **10.6 — Server-side validation and `ActionData`**. Validate `formData` on the server, return `fail(400, { errors })` for invalid input. `ActionData` is the typed union of all possible action returns. Narrow it in the page to render errors inline. Mini-build: a registration form with email/password validation, inline errors displayed via `form.errors`.
+- **10.7 — Environment variables**. `$env/static/private`, `$env/static/public`, `$env/dynamic/private`, `$env/dynamic/public`. `.server.ts` suffix and `$lib/server/` directory for server-only modules. The import chain guard that prevents secrets leaking to the client. Mini-build: a teaching page showing the four variants, when to use each, and a `<pre>` example of reading a `PUBLIC_*` var at build time.
+- **10.8 — Cookie-based authentication**. Setting a session cookie via `cookies.set(name, value, { path, httpOnly, secure, sameSite, maxAge })`. Reading it via `cookies.get()`. Storing a session map on the server. Protected routes via load functions that throw `redirect(302, '/login')`. `locals.user` populated in `hooks.server.ts`. Mini-build: a tiny auth demo with a login form that sets a session cookie, a "profile" page that reads it, and a logout button that clears it. In-memory session store, no `better-auth`, no DB.
+- **10.9 — File uploads**. `request.formData()` returns a `FormData` with `File` entries. Size limits, type validation, storing or processing. Mini-build: an avatar upload form that accepts an image, validates size and MIME type server-side, and returns a preview URL or error.
+- **Module 10 Project — CRUD Note-Taking App**. A full create/read/update/delete notes app built entirely with form actions. In-memory store in `$lib/server/notes.ts`. Form actions for every mutation. `use:enhance` for smooth UX. Typed validation with inline errors. Simple cookie auth gating write operations (read is public). Environment variables for app config. OKLCH personality `oklch(68% 0.14 100)` (olive). Full progressive enhancement — the app works with JavaScript disabled.
 
 ---
 

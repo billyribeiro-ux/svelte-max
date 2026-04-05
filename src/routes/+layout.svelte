@@ -58,6 +58,43 @@
 				{ slug: '2-14-reactive-css', title: '2.14 — Reactive CSS' },
 				{ slug: '2-15-typescript-reactive', title: '2.15 — Typed state' }
 			]
+		},
+		{
+			id: 3,
+			title: 'Module 3 — Components & Props',
+			hasProject: true,
+			lessons: [
+				{ slug: '3-1-what-components-are', title: '3.1 — What components are' },
+				{ slug: '3-2-props', title: '3.2 — $props()' },
+				{ slug: '3-3-typed-props', title: '3.3 — Typed props' },
+				{ slug: '3-4-optional-props', title: '3.4 — Optional + defaults' },
+				{ slug: '3-5-bindable', title: '3.5 — $bindable()' },
+				{ slug: '3-6-function-bindings', title: '3.6 — Function bindings' },
+				{ slug: '3-7-snippets', title: '3.7 — Snippets' },
+				{ slug: '3-8-snippet-props', title: '3.8 — Snippets as props' },
+				{ slug: '3-9-composition', title: '3.9 — Composition' },
+				{ slug: '3-10-css-custom-props', title: '3.10 — CSS custom props' },
+				{ slug: '3-11-responsive-components', title: '3.11 — Responsive components' }
+			]
+		},
+		{
+			id: 4,
+			title: 'Module 4 — Control Flow',
+			hasProject: true,
+			lessons: [
+				{ slug: '4-1-if', title: '4.1 — {#if}' },
+				{ slug: '4-2-else-if', title: '4.2 — {:else if}' },
+				{ slug: '4-3-each', title: '4.3 — {#each}' },
+				{ slug: '4-4-each-keyed', title: '4.4 — {#each} with keys' },
+				{ slug: '4-5-each-nested', title: '4.5 — Nested {#each}' },
+				{ slug: '4-6-key-block', title: '4.6 — {#key} block' },
+				{ slug: '4-7-async-await', title: '4.7 — Async/await' },
+				{ slug: '4-8-await-block', title: '4.8 — {#await}' },
+				{ slug: '4-9-catch-errors', title: '4.9 — {:catch} errors' },
+				{ slug: '4-10-promise-types', title: '4.10 — Promise<T>' },
+				{ slug: '4-11-svelte-window', title: '4.11 — <svelte:window>' },
+				{ slug: '4-12-svelte-element', title: '4.12 — <svelte:element>' }
+			]
 		}
 	] as const;
 </script>

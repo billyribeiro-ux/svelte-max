@@ -159,10 +159,10 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 
 ## Module Index
 
-1. **Module 1 — The Foundation** — typed Svelte components, PE7 CSS baseline, mobile-first (Lessons 1.1–1.9, Portfolio Card project)
-2. **Module 2 — Reactivity** — runes deep dive, reactive built-ins (Lessons 2.1–2.15, Interactive Dashboard)
-3. **Module 3 — Components & Props** — `$props`, `$bindable`, snippets (Lessons 3.1–3.11, Component Library Part 1)
-4. **Module 4 — Control Flow & Special Elements** — `{#if}`, `{#each}`, `{#await}`, `<svelte:*>` (Lessons 4.1–4.12, Product Listing)
+1. **Module 1 — The Foundation** ✅ shipped — typed Svelte components, PE7 CSS baseline, mobile-first (Lessons 1.1–1.9, Portfolio Card project)
+2. **Module 2 — Reactivity** ✅ shipped — runes deep dive, reactive built-ins (Lessons 2.1–2.15, Interactive Dashboard)
+3. **Module 3 — Components & Props** ✅ shipped — see expanded detail below (Lessons 3.1–3.11, UI Component Library Part 1)
+4. **Module 4 — Control Flow & Special Elements** ✅ shipped — see expanded detail below (Lessons 4.1–4.12, Dynamic Product Listing)
 5. **Module 5 — Events & Interaction** — typed events, `on()`, bindings, accessibility (Lessons 5.1–5.12, Validated Form)
 6. **Module 6 — Styling Mastery** — full PE7 architecture, transitions, Tween/Spring (Lessons 6.1–6.18, Animated Landing Page)
 7. **Module 7 — GSAP Integration** — timelines, ScrollTrigger, actions, `{@attach}` (Lessons 7.1–7.14, Marketing Page)
@@ -178,6 +178,48 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 17. **Capstone — PE7 Flagship Project** — surgical-reveal chunk system across every skill
 
 See the original curriculum briefing for full per-lesson content, mini-build descriptions, reveal-system tables, and version pinning (svelte@5.55.x, kit@2.55.x, vite@7, TypeScript strict, pnpm 9+). That briefing is the authoritative specification.
+
+---
+
+## Module 3 — Components & Props (expanded)
+
+**Goal**: Student extracts reusable, typed components into `$lib/components/` — the foundation for every scaled Svelte app.
+**JS/TS concepts**: Functions as props, default parameters, interfaces for props, unions, generics, TypeScript narrowing across files.
+**New runes**: `$props()`, `$bindable()`. **New syntax**: `{#snippet}`, `{@render}`, function bindings `bind:value={getter, setter}`.
+
+- **3.1 — What components are**. Extracting repeated UI logic into a `.svelte` file. Takes the Module 1 portfolio card and refactors it into `$lib/components/ProfileCard.svelte`. Mini-build: the lesson route renders the extracted component with the same `Profile` interface from `$lib/types/profile.ts`.
+- **3.2 — `$props()`**. The Svelte 5 pattern for receiving data. Destructuring props. Mini-build: `Avatar.svelte` taking `src`, `alt`, `size` props; lesson demos multiple sizes side by side.
+- **3.3 — Typed props with interfaces**. The `interface Props { ... }` pattern plus `let { ... }: Props = $props()`. TypeScript errors when wrong types are passed. Mini-build: `Button.svelte` with `variant: 'primary' | 'secondary' | 'ghost'` and `size: 'sm' | 'md' | 'lg'`; lesson renders a grid of every combination.
+- **3.4 — Optional props + defaults**. `?` in the interface, default values in destructuring, required vs optional. Mini-build: `Badge.svelte` with optional `tone`, `rounded`, `label` with sensible defaults; lesson shows defaulted vs overridden.
+- **3.5 — `$bindable()`**. Two-way binding from child to parent. `bind:value={myState}` in parent. Mini-build: `TextField.svelte` with `$bindable()` value; lesson parent renders the field and a live display of the bound state updating.
+- **3.6 — Function bindings**. `bind:value={() => getter, (v) => setter}` available since svelte 5.9. Validation, transformation, masking on bind. Mini-build: `CurrencyInput.svelte` that strips non-digits on input and formats as currency on display.
+- **3.7 — Snippets**. `{#snippet name()}...{/snippet}` and `{@render name()}` — the Svelte 5 replacement for slots. Mini-build: `Card.svelte` with `header` and `body` snippet regions defined at the call site.
+- **3.8 — Snippets as props**. `Snippet` type from `svelte`. Parameterized snippets `Snippet<[title: string]>`. Mini-build: `Modal.svelte` with `title: string` prop plus `children: Snippet` for the body.
+- **3.9 — Component composition**. Building complex UI from small typed pieces. Prop spreading `{...rest}`. Mini-build: `Notification` built from `Badge + Avatar + Card` composing.
+- **3.10 — CSS custom properties bridge**. Per-component variant systems driven by CSS custom properties. `<Button --btn-bg="oklch(...)" />` passthrough. Mini-build: a single `Button.svelte` with four visible variants from CSS custom property overrides.
+- **3.11 — Responsive components**. Container queries `@container`, `container-type: inline-size`, 44px touch targets. Mini-build: a `Card.svelte` that reflows between horizontal and vertical based on its container's width, not the viewport.
+- **Module 3 Project — UI Component Library Part 1**. `src/routes/module-3/project/+page.svelte` imports every component from `$lib/components/` and renders a gallery showing every variant, every size, every state. Distinct OKLCH personality (`oklch(64% 0.16 220)`, a deep blue). Live modal trigger. Proves composition (`Notification`).
+
+---
+
+## Module 4 — Control Flow & Special Elements (expanded)
+
+**Goal**: Student controls what renders, when it renders, handles async data, and uses Svelte's special elements.
+**JS/TS concepts**: Conditionals, boolean logic, array iteration, destructuring, Promises, async/await, typed errors, `unknown` narrowing.
+
+- **4.1 — `{#if}`** — boolean logic, truthy/falsy. Mini-build: password strength indicator with three `{#if}` branches (weak/medium/strong).
+- **4.2 — `{:else if}` / `{:else}`** — multi-branch logic, the `'idle' | 'loading' | 'error' | 'success'` status pattern. Mini-build: status badge with four visual states from one typed union.
+- **4.3 — `{#each}` + destructuring** — iterating typed arrays, index parameter. Mini-build: contact list from an array of typed `Contact` objects.
+- **4.4 — `{#each}` with keys** — `(item.id)` for stable identity, why missing keys break. Mini-build: two side-by-side reorderable lists — one keyed, one unkeyed — sharing state, so the student sees the bug visually.
+- **4.5 — Nested `{#each}`** — iterating arrays of arrays with nested typed interfaces. Mini-build: categorized product grid (category → nested products).
+- **4.6 — `{#key}` block** — forcing re-mounts, resetting component state, triggering entrance animations. Mini-build: content switcher that animates in fresh on every key change.
+- **4.7 — Promises + async/await** — the JS async model, `fetch`, manual loading/error/data state. Mini-build: manual data fetcher with three state variables.
+- **4.8 — `{#await}`** — `{#await promise}`, `{:then data}`, `{:catch error}`. Mini-build: same fetcher rebuilt cleanly with `{#await}` — half the code.
+- **4.9 — `{:catch}` + typed errors** — `catch (e: unknown)` narrowing, user-friendly error UI, retry. Mini-build: a robust API fetcher with typed error states and a retry button.
+- **4.10 — `Promise<T>` return types** — typing async functions end to end. Mini-build: a fully typed user profile loader with zero `any`.
+- **4.11 — `<svelte:window>` / `<svelte:document>` / `<svelte:body>`** — cleanup-free, SSR-safe event listeners; bindable properties (`innerWidth`, `scrollY`, `visibilitychange`). Mini-build: keyboard shortcut overlay detecting `Ctrl+K` via `<svelte:window onkeydown>`, displaying current window dimensions via bindings.
+- **4.12 — `<svelte:element>` / `<svelte:options>`** — runtime-determined element tags, per-component compiler options. Mini-build: a dynamic `Heading` component that renders `h1`–`h6` based on a typed `level` prop via `<svelte:element this={...}>`.
+- **Module 4 Project — Dynamic Product Listing**. `src/routes/module-4/project/+page.svelte` — filterable, searchable product grid. Typed `Product[]` hardcoded. `{#each}` with stable IDs. `{#if}` branches for empty state and no-results. `{#await}` loading state with skeleton cards (600 ms fake fetch). `<svelte:window onkeydown>` for `/` focusing search and `Escape` clearing. OKLCH personality `oklch(66% 0.17 35)` (warm orange). Mobile-first; 480px, 768px, 1024px breakpoints.
 
 ---
 

@@ -193,7 +193,7 @@
 		border: 1px solid var(--color-border);
 		background: var(--color-surface-1);
 		color: var(--color-text);
-		transition: border-color var(--dur-2) var(--ease-1);
+		transition: border-color var(--dur-base) var(--ease-out);
 	}
 
 	input:focus,
@@ -238,7 +238,7 @@
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 		cursor: pointer;
-		transition: background var(--dur-2) var(--ease-1);
+		transition: background var(--dur-base) var(--ease-out);
 	}
 
 	.ghost {

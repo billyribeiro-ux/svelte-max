@@ -212,7 +212,7 @@
 		color: var(--color-text);
 		cursor: pointer;
 		font-size: var(--text-base);
-		transition: background var(--dur-2) var(--ease-1);
+		transition: background var(--dur-base) var(--ease-out);
 	}
 
 	.qty button:hover {
@@ -241,7 +241,7 @@
 		background: var(--color-surface);
 		color: var(--color-text-muted);
 		cursor: pointer;
-		transition: color var(--dur-2) var(--ease-1), border-color var(--dur-2) var(--ease-1);
+		transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
 	}
 
 	.remove:hover {

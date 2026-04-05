@@ -273,7 +273,7 @@
 		background: var(--color-surface-1);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
-		transition: border-color var(--dur-2) var(--ease-1), transform var(--dur-2) var(--ease-1);
+		transition: border-color var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
 	}
 
 	.card:hover {
@@ -314,7 +314,7 @@
 		background: var(--color-surface-1);
 		color: var(--color-text);
 		cursor: pointer;
-		transition: background var(--dur-2) var(--ease-1);
+		transition: background var(--dur-base) var(--ease-out);
 	}
 
 	.pager button:hover:not(:disabled) {

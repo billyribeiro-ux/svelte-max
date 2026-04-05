@@ -31,6 +31,24 @@
 			project: 'Interactive Dashboard',
 			status: 'ready',
 			href: '/module-2/2-1-what-is-state'
+		},
+		{
+			id: 3,
+			title: 'Components & Props',
+			summary:
+				'$props, $bindable, snippets, composition, CSS custom property bridges, container queries.',
+			project: 'UI Component Library Part 1',
+			status: 'ready',
+			href: '/module-3/3-1-what-components-are'
+		},
+		{
+			id: 4,
+			title: 'Control Flow & Special Elements',
+			summary:
+				'{#if}, {#each} with keys, {#await}, typed errors, <svelte:window>, <svelte:element>.',
+			project: 'Dynamic Product Listing',
+			status: 'ready',
+			href: '/module-4/4-1-if'
 		}
 	] as const;
 

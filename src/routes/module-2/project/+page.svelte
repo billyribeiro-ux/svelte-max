@@ -188,8 +188,16 @@
 								<div class="fill" style:width="{percent(m)}%"></div>
 							</div>
 							<div class="metric-actions">
-								<button type="button" onclick={() => bumpMetric(m.id, -10)}>−10</button>
-								<button type="button" onclick={() => bumpMetric(m.id, 10)}>+10</button>
+								<button
+									type="button"
+									aria-label="Decrease {m.label} by 10"
+									onclick={() => bumpMetric(m.id, -10)}>−10</button
+								>
+								<button
+									type="button"
+									aria-label="Increase {m.label} by 10"
+									onclick={() => bumpMetric(m.id, 10)}>+10</button
+								>
 							</div>
 						</article>
 					{/each}

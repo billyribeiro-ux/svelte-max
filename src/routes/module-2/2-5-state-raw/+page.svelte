@@ -156,7 +156,7 @@
 		background: var(--color-surface-1);
 		color: var(--color-text);
 		cursor: pointer;
-		transition: background var(--dur-2) var(--ease-1), border-color var(--dur-2) var(--ease-1);
+		transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
 	}
 
 	button:hover {

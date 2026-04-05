@@ -165,6 +165,9 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 4. **Module 4 — Control Flow & Special Elements** ✅ shipped — see expanded detail below (Lessons 4.1–4.12, Dynamic Product Listing)
 5. **Module 5 — Events & Interaction** ✅ shipped — see expanded detail below (Lessons 5.1–5.12, Interactive Form with Live Validation)
 6. **Module 6 — Styling Mastery** ✅ shipped — see expanded detail below (Lessons 6.1–6.18, Animated Landing Page)
+7. **Module 8 — SvelteKit Routing & Layouts** ✅ shipped — see expanded detail below (Lessons 8.1–8.14, Multi-Page Portfolio Site)
+8. **Module 9A — Data Loading (load)** ✅ shipped — see expanded detail below (Lessons 9A.1–9A.10, Weather Dashboard)
+9. **Module 13 — SEO** ✅ shipped — see expanded detail below (Lessons 13.1–13.14, SEO-Optimized Content Site)
 5. **Module 5 — Events & Interaction** — typed events, `on()`, bindings, accessibility (Lessons 5.1–5.12, Validated Form)
 6. **Module 6 — Styling Mastery** — full PE7 architecture, transitions, Tween/Spring (Lessons 6.1–6.18, Animated Landing Page)
 7. **Module 7 — GSAP Integration** — timelines, ScrollTrigger, actions, `{@attach}` (Lessons 7.1–7.14, Marketing Page)
@@ -271,6 +274,71 @@ See the original curriculum briefing for full per-lesson content, mini-build des
 - **6.17 — Stagger patterns**. Fine-tuning parameters, calculating delays from the `{#each}` index, staggered grid entrances. Mini-build: a grid of cards that fly in one by one with an index-based delay offset.
 - **6.18 — `prefers-reduced-motion`**. Why some users need reduced motion. Respecting it in CSS (`@media (prefers-reduced-motion: reduce)`) and in Svelte transitions (`prefersReducedMotion.current`). Mini-build: the 6.17 staggered grid rewritten to fully respect the OS preference — no animation when reduced motion is on.
 - **Module 6 Project — Animated Landing Page**. Hero section, feature cards, testimonials, CTA — distinct OKLCH palette (`oklch(58% 0.21 300)`, a violet), full PE7 architecture, container-query responsive grid, Svelte transitions throughout, Spring/Tween animations on scroll, reduced-motion respected, Lighthouse-ready mobile-first.
+
+---
+
+## Module 8 — SvelteKit Routing & Layouts (expanded)
+
+**Goal**: Student understands file-based routing, SSR, hydration, and SvelteKit's application architecture in depth.
+**New concepts**: SSR, hydration, nested layouts, dynamic routes, `$app/state`, `$app/navigation`, hooks, shallow routing, snapshots, view transitions, rendering modes.
+
+- **8.1 — What SvelteKit adds to Svelte**. Svelte is the component compiler; SvelteKit is the full-stack framework on top. `src/routes/` directory. Server vs client. Adapter system. Mini-build: a walkthrough page that inspects the full file structure with each file's role explained.
+- **8.2 — What SSR actually is**. The server renders full HTML per request. Contrast with SPA (empty `<div id="app">`). View source on both to see. Mini-build: an SSR inspection page that shows the student what to look for in DevTools "view source" vs "Elements".
+- **8.3 — What hydration actually is**. The browser receives rendered HTML, then Svelte "wakes it up" by attaching listeners to existing DOM. Hydration mismatches happen when server and client render differently. `<svelte:boundary>` can catch errors. Mini-build: a page that logs hydration status via `$effect` (browser-only) vs render-time JS (server-only) so the student sees the handoff.
+- **8.4 — File-based routing**. `+page.svelte`, `+layout.svelte`, `+error.svelte`. File name maps to URL. Mini-build: a sub-section at `/module-8/8-4-file-routing/sample-child` with its own layout and error file, demonstrating the convention.
+- **8.5 — Nested layouts**. Layouts inside layouts. Route groups with `(group)` folders. Mini-build: a page explaining the layout inheritance chain used by this course (root layout → module layouts).
+- **8.6 — Dynamic routes `[slug]`**. `[slug]`, `[...rest]`, `[[optional]]`. Matcher functions in `src/params/`. Type-narrowed params via auto-generated `$types`. Mini-build: a demo page listing the conventions without actually creating nested dynamic routes inside the lesson (to avoid cluttering routing), pointing to an example in the Module 8 project.
+- **8.7 — `$app/state`**. `page` from `$app/state` — reactive page object with `.url`, `.params`, `.data`, `.status`, `.state`. Replaces legacy `$app/stores`. Mini-build: a page that reads `page.url.pathname` and `page.url.searchParams` reactively and displays them live.
+- **8.8 — `$app/navigation`**. `goto()`, `invalidate()`, `invalidateAll()`, `preloadData()`, `afterNavigate()`, `beforeNavigate()`. Mini-build: a programmatic-navigation demo with "Go home", "Open with preload on hover", and a beforeNavigate confirmation hook.
+- **8.9 — Link options**. `data-sveltekit-preload-data="hover"`, `data-sveltekit-preload-code="viewport"`, `data-sveltekit-reload`, `data-sveltekit-replacestate`, `data-sveltekit-keepfocus`, `data-sveltekit-noscroll`. Mini-build: a navigation bar with optimized preloading applied to different link types.
+- **8.10 — `hooks.server.ts`**. `handle`, `handleError`, `handleFetch`. `sequence()` from `@sveltejs/kit/hooks`. Mini-build: a page explaining what a realistic `hooks.server.ts` does (logging, auth, custom headers) with a code sample rendered in a `<pre>` — the actual hooks file is the Module 8 project's concern.
+- **8.11 — Shallow routing**. `pushState('', { modal: true })` and `replaceState()` from `$app/navigation`. `page.state` for reading shallow routing state. Mini-build: a photo-gallery pattern where clicking a thumbnail pushes a modal via shallow routing, Escape or history back dismisses it, direct URL works as a fallback page.
+- **8.12 — Snapshots**. `export const snapshot = { capture, restore }` to preserve ephemeral DOM state across navigation. Mini-build: a multi-field form whose inputs survive navigation via snapshots, demonstrated by a "Go home and come back" flow.
+- **8.13 — Page transitions**. `onNavigate()` hook plus the View Transitions API for cross-document morphs. Mini-build: a smooth fade between three sibling lesson pages via an `onNavigate` handler calling `document.startViewTransition`.
+- **8.14 — Rendering modes deep dive**. SSR (default), SSG (`export const prerender = true`), CSR (`export const ssr = false`), hybrid. Mini-build: a page that documents the current route's mode and explains when to pick each.
+- **Module 8 Project — Multi-Page Portfolio Site**. Home, About, Projects, Blog with dynamic `[slug]` routes for project detail pages; shared root layout; per-section nested layouts; active-link highlighting via `page.url.pathname`; `onNavigate` page transitions; shallow routing for inline project previews; snapshot-preserved contact form draft; SSG for prerenderable pages, SSR for dynamic ones. Per-page OKLCH personality `oklch(62% 0.15 240)` (steel blue).
+
+---
+
+## Module 9A — Data Loading (load) (expanded)
+
+**Goal**: Student masters SvelteKit's server-driven data layer with full TypeScript safety.
+**New concepts**: `+page.ts` vs `+page.server.ts`, auto-generated `$types`, enhanced fetch, layout data, parallel loading, `depends/invalidate`, streaming, SSG with prerender.
+
+- **9A.1 — What load functions are**. `load()` runs before the component exists — on the server first (SSR) or in the browser (during navigation). The return value becomes `data` in the component via `let { data } = $props()`. Mini-build: a page with a `+page.ts` returning a static typed object, displayed in the component.
+- **9A.2 — `+page.ts` vs `+page.server.ts`**. Universal load runs on server AND client; server load runs only on server. Use universal for public data, server for anything requiring secrets or direct DB access. Mini-build: two sibling pages, one of each kind, showing how to pick.
+- **9A.3 — Auto-generated `$types`**. SvelteKit generates `PageLoad`, `PageServerLoad`, `PageData` per route. Import with `import type { PageLoad } from './$types'`. Zero manual typing. Mini-build: a fully typed `+page.ts` demonstrating that TypeScript already knows `data.user.name`.
+- **9A.4 — Enhanced fetch in load**. SvelteKit's `fetch` argument (first param of load) adds credentials, deduplicates, and inlines responses during SSR. Mini-build: a page loading data from a locally simulated async source via the enhanced fetch, comparing hydration behavior to a raw `globalThis.fetch`.
+- **9A.5 — Layout data**. `+layout.ts` / `+layout.server.ts` loaders run for every child route. Use `parent()` in child loads to merge. Mini-build: a nested layout that loads a typed user profile once; child pages access it via `data.user` without reloading.
+- **9A.6 — Parallel data loading**. Calling multiple async operations simultaneously with `Promise.all`. Waterfalls explained. Mini-build: a dashboard that loads user + stats + posts in parallel, timed in the load function and displayed.
+- **9A.7 — `depends()` / `invalidate()`**. Manual cache control — `depends('app:user')` in load, `invalidate('app:user')` from a component. Mini-build: a refresh button that invalidates a specific key and watches the loader rerun.
+- **9A.8 — `error()` and `redirect()`**. Throwing `error(404, 'Not found')` or `redirect(302, '/login')` from load. `+error.svelte` catches errors. Mini-build: a "protected" route pattern that redirects to a login page when a fake auth check fails.
+- **9A.9 — Streaming with Promise returns**. Returning an unresolved Promise from load streams that data after the initial HTML. The component uses `{#await data.slow}`. Mini-build: a page that renders fast header content immediately, streams a 1.5-second "slow" query after.
+- **9A.10 — SSG prerender**. `export const prerender = true`. `entries()` for dynamic routes. Blogs, docs, marketing. Mini-build: a prerenderable page with `prerender = true` and an explanation of when to use it vs SSR.
+- **Module 9A Project — Weather Dashboard**. Parallel data loading for current + forecast + alerts; layout data for user preferences (units); `depends('app:weather')` + refresh button; streaming for a slow "historical comparison" panel; typed throughout; loading skeletons; OKLCH personality `oklch(72% 0.12 220)` (sky blue). All async is simulated — no real API calls.
+
+---
+
+## Module 13 — SEO (expanded)
+
+**Goal**: Student ships SEO-optimized SvelteKit applications aligned with the March 2026 Google Core Update.
+**Concepts**: `<svelte:head>`, meta tags, Open Graph, JSON-LD, robots.txt, sitemap.xml, Core Web Vitals, E-E-A-T, AI Overviews, international SEO.
+
+- **13.1 — SEO in 2026**. What SEO means today — not keyword stuffing, but helping search engines and AI answerers understand and surface your content. March 2026 Core Update emphasized experience signals and E-E-A-T. Mini-build: a "SEO audit" page that displays the current page's title, description, canonical URL, and OG tags as live JS reads of `document.head`.
+- **13.2 — `<svelte:head>`**. SvelteKit's way to inject into `<head>`. Works in SSR (rendered to the server HTML) and client-side navigation (updates dynamically). Mini-build: a demo page that sets a dynamic title based on `$state` and shows it updating live in the browser tab.
+- **13.3 — Title & meta description**. Title tag rules: unique per page, 50–60 characters, important words front-loaded. Meta description: 120–160 characters, compelling, keyword-relevant. Mini-build: a title and description previewer that shows exactly how Google might render them in search results.
+- **13.4 — Open Graph and Twitter Cards**. `og:title`, `og:description`, `og:image`, `og:url`, `og:type`. Twitter Card variants. Mini-build: an OG previewer that builds a fake social card preview from state-driven tag values.
+- **13.5 — Canonical URLs**. `<link rel="canonical">` solves duplicate content. Same content on `/product?a=1` and `/product?a=2` should both point to one canonical. Mini-build: a demo page showing how to build the canonical URL from `page.url` inside `<svelte:head>`.
+- **13.6 — JSON-LD fundamentals**. Structured data in `<script type="application/ld+json">`. Schema.org vocabulary. Why JSON-LD beats microdata. Mini-build: a minimal `Article` JSON-LD block rendered and validated against the structure.
+- **13.7 — `Article` + `BreadcrumbList` schemas**. Writing real JSON-LD for a blog post with author, publish date, and breadcrumb trail. Mini-build: a fake blog post page with complete Article and BreadcrumbList JSON-LD.
+- **13.8 — `Product`, `FAQPage`, `Organization` schemas**. The other common schemas. Mini-build: a single page with three JSON-LD blocks demonstrating each.
+- **13.9 — `robots.txt` via `+server.ts`**. Even though Module 10 teaches `+server.ts` in depth, a `robots.txt` endpoint is a natural use case here. Mini-build: explains the pattern in text and includes the endpoint file `src/routes/module-13/robots.txt/+server.ts` actually shipping alongside the lesson page.
+- **13.10 — Dynamic sitemap.xml**. Another `+server.ts` endpoint, returning XML. Lists every shipped lesson route. Mini-build: a `+server.ts` sitemap generator at `src/routes/module-13/sitemap.xml/+server.ts` returning a valid XML sitemap built from the course's own route list.
+- **13.11 — Core Web Vitals**. LCP (Largest Contentful Paint — 2.5s), CLS (Cumulative Layout Shift — 0.1), INP (Interaction to Next Paint — 200ms). How Svelte's zero-runtime architecture helps all three. Mini-build: a "vitals cheat sheet" page with the targets, common causes of failure, and mitigation for each.
+- **13.12 — E-E-A-T signals**. Experience, Expertise, Authoritativeness, Trust. Author bios, citations, real names, secure connections, structured data. Mini-build: an article-quality checklist page.
+- **13.13 — AI Overviews and generative search**. Google's AI Overviews summarize answers at the top of results. Optimizing for inclusion: clear question-answer structure, schema.org `FAQPage`, unambiguous data. Mini-build: a page rewrite showing "before" and "after" versions of the same content optimized for AI extraction.
+- **13.14 — International SEO**. `hreflang` tags, `lang` attribute on `<html>`, locale-specific routes. Mini-build: a page explaining the hreflang pattern with a code sample, plus setting the `lang` attribute via `<svelte:head>`.
+- **Module 13 Project — SEO-Optimized Content Site**. A multi-page content site with prerendered blog posts, `<svelte:head>` titles/descriptions, full Open Graph, Article JSON-LD, BreadcrumbList, `robots.txt` + `sitemap.xml` endpoints, canonical URLs, `hreflang` stubs. Passes a mental Google Rich Results check. OKLCH personality `oklch(60% 0.14 140)` (verdant green).
 
 ---
 

@@ -139,6 +139,65 @@
 				{ slug: '6-17-stagger-patterns', title: '6.17 — Stagger patterns' },
 				{ slug: '6-18-reduced-motion', title: '6.18 — Reduced motion' }
 			]
+		},
+		{
+			id: 8,
+			title: 'Module 8 — SvelteKit Routing',
+			hasProject: true,
+			lessons: [
+				{ slug: '8-1-what-sveltekit-adds', title: '8.1 — What SvelteKit adds' },
+				{ slug: '8-2-ssr', title: '8.2 — What SSR is' },
+				{ slug: '8-3-hydration', title: '8.3 — What hydration is' },
+				{ slug: '8-4-file-routing', title: '8.4 — File-based routing' },
+				{ slug: '8-5-nested-layouts', title: '8.5 — Nested layouts' },
+				{ slug: '8-6-dynamic-routes', title: '8.6 — Dynamic [slug]' },
+				{ slug: '8-7-app-state', title: '8.7 — $app/state' },
+				{ slug: '8-8-app-navigation', title: '8.8 — $app/navigation' },
+				{ slug: '8-9-link-options', title: '8.9 — Link options' },
+				{ slug: '8-10-hooks', title: '8.10 — hooks.server.ts' },
+				{ slug: '8-11-shallow-routing', title: '8.11 — Shallow routing' },
+				{ slug: '8-12-snapshots', title: '8.12 — Snapshots' },
+				{ slug: '8-13-page-transitions', title: '8.13 — Page transitions' },
+				{ slug: '8-14-rendering-modes', title: '8.14 — Rendering modes' }
+			]
+		},
+		{
+			id: 9,
+			title: 'Module 9A — Data Loading (load)',
+			hasProject: true,
+			lessons: [
+				{ slug: '9a-1-what-is-load', title: '9A.1 — What load() is' },
+				{ slug: '9a-2-universal-vs-server', title: '9A.2 — Universal vs server' },
+				{ slug: '9a-3-generated-types', title: '9A.3 — $types generated' },
+				{ slug: '9a-4-fetch-in-load', title: '9A.4 — Enhanced fetch' },
+				{ slug: '9a-5-layout-data', title: '9A.5 — Layout data' },
+				{ slug: '9a-6-parallel-loading', title: '9A.6 — Parallel loading' },
+				{ slug: '9a-7-depends-invalidate', title: '9A.7 — depends/invalidate' },
+				{ slug: '9a-8-error-redirect', title: '9A.8 — error() + redirect()' },
+				{ slug: '9a-9-streaming', title: '9A.9 — Streaming' },
+				{ slug: '9a-10-prerender', title: '9A.10 — SSG prerender' }
+			]
+		},
+		{
+			id: 13,
+			title: 'Module 13 — SEO',
+			hasProject: true,
+			lessons: [
+				{ slug: '13-1-what-is-seo', title: '13.1 — SEO in 2026' },
+				{ slug: '13-2-svelte-head', title: '13.2 — <svelte:head>' },
+				{ slug: '13-3-title-meta', title: '13.3 — Title & meta description' },
+				{ slug: '13-4-open-graph', title: '13.4 — Open Graph & Twitter' },
+				{ slug: '13-5-canonical', title: '13.5 — Canonical URLs' },
+				{ slug: '13-6-json-ld', title: '13.6 — JSON-LD fundamentals' },
+				{ slug: '13-7-schema-article', title: '13.7 — Article & Breadcrumb' },
+				{ slug: '13-8-schema-more', title: '13.8 — Product, FAQ, Org' },
+				{ slug: '13-9-robots-txt', title: '13.9 — robots.txt' },
+				{ slug: '13-10-sitemap', title: '13.10 — Dynamic sitemap.xml' },
+				{ slug: '13-11-core-web-vitals', title: '13.11 — Core Web Vitals' },
+				{ slug: '13-12-e-e-a-t', title: '13.12 — E-E-A-T signals' },
+				{ slug: '13-13-ai-overviews', title: '13.13 — AI Overviews' },
+				{ slug: '13-14-international', title: '13.14 — International SEO' }
+			]
 		}
 	] as const;
 </script>

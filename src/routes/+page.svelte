@@ -67,6 +67,33 @@
 			project: 'Animated Landing Page',
 			status: 'ready',
 			href: '/module-6/6-1-layer-architecture'
+		},
+		{
+			id: 8,
+			title: 'SvelteKit Routing & Layouts',
+			summary:
+				'File-based routes, SSR vs hydration, nested layouts, dynamic [slug], shallow routing, snapshots, hooks.',
+			project: 'Multi-Page Portfolio Site',
+			status: 'ready',
+			href: '/module-8/8-1-what-sveltekit-adds'
+		},
+		{
+			id: 9,
+			title: 'Data Loading (load)',
+			summary:
+				'Typed load(), universal vs server, parallel loading, depends/invalidate, streaming, SSG prerender.',
+			project: 'Weather Dashboard',
+			status: 'ready',
+			href: '/module-9/9a-1-what-is-load'
+		},
+		{
+			id: 13,
+			title: 'SEO',
+			summary:
+				'<svelte:head>, Open Graph, JSON-LD, dynamic sitemap/robots, Core Web Vitals, E-E-A-T, AI Overviews.',
+			project: 'SEO-Optimized Content Site',
+			status: 'ready',
+			href: '/module-13/13-1-what-is-seo'
 		}
 	] as const;
 

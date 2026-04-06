@@ -1,5 +1,54 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import Avatar from '$lib/components/Avatar.svelte';
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import Avatar from '$lib/components/Avatar.svelte';\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e3.2 — $props()\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e \u003ccode\u003e$props()\u003c/code\u003e is how a Svelte 5 component receives data from\n" +
+		"\t\tits parent. You destructure the values you want at the top of the script:\n" +
+		"\t\t\u003ccode\u003elet {'{ src, alt, size }'} = $props();\u003c/code\u003e. At the call site you pass them as\n" +
+		"\t\tattributes — \u003ccode\u003e&lt;Avatar src=\"...\" alt=\"...\" size=\"lg\" /&gt;\u003c/code\u003e — which replaces the\n" +
+		"\t\told \u003ccode\u003eexport let\u003c/code\u003e pattern. Explicit destructuring lets the compiler tree-shake unused\n" +
+		"\t\tprops, infer types, and wire fine-grained reactivity.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cp class=\"note\"\u003eFour avatars — three sizes plus one \u003ccode\u003esrc={'{null}'}\u003c/code\u003e initials fallback.\u003c/p\u003e\n" +
+		"\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\u003cdiv class=\"cell\"\u003e\n" +
+		"\t\t\t\t\u003cAvatar src={null} alt=\"Ada Rivera\" name=\"Ada Rivera\" size=\"sm\" /\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"caption\"\u003esm\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cdiv class=\"cell\"\u003e\n" +
+		"\t\t\t\t\u003cAvatar src={null} alt=\"Kai Thompson\" name=\"Kai Thompson\" size=\"md\" /\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"caption\"\u003emd\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cdiv class=\"cell\"\u003e\n" +
+		"\t\t\t\t\u003cAvatar src={null} alt=\"Mira Okafor\" name=\"Mira Okafor\" size=\"lg\" /\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"caption\"\u003elg\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cdiv class=\"cell\"\u003e\n" +
+		"\t\t\t\t\u003cAvatar src={null} alt=\"Jun Park\" name=\"Jun Park\" size=\"md\" /\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"caption\"\u003efallback\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003e$props()\u003c/code\u003e replaces \u003ccode\u003eexport let\u003c/code\u003e from Svelte 4.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eDestructure only the props you need; unused ones are tree-shaken.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eProps are passed at the call site as attributes, exactly like HTML.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eExplicit destructuring is what enables type inference and reactive wiring.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -34,6 +83,12 @@
 			</div>
 		</div>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -134,5 +189,41 @@
 		.cell {
 			flex-direction: column;
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

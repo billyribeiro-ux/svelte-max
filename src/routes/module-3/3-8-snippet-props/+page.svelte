@@ -1,5 +1,96 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   import Card from '$lib/components/Card.svelte';
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import Card from '$lib/components/Card.svelte';\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e3.8 — Snippets as props\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\n" +
+		"    \u003cstrong\u003eConcept.\u003c/strong\u003e Snippets become first-class props. Import the \u003ccode\u003eSnippet\u003c/code\u003e type from\n" +
+		"    \u003ccode\u003esvelte\u003c/code\u003e and declare them on your \u003ccode\u003einterface Props\u003c/code\u003e. A child snippet passed\n" +
+		"    directly between tags is the implicit \u003ccode\u003echildren\u003c/code\u003e; named ones like \u003ccode\u003eheader\u003c/code\u003e\n" +
+		"    are passed explicitly. Parameterized versions use \u003ccode\u003eSnippet&lt;[arg: T]&gt;\u003c/code\u003e.\n" +
+		"  \u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    \u003cCard\u003e\n" +
+		"      {#snippet children()}\n" +
+		"        \u003cp\u003eThis card only uses the default \u003ccode\u003echildren\u003c/code\u003e snippet.\u003c/p\u003e\n" +
+		"        \u003cp\u003eAny markup the parent places here ends up inside the body.\u003c/p\u003e\n" +
+		"      {/snippet}\n" +
+		"    \u003c/Card\u003e\n" +
+		"\n" +
+		"    \u003cCard\u003e\n" +
+		"      {#snippet header()}\n" +
+		"        \u003ch2\u003eFeatured\u003c/h2\u003e\n" +
+		"      {/snippet}\n" +
+		"      {#snippet children()}\n" +
+		"        \u003cp\u003eThis card adds a named \u003ccode\u003eheader\u003c/code\u003e snippet above the body.\u003c/p\u003e\n" +
+		"      {/snippet}\n" +
+		"    \u003c/Card\u003e\n" +
+		"\n" +
+		"    \u003cCard elevated\u003e\n" +
+		"      {#snippet header()}\n" +
+		"        \u003ch2\u003eSubscription\u003c/h2\u003e\n" +
+		"      {/snippet}\n" +
+		"      {#snippet children()}\n" +
+		"        \u003cp\u003eFull coverage with three snippets: header, children, footer.\u003c/p\u003e\n" +
+		"        \u003cp\u003eEach slot accepts arbitrary markup from the caller.\u003c/p\u003e\n" +
+		"      {/snippet}\n" +
+		"      {#snippet footer()}\n" +
+		"        \u003cspan\u003eUpdated today · Free trial available\u003c/span\u003e\n" +
+		"      {/snippet}\n" +
+		"    \u003c/Card\u003e\n" +
+		"\n" +
+		"    \u003ch3 class=\"sub-heading\"\u003eParameterized snippets\u003c/h3\u003e\n" +
+		"    \u003cp class=\"param-intro\"\u003e\n" +
+		"      Snippets can accept parameters via \u003ccode\u003eSnippet&lt;[arg: T]&gt;\u003c/code\u003e.\n" +
+		"      The parent defines the snippet with typed arguments, and the child renders it\n" +
+		"      by passing values at the call site.\n" +
+		"    \u003c/p\u003e\n" +
+		"\n" +
+		"    \u003cCard\u003e\n" +
+		"      {#snippet header()}\n" +
+		"        \u003ch2\u003eOrder Summary\u003c/h2\u003e\n" +
+		"      {/snippet}\n" +
+		"      {#snippet children()}\n" +
+		"        \u003cp\u003eThis card demonstrates a parameterized footer snippet.\u003c/p\u003e\n" +
+		"        \u003cp\u003eThe parent defines \u003ccode\u003e{'{#snippet footer(total: number)}'}\u003c/code\u003e and\n" +
+		"           the Card renders it with \u003ccode\u003e{'{@render footer(42)}'}\u003c/code\u003e.\u003c/p\u003e\n" +
+		"      {/snippet}\n" +
+		"      {#snippet footer()}\n" +
+		"        \u003cp class=\"param-total\"\u003eTotal: $42\u003c/p\u003e\n" +
+		"      {/snippet}\n" +
+		"    \u003c/Card\u003e\n" +
+		"\n" +
+		"    \u003cpre class=\"code-sample\"\u003e{`// In the child component's Props interface:\n" +
+		"interface Props {\n" +
+		"  footer?: Snippet\u003c[total: number]\u003e;\n" +
+		"}\n" +
+		"\n" +
+		"// The child renders the snippet with a value:\n" +
+		"{@render footer?.(42)}\n" +
+		"\n" +
+		"// The parent defines the snippet with a typed parameter:\n" +
+		"{#snippet footer(total: number)}\n" +
+		"  \u003cp\u003eTotal: \\${total}\u003c/p\u003e\n" +
+		"{/snippet}`}\u003c/pre\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003eDeclare snippet props with the \u003ccode\u003eSnippet\u003c/code\u003e type from \u003ccode\u003esvelte\u003c/code\u003e.\u003c/li\u003e\n" +
+		"    \u003cli\u003e\u003ccode\u003echildren\u003c/code\u003e is the implicit default snippet.\u003c/li\u003e\n" +
+		"    \u003cli\u003eNamed snippets are passed inside the component tags.\u003c/li\u003e\n" +
+		"    \u003cli\u003eUse \u003ccode\u003e{`{@render name?.()}`}\u003c/code\u003e for optional snippets.\u003c/li\u003e\n" +
+		"    \u003cli\u003e\u003ccode\u003eSnippet&lt;[arg: T]&gt;\u003c/code\u003e types snippet parameters for full type safety.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -75,6 +166,12 @@ interface Props {
   <p>Total: \${total}</p>
 {/snippet}`}</pre>
   </div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
   <h3>What you learned</h3>
   <ul>
@@ -165,4 +262,41 @@ interface Props {
   }
 
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

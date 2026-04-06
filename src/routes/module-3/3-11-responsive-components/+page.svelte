@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   interface Stat {
     icon: string;
     label: string;
@@ -12,6 +13,73 @@
     value: '$42,180',
     delta: '+12.4% vs last month'
   };
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"interface Stat {\n" +
+		"    icon: string;\n" +
+		"    label: string;\n" +
+		"    value: string;\n" +
+		"    delta: string;\n" +
+		"  }\n" +
+		"\n" +
+		"  const stat: Stat = {\n" +
+		"    icon: '▲',\n" +
+		"    label: 'Monthly revenue',\n" +
+		"    value: '$42,180',\n" +
+		"    delta: '+12.4% vs last month'\n" +
+		"  };\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e3.11 — Responsive components\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\n" +
+		"    \u003cstrong\u003eConcept.\u003c/strong\u003e Media queries target the viewport, but container queries target the\n" +
+		"    element's own parent. That means the same component can lay out horizontally in a wide sidebar\n" +
+		"    and vertically in a narrow column — on the same page. Enable with\n" +
+		"    \u003ccode\u003econtainer-type: inline-size\u003c/code\u003e on the parent, then write\n" +
+		"    \u003ccode\u003e@container (min-width: 30rem)\u003c/code\u003e in the child's scoped styles.\n" +
+		"  \u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    \u003cdiv class=\"demo\"\u003e\n" +
+		"      \u003cdiv class=\"wrapper narrow\"\u003e\n" +
+		"        \u003cspan class=\"label\"\u003eContainer: 15rem\u003c/span\u003e\n" +
+		"        \u003cdiv class=\"stat-card\"\u003e\n" +
+		"          \u003cdiv class=\"icon\"\u003e{stat.icon}\u003c/div\u003e\n" +
+		"          \u003cdiv class=\"text\"\u003e\n" +
+		"            \u003cspan class=\"stat-label\"\u003e{stat.label}\u003c/span\u003e\n" +
+		"            \u003cstrong class=\"value\"\u003e{stat.value}\u003c/strong\u003e\n" +
+		"            \u003cspan class=\"delta\"\u003e{stat.delta}\u003c/span\u003e\n" +
+		"          \u003c/div\u003e\n" +
+		"        \u003c/div\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"\n" +
+		"      \u003cdiv class=\"wrapper wide\"\u003e\n" +
+		"        \u003cspan class=\"label\"\u003eContainer: 40rem\u003c/span\u003e\n" +
+		"        \u003cdiv class=\"stat-card\"\u003e\n" +
+		"          \u003cdiv class=\"icon\"\u003e{stat.icon}\u003c/div\u003e\n" +
+		"          \u003cdiv class=\"text\"\u003e\n" +
+		"            \u003cspan class=\"stat-label\"\u003e{stat.label}\u003c/span\u003e\n" +
+		"            \u003cstrong class=\"value\"\u003e{stat.value}\u003c/strong\u003e\n" +
+		"            \u003cspan class=\"delta\"\u003e{stat.delta}\u003c/span\u003e\n" +
+		"          \u003c/div\u003e\n" +
+		"        \u003c/div\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"    \u003cp class=\"note\"\u003e\n" +
+		"      Same markup, same data — the layout responds to the container, not the viewport.\n" +
+		"    \u003c/p\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003eSet \u003ccode\u003econtainer-type: inline-size\u003c/code\u003e on a parent to query its width.\u003c/li\u003e\n" +
+		"    \u003cli\u003eUse \u003ccode\u003e@container (min-width: ...)\u003c/code\u003e inside the child's scoped styles.\u003c/li\u003e\n" +
+		"    \u003cli\u003eThe same component can render differently in different slots of the same page.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -54,6 +122,12 @@
       Same markup, same data — the layout responds to the container, not the viewport.
     </p>
   </div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
   <h3>What you learned</h3>
   <ul>
@@ -197,4 +271,40 @@
     .wrapper.narrow { inline-size: 15rem; flex: 0 0 15rem; }
     .wrapper.wide { inline-size: 40rem; flex: 0 0 40rem; }
   }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

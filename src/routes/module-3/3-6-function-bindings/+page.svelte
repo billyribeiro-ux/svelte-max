@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import CurrencyInput from '$lib/components/CurrencyInput.svelte';
 
 	let price = $state(1250);
@@ -7,6 +8,60 @@
 		style: 'currency',
 		currency: 'USD'
 	});
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import CurrencyInput from '$lib/components/CurrencyInput.svelte';\n" +
+		"\n" +
+		"\tlet price = $state(1250);\n" +
+		"\n" +
+		"\tconst displayFormatter = new Intl.NumberFormat('en-US', {\n" +
+		"\t\tstyle: 'currency',\n" +
+		"\t\tcurrency: 'USD'\n" +
+		"\t});\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e3.6 — Function bindings\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e Since Svelte 5.9, \u003ccode\u003ebind:\u003c/code\u003e accepts a tuple of a getter and\n" +
+		"\t\ta setter instead of a plain variable:\n" +
+		"\t\t\u003ccode\u003ebind:value={'{() =\u003e state, (v) =\u003e state = v.toLowerCase()}'}\u003c/code\u003e. That lets you\n" +
+		"\t\ttransform values on read, on write, or both — without stitching together a separate\n" +
+		"\t\t\u003ccode\u003e$effect\u003c/code\u003e. It's ideal for masking, formatting, and sanitizing user input, and\n" +
+		"\t\tworks for readonly bindings too (a null getter with a setter for things like\n" +
+		"\t\t\u003ccode\u003eclientWidth\u003c/code\u003e).\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cCurrencyInput label=\"Monthly cost\" bind:value={price} /\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"preview\"\u003e\n" +
+		"\t\t\t\u003cp\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"label\"\u003eStored value\u003c/span\u003e\n" +
+		"\t\t\t\t\u003ccode\u003e{price}\u003c/code\u003e\n" +
+		"\t\t\t\u003c/p\u003e\n" +
+		"\t\t\t\u003cp\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"label\"\u003eFormatted\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cstrong\u003e{displayFormatter.format(price)}\u003c/strong\u003e\n" +
+		"\t\t\t\u003c/p\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cp class=\"note\"\u003e\n" +
+		"\t\t\tThe input shows a formatted currency string, but the parent's \u003ccode\u003eprice\u003c/code\u003e stays a\n" +
+		"\t\t\tplain \u003ccode\u003enumber\u003c/code\u003e — the getter formats on read and the setter parses on write.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003ebind:value={'{getter, setter}'}\u003c/code\u003e lets you transform values as they cross the boundary.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eThe child sees formatted strings; the parent keeps a clean typed value.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eNo extra \u003ccode\u003e$effect\u003c/code\u003e is needed — the binding itself does the work.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eFunction bindings also unlock readonly props like \u003ccode\u003eclientWidth\u003c/code\u003e.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -40,6 +95,12 @@
 			plain <code>number</code> — the getter formats on read and the setter parses on write.
 		</p>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -140,5 +201,41 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

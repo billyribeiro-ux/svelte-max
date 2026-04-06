@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import Button from '$lib/components/Button.svelte';
 
 	type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -16,6 +17,66 @@
 	const samples: ButtonSample[] = variants.flatMap((variant) =>
 		sizes.map((size) => ({ variant, size, label: `${variant} ${size}` }))
 	);
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import Button from '$lib/components/Button.svelte';\n" +
+		"\n" +
+		"\ttype Variant = 'primary' | 'secondary' | 'ghost' | 'danger';\n" +
+		"\ttype Size = 'sm' | 'md' | 'lg';\n" +
+		"\n" +
+		"\tinterface ButtonSample {\n" +
+		"\t\tvariant: Variant;\n" +
+		"\t\tsize: Size;\n" +
+		"\t\tlabel: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst variants: readonly Variant[] = ['primary', 'secondary', 'ghost', 'danger'];\n" +
+		"\tconst sizes: readonly Size[] = ['sm', 'md', 'lg'];\n" +
+		"\n" +
+		"\tconst samples: ButtonSample[] = variants.flatMap((variant) =\u003e\n" +
+		"\t\tsizes.map((size) =\u003e ({ variant, size, label: `${variant} ${size}` }))\n" +
+		"\t);\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e3.3 — Typed props with interfaces\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e Every component gets an \u003ccode\u003einterface Props\u003c/code\u003e describing its\n" +
+		"\t\tshape, and you destructure into it:\n" +
+		"\t\t\u003ccode\u003elet {'{ variant, size }'}: Props = $props()\u003c/code\u003e. TypeScript then catches mismatches\n" +
+		"\t\tat compile time — a typo like \u003ccode\u003evariant=\"prmary\"\u003c/code\u003e becomes an error instead of a\n" +
+		"\t\tsilent visual bug. Union string literals give you exhaustive, autocompleted variants, and\n" +
+		"\t\tchanging the interface lights up every call site that's wrong.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cp class=\"note\"\u003e\n" +
+		"\t\t\tFour variants &times; three sizes = twelve buttons, all driven by a typed\n" +
+		"\t\t\t\u003ccode\u003eButtonSample[]\u003c/code\u003e.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\t\u003cdiv class=\"grid\"\u003e\n" +
+		"\t\t\t{#each samples as sample (sample.label)}\n" +
+		"\t\t\t\t\u003cButton variant={sample.variant} size={sample.size}\u003e\n" +
+		"\t\t\t\t\t{sample.label}\n" +
+		"\t\t\t\t\u003c/Button\u003e\n" +
+		"\t\t\t{/each}\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\t\u003cp class=\"ts-note\"\u003e\n" +
+		"\t\t\tIf you wrote \u003ccode\u003evariant=\"primry\"\u003c/code\u003e, TypeScript would flag:\n" +
+		"\t\t\t\u003cem\u003eType '\"primry\"' is not assignable to type '\"primary\" | \"secondary\" | \"ghost\" | \"danger\"'\u003c/em\u003e.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eDeclare an \u003ccode\u003einterface Props\u003c/code\u003e and destructure \u003ccode\u003e$props()\u003c/code\u003e into it.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eUnion string literals create exhaustive, autocompleted variants.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eTypos in prop values become compile errors instead of runtime surprises.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eRenaming or narrowing a prop cascades through every consumer at once.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -46,6 +107,12 @@
 			<em>Type '"primry"' is not assignable to type '"primary" | "secondary" | "ghost" | "danger"'</em>.
 		</p>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -145,5 +212,41 @@
 			grid-template-columns: repeat(3, auto);
 			justify-items: center;
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

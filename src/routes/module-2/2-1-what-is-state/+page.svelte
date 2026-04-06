@@ -68,26 +68,88 @@
 <section class="page">
 	<h1>2.1 — What state is</h1>
 
-	<p class="lede">
-		State is data that changes over time and causes your UI to re-render when it does. A
-		user's name, the current tab, whether a dropdown is open, the items in a cart — all state.
-		Anything that isn't constant for the life of the page is a candidate.
+	<!-- ═══ WHY THIS MATTERS ═══ -->
+
+	<p class="prose">
+		Everything you built in Module 1 was static. You declared a variable, rendered it, and it
+		never changed. Real applications are not static. A user types into a search box — the results
+		update. A button is clicked — a counter increments. An item is added to a cart — the total
+		recalculates. The data that drives these changes is called <strong>state</strong>.
 	</p>
 
-	<p>
-		In Svelte 5 you declare state with the <code>$state</code> rune. The compiler sees the
-		rune at build time, wraps your value in a proxy, and from that moment on every read is
-		tracked and every write schedules the UI to update. There is no <em>setState</em>, no
-		dependency array, no hook rules — you just mutate the variable.
+	<p class="prose">
+		Think of state like a whiteboard in a meeting room. Anyone can walk in and change what is
+		written on it. When they do, everyone looking at the whiteboard sees the new content
+		immediately. In Svelte, <code>$state</code> is that whiteboard. You write a value to it, and
+		every part of your UI that reads from it automatically updates. You do not need to tell the
+		UI to refresh. You do not call a function. You just change the value, and Svelte handles the
+		rest.
 	</p>
 
-	<p>
-		This is why Svelte uses explicit runes instead of React's implicit model: the compiler
-		has to <em>see</em> what is reactive to generate efficient update code. A plain
-		<code>let count = 0</code> stays plain; a <code>let count = $state(0)</code> becomes a
-		reactive cell. And because <code>$state</code> returns a proxy, the humble
-		<code>count++</code> still works — the proxy intercepts the assignment and notifies
-		anything that depends on it.
+	<p class="prose">
+		This is fundamentally different from how React works. In React, you call
+		<code>setState(newValue)</code> — an explicit function call that schedules a re-render. In
+		Svelte, you write <code>count++</code> and the proxy that <code>$state</code> created
+		intercepts the mutation and schedules the update for you. The result is the same (the UI
+		updates), but the developer experience is radically simpler: you just write normal JavaScript.
+	</p>
+
+	<!-- ═══ THE MENTAL MODEL ═══ -->
+
+	<h2>The mental model</h2>
+
+	<p class="prose">
+		There are two kinds of data in Svelte. Understanding the difference is the foundation of
+		everything in this module.
+	</p>
+
+	<table class="model-table">
+		<thead>
+			<tr>
+				<th>Kind</th>
+				<th>Declaration</th>
+				<th>When it changes</th>
+				<th>Does the UI update?</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><strong>Constant</strong></td>
+				<td><code>const name = 'Billy'</code></td>
+				<td>Never — it is sealed</td>
+				<td>No — nothing to react to</td>
+			</tr>
+			<tr>
+				<td><strong>Plain variable</strong></td>
+				<td><code>let count = 0</code></td>
+				<td>You can reassign it</td>
+				<td><strong>No</strong> — Svelte does not track plain variables</td>
+			</tr>
+			<tr>
+				<td><strong>Reactive state</strong></td>
+				<td><code>let count = $state(0)</code></td>
+				<td>You can reassign or mutate it</td>
+				<td><strong>Yes</strong> — Svelte tracks every read and write</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p class="prose">
+		The critical row is the second one. A plain <code>let count = 0</code> is NOT reactive in
+		Svelte 5. If you increment it, nothing happens on screen. You <em>must</em> use
+		<code>$state</code> to opt into reactivity. This is intentional: the compiler needs to know
+		which variables to track. Wrapping a value in <code>$state()</code> is how you tell it:
+		"Watch this one."
+	</p>
+
+	<!-- ═══ THE DEMO ═══ -->
+
+	<h2>See it in action</h2>
+
+	<p class="prose">
+		Below is a textarea bound to a <code>$state</code> string. As you type, the character count
+		and status pill update instantly — because <code>text</code> is reactive and both
+		<code>count</code> and <code>status</code> are derived from it.
 	</p>
 
 	<div class="demo">
@@ -107,20 +169,85 @@
 		</div>
 	</div>
 
+	<!-- ═══ BREAK IT ON PURPOSE ═══ -->
+
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Reactivity only works if you understand its boundaries. Try these experiments.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Remove <code>$state</code> from the declaration.</strong> Change
+			<code>let text = $state('')</code> to <code>let text = ''</code>. Now type in the
+			textarea. The character count stays at 0. The status pill never changes. The UI is
+			dead — because <code>text</code> is no longer reactive. Svelte has no way to know
+			it changed. Put <code>$state</code> back.
+		</li>
+		<li>
+			<strong>Use <code>const</code> instead of <code>let</code>.</strong> Change to
+			<code>const text = $state('')</code>. TypeScript does not error (the proxy object
+			itself is constant). But you cannot reassign <code>text = 'new value'</code> —
+			the variable is sealed. For primitive state that you reassign (strings, numbers,
+			booleans), you must use <code>let</code>.
+		</li>
+		<li>
+			<strong>Read <code>text</code> in the console.</strong> Open DevTools and type
+			<code>text</code> in the console. You will not find it — module-scoped variables
+			are not on <code>window</code>. Use <code>$inspect(text)</code> in the script
+			block instead. This rune logs reactive values to the console whenever they change —
+			a dev-only debugging tool.
+		</li>
+		<li>
+			<strong>Assign <code>text</code> to a plain variable and read THAT.</strong>
+			Write <code>const snapshot = text</code> at the top of the script. Then render
+			<code>{'{snapshot}'}</code> in the markup. It shows the INITIAL value and never
+			updates. Why? Because <code>snapshot</code> captured the value at that moment —
+			it is not reactive. Only the original <code>$state</code> variable is tracked.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>State is any value whose change should update the UI.</li>
-		<li><code>$state(initial)</code> creates a reactive, proxy-wrapped cell.</li>
-		<li>Mutating the variable (<code>count++</code>, reassigning, etc.) triggers re-renders.</li>
-		<li><code>$derived(expr)</code> recomputes automatically whenever its inputs change.</li>
-		<li>Svelte needs explicit runes so the compiler can generate fine-grained updates.</li>
-	</ul>
+	<!-- ═══ WHAT YOU LEARNED ═══ -->
+
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		State is any data whose change should cause the UI to update. In Svelte 5, you create
+		reactive state with the <code>$state</code> rune: <code>let count = $state(0)</code>.
+		The compiler wraps the value in a proxy that intercepts every read and every write. When
+		you write <code>count++</code>, the proxy detects the mutation and schedules an update
+		for every part of the markup that reads <code>count</code>. You do not call a function.
+		You do not pass a dependency array. You just change the variable.
+	</p>
+
+	<p class="prose">
+		<code>$derived(expr)</code> creates a computed value that recalculates whenever any
+		reactive dependency inside <code>expr</code> changes. It is pure — no side effects, no
+		fetch calls, no DOM writes. In this lesson, <code>count</code> and <code>status</code>
+		are both derived from <code>text</code>. When <code>text</code> changes, they both
+		recompute automatically. You will explore <code>$derived</code> deeply in lesson 2.7.
+	</p>
+
+	<p class="prose">
+		The reason Svelte requires explicit <code>$state</code> runes (instead of making
+		everything reactive by default) is efficiency. The compiler generates update code only
+		for the variables you mark as reactive. A plain <code>let x = 5</code> produces no
+		tracking overhead. A <code>let x = $state(5)</code> produces the proxy wrapper and
+		dependency tracking. You opt in per variable, and the compiler optimizes accordingly.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-2-primitive-state">2.2 — Primitive $state</a> — deep dive into
+		reactive strings, numbers, and booleans.
+	</p>
 </section>
 
 <style>
@@ -130,24 +257,70 @@
 		gap: var(--space-md);
 	}
 
-	.lede {
-		font-size: var(--text-lg);
+	.prose {
 		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+		& strong { font-weight: 700; }
 	}
 
-	p {
-		color: var(--color-text-muted);
+	.model-table {
+		inline-size: 100%;
+		max-inline-size: 68ch;
+		border-collapse: collapse;
+		margin-block: var(--space-md);
+		font-size: var(--text-sm);
+		& th {
+			background: var(--color-surface-2);
+			color: var(--color-text);
+			font-weight: 700;
+			text-align: start;
+			padding: var(--space-xs) var(--space-sm);
+			border-block-end: 2px solid var(--color-border);
+		}
+		& td {
+			padding: var(--space-xs) var(--space-sm);
+			border-block-end: 1px solid var(--color-border);
+			color: var(--color-text);
+			vertical-align: top;
+		}
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.85em;
+			color: var(--color-brand);
+		}
+	}
+
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
 		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
 
-	code {
-		font-family: var(--font-mono);
-		font-size: 0.92em;
-		background: var(--color-surface-2);
-		padding: 0.1em 0.35em;
-		border-radius: var(--radius-sm);
-		color: var(--color-text);
-	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.demo {
 		display: flex;
@@ -214,20 +387,6 @@
 			background: oklch(90% 0.12 60);
 			color: oklch(35% 0.14 60);
 		}
-	}
-
-	h3 {
-		font-size: var(--text-lg);
-		margin-top: var(--space-sm);
-	}
-
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-left: var(--space-md);
-		color: var(--color-text-muted);
-		line-height: 1.6;
 	}
 
 	@media (min-width: 768px) {

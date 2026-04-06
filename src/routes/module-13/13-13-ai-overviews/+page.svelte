@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const before = `Some people say that OKLCH might be a better color space for the
 web, though it depends on what you're doing. In some cases, older formats
 like hex or HSL are fine, but there are also times when more modern
@@ -20,6 +21,84 @@ options can matter. Browser support is something to keep in mind too.`;
 			a: 'No. All evergreen browsers support OKLCH natively.'
 		}
 	];
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"const before = `Some people say that OKLCH might be a better color space for the\n" +
+		"web, though it depends on what you're doing. In some cases, older formats\n" +
+		"like hex or HSL are fine, but there are also times when more modern\n" +
+		"options can matter. Browser support is something to keep in mind too.`;\n" +
+		"\n" +
+		"	const afterIntro = `OKLCH is the right color space for new web projects in 2026.`;\n" +
+		"	const afterFacts: string[] = [\n" +
+		"		'Perceptually uniform: equal numeric steps feel like equal visual steps.',\n" +
+		"		'Supported in all modern browsers since 2023 (Chrome 111, Safari 16.4, Firefox 113).',\n" +
+		"		'Trivial to generate accessible contrast pairs by holding L constant and varying C.'\n" +
+		"	];\n" +
+		"	const afterFaq: { q: string; a: string }[] = [\n" +
+		"		{\n" +
+		"			q: 'Is OKLCH supported in Safari?',\n" +
+		"			a: 'Yes — since Safari 16.4 released in March 2023.'\n" +
+		"		},\n" +
+		"		{\n" +
+		"			q: 'Should I still ship a hex fallback?',\n" +
+		"			a: 'No. All evergreen browsers support OKLCH natively.'\n" +
+		"		}\n" +
+		"	];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e13.13 — AI Overviews &amp; generative search\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e Google AI Overviews (rolled out globally in late 2024)\n" +
+		"		use Gemini to synthesize answers from multiple sources at the top of the SERP.\n" +
+		"		Being cited sends traffic and authority. Optimize by (1) using clear\n" +
+		"		question/answer structure, (2) marking up with \u003ccode\u003eFAQPage\u003c/code\u003e schema, (3)\n" +
+		"		writing unambiguous statements, (4) backing claims with sources, (5) placing\n" +
+		"		direct answers near the top of the page, and (6) building strong E-E-A-T —\n" +
+		"		LLMs weight authoritative sources heavier.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"cols\"\u003e\n" +
+		"			\u003carticle class=\"col before\"\u003e\n" +
+		"				\u003cheader\u003eBefore — wishy-washy\u003c/header\u003e\n" +
+		"				\u003cp\u003e{before}\u003c/p\u003e\n" +
+		"			\u003c/article\u003e\n" +
+		"\n" +
+		"			\u003carticle class=\"col after\"\u003e\n" +
+		"				\u003cheader\u003eAfter — AI-Overview ready\u003c/header\u003e\n" +
+		"				\u003cp class=\"lede\"\u003e{afterIntro}\u003c/p\u003e\n" +
+		"				\u003cul class=\"facts\"\u003e\n" +
+		"					{#each afterFacts as f (f)}\n" +
+		"						\u003cli\u003e{f}\u003c/li\u003e\n" +
+		"					{/each}\n" +
+		"				\u003c/ul\u003e\n" +
+		"				\u003ch3 class=\"faq-title\"\u003eFAQ\u003c/h3\u003e\n" +
+		"				\u003cdl\u003e\n" +
+		"					{#each afterFaq as item (item.q)}\n" +
+		"						\u003cdt\u003e{item.q}\u003c/dt\u003e\n" +
+		"						\u003cdd\u003e{item.a}\u003c/dd\u003e\n" +
+		"					{/each}\n" +
+		"				\u003c/dl\u003e\n" +
+		"			\u003c/article\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"		\u003cp class=\"note\"\u003e\n" +
+		"			The \"After\" version leads with a direct answer, offers verifiable facts,\n" +
+		"			and closes with a schema-friendly FAQ — all patterns Gemini can extract and\n" +
+		"			cite with confidence.\n" +
+		"		\u003c/p\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eAI Overviews reward direct answers and clear structure.\u003c/li\u003e\n" +
+		"		\u003cli\u003eHedging language is a weak signal for LLM citation.\u003c/li\u003e\n" +
+		"		\u003cli\u003eFAQPage schema gives crawlers an explicit Q&amp;A contract.\u003c/li\u003e\n" +
+		"		\u003cli\u003eStrong E-E-A-T flows into AI Overview source selection.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -64,6 +143,13 @@ options can matter. Browser support is something to keep in mind too.`;
 			cite with confidence.
 		</p>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -211,5 +297,42 @@ options can matter. Browser support is something to keep in mind too.`;
 		.cols {
 			grid-template-columns: 1fr 1fr;
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

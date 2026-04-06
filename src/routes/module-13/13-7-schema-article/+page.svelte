@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   type Person = { '@type': 'Person'; name: string; url: string };
   type Organization = { '@type': 'Organization'; name: string; url: string };
   type ArticleSchema = {
@@ -72,6 +73,147 @@
   const breadcrumbJson = JSON.stringify(breadcrumbs, null, 2);
   const articleScript = `<script type="application/ld+json">${JSON.stringify(article)}<\/script>`;
   const breadcrumbScript = `<script type="application/ld+json">${JSON.stringify(breadcrumbs)}<\/script>`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"type Person = { '@type': 'Person'; name: string; url: string };\n" +
+		"  type Organization = { '@type': 'Organization'; name: string; url: string };\n" +
+		"  type ArticleSchema = {\n" +
+		"    '@context': 'https://schema.org';\n" +
+		"    '@type': 'Article';\n" +
+		"    headline: string;\n" +
+		"    description: string;\n" +
+		"    image: string;\n" +
+		"    datePublished: string;\n" +
+		"    dateModified: string;\n" +
+		"    author: Person;\n" +
+		"    publisher: Organization;\n" +
+		"    mainEntityOfPage: string;\n" +
+		"  };\n" +
+		"\n" +
+		"  type BreadcrumbItem = {\n" +
+		"    '@type': 'ListItem';\n" +
+		"    position: number;\n" +
+		"    name: string;\n" +
+		"    item: string;\n" +
+		"  };\n" +
+		"  type BreadcrumbListSchema = {\n" +
+		"    '@context': 'https://schema.org';\n" +
+		"    '@type': 'BreadcrumbList';\n" +
+		"    itemListElement: BreadcrumbItem[];\n" +
+		"  };\n" +
+		"\n" +
+		"  const article: ArticleSchema = {\n" +
+		"    '@context': 'https://schema.org',\n" +
+		"    '@type': 'Article',\n" +
+		"    headline: 'Article & BreadcrumbList schemas',\n" +
+		"    description:\n" +
+		"      'How to combine Article and BreadcrumbList JSON-LD to make blog posts look premium in search results.',\n" +
+		"    image: 'https://svelte-max.example/og/article-cover.png',\n" +
+		"    datePublished: '2026-03-12',\n" +
+		"    dateModified: '2026-04-01',\n" +
+		"    author: {\n" +
+		"      '@type': 'Person',\n" +
+		"      name: 'Maxim Hartshorn',\n" +
+		"      url: 'https://svelte-max.example/authors/maxim'\n" +
+		"    },\n" +
+		"    publisher: {\n" +
+		"      '@type': 'Organization',\n" +
+		"      name: 'svelte-max',\n" +
+		"      url: 'https://svelte-max.example'\n" +
+		"    },\n" +
+		"    mainEntityOfPage: 'https://svelte-max.example/module-13/13-7-schema-article'\n" +
+		"  };\n" +
+		"\n" +
+		"  const breadcrumbs: BreadcrumbListSchema = {\n" +
+		"    '@context': 'https://schema.org',\n" +
+		"    '@type': 'BreadcrumbList',\n" +
+		"    itemListElement: [\n" +
+		"      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://svelte-max.example/' },\n" +
+		"      {\n" +
+		"        '@type': 'ListItem',\n" +
+		"        position: 2,\n" +
+		"        name: 'Module 13',\n" +
+		"        item: 'https://svelte-max.example/module-13'\n" +
+		"      },\n" +
+		"      {\n" +
+		"        '@type': 'ListItem',\n" +
+		"        position: 3,\n" +
+		"        name: 'Article & BreadcrumbList schemas',\n" +
+		"        item: 'https://svelte-max.example/module-13/13-7-schema-article'\n" +
+		"      }\n" +
+		"    ]\n" +
+		"  };\n" +
+		"\n" +
+		"  const articleJson = JSON.stringify(article, null, 2);\n" +
+		"  const breadcrumbJson = JSON.stringify(breadcrumbs, null, 2);\n" +
+		"  const articleScript = `\u003cscript type=\"application/ld+json\"\u003e${JSON.stringify(article)}\u003c\\/script\u003e`;\n" +
+		"  const breadcrumbScript = `\u003cscript type=\"application/ld+json\"\u003e${JSON.stringify(breadcrumbs)}\u003c\\/script\u003e`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csvelte:head\u003e\n" +
+		"  \u003ctitle\u003eArticle &amp; BreadcrumbList schemas — svelte-max\u003c/title\u003e\n" +
+		"  \u003cmeta name=\"description\" content=\"Combine Article and BreadcrumbList JSON-LD to enrich blog posts in Google SERPs.\" /\u003e\n" +
+		"  {@html articleScript}\n" +
+		"  {@html breadcrumbScript}\n" +
+		"\u003c/svelte:head\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e13.7 — Article &amp; BreadcrumbList schemas\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\n" +
+		"    \u003cstrong\u003eConcept.\u003c/strong\u003e \u003ccode\u003eArticle\u003c/code\u003e is one of the most-used schemas — use it for\n" +
+		"    blog posts, news, and tutorials. Key fields: \u003ccode\u003eheadline\u003c/code\u003e, \u003ccode\u003eauthor\u003c/code\u003e\n" +
+		"    (Person), \u003ccode\u003edatePublished\u003c/code\u003e, \u003ccode\u003edateModified\u003c/code\u003e, \u003ccode\u003eimage\u003c/code\u003e,\n" +
+		"    \u003ccode\u003epublisher\u003c/code\u003e (Organization). \u003ccode\u003eBreadcrumbList\u003c/code\u003e describes navigation\n" +
+		"    hierarchy with position-numbered \u003ccode\u003eListItem\u003c/code\u003es. Google uses BreadcrumbList to render\n" +
+		"    breadcrumb trails under your SERP result. Together they make blog posts look premium in\n" +
+		"    search.\n" +
+		"  \u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    \u003cnav aria-label=\"Breadcrumb\" class=\"crumbs\"\u003e\n" +
+		"      \u003col\u003e\n" +
+		"        {#each breadcrumbs.itemListElement as crumb, i (crumb.position)}\n" +
+		"          \u003cli\u003e\n" +
+		"            \u003ca href={crumb.item}\u003e{crumb.name}\u003c/a\u003e\n" +
+		"            {#if i \u003c breadcrumbs.itemListElement.length - 1}\n" +
+		"              \u003cspan aria-hidden=\"true\" class=\"sep\"\u003e/\u003c/span\u003e\n" +
+		"            {/if}\n" +
+		"          \u003c/li\u003e\n" +
+		"        {/each}\n" +
+		"      \u003c/ol\u003e\n" +
+		"    \u003c/nav\u003e\n" +
+		"\n" +
+		"    \u003carticle class=\"post\"\u003e\n" +
+		"      \u003ch2\u003e{article.headline}\u003c/h2\u003e\n" +
+		"      \u003cp class=\"byline\"\u003e\n" +
+		"        By \u003cstrong\u003e{article.author.name}\u003c/strong\u003e · published {article.datePublished} · updated\n" +
+		"        {article.dateModified}\n" +
+		"      \u003c/p\u003e\n" +
+		"      \u003cp class=\"excerpt\"\u003e{article.description}\u003c/p\u003e\n" +
+		"    \u003c/article\u003e\n" +
+		"\n" +
+		"    \u003cdiv class=\"json-grid\"\u003e\n" +
+		"      \u003cdiv\u003e\n" +
+		"        \u003ch3 class=\"snippet-title\"\u003eArticle JSON-LD\u003c/h3\u003e\n" +
+		"        \u003cpre\u003e\u003ccode\u003e{articleJson}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv\u003e\n" +
+		"        \u003ch3 class=\"snippet-title\"\u003eBreadcrumbList JSON-LD\u003c/h3\u003e\n" +
+		"        \u003cpre\u003e\u003ccode\u003e{breadcrumbJson}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003eArticle schema gives blog posts headline, author, dates, image, publisher.\u003c/li\u003e\n" +
+		"    \u003cli\u003eBreadcrumbList uses position-numbered ListItems to describe hierarchy.\u003c/li\u003e\n" +
+		"    \u003cli\u003eBoth can live in the same \u003ccode\u003e{'\u003chead\u003e'}\u003c/code\u003e as separate JSON-LD blocks.\u003c/li\u003e\n" +
+		"    \u003cli\u003eThe visible breadcrumb UI should mirror the schema, not diverge from it.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <svelte:head>
@@ -128,6 +270,13 @@
     </div>
   </div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
   <h3>What you learned</h3>
   <ul>
     <li>Article schema gives blog posts headline, author, dates, image, publisher.</li>
@@ -163,4 +312,42 @@
     h1 { font-size: var(--text-2xl); }
     .json-grid { grid-template-columns: 1fr 1fr; }
   }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

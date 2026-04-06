@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface ProductSchema {
 		'@context': 'https://schema.org';
 		'@type': 'Product';
@@ -104,6 +105,154 @@
 	const productScript = `<script type="application/ld+json">${productJson}<\/script>`;
 	const faqScript = `<script type="application/ld+json">${faqJson}<\/script>`;
 	const orgScript = `<script type="application/ld+json">${orgJson}<\/script>`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface ProductSchema {\n" +
+		"		'@context': 'https://schema.org';\n" +
+		"		'@type': 'Product';\n" +
+		"		name: string;\n" +
+		"		description: string;\n" +
+		"		offers: {\n" +
+		"			'@type': 'Offer';\n" +
+		"			price: string;\n" +
+		"			priceCurrency: string;\n" +
+		"			availability: string;\n" +
+		"		};\n" +
+		"		aggregateRating: {\n" +
+		"			'@type': 'AggregateRating';\n" +
+		"			ratingValue: string;\n" +
+		"			reviewCount: string;\n" +
+		"		};\n" +
+		"	}\n" +
+		"\n" +
+		"	interface FaqSchema {\n" +
+		"		'@context': 'https://schema.org';\n" +
+		"		'@type': 'FAQPage';\n" +
+		"		mainEntity: {\n" +
+		"			'@type': 'Question';\n" +
+		"			name: string;\n" +
+		"			acceptedAnswer: { '@type': 'Answer'; text: string };\n" +
+		"		}[];\n" +
+		"	}\n" +
+		"\n" +
+		"	interface OrganizationSchema {\n" +
+		"		'@context': 'https://schema.org';\n" +
+		"		'@type': 'Organization';\n" +
+		"		name: string;\n" +
+		"		url: string;\n" +
+		"		logo: string;\n" +
+		"		sameAs: string[];\n" +
+		"	}\n" +
+		"\n" +
+		"	const product: ProductSchema = {\n" +
+		"		'@context': 'https://schema.org',\n" +
+		"		'@type': 'Product',\n" +
+		"		name: 'Svelte Max Hoodie',\n" +
+		"		description: 'A cozy hoodie for Svelte developers.',\n" +
+		"		offers: {\n" +
+		"			'@type': 'Offer',\n" +
+		"			price: '49.00',\n" +
+		"			priceCurrency: 'USD',\n" +
+		"			availability: 'https://schema.org/InStock'\n" +
+		"		},\n" +
+		"		aggregateRating: {\n" +
+		"			'@type': 'AggregateRating',\n" +
+		"			ratingValue: '4.8',\n" +
+		"			reviewCount: '132'\n" +
+		"		}\n" +
+		"	};\n" +
+		"\n" +
+		"	const faq: FaqSchema = {\n" +
+		"		'@context': 'https://schema.org',\n" +
+		"		'@type': 'FAQPage',\n" +
+		"		mainEntity: [\n" +
+		"			{\n" +
+		"				'@type': 'Question',\n" +
+		"				name: 'What is Svelte 5?',\n" +
+		"				acceptedAnswer: {\n" +
+		"					'@type': 'Answer',\n" +
+		"					text: 'Svelte 5 is the latest version using runes for reactivity.'\n" +
+		"				}\n" +
+		"			},\n" +
+		"			{\n" +
+		"				'@type': 'Question',\n" +
+		"				name: 'Do I need Node for SvelteKit?',\n" +
+		"				acceptedAnswer: {\n" +
+		"					'@type': 'Answer',\n" +
+		"					text: 'SvelteKit runs on any JS runtime via adapters — Node, Cloudflare, Deno, etc.'\n" +
+		"				}\n" +
+		"			},\n" +
+		"			{\n" +
+		"				'@type': 'Question',\n" +
+		"				name: 'Is Svelte fast?',\n" +
+		"				acceptedAnswer: {\n" +
+		"					'@type': 'Answer',\n" +
+		"					text: 'Yes. Svelte compiles components to minimal JS with no virtual DOM.'\n" +
+		"				}\n" +
+		"			}\n" +
+		"		]\n" +
+		"	};\n" +
+		"\n" +
+		"	const organization: OrganizationSchema = {\n" +
+		"		'@context': 'https://schema.org',\n" +
+		"		'@type': 'Organization',\n" +
+		"		name: 'Svelte Max',\n" +
+		"		url: 'https://svelte-max.example',\n" +
+		"		logo: 'https://svelte-max.example/logo.png',\n" +
+		"		sameAs: [\n" +
+		"			'https://twitter.com/sveltejs',\n" +
+		"			'https://github.com/sveltejs/svelte'\n" +
+		"		]\n" +
+		"	};\n" +
+		"\n" +
+		"	const productJson = JSON.stringify(product, null, 2);\n" +
+		"	const faqJson = JSON.stringify(faq, null, 2);\n" +
+		"	const orgJson = JSON.stringify(organization, null, 2);\n" +
+		"\n" +
+		"	const productScript = `\u003cscript type=\"application/ld+json\"\u003e${productJson}\u003c\\/script\u003e`;\n" +
+		"	const faqScript = `\u003cscript type=\"application/ld+json\"\u003e${faqJson}\u003c\\/script\u003e`;\n" +
+		"	const orgScript = `\u003cscript type=\"application/ld+json\"\u003e${orgJson}\u003c\\/script\u003e`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csvelte:head\u003e\n" +
+		"	{@html productScript}\n" +
+		"	{@html faqScript}\n" +
+		"	{@html orgScript}\n" +
+		"\u003c/svelte:head\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e13.8 — Product, FAQ, Organization schemas\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e Beyond Article, the most commonly-used schemas are\n" +
+		"		\u003ccode\u003eProduct\u003c/code\u003e (ecommerce listings with price, availability, rating),\n" +
+		"		\u003ccode\u003eFAQPage\u003c/code\u003e (question/answer pairs Google can render as an expandable\n" +
+		"		section), and \u003ccode\u003eOrganization\u003c/code\u003e (company info that powers Knowledge\n" +
+		"		Panels — name, logo, url, social profiles). Each JSON-LD block goes in\n" +
+		"		\u003ccode\u003e{'\u003csvelte:head\u003e'}\u003c/code\u003e. A single page can have multiple.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2\u003eProduct schema\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e{productJson}\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eFAQPage schema\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e{faqJson}\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eOrganization schema\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e{orgJson}\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eProduct schema powers rich result cards with price and rating.\u003c/li\u003e\n" +
+		"		\u003cli\u003eFAQPage can render Q&amp;A directly under your search result.\u003c/li\u003e\n" +
+		"		\u003cli\u003eOrganization schema feeds Google Knowledge Panels.\u003c/li\u003e\n" +
+		"		\u003cli\u003eMultiple JSON-LD blocks can live on one page — one per schema type.\u003c/li\u003e\n" +
+		"		\u003cli\u003eTyped interfaces keep schema objects honest at compile time.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <svelte:head>
@@ -133,6 +282,13 @@
 		<h2>Organization schema</h2>
 		<pre>{orgJson}</pre>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -219,5 +375,43 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

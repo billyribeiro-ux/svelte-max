@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const source = `import type { RequestHandler } from './$types';
 
 export const prerender = true;
@@ -13,6 +14,71 @@ Sitemap: https://svelte-max.example/sitemap.xml
     headers: { 'content-type': 'text/plain' }
   });
 };`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"const source = `import type { RequestHandler } from './$types';\n" +
+		"\n" +
+		"export const prerender = true;\n" +
+		"\n" +
+		"export const GET: RequestHandler = () =\u003e {\n" +
+		"  const body = \\`User-agent: *\n" +
+		"Allow: /\n" +
+		"\n" +
+		"Sitemap: https://svelte-max.example/sitemap.xml\n" +
+		"\\`;\n" +
+		"  return new Response(body, {\n" +
+		"    headers: { 'content-type': 'text/plain' }\n" +
+		"  });\n" +
+		"};`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e13.9 — robots.txt via +server.ts\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e\n" +
+		"		\u003ccode\u003erobots.txt\u003c/code\u003e tells crawlers which paths to index and where the sitemap\n" +
+		"		lives. In SvelteKit it is a \u003ccode\u003e+server.ts\u003c/code\u003e endpoint returning\n" +
+		"		\u003ccode\u003etext/plain\u003c/code\u003e. Production apps place it at\n" +
+		"		\u003ccode\u003esrc/routes/robots.txt/+server.ts\u003c/code\u003e so the URL is\n" +
+		"		\u003ccode\u003e/robots.txt\u003c/code\u003e — for this lesson we scope it inside the lesson\n" +
+		"		directory so you can visit the sibling endpoint below.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp\u003e\n" +
+		"			Visit the endpoint:\n" +
+		"			\u003ca href=\"/module-13/13-9-robots-txt/robots.txt\"\u003e\n" +
+		"				/module-13/13-9-robots-txt/robots.txt\n" +
+		"			\u003c/a\u003e\n" +
+		"		\u003c/p\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eEndpoint source\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e{source}\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eDirective reference\u003c/h2\u003e\n" +
+		"		\u003cul\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003eUser-agent: *\u003c/code\u003e — rule applies to every crawler.\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003eAllow: /\u003c/code\u003e — permit crawling of the entire site.\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003eDisallow: /admin\u003c/code\u003e — block a path prefix.\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003eSitemap:\u003c/code\u003e — absolute URL of the sitemap.\u003c/li\u003e\n" +
+		"		\u003c/ul\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003e+server.ts\u003c/code\u003e returns a plain \u003ccode\u003eResponse\u003c/code\u003e.\u003c/li\u003e\n" +
+		"		\u003cli\u003e\n" +
+		"			The \u003ccode\u003econtent-type\u003c/code\u003e header must be\n" +
+		"			\u003ccode\u003etext/plain\u003c/code\u003e for robots.txt.\n" +
+		"		\u003c/li\u003e\n" +
+		"		\u003cli\u003e\n" +
+		"			\u003ccode\u003eexport const prerender = true\u003c/code\u003e makes it a static file at build time.\n" +
+		"		\u003c/li\u003e\n" +
+		"		\u003cli\u003eIn production the file lives at \u003ccode\u003e/robots.txt\u003c/code\u003e, not under a module folder.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -46,6 +112,13 @@ Sitemap: https://svelte-max.example/sitemap.xml
 			<li><code>Sitemap:</code> — absolute URL of the sitemap.</li>
 		</ul>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -138,5 +211,43 @@ Sitemap: https://svelte-max.example/sitemap.xml
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

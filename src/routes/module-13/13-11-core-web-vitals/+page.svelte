@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface VitalCard {
 		metric: string;
 		target: string;
@@ -34,6 +35,85 @@
 			tone: 'bad'
 		}
 	];
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface VitalCard {\n" +
+		"		metric: string;\n" +
+		"		target: string;\n" +
+		"		measures: string;\n" +
+		"		causes: string;\n" +
+		"		fix: string;\n" +
+		"		tone: 'good' | 'warn' | 'bad';\n" +
+		"	}\n" +
+		"\n" +
+		"	const cards: VitalCard[] = [\n" +
+		"		{\n" +
+		"			metric: 'LCP',\n" +
+		"			target: '≤ 2.5s',\n" +
+		"			measures: 'Largest Contentful Paint — when the main content becomes visible.',\n" +
+		"			causes: 'Unoptimized hero images, render-blocking JS, slow server responses.',\n" +
+		"			fix: 'Preload hero image, ship less JS, use a CDN, set explicit dimensions.',\n" +
+		"			tone: 'good'\n" +
+		"		},\n" +
+		"		{\n" +
+		"			metric: 'CLS',\n" +
+		"			target: '≤ 0.1',\n" +
+		"			measures: 'Cumulative Layout Shift — how much content jumps during load.',\n" +
+		"			causes: 'Images without width/height, late-loading fonts, injected banners.',\n" +
+		"			fix: 'Reserve space for images and embeds, use font-display: optional.',\n" +
+		"			tone: 'warn'\n" +
+		"		},\n" +
+		"		{\n" +
+		"			metric: 'INP',\n" +
+		"			target: '≤ 200ms',\n" +
+		"			measures: 'Interaction to Next Paint — responsiveness to user input.',\n" +
+		"			causes: 'Long main-thread tasks, heavy rerenders, unthrottled handlers.',\n" +
+		"			fix: 'Break up long tasks, debounce input, prefer Svelte’s fine-grained runes.',\n" +
+		"			tone: 'bad'\n" +
+		"		}\n" +
+		"	];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e13.11 — Core Web Vitals\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e Google’s three main performance signals are\n" +
+		"		\u003ccode\u003eLCP\u003c/code\u003e (target ≤ 2.5s), \u003ccode\u003eCLS\u003c/code\u003e (target ≤ 0.1), and\n" +
+		"		\u003ccode\u003eINP\u003c/code\u003e (target ≤ 200ms, which replaced First Input Delay in March\n" +
+		"		2024). Svelte’s zero-runtime architecture helps all three: small bundles give\n" +
+		"		fast LCP, reserved image dimensions give zero CLS, and predictable fine-grained\n" +
+		"		reactivity gives fast INP. Monitor via the \u003ccode\u003eweb-vitals\u003c/code\u003e library or\n" +
+		"		Chrome DevTools Lighthouse.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"grid\"\u003e\n" +
+		"			{#each cards as c (c.metric)}\n" +
+		"				\u003carticle class=\"card\" data-tone={c.tone}\u003e\n" +
+		"					\u003ch2\u003e{c.metric}\u003c/h2\u003e\n" +
+		"					\u003cp class=\"target\"\u003eTarget: \u003cstrong\u003e{c.target}\u003c/strong\u003e\u003c/p\u003e\n" +
+		"					\u003cp class=\"field\"\u003e\u003cem\u003eMeasures.\u003c/em\u003e {c.measures}\u003c/p\u003e\n" +
+		"					\u003cp class=\"field\"\u003e\u003cem\u003eCommon causes.\u003c/em\u003e {c.causes}\u003c/p\u003e\n" +
+		"					\u003cp class=\"field\"\u003e\u003cem\u003eTypical fix.\u003c/em\u003e {c.fix}\u003c/p\u003e\n" +
+		"				\u003c/article\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"		\u003cp class=\"note\"\u003e\n" +
+		"			Note: INP replaced FID (First Input Delay) in March 2024 as Google’s\n" +
+		"			responsiveness metric.\n" +
+		"		\u003c/p\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eLCP, CLS, and INP are the three Core Web Vitals.\u003c/li\u003e\n" +
+		"		\u003cli\u003eEach has a \"good\" threshold you should aim for.\u003c/li\u003e\n" +
+		"		\u003cli\u003eSvelte’s architecture naturally supports all three.\u003c/li\u003e\n" +
+		"		\u003cli\u003eINP replaced FID in 2024 — use INP going forward.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -65,6 +145,13 @@
 			responsiveness metric.
 		</p>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -192,5 +279,43 @@
 		.grid {
 			grid-template-columns: repeat(3, 1fr);
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

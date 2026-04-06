@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface Section {
 		letter: string;
 		title: string;
@@ -58,6 +59,121 @@
 	function toggle(i: number): void {
 		checked[i] = !checked[i];
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface Section {\n" +
+		"		letter: string;\n" +
+		"		title: string;\n" +
+		"		items: string[];\n" +
+		"	}\n" +
+		"\n" +
+		"	const sections: Section[] = [\n" +
+		"		{\n" +
+		"			letter: 'E',\n" +
+		"			title: 'Experience',\n" +
+		"			items: [\n" +
+		"				'Author has first-hand experience with the topic',\n" +
+		"				'Article references specific cases, dates, or measurable outcomes',\n" +
+		"				'Photos or screenshots from the author, not stock imagery'\n" +
+		"			]\n" +
+		"		},\n" +
+		"		{\n" +
+		"			letter: 'E',\n" +
+		"			title: 'Expertise',\n" +
+		"			items: [\n" +
+		"				'Author has a linked bio page with credentials',\n" +
+		"				'Technical terms used correctly and defined when needed',\n" +
+		"				'Content depth matches an expert-level treatment'\n" +
+		"			]\n" +
+		"		},\n" +
+		"		{\n" +
+		"			letter: 'A',\n" +
+		"			title: 'Authoritativeness',\n" +
+		"			items: [\n" +
+		"				'Site is known for this topic (narrow, not broad)',\n" +
+		"				'Inbound links from other authorities in the space',\n" +
+		"				'Publisher identified via Organization schema'\n" +
+		"			]\n" +
+		"		},\n" +
+		"		{\n" +
+		"			letter: 'T',\n" +
+		"			title: 'Trust',\n" +
+		"			items: [\n" +
+		"				'Site uses HTTPS with a valid certificate',\n" +
+		"				'Transparent About and Contact pages',\n" +
+		"				'Article cites sources with outbound links',\n" +
+		"				'No misleading headlines or clickbait'\n" +
+		"			]\n" +
+		"		}\n" +
+		"	];\n" +
+		"\n" +
+		"	const total = sections.reduce((n, s) =\u003e n + s.items.length, 0);\n" +
+		"	const checked = $state\u003cboolean[]\u003e(new Array(total).fill(false));\n" +
+		"	const score = $derived(checked.filter((c) =\u003e c).length);\n" +
+		"\n" +
+		"	function indexOf(sectionIdx: number, itemIdx: number): number {\n" +
+		"		let n = 0;\n" +
+		"		for (let i = 0; i \u003c sectionIdx; i += 1) n += sections[i].items.length;\n" +
+		"		return n + itemIdx;\n" +
+		"	}\n" +
+		"\n" +
+		"	function toggle(i: number): void {\n" +
+		"		checked[i] = !checked[i];\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e13.12 — E-E-A-T signals\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e Google’s Search Quality Rater Guidelines use\n" +
+		"		\u003ccode\u003eE-E-A-T\u003c/code\u003e — Experience (has the author actually done this?),\n" +
+		"		Expertise (credentials and depth), Authoritativeness (is the site the authority\n" +
+		"		on the topic?), and Trust (secure, transparent, accurate). Trust is the\n" +
+		"		foundation — without it, the others don’t matter. Especially critical for YMYL\n" +
+		"		(Your Money Your Life) topics like health, finance, and safety.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"score\"\u003e\n" +
+		"			\u003cspan class=\"score-label\"\u003eE-E-A-T score\u003c/span\u003e\n" +
+		"			\u003cspan class=\"score-value\"\u003e{score} / {total}\u003c/span\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		{#each sections as section, sIdx (section.title)}\n" +
+		"			\u003cdiv class=\"section\"\u003e\n" +
+		"				\u003ch2\u003e\n" +
+		"					\u003cspan class=\"letter\"\u003e{section.letter}\u003c/span\u003e\n" +
+		"					{section.title}\n" +
+		"				\u003c/h2\u003e\n" +
+		"				\u003cul class=\"checks\"\u003e\n" +
+		"					{#each section.items as item, iIdx (item)}\n" +
+		"						{@const idx = indexOf(sIdx, iIdx)}\n" +
+		"						\u003cli\u003e\n" +
+		"							\u003clabel\u003e\n" +
+		"								\u003cinput\n" +
+		"									type=\"checkbox\"\n" +
+		"									checked={checked[idx]}\n" +
+		"									onclick={() =\u003e toggle(idx)}\n" +
+		"								/\u003e\n" +
+		"								\u003cspan class:done={checked[idx]}\u003e{item}\u003c/span\u003e\n" +
+		"							\u003c/label\u003e\n" +
+		"						\u003c/li\u003e\n" +
+		"					{/each}\n" +
+		"				\u003c/ul\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		{/each}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eE-E-A-T = Experience, Expertise, Authoritativeness, Trust.\u003c/li\u003e\n" +
+		"		\u003cli\u003eTrust is the foundation; all other signals build on it.\u003c/li\u003e\n" +
+		"		\u003cli\u003eYMYL topics demand the highest E-E-A-T bar.\u003c/li\u003e\n" +
+		"		\u003cli\u003eConcrete signals: author bios, citations, HTTPS, Organization schema.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -101,6 +217,13 @@
 			</div>
 		{/each}
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -240,5 +363,43 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

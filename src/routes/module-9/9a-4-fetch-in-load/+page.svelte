@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let { data }: { data: PageData } = $props();
 
 	const loaderSnippet = `import type { PageLoad } from './$types';
@@ -10,6 +11,56 @@ export const load: PageLoad = async ({ fetch }) => {
   const body = await res.json();
   return { tip: body };
 };`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import type { PageData } from './$types';\n" +
+		"\n" +
+		"	let { data }: { data: PageData } = $props();\n" +
+		"\n" +
+		"	const loaderSnippet = `import type { PageLoad } from './$types';\n" +
+		"\n" +
+		"export const load: PageLoad = async ({ fetch }) =\u003e {\n" +
+		"  const res = await fetch('/api/tip');\n" +
+		"  const body = await res.json();\n" +
+		"  return { tip: body };\n" +
+		"};`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9A.4 — Enhanced fetch in load\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e The \u003ccode\u003efetch\u003c/code\u003e argument you destructure from the load event\n" +
+		"		is SvelteKit's \u003cem\u003eenhanced\u003c/em\u003e fetch. It inherits credentials from the current request, is\n" +
+		"		SSR-aware (short-circuiting same-origin calls to avoid a real HTTP round-trip during SSR), and\n" +
+		"		inlines responses into the SSR HTML so the client doesn't refetch on hydration. Always use the\n" +
+		"		destructured \u003ccode\u003efetch\u003c/code\u003e, never \u003ccode\u003eglobalThis.fetch\u003c/code\u003e.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"tip-headline\"\u003e{data.tip.tip}\u003c/p\u003e\n" +
+		"		\u003cp class=\"tip-kind\"\u003e\n" +
+		"			Using \u003ccode\u003e{data.tip.fetchType}\u003c/code\u003e\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003cpre\u003e{loaderSnippet}\u003c/pre\u003e\n" +
+		"		\u003cp class=\"why\"\u003e\n" +
+		"			Why it matters: during SSR, a call to \u003ccode\u003e/api/data\u003c/code\u003e through the enhanced\n" +
+		"			\u003ccode\u003efetch\u003c/code\u003e skips the network entirely — SvelteKit invokes the endpoint handler\n" +
+		"			directly. On hydration the client reuses the inlined response, so the user never sees a\n" +
+		"			flash of loading state for the initial render.\n" +
+		"		\u003c/p\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eDestructure \u003ccode\u003efetch\u003c/code\u003e from the load event — don't import a global.\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe enhanced fetch inherits credentials and is SSR-aware.\u003c/li\u003e\n" +
+		"		\u003cli\u003eSSR responses are inlined so the client doesn't re-request on hydration.\u003c/li\u003e\n" +
+		"		\u003cli\u003eSame-origin requests short-circuit directly to the endpoint handler.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -36,6 +87,13 @@ export const load: PageLoad = async ({ fetch }) => {
 			flash of loading state for the initial render.
 		</p>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -128,5 +186,42 @@ export const load: PageLoad = async ({ fetch }) => {
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

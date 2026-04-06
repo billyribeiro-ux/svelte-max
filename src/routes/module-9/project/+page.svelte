@@ -2,6 +2,7 @@
 	import { invalidate } from '$app/navigation';
 	import type { PageData } from './$types';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let { data }: { data: PageData } = $props();
 
 	let refreshing = $state(false);
@@ -16,6 +17,90 @@
 		const d = new Date(iso);
 		return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { invalidate } from '$app/navigation';\n" +
+		"	import type { PageData } from './$types';\n" +
+		"\n" +
+		"	let { data }: { data: PageData } = $props();\n" +
+		"\n" +
+		"	let refreshing = $state(false);\n" +
+		"\n" +
+		"	async function refresh() {\n" +
+		"		refreshing = true;\n" +
+		"		await invalidate('app:weather');\n" +
+		"		refreshing = false;\n" +
+		"	}\n" +
+		"\n" +
+		"	function formatTime(iso: string): string {\n" +
+		"		const d = new Date(iso);\n" +
+		"		return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page dashboard\"\u003e\n" +
+		"	\u003ch1\u003eModule 9A Project — Weather Dashboard\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e A production-shaped dashboard combining every load-function technique from\n" +
+		"		Module 9A: parallel fetching for the fast data, streaming for slow historical data, a custom dependency\n" +
+		"		key with \u003ccode\u003einvalidate\u003c/code\u003e for refresh, and typed \u003ccode\u003ePageData\u003c/code\u003e throughout.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cheader class=\"hero\"\u003e\n" +
+		"		\u003cdiv class=\"hero-main\"\u003e\n" +
+		"			\u003cspan class=\"location\"\u003e{data.current.location}\u003c/span\u003e\n" +
+		"			\u003cdiv class=\"temp\"\u003e\n" +
+		"				\u003cspan class=\"temp-value\"\u003e{data.current.tempC}\u003c/span\u003e\n" +
+		"				\u003cspan class=\"temp-unit\"\u003e°C\u003c/span\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"			\u003cspan class=\"condition\"\u003e{data.current.condition}\u003c/span\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"		\u003cdiv class=\"hero-meta\"\u003e\n" +
+		"			\u003cspan class=\"label\"\u003eObserved\u003c/span\u003e\n" +
+		"			\u003cspan class=\"time\"\u003e{formatTime(data.current.observedAt)}\u003c/span\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/header\u003e\n" +
+		"\n" +
+		"	{#if data.alerts.length \u003e 0}\n" +
+		"		\u003cdiv class=\"alerts\"\u003e\n" +
+		"			{#each data.alerts as alert (alert.id)}\n" +
+		"				\u003cdiv class=\"alert alert-{alert.level}\"\u003e\n" +
+		"					\u003cspan class=\"alert-title\"\u003e{alert.title}\u003c/span\u003e\n" +
+		"					\u003cspan class=\"alert-body\"\u003e{alert.body}\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"	{/if}\n" +
+		"\n" +
+		"	\u003csection class=\"forecast\"\u003e\n" +
+		"		\u003ch2\u003e5-day forecast\u003c/h2\u003e\n" +
+		"		\u003cdiv class=\"forecast-grid\"\u003e\n" +
+		"			{#each data.forecast as day (day.day)}\n" +
+		"				\u003carticle class=\"forecast-card\"\u003e\n" +
+		"					\u003cspan class=\"forecast-day\"\u003e{day.day}\u003c/span\u003e\n" +
+		"					\u003cspan class=\"forecast-icon\" aria-hidden=\"true\"\u003e\n" +
+		"						{#if day.icon === 'sun'}☀{:else if day.icon === 'cloud-sun'}⛅{:else if day.icon === 'cloud'}☁{:else if day.icon === 'cloud-rain'}🌧{:else}☀{/if}\n" +
+		"					\u003c/span\u003e\n" +
+		"					\u003cdiv class=\"forecast-temps\"\u003e\n" +
+		"						\u003cspan class=\"high\"\u003e{day.highC}°\u003c/span\u003e\n" +
+		"						\u003cspan class=\"low\"\u003e{day.lowC}°\u003c/span\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				\u003c/article\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/section\u003e\n" +
+		"\n" +
+		"	\u003csection class=\"historical\"\u003e\n" +
+		"		\u003ch2\u003eHistorical context\u003c/h2\u003e\n" +
+		"		{#await data.historical}\n" +
+		"			\u003cdiv class=\"skeleton\"\u003e\n" +
+		"				\u003cdiv class=\"skeleton-row\"\u003e\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"skeleton-row short\"\u003e\u003c/div\u003e\n" +
+		"				\u003cp class=\"loading-text\"\u003eLoading history...\u003c/p\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page dashboard">
@@ -108,6 +193,14 @@
 			</ul>
 		</div>
 	</footer>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 </section>
 
 <style>
@@ -418,5 +511,43 @@
 		.hist-stat {
 			flex: 0 0 auto;
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

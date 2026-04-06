@@ -1,11 +1,63 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let { data }: { data: PageData } = $props();
 
 	// TypeScript already knows `data.product.price` is a number because
 	// PageLoad's return type flowed into PageData via the generated types.
 	const formattedPrice = $derived(`$${data.product.price.toFixed(2)}`);
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import type { PageData } from './$types';\n" +
+		"\n" +
+		"	let { data }: { data: PageData } = $props();\n" +
+		"\n" +
+		"	// TypeScript already knows `data.product.price` is a number because\n" +
+		"	// PageLoad's return type flowed into PageData via the generated types.\n" +
+		"	const formattedPrice = $derived(`$${data.product.price.toFixed(2)}`);\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9A.3 — Auto-generated $types\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e SvelteKit generates typed helpers at\n" +
+		"		\u003ccode\u003e.svelte-kit/types/...\u003c/code\u003e — \u003ccode\u003ePageLoad\u003c/code\u003e, \u003ccode\u003ePageServerLoad\u003c/code\u003e,\n" +
+		"		\u003ccode\u003ePageData\u003c/code\u003e, \u003ccode\u003eLayoutData\u003c/code\u003e — tailored to each route's shape. You never\n" +
+		"		manually type the \u003ccode\u003edata\u003c/code\u003e prop: \u003ccode\u003ePageData\u003c/code\u003e already knows the return type\n" +
+		"		of your loader. Import from \u003ccode\u003e./$types\u003c/code\u003e and let TypeScript strict catch any drift.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2 class=\"name\"\u003e{data.product.name}\u003c/h2\u003e\n" +
+		"		\u003cp class=\"price\"\u003e{formattedPrice}\u003c/p\u003e\n" +
+		"		\u003cp class=\"meta\"\u003eProduct ID \u003ccode\u003e{data.product.id}\u003c/code\u003e\u003c/p\u003e\n" +
+		"		\u003cdiv class=\"related\"\u003e\n" +
+		"			\u003cspan class=\"label\"\u003eRelated IDs\u003c/span\u003e\n" +
+		"			\u003cdiv class=\"chips\"\u003e\n" +
+		"				{#each data.relatedIds as id (id)}\n" +
+		"					\u003ccode class=\"chip\"\u003e#{id}\u003c/code\u003e\n" +
+		"				{/each}\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"		\u003cp class=\"commentary\"\u003e\n" +
+		"			TypeScript already knows \u003ccode\u003edata.product.price\u003c/code\u003e is a number because\n" +
+		"			\u003ccode\u003ePageLoad\u003c/code\u003e's return type flowed into \u003ccode\u003ePageData\u003c/code\u003e. Try renaming\n" +
+		"			\u003ccode\u003eprice\u003c/code\u003e to \u003ccode\u003ecost\u003c/code\u003e in the loader — the component errors instantly.\n" +
+		"		\u003c/p\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eNever hand-type \u003ccode\u003edata\u003c/code\u003e — import \u003ccode\u003ePageData\u003c/code\u003e from \u003ccode\u003e./$types\u003c/code\u003e.\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe generated types flow directly from your loader's return value.\u003c/li\u003e\n" +
+		"		\u003cli\u003eRenaming a field in the loader surfaces the mismatch in the component at compile time.\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe same pattern works for layouts via \u003ccode\u003eLayoutData\u003c/code\u003e.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -37,6 +89,13 @@
 			<code>price</code> to <code>cost</code> in the loader — the component errors instantly.
 		</p>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -143,5 +202,43 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

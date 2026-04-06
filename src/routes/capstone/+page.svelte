@@ -21,6 +21,7 @@
 	// Shared reactive state — Module 11
 	import { CartStore } from '$lib/stores/cart.svelte';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	// Register GSAP plugin — Module 7
 	gsap.registerPlugin(ScrollTrigger);
 
@@ -244,6 +245,318 @@
     \u003c/T.Mesh\u003e
   \u003c/Canvas\u003e
 {/if}`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"// -- Capstone: PE7 Flagship --\n" +
+		"	// Composes concepts from every module into one page.\n" +
+		"\n" +
+		"	import type { PageData, ActionData } from './$types';\n" +
+		"	import { enhance } from '$app/forms';\n" +
+		"	import { pushState } from '$app/navigation';\n" +
+		"	import { page } from '$app/state';\n" +
+		"	import { fly, fade } from 'svelte/transition';\n" +
+		"	import { cubicOut } from 'svelte/easing';\n" +
+		"	import { Tween, Spring, prefersReducedMotion } from 'svelte/motion';\n" +
+		"	import gsap from 'gsap';\n" +
+		"	import { ScrollTrigger } from 'gsap/ScrollTrigger';\n" +
+		"\n" +
+		"	// Component imports — Module 3\n" +
+		"	import Button from '$lib/components/Button.svelte';\n" +
+		"	import Badge from '$lib/components/Badge.svelte';\n" +
+		"	import Card from '$lib/components/Card.svelte';\n" +
+		"	import Avatar from '$lib/components/Avatar.svelte';\n" +
+		"\n" +
+		"	// Shared reactive state — Module 11\n" +
+		"	import { CartStore } from '$lib/stores/cart.svelte';\n" +
+		"\n" +
+		"	// Register GSAP plugin — Module 7\n" +
+		"	gsap.registerPlugin(ScrollTrigger);\n" +
+		"\n" +
+		"	// -- Typed data model (Modules 1, 2, 4, 10) --\n" +
+		"	interface Project {\n" +
+		"		id: string;\n" +
+		"		title: string;\n" +
+		"		description: string;\n" +
+		"		stack: readonly string[];\n" +
+		"		status: 'active' | 'completed' | 'archived';\n" +
+		"		stars: number;\n" +
+		"	}\n" +
+		"\n" +
+		"	interface Feedback {\n" +
+		"		id: string;\n" +
+		"		author: string;\n" +
+		"		text: string;\n" +
+		"		rating: number;\n" +
+		"		createdAt: string;\n" +
+		"	}\n" +
+		"\n" +
+		"	// SvelteKit data — Module 9A\n" +
+		"	let { data, form }: { data: PageData; form: ActionData } = $props();\n" +
+		"\n" +
+		"	// Shared cart instance — Module 11\n" +
+		"	const cart = new CartStore();\n" +
+		"\n" +
+		"	// -- Reactive state — Module 2 --\n" +
+		"	let query = $state('');\n" +
+		"	let debouncedQuery = $state('');\n" +
+		"	let selectedStatus = $state\u003c'all' | Project['status']\u003e('all');\n" +
+		"	let feedbackDraft = $state({ author: '', text: '', rating: 5 });\n" +
+		"	let feedbackSuccess = $state(false);\n" +
+		"	let searchInput = $state\u003cHTMLInputElement | null\u003e(null);\n" +
+		"\n" +
+		"	// Debounced search — Module 5.8 pattern\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const q = query;\n" +
+		"		const timer = setTimeout(() =\u003e {\n" +
+		"			debouncedQuery = q;\n" +
+		"		}, 300);\n" +
+		"		return () =\u003e clearTimeout(timer);\n" +
+		"	});\n" +
+		"\n" +
+		"	// Filtered projects — Module 2.8 $derived.by pattern\n" +
+		"	const visible = $derived.by(() =\u003e {\n" +
+		"		const q = debouncedQuery.toLowerCase();\n" +
+		"		return data.projects.filter((p: Project) =\u003e {\n" +
+		"			const matchesQuery =\n" +
+		"				!q || p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);\n" +
+		"			const matchesStatus = selectedStatus === 'all' || p.status === selectedStatus;\n" +
+		"			return matchesQuery && matchesStatus;\n" +
+		"		});\n" +
+		"	});\n" +
+		"\n" +
+		"	// Tween — Module 6.14\n" +
+		"	const totalStars = $derived(data.projects.reduce((s: number, p: Project) =\u003e s + p.stars, 0));\n" +
+		"	const tweenedStars = new Tween(0, { duration: 600, easing: cubicOut });\n" +
+		"	$effect(() =\u003e {\n" +
+		"		tweenedStars.target = totalStars;\n" +
+		"	});\n" +
+		"\n" +
+		"	// Spring — Module 6.15 (hero parallax)\n" +
+		"	const mouseOffset = new Spring({ x: 0, y: 0 }, { stiffness: 0.04, damping: 0.4 });\n" +
+		"\n" +
+		"	function handleHeroMouseMove(e: MouseEvent) {\n" +
+		"		if (prefersReducedMotion.current) return;\n" +
+		"		const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();\n" +
+		"		const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;\n" +
+		"		const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;\n" +
+		"		mouseOffset.target = { x, y };\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleHeroMouseLeave() {\n" +
+		"		mouseOffset.target = { x: 0, y: 0 };\n" +
+		"	}\n" +
+		"\n" +
+		"	// Keyboard shortcut \"/\" to focus search — Module 4.11 pattern\n" +
+		"	function handleGlobalKeydown(e: KeyboardEvent) {\n" +
+		"		if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {\n" +
+		"			e.preventDefault();\n" +
+		"			searchInput?.focus();\n" +
+		"		}\n" +
+		"	}\n" +
+		"\n" +
+		"	// GSAP ScrollTrigger — Module 7\n" +
+		"	let statsSection = $state\u003cHTMLElement | null\u003e(null);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		if (!statsSection || prefersReducedMotion.current) return;\n" +
+		"		const ctx = gsap.context(() =\u003e {\n" +
+		"			gsap.from('.stat-number', {\n" +
+		"				textContent: 0,\n" +
+		"				duration: 1.5,\n" +
+		"				ease: 'power2.out',\n" +
+		"				snap: { textContent: 1 },\n" +
+		"				scrollTrigger: {\n" +
+		"					trigger: statsSection,\n" +
+		"					start: 'top 80%',\n" +
+		"					once: true\n" +
+		"				}\n" +
+		"			});\n" +
+		"		}, statsSection);\n" +
+		"		return () =\u003e ctx.revert();\n" +
+		"	});\n" +
+		"\n" +
+		"	// Shallow routing — Module 8.11\n" +
+		"	const selectedProjectId = $derived((page.state as Record\u003cstring, unknown\u003e).projectId as string | undefined);\n" +
+		"	const selectedProject = $derived(\n" +
+		"		selectedProjectId ? data.projects.find((p: Project) =\u003e p.id === selectedProjectId) : undefined\n" +
+		"	);\n" +
+		"\n" +
+		"	function openProject(project: Project) {\n" +
+		"		pushState('', { projectId: project.id });\n" +
+		"	}\n" +
+		"\n" +
+		"	function closeModal() {\n" +
+		"		history.back();\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleModalKeydown(e: KeyboardEvent) {\n" +
+		"		if (e.key === 'Escape') closeModal();\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleBackdropClick(e: MouseEvent) {\n" +
+		"		if ((e.target as HTMLElement).classList.contains('modal-backdrop')) {\n" +
+		"			closeModal();\n" +
+		"		}\n" +
+		"	}\n" +
+		"\n" +
+		"	// Focus management for modal — Module 12.8\n" +
+		"	let modalCloseBtn = $state\u003cHTMLButtonElement | null\u003e(null);\n" +
+		"	$effect(() =\u003e {\n" +
+		"		if (selectedProject && modalCloseBtn) {\n" +
+		"			modalCloseBtn.focus();\n" +
+		"		}\n" +
+		"	});\n" +
+		"\n" +
+		"	// Feedback form reset on success\n" +
+		"	$effect(() =\u003e {\n" +
+		"		if (form && 'success' in form && form.success) {\n" +
+		"			feedbackDraft = { author: '', text: '', rating: 5 };\n" +
+		"			feedbackSuccess = true;\n" +
+		"			const timer = setTimeout(() =\u003e {\n" +
+		"				feedbackSuccess = false;\n" +
+		"			}, 3000);\n" +
+		"			return () =\u003e clearTimeout(timer);\n" +
+		"		}\n" +
+		"	});\n" +
+		"\n" +
+		"	function addToCart(project: Project) {\n" +
+		"		cart.add({ id: project.id, name: project.title, price: 9.99 });\n" +
+		"	}\n" +
+		"\n" +
+		"	// SEO — Module 13: JSON-LD\n" +
+		"	const jsonLd = JSON.stringify({\n" +
+		"		'@context': 'https://schema.org',\n" +
+		"		'@type': 'Article',\n" +
+		"		headline: 'PE7 Flagship Capstone',\n" +
+		"		description: 'Everything you learned, composed into one project.',\n" +
+		"		author: { '@type': 'Person', name: 'PE7 Course' },\n" +
+		"		datePublished: '2026-04-06'\n" +
+		"	});\n" +
+		"\n" +
+		"	function formatDate(iso: string): string {\n" +
+		"		return new Date(iso).toLocaleDateString('en-US', {\n" +
+		"			month: 'short',\n" +
+		"			day: 'numeric',\n" +
+		"			year: 'numeric'\n" +
+		"		});\n" +
+		"	}\n" +
+		"\n" +
+		"	function renderStars(rating: number): string {\n" +
+		"		return '\\u2605'.repeat(rating) + '\\u2606'.repeat(5 - rating);\n" +
+		"	}\n" +
+		"\n" +
+		"	// -- Module 14: Custom Element pattern showcase --\n" +
+		"	const customElementCode = `\\u003csvelte:options customElement=\"pe7-button\" /\\u003e\n" +
+		"\n" +
+		"\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  // Props become observed attributes on the custom element.\n" +
+		"  // Strings map directly; booleans/numbers are auto-coerced.\n" +
+		"  interface Props {\n" +
+		"    variant?: 'primary' | 'secondary' | 'ghost';\n" +
+		"    size?: 'sm' | 'md' | 'lg';\n" +
+		"    disabled?: boolean;\n" +
+		"  }\n" +
+		"\n" +
+		"  let { variant = 'primary', size = 'md', disabled = false }: Props = $props();\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"\\u003c!-- Shadow DOM encapsulates styles: no CSS leakage in or out --\\u003e\n" +
+		"\\u003cbutton class=\"btn {variant} {size}\" {disabled}\\u003e\n" +
+		"  \\u003cslot /\\u003e\n" +
+		"\\u003c/button\\u003e\n" +
+		"\n" +
+		"\\u003c!-- Usage in plain HTML (no Svelte needed): --\\u003e\n" +
+		"\\u003c!-- \\u003cpe7-button variant=\"secondary\" size=\"lg\"\\u003eClick me\\u003c/pe7-button\\u003e --\\u003e`;\n" +
+		"\n" +
+		"	// -- Module 15: Threlte 3D teaser --\n" +
+		"	const threlteCode = `\\u003cscript\\u003e\n" +
+		"  import { Canvas, T } from '@threlte/core';\n" +
+		"  import { OrbitControls } from '@threlte/extras';\n" +
+		"\n" +
+		"  let mounted = $state(false);\n" +
+		"\n" +
+		"  // SSR guard — WebGL only works in the browser\n" +
+		"  $effect(() =\u003e { mounted = true; });\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"{#if mounted}\n" +
+		"  \\u003cCanvas\\u003e\n" +
+		"    \\u003cT.PerspectiveCamera makeDefault position={[5, 5, 5]} /\\u003e\n" +
+		"    \\u003cOrbitControls /\\u003e\n" +
+		"    \\u003cT.DirectionalLight position={[3, 10, 7]} intensity={1.2} /\\u003e\n" +
+		"    \\u003cT.AmbientLight intensity={0.4} /\\u003e\n" +
+		"\n" +
+		"    \\u003cT.Mesh\\u003e\n" +
+		"      \\u003cT.BoxGeometry args={[1, 1, 1]} /\\u003e\n" +
+		"      \\u003cT.MeshStandardMaterial color=\"#e040a0\" /\\u003e\n" +
+		"    \\u003c/T.Mesh\\u003e\n" +
+		"  \\u003c/Canvas\\u003e\n" +
+		"{/if}`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003c!-- Keyboard shortcut — Module 4.11 --\u003e\n" +
+		"\u003csvelte:window onkeydown={handleGlobalKeydown} /\u003e\n" +
+		"\n" +
+		"\u003c!-- SEO — Module 13 --\u003e\n" +
+		"\u003csvelte:head\u003e\n" +
+		"	\u003ctitle\u003ePE7 Flagship Capstone\u003c/title\u003e\n" +
+		"	\u003cmeta name=\"description\" content=\"Everything you learned in PE7, composed into one flagship project.\" /\u003e\n" +
+		"	\u003clink rel=\"canonical\" href=\"https://pe7.dev/capstone\" /\u003e\n" +
+		"	\u003cmeta property=\"og:title\" content=\"PE7 Flagship Capstone\" /\u003e\n" +
+		"	\u003cmeta property=\"og:description\" content=\"Everything you learned, composed into one project.\" /\u003e\n" +
+		"	\u003cmeta property=\"og:type\" content=\"article\" /\u003e\n" +
+		"	\u003cmeta property=\"og:url\" content=\"https://pe7.dev/capstone\" /\u003e\n" +
+		"	{@html `\u003cscript type=\"application/ld+json\"\u003e${jsonLd}\\u003c/script\\u003e`}\n" +
+		"\u003c/svelte:head\u003e\n" +
+		"\n" +
+		"\u003c!-- Per-page OKLCH personality — Module 6.9 --\u003e\n" +
+		"\u003cdiv class=\"capstone\"\u003e\n" +
+		"	\u003c!-- ============ HERO SECTION ============ --\u003e\n" +
+		"	\u003csection\n" +
+		"		class=\"hero\"\n" +
+		"		onmousemove={handleHeroMouseMove}\n" +
+		"		onmouseleave={handleHeroMouseLeave}\n" +
+		"		role=\"banner\"\n" +
+		"		style:--offset-x=\"{mouseOffset.current.x}px\"\n" +
+		"		style:--offset-y=\"{mouseOffset.current.y}px\"\n" +
+		"	\u003e\n" +
+		"		\u003cdiv class=\"hero-inner\"\u003e\n" +
+		"			\u003ch1 class=\"hero-title\"\u003ePE7 Flagship\u003c/h1\u003e\n" +
+		"			\u003cp class=\"hero-subtitle\"\u003eEverything you learned, composed into one project\u003c/p\u003e\n" +
+		"			\u003cdiv class=\"hero-stats\"\u003e\n" +
+		"				\u003cdiv class=\"hero-stat\"\u003e\n" +
+		"					\u003cspan class=\"hero-stat-value\"\u003e{data.projects.length}\u003c/span\u003e\n" +
+		"					\u003cspan class=\"hero-stat-label\"\u003eProjects\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"hero-stat\"\u003e\n" +
+		"					\u003cspan class=\"hero-stat-value\"\u003e{Math.round(tweenedStars.current)}\u003c/span\u003e\n" +
+		"					\u003cspan class=\"hero-stat-label\"\u003eTotal Stars\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"hero-stat\"\u003e\n" +
+		"					\u003cspan class=\"hero-stat-value\"\u003e{data.feedback.length}\u003c/span\u003e\n" +
+		"					\u003cspan class=\"hero-stat-label\"\u003eFeedback\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"cart-badge\"\u003e\n" +
+		"				\u003cBadge tone=\"brand\" rounded\u003eCart: {cart.count} items\u003c/Badge\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/section\u003e\n" +
+		"\n" +
+		"	\u003c!-- ============ PROJECT GRID ============ --\u003e\n" +
+		"	\u003csection class=\"projects-section\" aria-labelledby=\"projects-heading\"\u003e\n" +
+		"		\u003ch2 id=\"projects-heading\" class=\"section-title\"\u003eProjects\u003c/h2\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"filters\"\u003e\n" +
+		"			\u003cdiv class=\"search-wrap\"\u003e\n" +
+		"				\u003clabel for=\"search-input\" class=\"sr-only\"\u003eSearch projects\u003c/label\u003e\n" +
+		"				\u003cinput\n" +
+		"					id=\"search-input\"\n" +
+		"					bind:this={searchInput}\n" +
+		"					bind:value={query}\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <!-- Keyboard shortcut — Module 4.11 -->
@@ -598,6 +911,14 @@
 			Custom element patterns (Module 14) &middot; Threlte 3D concepts (Module 15)
 		</p>
 	</footer>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 </div>
 
 <style>
@@ -1195,5 +1516,36 @@
 		line-height: 1.8;
 		max-inline-size: 48rem;
 		margin-inline: auto;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
 	}
 </style>

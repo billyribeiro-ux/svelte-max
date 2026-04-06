@@ -159,6 +159,15 @@
 			href: '/module-13/13-1-what-is-seo'
 		},
 		{
+			id: 17,
+			title: 'Data Visualization',
+			summary:
+				'SVG charts from scratch — bar, line, area, donut. Animated transitions, scroll storytelling, tooltips, accessible charts. Award-winning caliber.',
+			project: 'Climate Data Dashboard',
+			status: 'ready',
+			href: '/data-viz/dv-1-svg-fundamentals'
+		},
+		{
 			id: 16,
 			title: 'Capstone — PE7 Flagship',
 			summary:

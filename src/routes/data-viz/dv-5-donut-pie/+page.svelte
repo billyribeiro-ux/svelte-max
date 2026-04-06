@@ -1,0 +1,327 @@
+<script lang="ts">
+	interface EnergySlice {
+		source: string;
+		percent: number;
+		hue: number;
+	}
+
+	const slices: EnergySlice[] = [
+		{ source: 'Oil', percent: 30, hue: 40 },
+		{ source: 'Coal', percent: 27, hue: 25 },
+		{ source: 'Natural Gas', percent: 23, hue: 200 },
+		{ source: 'Hydro', percent: 7, hue: 220 },
+		{ source: 'Wind + Solar', percent: 6, hue: 145 },
+		{ source: 'Nuclear', percent: 4, hue: 280 },
+		{ source: 'Other Renewables', percent: 3, hue: 90 }
+	];
+
+	const totalTWh = 178_899;
+
+	let hoveredIdx = $state<number | null>(null);
+	let isDonut = $state(true);
+
+	const cx = 160;
+	const cy = 160;
+	const outerR = 140;
+	const innerRDonut = 80;
+
+	const innerR = $derived(isDonut ? innerRDonut : 0);
+
+	interface ArcData {
+		startAngle: number;
+		endAngle: number;
+		path: string;
+		midAngle: number;
+	}
+
+	const arcs = $derived.by<ArcData[]>(() => {
+		const result: ArcData[] = [];
+		let cumulative = 0;
+
+		for (const slice of slices) {
+			const startAngle = (cumulative / 100) * 2 * Math.PI - Math.PI / 2;
+			cumulative += slice.percent;
+			const endAngle = (cumulative / 100) * 2 * Math.PI - Math.PI / 2;
+			const midAngle = (startAngle + endAngle) / 2;
+			const largeArc = slice.percent > 50 ? 1 : 0;
+
+			const x1 = cx + outerR * Math.cos(startAngle);
+			const y1 = cy + outerR * Math.sin(startAngle);
+			const x2 = cx + outerR * Math.cos(endAngle);
+			const y2 = cy + outerR * Math.sin(endAngle);
+
+			let path: string;
+			if (innerR > 0) {
+				const ix1 = cx + innerR * Math.cos(endAngle);
+				const iy1 = cy + innerR * Math.sin(endAngle);
+				const ix2 = cx + innerR * Math.cos(startAngle);
+				const iy2 = cy + innerR * Math.sin(startAngle);
+				path = [
+					`M ${x1.toFixed(2)},${y1.toFixed(2)}`,
+					`A ${outerR},${outerR} 0 ${largeArc},1 ${x2.toFixed(2)},${y2.toFixed(2)}`,
+					`L ${ix1.toFixed(2)},${iy1.toFixed(2)}`,
+					`A ${innerR},${innerR} 0 ${largeArc},0 ${ix2.toFixed(2)},${iy2.toFixed(2)}`,
+					'Z'
+				].join(' ');
+			} else {
+				path = [
+					`M ${cx},${cy}`,
+					`L ${x1.toFixed(2)},${y1.toFixed(2)}`,
+					`A ${outerR},${outerR} 0 ${largeArc},1 ${x2.toFixed(2)},${y2.toFixed(2)}`,
+					'Z'
+				].join(' ');
+			}
+
+			result.push({ startAngle, endAngle, path, midAngle });
+		}
+		return result;
+	});
+
+	function sliceColor(hue: number): string {
+		return `oklch(65% 0.18 ${hue})`;
+	}
+
+	function toggleMode(): void {
+		isDonut = !isDonut;
+	}
+</script>
+
+<section class="page">
+	<h1>DV.5 — Donut + Pie Chart</h1>
+	<p class="concept">
+		<strong>Concept.</strong> Pie and donut charts use SVG arcs. Each slice is a
+		<code>&lt;path&gt;</code> with an arc command. The math: for each slice, compute start angle
+		and end angle from cumulative percentages. For a donut, add an inner radius arc going
+		counter-clockwise. Avoid pie charts with many slices — 5 to 7 max is ideal. Use OKLCH with
+		distinct hues for each slice.
+	</p>
+
+	<div class="build">
+		<div class="toolbar">
+			<button class="toggle-btn" onclick={toggleMode}>
+				{isDonut ? 'Switch to Pie' : 'Switch to Donut'}
+			</button>
+		</div>
+
+		<div class="chart-row">
+			<svg viewBox="0 0 320 320" class="donut-chart" role="img" aria-label="Donut chart of global energy mix 2024">
+				{#each slices as slice, i (slice.source)}
+					{@const arc = arcs[i]}
+					{@const isHovered = hoveredIdx === i}
+					{@const scale = isHovered ? 'scale(1.04)' : 'scale(1)'}
+					<path
+						role="img"
+						aria-label="{slice.source}: {slice.percent}%"
+						d={arc.path}
+						fill={sliceColor(slice.hue)}
+						stroke="var(--color-surface-1)"
+						stroke-width="2"
+						style="transform-origin: {cx}px {cy}px; transform: {scale}; transition: transform var(--dur-fast) var(--ease-out);"
+						onpointerenter={() => (hoveredIdx = i)}
+						onpointerleave={() => (hoveredIdx = null)}
+						class="slice"
+					/>
+				{/each}
+
+				<!-- center text -->
+				{#if isDonut}
+					{#if hoveredIdx !== null}
+						<text x={cx} y={cy - 8} text-anchor="middle" class="center-source">
+							{slices[hoveredIdx].source}
+						</text>
+						<text x={cx} y={cy + 14} text-anchor="middle" class="center-pct">
+							{slices[hoveredIdx].percent}%
+						</text>
+					{:else}
+						<text x={cx} y={cy - 8} text-anchor="middle" class="center-label">
+							Total
+						</text>
+						<text x={cx} y={cy + 16} text-anchor="middle" class="center-twh">
+							{totalTWh.toLocaleString()} TWh
+						</text>
+					{/if}
+				{/if}
+			</svg>
+
+			<div class="legend">
+				<h4>Global Energy Mix 2024</h4>
+				{#each slices as slice, i (slice.source)}
+					<div
+						role="listitem"
+						class="legend-row"
+						class:highlighted={hoveredIdx === i}
+						onpointerenter={() => (hoveredIdx = i)}
+						onpointerleave={() => (hoveredIdx = null)}
+					>
+						<span class="legend-swatch" style:background={sliceColor(slice.hue)}></span>
+						<span class="legend-name">{slice.source}</span>
+						<span class="legend-pct">{slice.percent}%</span>
+					</div>
+				{/each}
+				<p class="legend-source">Source: IEA 2024 estimates</p>
+			</div>
+		</div>
+	</div>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>SVG arc commands (<code>A rx,ry rotation largeArcFlag,sweepFlag x,y</code>) draw pie/donut slices.</li>
+		<li>Cumulative percentages converted to radians determine each slice's start and end angles.</li>
+		<li>A donut uses two arcs (outer clockwise, inner counter-clockwise) connected by lines.</li>
+		<li>The <code>transform: scale()</code> with <code>transform-origin</code> at the center creates the hover-expand effect.</li>
+		<li><code>$derived</code> recalculates all arc paths when toggling between donut and pie (inner radius 0 vs 80).</li>
+	</ul>
+</section>
+
+<style>
+	.concept {
+		font-size: var(--text-base);
+		color: var(--color-text-muted);
+		max-inline-size: 65ch;
+		line-height: 1.6;
+		margin: 0;
+	}
+	.concept strong {
+		color: var(--color-text);
+	}
+	.build {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		background: var(--color-surface-1);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		padding: var(--space-lg);
+		box-shadow: var(--shadow-sm);
+		margin-block: var(--space-lg);
+	}
+	code {
+		font-family: var(--font-mono);
+		font-size: 0.9em;
+		background: var(--color-surface-2);
+		padding: 0 var(--space-xs);
+		border-radius: var(--radius-xs);
+	}
+	h3 {
+		margin-block-start: var(--space-xl);
+		margin-block-end: var(--space-sm);
+	}
+	ul {
+		list-style: disc;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text-muted);
+		line-height: 1.6;
+		margin: 0;
+	}
+	@media (min-width: 768px) {
+		h1 {
+			font-size: var(--text-2xl);
+		}
+	}
+
+	.toolbar {
+		display: flex;
+		gap: var(--space-sm);
+	}
+	.toggle-btn {
+		padding: var(--space-xs) var(--space-sm);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		background: var(--color-surface-2);
+		color: var(--color-text);
+		font-size: var(--text-sm);
+		cursor: pointer;
+		transition: background var(--dur-fast) var(--ease-out);
+	}
+	.toggle-btn:hover {
+		background: var(--color-border);
+	}
+	.chart-row {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-lg);
+	}
+	@media (min-width: 600px) {
+		.chart-row {
+			flex-direction: row;
+			align-items: flex-start;
+		}
+	}
+	.donut-chart {
+		width: 100%;
+		max-width: 320px;
+		height: auto;
+	}
+	.slice {
+		cursor: pointer;
+	}
+	.center-source {
+		font-size: 14px;
+		fill: var(--color-text);
+		font-weight: 600;
+	}
+	.center-pct {
+		font-size: 22px;
+		fill: var(--color-text);
+		font-weight: 800;
+	}
+	.center-label {
+		font-size: 12px;
+		fill: var(--color-text-muted);
+	}
+	.center-twh {
+		font-size: 14px;
+		fill: var(--color-text);
+		font-weight: 700;
+	}
+	.legend {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+	.legend h4 {
+		font-size: var(--text-sm);
+		color: var(--color-text);
+		margin: 0 0 var(--space-xs);
+		font-weight: 700;
+	}
+	.legend-row {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: 4px var(--space-xs);
+		border-radius: var(--radius-xs);
+		cursor: pointer;
+		transition: background var(--dur-fast) var(--ease-out);
+	}
+	.legend-row:hover,
+	.legend-row.highlighted {
+		background: var(--color-surface-2);
+	}
+	.legend-swatch {
+		width: 12px;
+		height: 12px;
+		border-radius: var(--radius-xs);
+		flex-shrink: 0;
+	}
+	.legend-name {
+		font-size: var(--text-sm);
+		color: var(--color-text);
+		flex: 1;
+	}
+	.legend-pct {
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		font-weight: 600;
+		font-family: var(--font-mono);
+	}
+	.legend-source {
+		font-size: var(--text-xs);
+		color: var(--color-text-muted);
+		margin-block-start: var(--space-xs);
+	}
+</style>

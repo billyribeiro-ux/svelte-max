@@ -278,6 +278,23 @@
 			]
 		},
 		{
+			id: 17,
+			title: 'Data Visualization',
+			hasProject: true,
+			lessons: [
+				{ slug: 'dv-1-svg-fundamentals', title: 'DV.1 — SVG in Svelte' },
+				{ slug: 'dv-2-bar-chart', title: 'DV.2 — Bar chart' },
+				{ slug: 'dv-3-line-chart', title: 'DV.3 — Line chart' },
+				{ slug: 'dv-4-area-sparkline', title: 'DV.4 — Area + sparkline' },
+				{ slug: 'dv-5-donut-pie', title: 'DV.5 — Donut + pie' },
+				{ slug: 'dv-6-responsive-charts', title: 'DV.6 — Responsive charts' },
+				{ slug: 'dv-7-animated-transitions', title: 'DV.7 — Animated transitions' },
+				{ slug: 'dv-8-tooltips-annotations', title: 'DV.8 — Tooltips + annotations' },
+				{ slug: 'dv-9-scroll-storytelling', title: 'DV.9 — Scroll storytelling' },
+				{ slug: 'dv-10-accessible-charts', title: 'DV.10 — Accessible charts' }
+			]
+		},
+		{
 			id: 16,
 			title: 'Capstone — PE7 Flagship',
 			hasProject: true,

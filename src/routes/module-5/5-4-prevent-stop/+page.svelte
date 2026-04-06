@@ -162,25 +162,34 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		These two methods — <code>preventDefault</code> and <code>stopPropagation</code> — control fundamentally different aspects of event flow. Break each one to see the distinction clearly.
+	</p>
+	<ol class="experiments">
+		<li><strong>Submit the form without calling <code>preventDefault</code>.</strong> Remove the <code>e.preventDefault()</code> line from the submit handler and press Save. The browser performs a full-page navigation (its default behavior for form submission), wiping out all client-side state. This is the default you are overriding — and the reason single-page apps always call <code>preventDefault</code> on form submissions.</li>
+		<li><strong>Add <code>preventDefault</code> back.</strong> Restore the call and submit again. The page stays put, your JavaScript handler processes the data, and state is preserved. You have told the browser "I will handle this myself" — the form still fires the <code>submit</code> event, but the browser no longer acts on it.</li>
+		<li><strong>Click the toggle button without <code>stopPropagation</code>.</strong> Remove <code>e.stopPropagation()</code> from the toggle handler and click "Open menu." The panel flashes open and immediately closes because the click event bubbles up to the document-level outside-click listener, which sees it as a click outside the panel and closes it. The event reaches two handlers when you only wanted one.</li>
+		<li><strong>Add <code>stopPropagation</code> back to the toggle button.</strong> Now clicking the button opens the panel and stays open. The click event is stopped at the button — it never reaches the document listener. Only a genuine click outside the panel (or pressing Escape, if you add that) closes it. This is the surgical use of <code>stopPropagation</code>: preventing a specific ancestor from seeing an event.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>e.preventDefault()</code> stops the form from navigating on submit.</li>
-		<li>
-			<code>e.stopPropagation()</code> on the trigger button keeps the outside-click handler from
-			closing the panel immediately after opening it.
-		</li>
-		<li>
-			For the panel itself, the cleaner pattern is to check <code>panelEl.contains(e.target)</code>
-			in the document handler — no click listener on the panel div needed.
-		</li>
-		<li>Attach global listeners via <code>$effect</code> and return a cleanup.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">
+		<code>preventDefault</code> and <code>stopPropagation</code> operate on orthogonal axes. <code>preventDefault</code> cancels the browser's built-in response to an event — form submission, link navigation, spacebar scrolling, context-menu display. The event still fires and still bubbles; you are only suppressing the browser's default side effect. This is the correct tool when you want JavaScript to own the behavior that the browser would normally perform.
+	</p>
+	<p class="prose">
+		<code>stopPropagation</code> halts the event's journey up the DOM tree. After you call it, no ancestor element's event handler will see the event. This is the correct tool when a parent listener would misinterpret a child's event — as in the dropdown pattern, where a document-level click listener must not treat the toggle button's click as an "outside" click. Note that Svelte 5 has no event modifiers (<code>|preventDefault</code>, <code>|stopPropagation</code>); you call the methods directly in your handler, which is more explicit and easier to reason about.
+	</p>
+	<p class="prose">
+		A cleaner alternative to <code>stopPropagation</code> for many patterns is containment checking: in the document handler, test <code>panelEl.contains(e.target)</code> and bail out if the click landed inside the panel. This avoids stopping propagation entirely, which can interfere with analytics, third-party libraries, or other listeners higher in the tree. The general rule is to reach for <code>stopPropagation</code> only when containment checks are insufficient.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/5-5-forwarding">5.5 — Event forwarding</a></p>
 </section>
 
 <style>
@@ -218,20 +227,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.dropdown {
 		position: relative;
 		align-self: flex-start;

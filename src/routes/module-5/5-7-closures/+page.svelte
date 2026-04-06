@@ -137,18 +137,34 @@
 		<p class="state">Open ids: <code>[{openIds.join(', ')}]</code></p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		Closures are JavaScript's most powerful and most misunderstood feature. These experiments reveal how they interact with Svelte's reactivity system.
+	</p>
+	<ol class="experiments">
+		<li><strong>Use a loop variable directly in an event handler.</strong> In a standard <code>for</code> loop with <code>var</code>, all handlers would capture the same variable and see its final value. But inside <code>{'{#each}'}</code>, Svelte creates a new block scope for each iteration, so each handler captures its own copy of <code>item</code>. Try it — every row works independently, because <code>{'{#each}'}</code> is essentially a <code>let</code>-scoped loop.</li>
+		<li><strong>Close over a <code>$state</code> variable inside a handler.</strong> Create a handler that reads <code>openIds</code> (a <code>$state</code> array). Click several items and log the value inside the handler. The handler always reads the latest value of <code>openIds</code>, not a stale snapshot. This is because <code>$state</code> returns a reactive proxy — the closure captures the proxy reference, which always reflects the current state.</li>
+		<li><strong>Create a stale closure by capturing a value in <code>setTimeout</code>.</strong> Inside a handler, capture a plain <code>let</code> variable's value in a <code>setTimeout</code> callback: <code>const snap = count; setTimeout(() =&gt; console.log(snap), 2000)</code>. Change <code>count</code> before the timeout fires. The logged value is stale — it shows the value at capture time, not the current value. This is the classic stale-closure bug.</li>
+		<li><strong>Fix the stale closure by reading <code>$state</code> inside the timeout.</strong> Instead of capturing a snapshot, read the <code>$state</code> variable directly inside the <code>setTimeout</code> callback. Because <code>$state</code> is a reactive proxy, the read always returns the current value. This is the fundamental difference between Svelte's reactivity model and React's snapshot-based hooks.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Each arrow function inside <code>{'{#each}'}</code> closes over its iteration's item.</li>
-		<li>Tracking open state as an id array avoids nested <code>$state</code> inside loops.</li>
-		<li>Svelte reactivity reads the current value — no stale closure surprises.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">
+		A closure is a function bundled with the variables from its enclosing scope. When you write <code>{'onclick={() => toggle(item.id)}'}</code> inside an <code>{'{#each}'}</code> block, the arrow function closes over <code>item</code> from that specific iteration. Because <code>{'{#each}'}</code> creates a new block scope per iteration (equivalent to a <code>for...of</code> with <code>let</code>), each handler captures its own independent copy of the loop variable. This is why clicking one accordion row never affects another.
+	</p>
+	<p class="prose">
+		Svelte's reactivity model eliminates the stale-closure problem that plagues React hooks. In React, every render creates new closures that capture snapshot values — if a <code>useEffect</code> or callback reads a state variable, it sees the value from the render when it was created, not the current value. In Svelte, <code>$state</code> returns a reactive proxy. Closures capture the proxy reference, and every read through that proxy always returns the live, current value. This means you almost never need to think about stale closures in Svelte code.
+	</p>
+	<p class="prose">
+		The one exception is when you deliberately snapshot a value — for example, by assigning <code>const snap = count</code> and using <code>snap</code> in a <code>setTimeout</code>. The snapshot is a plain number, not a reactive proxy, so the timeout sees the value at capture time. This is occasionally useful (for animations or comparisons), but when you want the current value, always read the <code>$state</code> variable directly rather than capturing it into a local constant.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/5-8-debounce-throttle">5.8 — Debounce &amp; throttle</a></p>
 </section>
 
 <style>
@@ -186,20 +202,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.hint {
 		margin: 0;
 		font-size: var(--text-sm);

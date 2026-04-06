@@ -323,18 +323,34 @@
 		<p class="state">Selected id: <code>{selected}</code></p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		Keyboard accessibility is not optional — it is a requirement for usable software. Break each piece to understand what screen readers and keyboard users depend on.
+	</p>
+	<ol class="experiments">
+		<li><strong>Use only <code>onclick</code> on a <code>&lt;div&gt;</code> with no keyboard support.</strong> Replace the <code>&lt;button&gt;</code> trigger with a plain <code>&lt;div onclick={'{openList}'}&gt;</code>. Try to activate it with the keyboard — you cannot. Divs are not focusable by default and do not respond to Enter or Space. Mouse-only interactions exclude keyboard users, screen-reader users, and anyone navigating with assistive technology.</li>
+		<li><strong>Add <code>onkeydown</code> to handle Enter and Space.</strong> Keep the div but add <code>onkeydown={'{handleTriggerKey}'}</code> that opens the list on Enter or Space. Now keyboard users can activate it — but only if they can reach it. Without <code>tabindex</code>, the div is still skipped during Tab navigation, so keyboard users cannot focus it in the first place.</li>
+		<li><strong>Forget <code>role="button"</code> on the div.</strong> Even with <code>tabindex="0"</code> and keyboard handlers, a div has no semantic meaning. Screen readers announce it as a generic element, not a button. Adding <code>role="button"</code> tells assistive technology that this element behaves like a button, so it is announced as "Open menu, button" instead of just "Open menu."</li>
+		<li><strong>Forget <code>tabindex="0"</code> on a custom interactive element.</strong> Remove the tabindex from a focusable custom widget. Press Tab through the page — the element is skipped entirely. <code>tabindex="0"</code> inserts the element into the natural tab order so keyboard users can reach it. Without it, the element is invisible to keyboard navigation regardless of what event handlers it has.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Implement <code>role="listbox"</code>/<code>role="option"</code> for custom selects.</li>
-		<li>Handle Arrow, Home, End, Enter, Space, and Escape keys.</li>
-		<li>Restore focus to the trigger when the popup closes.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">
+		Every interactive element on the page must be operable with a keyboard alone. The simplest way to achieve this is to use semantic HTML: <code>&lt;button&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;input&gt;</code>, and <code>&lt;select&gt;</code> are focusable, keyboard-operable, and correctly announced by screen readers out of the box. When you must use a non-semantic element like a <code>&lt;div&gt;</code> or <code>&lt;span&gt;</code>, you need three things: <code>role</code> (what it is), <code>tabindex="0"</code> (so it is focusable), and <code>onkeydown</code> (so it responds to Enter, Space, and Escape).
+	</p>
+	<p class="prose">
+		ARIA attributes describe the dynamic state of custom widgets. <code>aria-expanded</code> tells screen readers whether a dropdown is open. <code>aria-selected</code> identifies the current selection in a listbox. <code>aria-activedescendant</code> indicates which option has visual focus without moving DOM focus. <code>aria-controls</code> links a trigger to the element it controls. These attributes create a semantic model that assistive technology reads aloud — without them, a custom select looks like a random collection of divs to a screen reader.
+	</p>
+	<p class="prose">
+		Focus management completes the picture. When a popup opens, move focus into it so keyboard users can interact immediately. When it closes, return focus to the trigger element so the user does not lose their place in the page. Keyboard conventions are well-established: Escape closes, ArrowDown/ArrowUp navigate lists, Home/End jump to the first/last item, Enter and Space activate. Following these conventions means your custom widgets feel native and predictable to every user, regardless of how they navigate.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/project">Module 5 Project</a></p>
 </section>
 
 <style>
@@ -372,20 +388,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.hint {
 		margin: 0;
 		font-size: var(--text-sm);

@@ -107,18 +107,34 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		TypeScript's event types protect you from subtle runtime bugs. Break them on purpose so you see exactly where the compiler draws the line.
+	</p>
+	<ol class="experiments">
+		<li><strong>Access <code>event.target.value</code> without narrowing.</strong> In a handler for an <code>&lt;input&gt;</code>, try <code>e.target.value</code> directly. TypeScript warns that <code>value</code> does not exist on <code>EventTarget</code> because <code>target</code> could be any DOM node — not necessarily an input. The compiler is telling you to prove the type before accessing element-specific properties.</li>
+		<li><strong>Narrow with <code>as HTMLInputElement</code>.</strong> Change the access to <code>(e.target as HTMLInputElement).value</code> and the error disappears. This is a type assertion — you are promising TypeScript that the target is an input element. It works, but it is a lie if the handler is ever attached to something else, so use it judiciously.</li>
+		<li><strong>Use <code>event.currentTarget</code> instead.</strong> Unlike <code>target</code>, <code>currentTarget</code> is already typed to the element the handler is attached to. For an <code>oninput</code> on an <code>&lt;input&gt;</code>, <code>e.currentTarget</code> is typed as <code>HTMLInputElement</code> automatically, so <code>e.currentTarget.value</code> compiles without any assertion. This is almost always the safer choice.</li>
+		<li><strong>Type a custom callback prop with the wrong signature.</strong> Declare <code>onclick: (id: number) =&gt; void</code> in a component's props interface, then try passing a handler that expects a string. TypeScript catches the mismatch at the call site, proving that callback props give you a fully typed contract between parent and child components.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Type handler params with concrete event types like <code>KeyboardEvent</code>.</li>
-		<li>Read modifier flags: <code>e.ctrlKey</code>, <code>e.shiftKey</code>, <code>e.metaKey</code>.</li>
-		<li>Divs need <code>tabindex="0"</code> to receive keyboard focus and events.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">
+		DOM events in TypeScript use a hierarchy of generic types: <code>Event</code>, <code>UIEvent</code>, <code>MouseEvent</code>, <code>KeyboardEvent</code>, <code>InputEvent</code>, <code>FocusEvent</code>, <code>SubmitEvent</code>, and more. Each carries specific properties — <code>KeyboardEvent</code> has <code>key</code> and modifier flags, <code>MouseEvent</code> has coordinates and button info. Svelte 5's attribute-based handlers automatically infer the correct subtype, so an <code>onkeydown</code> handler receives <code>KeyboardEvent</code> without you writing a single annotation.
+	</p>
+	<p class="prose">
+		The trickiest part of event typing is <code>event.target</code>. Because events bubble, the target can be any descendant of the element you attached the handler to, which is why TypeScript types it as the generic <code>EventTarget | null</code>. You must narrow it — either via <code>instanceof</code> checks, type assertions, or by using <code>event.currentTarget</code> instead, which is already correctly typed to the element that owns the listener. Preferring <code>currentTarget</code> eliminates an entire category of type errors.
+	</p>
+	<p class="prose">
+		For custom component communication, callback props replace the old <code>createEventDispatcher</code> pattern entirely. You define a typed function signature in the component's props interface — for example, <code>onselect: (id: number) =&gt; void</code> — and the parent passes a matching handler. TypeScript enforces the contract at every boundary, catching mismatches at compile time rather than letting them surface as silent runtime failures.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/5-4-prevent-stop">5.4 — preventDefault &amp; stopPropagation</a></p>
 </section>
 
 <style>
@@ -156,20 +172,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.capture {
 		background: var(--color-surface-2);
 		border: 1px dashed var(--color-border);

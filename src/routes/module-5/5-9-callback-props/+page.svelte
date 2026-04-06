@@ -186,18 +186,34 @@
 		before calling.
 	</p>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		Callback props are the backbone of parent-child communication in Svelte 5. Test their edge cases to understand the contract fully.
+	</p>
+	<ol class="experiments">
+		<li><strong>Pass a callback that throws an error.</strong> Change one of the toast handlers to <code>() =&gt; {'{ throw new Error("boom"); }'}</code> and click the button. The error propagates up to the parent's call stack — the child does not catch it. This is correct behavior: the parent owns the callback logic and is responsible for its error handling. Wrap risky callbacks in try/catch at the call site if you need graceful degradation.</li>
+		<li><strong>Make the callback optional and forget to check before calling.</strong> In a child component, declare <code>onselect?: (id: number) =&gt; void</code> with the optional marker, then call <code>onselect(id)</code> without the optional chaining operator. TypeScript warns that <code>onselect</code> might be undefined. Use <code>onselect?.(id)</code> instead — the optional call only invokes the function if it exists.</li>
+		<li><strong>Pass an async callback.</strong> Change a handler to <code>async () =&gt; {'{ await fetch(...); }'}</code>. It works — the child calls it, and the promise runs in the background. But if the async callback throws, the rejection is unhandled unless the child wraps the call in <code>try/catch</code> or the parent adds <code>.catch()</code>. Async callbacks need explicit error boundaries on both sides.</li>
+		<li><strong>Type the callback with multiple parameters.</strong> Declare <code>onaction: (kind: ToastKind, text: string) =&gt; void</code> in the props interface. The parent must now pass a handler matching that exact signature — TypeScript enforces both the number and types of parameters. This gives you a fully typed communication contract that is checked at every component boundary.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Components declare callback props with typed signatures.</li>
-		<li>Parents pass arrow handlers — no event name strings to typo.</li>
-		<li>Return cleanups from <code>$effect</code> to clear pending timers.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">
+		Callback props are Svelte 5's replacement for <code>createEventDispatcher</code>. Instead of dispatching a string-named event that the parent listens to with <code>on:eventname</code>, a component declares a typed function in its props interface — for example, <code>onselect: (item: Item) =&gt; void</code> — and calls it directly when the action occurs. The parent passes a matching function: <code>&lt;Picker onselect={'{(item) => handleSelect(item)}'} /&gt;</code>. This is simpler, fully type-checked, and eliminates an entire API surface.
+	</p>
+	<p class="prose">
+		Making callbacks optional with <code>?</code> is the standard pattern for components that may or may not need to notify their parent. The child uses optional chaining — <code>onselect?.(item)</code> — to call the callback only when it was provided. This is more ergonomic than checking <code>if (onselect)</code> before every call and mirrors how optional methods work throughout TypeScript codebases. The parent simply omits the prop when it does not care about that particular event.
+	</p>
+	<p class="prose">
+		The parent owns the callback logic; the child merely triggers it. This inversion of control is fundamental to component architecture: the child knows when something happened but not what to do about it. The parent knows what to do but not when. Callback props connect these two halves with a typed interface. Error handling, async coordination, and side effects all live in the parent's handler, keeping the child component pure and reusable across different contexts.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/5-10-bindings">5.10 — Bindings</a></p>
 </section>
 
 <style>
@@ -235,20 +251,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.hint {
 		margin: 0;
 		font-size: var(--text-sm);

@@ -227,23 +227,38 @@
 		</div>
 	</div>
 
+	<p class="state" style="font-size:var(--text-xs); color:var(--color-text-muted);">
+		Global pointer (via <code>&lt;svelte:body&gt;</code>): <code>{globalPointerX}, {globalPointerY}</code>
+	</p>
+
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		Pointer events unify mouse, touch, and pen input. Break the gesture handling to see why each piece matters.
+	</p>
+	<ol class="experiments">
+		<li><strong>Use <code>onclick</code> instead of <code>onpointerdown</code> for the drag.</strong> Replace the pointer event handlers with a simple <code>onclick</code>. The card responds to clicks but provides no gesture data — no drag distance, no velocity, no way to implement swipe-to-reveal. Click events are binary (happened or didn't); pointer events give you continuous coordinates, pressure, tilt, and pointer type.</li>
+		<li><strong>Use <code>onpointerdown</code> for the initial press.</strong> Restore the pointer handler and test with both mouse and touch. Both work identically because pointer events abstract away the input device. You get <code>e.pointerId</code>, <code>e.pointerType</code> ("mouse", "touch", or "pen"), and <code>e.pressure</code> — all from a single event API.</li>
+		<li><strong>Track <code>pointermove</code> without a <code>pointerdown</code> guard.</strong> Remove the <code>if (!dragging) return</code> check from the move handler. Now the card tracks the pointer constantly, even when you are not dragging. The card jitters and follows the cursor at all times, which is both visually broken and a performance drain because the move handler fires on every pixel of mouse movement.</li>
+		<li><strong>Forget to handle <code>pointercancel</code>.</strong> Remove the <code>onpointercancel={'{handleUp}'}</code> attribute. Start a drag, then trigger a cancel event (the browser fires this when it takes over the gesture — for example, when a scroll kicks in or the page is backgrounded). The component stays stuck in the "dragging" state because it never received the up event. Always handle <code>pointercancel</code> the same way you handle <code>pointerup</code>.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<p class="state" style="font-size:var(--text-xs); color:var(--color-text-muted);">
-		Global pointer (via <code>&lt;svelte:body&gt;</code>): <code>{globalPointerX}, {globalPointerY}</code>
+	<h2>What you learned</h2>
+	<p class="prose">
+		Pointer events (<code>pointerdown</code>, <code>pointermove</code>, <code>pointerup</code>, <code>pointercancel</code>) are the modern replacement for both mouse events and touch events. They provide a unified API that works identically for mouse, touch, and pen input, eliminating the need to write separate handlers for each device type. The <code>pointerType</code> property tells you which device triggered the event if you need to differentiate, but in most cases you should not — the whole point is device-agnostic interaction.
 	</p>
-
-	<h3>What you learned</h3>
-	<ul>
-		<li>Prefer pointer events over touch events — they unify input types.</li>
-		<li><code>setPointerCapture</code> ensures you keep getting events during a drag.</li>
-		<li>Minimum 44px touch targets for WCAG compliance.</li>
-		<li>Respect <code>prefersReducedMotion</code> — skip animated transitions when the user prefers reduced motion.</li>
-	</ul>
+	<p class="prose">
+		The <code>setPointerCapture</code> method is critical for drag gestures. When you call <code>element.setPointerCapture(e.pointerId)</code> during <code>pointerdown</code>, all subsequent pointer events (move, up, cancel) are routed to that element regardless of where the pointer travels. Without capture, moving the finger off the element causes the events to fire on whatever element the pointer is over, breaking the drag. Always pair <code>setPointerCapture</code> in down with <code>releasePointerCapture</code> in up.
+	</p>
+	<p class="prose">
+		The CSS property <code>touch-action</code> controls which gestures the browser handles natively. Setting <code>touch-action: pan-y</code> on a horizontal swipe area tells the browser to handle vertical scrolling but leave horizontal gestures to your JavaScript. Without this, the browser may intercept the swipe for its own scroll or back-navigation gesture. Always handle <code>pointercancel</code> — the browser fires it when it takes over a gesture — and respect <code>prefers-reduced-motion</code> by skipping animated transitions for users who have requested reduced motion in their system settings.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/5-12-keyboard-a11y">5.12 — Keyboard accessibility</a></p>
 </section>
 
 <style>
@@ -281,20 +296,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.hint {
 		margin: 0;
 		font-size: var(--text-sm);

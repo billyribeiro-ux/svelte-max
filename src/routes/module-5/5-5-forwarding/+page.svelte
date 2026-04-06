@@ -137,18 +137,34 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		Event forwarding in Svelte 5 is explicit by design. These experiments show you why implicit forwarding would be worse.
+	</p>
+	<ol class="experiments">
+		<li><strong>Expect events to "bubble" through Svelte components automatically.</strong> In a child component, add an <code>onclick</code> to a <code>&lt;button&gt;</code> and try to handle it in the parent without passing a callback prop. Nothing happens — Svelte components are not DOM elements, so DOM events do not bubble across component boundaries. This is intentional: it forces explicit communication paths.</li>
+		<li><strong>Forward via a callback prop.</strong> Declare <code>onclick: (e: MouseEvent) =&gt; void</code> in the child's props interface, accept it with <code>let {'{'} onclick {'}'} = $props()</code>, and attach it to the inner button. The parent passes its handler: <code>&lt;Child onclick={'{handleClick}'} /&gt;</code>. The event now crosses the component boundary through a typed, visible contract.</li>
+		<li><strong>Spread <code>restProps</code> onto the inner element.</strong> Use <code>let {'{'} ...restProps {'}'} = $props()</code> in the child and spread them: <code>{'<button {...restProps}>'}</code>. Now any native event attribute the parent passes — <code>onclick</code>, <code>onfocus</code>, <code>onkeydown</code> — forwards automatically. This is the idiomatic pattern for wrapper components that should not restrict which events the parent can listen to.</li>
+		<li><strong>Type the forwarded handler in the Props interface.</strong> Add <code>onclick?: (e: MouseEvent) =&gt; void</code> explicitly alongside the rest spread. TypeScript will ensure the parent passes a compatible function. If the parent passes a handler expecting <code>KeyboardEvent</code>, the compiler catches the mistake immediately.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Handlers are just function values — pass them as props.</li>
-		<li>Type them explicitly: <code>(e: MouseEvent) =&gt; void</code>.</li>
-		<li>No event dispatcher needed in Svelte 5; the callback-prop pattern replaces it.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">
+		Svelte components are not DOM nodes, and DOM events do not bubble through them. This is a deliberate design choice that makes data flow explicit. In Svelte 4, you could use <code>on:click</code> forwarding or <code>createEventDispatcher</code> to bridge the gap, but both relied on stringly-typed event names that TypeScript could not verify. Svelte 5 replaces all of that with callback props — plain typed functions that the child declares and the parent provides.
+	</p>
+	<p class="prose">
+		The callback-prop pattern mirrors how React and other frameworks handle component communication, but with stronger guarantees. You define the handler's signature in the component's <code>Props</code> interface — for example, <code>onclick: (e: MouseEvent) =&gt; void</code> — and TypeScript enforces the contract at every usage site. If the parent passes the wrong function shape, the error appears at compile time, not as a silent no-op at runtime.
+	</p>
+	<p class="prose">
+		For generic wrapper components (cards, modals, layout shells), the rest-props spread pattern is the cleanest solution. Using <code>let {'{'} children, ...restProps {'}'} = $props()</code> and spreading <code>{'{...restProps}'}</code> onto the root element lets the parent attach any native event handler without the child having to enumerate them all. This keeps the child component flexible while maintaining full type safety through HTML attribute types.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/5-6-on-function">5.6 — The on function from svelte/events</a></p>
 </section>
 
 <style>
@@ -186,20 +202,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.toolbar {
 		display: flex;
 		flex-wrap: wrap;

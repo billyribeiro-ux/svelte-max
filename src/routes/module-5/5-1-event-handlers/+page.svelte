@@ -69,18 +69,34 @@
 		<p class="hint">Click the heart — state updates and a pop class is applied briefly.</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		The best way to internalize how Svelte 5 event handlers work is to deliberately break them and watch what happens. Try each experiment below in your own code, observe the result, then undo the change before moving on.
+	</p>
+	<ol class="experiments">
+		<li><strong>Use <code>on:click</code> instead of <code>onclick</code>.</strong> The <code>on:click</code> directive is the Svelte 4 syntax and is deprecated in runes mode. Svelte will emit a compiler warning telling you to migrate to the native attribute form, confirming that Svelte 5 treats event handlers as standard HTML attributes.</li>
+		<li><strong>Switch to <code>onclick</code> (the Svelte 5 way).</strong> Replace the old directive with the native attribute <code>onclick={'{like}'}</code> and verify that the button works exactly the same way. This proves that Svelte 5 event binding is simply native DOM attribute syntax with no special compiler magic beyond type inference.</li>
+		<li><strong>Replace the named function with an inline arrow: <code>{'onclick={() => like()}'}</code>.</strong> Both approaches work, but named functions appear with their name in the DevTools call stack, making them far easier to debug. Inline arrows are fine for one-liners, but named handlers are preferable for anything nontrivial.</li>
+		<li><strong>Forget to type the event parameter in a handler.</strong> Add a parameter like <code>(e)</code> and hover over it in your editor. TypeScript automatically infers <code>MouseEvent</code> from the <code>onclick</code> attribute, so you get full autocompletion on <code>e.clientX</code>, <code>e.button</code>, and friends without writing a single type annotation.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Use <code>{'onclick={handler}'}</code>, not <code>on:click</code>.</li>
-		<li>Named handlers read better for multi-line logic.</li>
-		<li>Handlers are just functions passed as props — no invocation at the call site.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">
+		Svelte 5 abandons the custom <code>on:click</code> directive in favor of plain HTML event attributes like <code>onclick</code>, <code>oninput</code>, and <code>onsubmit</code>. This is not a cosmetic rename — it aligns Svelte with the platform so that everything you already know about DOM events transfers directly. The compiler still does the heavy lifting behind the scenes (attaching listeners with correct timing, batching updates), but the surface syntax is now indistinguishable from what the browser itself understands.
+	</p>
+	<p class="prose">
+		Because these are standard attributes, TypeScript can infer the exact event type for every handler automatically. An <code>onclick</code> handler receives a <code>MouseEvent</code>, an <code>oninput</code> handler receives an <code>InputEvent</code>, and so on — no manual annotation required. This gives you autocompletion on every property of the event object and catches mistakes at compile time rather than at runtime, which is a significant upgrade over stringly-typed custom events.
+	</p>
+	<p class="prose">
+		Svelte also handles listener cleanup automatically. When a component is destroyed, every event handler attached through an attribute is removed — you never need to call <code>removeEventListener</code> yourself. This eliminates an entire class of memory-leak bugs that plague vanilla JavaScript applications and makes Svelte components fully self-contained units of behavior.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/5-2-functions">5.2 — Event handler functions</a></p>
 </section>
 
 <style>
@@ -118,20 +134,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.like {
 		display: inline-flex;
 		align-items: center;

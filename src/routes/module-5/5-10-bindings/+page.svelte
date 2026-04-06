@@ -150,18 +150,34 @@
 		</section>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		Bindings create two-way data flow, which is powerful but has strict requirements. Test those boundaries.
+	</p>
+	<ol class="experiments">
+		<li><strong>Use <code>bind:value</code> on a read-only element.</strong> Try <code>bind:value</code> on an element that does not accept user input, like a <code>&lt;span&gt;</code> or a <code>&lt;div&gt;</code>. The compiler rejects it — <code>bind:value</code> only works on elements that have a writable <code>value</code> property, like <code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, and <code>&lt;select&gt;</code>. This prevents nonsensical two-way bindings at compile time.</li>
+		<li><strong>Use <code>bind:value</code> without <code>$state</code>.</strong> Bind to a plain <code>let</code> variable that is not declared with <code>$state</code>. The binding still works for the initial render, but reactivity is broken — changes from the input do not propagate correctly because Svelte cannot track assignments to non-reactive variables. Always use <code>$state</code> for bound values.</li>
+		<li><strong>Bind to a non-existent property.</strong> Try <code>bind:nonexistent</code> on an element. TypeScript catches the error immediately — there is no such bindable property on the element type. The compiler knows exactly which properties each HTML element supports for binding, giving you autocompletion and type safety.</li>
+		<li><strong>Two-way bind between components without <code>$bindable</code>.</strong> Try <code>bind:value</code> on a child component prop that is not marked with <code>$bindable()</code> in the child. Svelte warns that the prop is not bindable. In Svelte 5, component props must explicitly opt into two-way binding with <code>let {'{'} value = $bindable() {'}'} = $props()</code>, preventing accidental mutation of parent state.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>bind:group</code> collects multiple inputs into an array.</li>
-		<li>Dimension bindings are readonly — set by the browser via ResizeObserver.</li>
-		<li><code>bind:open</code> on <code>&lt;details&gt;</code> is two-way: both sides stay in sync.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">
+		The <code>bind:</code> directive creates two-way data flow between a DOM element property and a Svelte variable. <code>bind:value</code> synchronizes text inputs, textareas, and selects. <code>bind:checked</code> synchronizes checkboxes. <code>bind:group</code> collects multiple radio buttons or checkboxes into a single array or value. <code>bind:this</code> captures a reference to the DOM element itself, which is essential for imperative operations like focusing, measuring, or integrating with third-party libraries.
+	</p>
+	<p class="prose">
+		Dimension bindings — <code>bind:clientWidth</code>, <code>bind:clientHeight</code>, <code>bind:offsetWidth</code>, <code>bind:offsetHeight</code> — are read-only. Svelte attaches a <code>ResizeObserver</code> under the hood and updates the bound variable whenever the element's size changes. You cannot write to these bindings; they flow one direction only, from the DOM to your state. This is useful for responsive layouts, canvas sizing, and any situation where you need to react to an element's measured dimensions.
+	</p>
+	<p class="prose">
+		For component-to-component bindings, Svelte 5 requires the child prop to be declared with <code>$bindable()</code>. This is an explicit opt-in that prevents parents from accidentally mutating child state through bindings. When a prop is bindable, changes flow both directions: the parent can set the initial value, the child can update it, and both sides stay synchronized. Use component bindings sparingly — they create tight coupling. For most parent-child communication, callback props are the more maintainable choice.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/5-11-touch-pointer">5.11 — Touch &amp; pointer events</a></p>
 </section>
 
 <style>
@@ -199,20 +215,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.part {
 		display: flex;
 		flex-direction: column;

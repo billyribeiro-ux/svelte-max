@@ -89,18 +89,34 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		Understanding the difference between passing a function and calling a function is one of the most important JavaScript fundamentals. These experiments will make the distinction visceral.
+	</p>
+	<ol class="experiments">
+		<li><strong>Call the function instead of passing it: <code>onclick={'{selectPencil()}'}</code>.</strong> Adding parentheses invokes the function immediately during render, not on click. The tool switches to "pencil" as soon as the component mounts, and clicking the button does nothing afterward because <code>onclick</code> receives the return value (<code>undefined</code>) instead of a function reference.</li>
+		<li><strong>Pass with arguments using a closure: <code>{'onclick={() => handler(id)}'}</code>.</strong> When you need to forward data to a handler, wrap it in an arrow function. This creates a new closure each render that captures the current value of <code>id</code>. It is the correct pattern for parameterized handlers in Svelte 5.</li>
+		<li><strong>Log <code>event.target</code> versus <code>event.currentTarget</code> in a handler.</strong> Add <code>(e: MouseEvent) =&gt; console.log(e.target, e.currentTarget)</code> to a button click. <code>target</code> is the element the user actually clicked (which might be a child <code>&lt;span&gt;</code>), while <code>currentTarget</code> is always the element the listener is attached to. Confusing the two is a common source of bugs in delegation patterns.</li>
+		<li><strong>Type the handler with the wrong event type, e.g. <code>(e: KeyboardEvent)</code> on <code>onclick</code>.</strong> TypeScript immediately flags the mismatch because <code>onclick</code> expects a <code>MouseEvent</code>. This compile-time safety is one of the strongest arguments for using Svelte 5's native attribute syntax — the types are baked into the HTML element definitions.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Typed function parameters (e.g. <code>name: Tool</code>) catch typos at compile time.</li>
-		<li>Pass functions by reference: <code>onclick={selectPencil}</code>, not with parentheses.</li>
-		<li>Toggle classes with <code>class:active={'{'}tool === 'pencil'{'}'}</code>.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">
+		The most critical takeaway is the distinction between passing a function by reference and invoking it. Writing <code>onclick={'{selectPencil}'}</code> hands Svelte a function object to call later when the user clicks. Writing <code>onclick={'{selectPencil()}'}</code> calls the function right now and hands Svelte whatever it returns — almost always <code>undefined</code>. This is pure JavaScript, not a Svelte quirk, and misunderstanding it is the number-one source of "my handler fires on mount" bugs across every framework.
+	</p>
+	<p class="prose">
+		When a handler needs arguments, the closure pattern <code>{'onclick={() => handler(id)}'}</code> is the standard approach. Each render creates a fresh arrow function that captures the current scope. In Svelte 5 this is perfectly efficient because the compiler can diff event attributes and only reassign when the closure's dependencies change, so there is no meaningful performance cost to inline arrows in templates.
+	</p>
+	<p class="prose">
+		Finally, understanding <code>event.target</code> versus <code>event.currentTarget</code> is essential for robust event handling. The target is the deepest DOM node that triggered the event; the currentTarget is the node the listener lives on. In delegated or nested layouts, these differ constantly. Svelte's typed events make this explicit — <code>currentTarget</code> is already typed to the element you attached the handler to, while <code>target</code> is the generic <code>EventTarget</code> that requires narrowing.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/5-3-typed-events">5.3 — Typed events</a></p>
 </section>
 
 <style>
@@ -138,20 +154,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.toolbar {
 		display: flex;
 		flex-wrap: wrap;

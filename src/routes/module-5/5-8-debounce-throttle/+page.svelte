@@ -290,21 +290,34 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">
+		Debounce and throttle are essential performance tools. Break them to feel the difference between uncontrolled and controlled event rates.
+	</p>
+	<ol class="experiments">
+		<li><strong>Type in the search box without debounce.</strong> Remove the <code>setTimeout</code> logic and commit the query directly on every keystroke. If this were connected to a real API, you would fire a network request per character — typing "svelte" would send six requests in under a second. The UI also updates frantically, causing unnecessary re-renders and potential race conditions if responses arrive out of order.</li>
+		<li><strong>Add debounce back (300ms).</strong> Restore the <code>$effect</code> with <code>setTimeout</code> and a 300ms delay. Now the committed value only updates after the user stops typing for 300 milliseconds. Six keystrokes produce one commit instead of six. The cleanup function <code>clearTimeout(handle)</code> cancels the previous timer each time the effect re-runs, ensuring only the final pause triggers the action.</li>
+		<li><strong>Click the rapid-click button without throttle.</strong> Replace the throttled handler with a raw increment. Click as fast as you can — every single click registers. For scroll or resize events, this means 60+ handler executions per second, which can cause layout thrashing, dropped frames, and a frozen UI on slower devices.</li>
+		<li><strong>Add throttle back (500ms).</strong> Restore the throttled handler. Now no matter how fast you click, the handler fires at most once every 500 milliseconds. The raw click count climbs rapidly, but the throttled count rises at a steady, controlled pace. Always clean up throttle timers when the component is destroyed to prevent leaked callbacks.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Use <code>$effect</code> + <code>setTimeout</code> + a cleanup for debounce.</li>
-		<li>Return <code>() =&gt; clearTimeout(handle)</code> so stale timers never fire.</li>
-		<li>Debounce for typing; throttle for continuous streams like scroll.</li>
-		<li><strong>Debounce</strong> waits until input is idle for N ms, then fires once.</li>
-		<li><strong>Throttle</strong> fires at most once every N ms, regardless of input frequency.</li>
-		<li>Throttle is ideal for scroll, resize, or rapid-click handlers where you need periodic updates, not just the final value.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">
+		Debounce delays execution until a burst of activity stops. The classic implementation uses <code>setTimeout</code>: each new event clears the previous timer and starts a fresh one. Only when the delay expires without interruption does the handler fire. In Svelte, the idiomatic pattern is a <code>$effect</code> that reads the reactive input, sets a timeout, and returns a cleanup that clears it. The effect's automatic cleanup on re-run handles the "cancel previous timer" logic for free.
+	</p>
+	<p class="prose">
+		Throttle limits execution to at most once per time window, regardless of how many events arrive. Unlike debounce, throttle guarantees periodic updates during sustained activity — the user sees intermediate feedback (a scroll position indicator, a partial result) rather than waiting for the activity to stop entirely. A trailing-edge throttle also fires once after the last event, ensuring the final state is always captured. Throttle is the right choice for scroll, resize, mousemove, and any high-frequency continuous event.
+	</p>
+	<p class="prose">
+		Both techniques rely on <code>setTimeout</code>, which means both create pending callbacks that outlive the component if not cleaned up. In Svelte, always return a cleanup function from <code>$effect</code> that calls <code>clearTimeout</code>. For throttle, clear any pending trailing-edge timer in the cleanup as well. Forgetting this step leads to handlers that fire after the component is destroyed, writing to stale state or causing errors in the console. Timer hygiene is non-negotiable in component-based architectures.
+	</p>
+	<p class="next">Next lesson: <a href="/module-5/5-9-callback-props">5.9 — Callback props</a></p>
 </section>
 
 <style>
@@ -342,20 +355,16 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.field {
 		display: flex;
 		flex-direction: column;

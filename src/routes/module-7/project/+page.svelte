@@ -579,8 +579,16 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		h1 { max-inline-size: 65ch; }
+		h2 { max-inline-size: 65ch; }
+	}
 	@media (min-width: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
+	}
+	@media (min-width: 1024px) {
+		h1 { max-inline-size: 80ch; }
+		h2 { max-inline-size: 80ch; }
 	}
 </style>

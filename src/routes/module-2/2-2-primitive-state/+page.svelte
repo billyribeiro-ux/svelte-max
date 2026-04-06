@@ -129,20 +129,83 @@
 		</p>
 	</div>
 
+	<!-- ═══ BREAK IT ON PURPOSE ═══ -->
+
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Primitive state is deceptively simple. These experiments reveal the edges.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Destructure a <code>$state</code> object and read the destructured value.</strong>
+			Write <code>const val = enabled</code> at the top of the script, then render
+			<code>{'{val}'}</code>. It shows the INITIAL value and never updates. Why? Because
+			<code>val</code> captured a snapshot of the boolean at that moment — it is not the
+			reactive proxy. Only the original <code>enabled</code> variable is reactive.
+		</li>
+		<li>
+			<strong>Use <code>$state</code> with an explicit generic that contradicts the initial value.</strong>
+			Write <code>let count = $state&lt;string&gt;(0)</code>. TypeScript errors:
+			"Argument of type 'number' is not assignable to parameter of type 'string'." The
+			generic must match the initial value — or be a wider union like
+			<code>$state&lt;number | null&gt;(0)</code>.
+		</li>
+		<li>
+			<strong>Try <code>count = count + 1</code> vs <code>count++</code>.</strong>
+			Both work identically. The compiler rewrites both into proxy writes. There is no
+			performance difference. Use whichever reads better in context.
+		</li>
+		<li>
+			<strong>Toggle <code>enabled</code> with <code>enabled = !enabled</code> vs
+			<code>enabled ^= true</code>.</strong> Both work. The XOR assignment is a fun trick
+			but <code>enabled = !enabled</code> is clearer. Readability beats cleverness.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Primitives (string, number, boolean) are the most common kind of state.</li>
-		<li><code>count++</code> and similar mutations work because <code>$state</code> is proxy-backed.</li>
-		<li>TypeScript infers a primitive type from the initial value; override with a generic when needed.</li>
-		<li>Use <code>let</code> for primitive state — you need to reassign it.</li>
-		<li>A single boolean can drive an entire piece of UI through CSS and bindings.</li>
-	</ul>
+	<!-- ═══ WHAT YOU LEARNED ═══ -->
+
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		The three JavaScript primitives — <code>string</code>, <code>number</code>, and
+		<code>boolean</code> — are the most common kinds of reactive state. A counter is a number.
+		A toggle is a boolean. A search query is a string. When you wrap any of these in
+		<code>$state()</code>, the compiler creates a reactive cell: every read is tracked, every
+		write triggers an update. The mutation <code>count++</code> works because the compiler
+		rewrites it into a proxy-aware read-modify-write.
+	</p>
+
+	<p class="prose">
+		TypeScript infers the type from the initial value: <code>$state(0)</code> is
+		<code>number</code>, <code>$state(false)</code> is <code>boolean</code>,
+		<code>$state('')</code> is <code>string</code>. When the inferred type is too narrow —
+		say, you start with <code>null</code> but will later hold a <code>User</code> — use an
+		explicit generic: <code>$state&lt;User | null&gt;(null)</code>. This tells TypeScript
+		the full range of values the state can hold.
+	</p>
+
+	<p class="prose">
+		A single boolean can drive an entire piece of UI. The toggle switch above uses
+		<code>enabled</code> to control: the track color (via CSS binding), the knob position
+		(via <code>transform</code>), the <code>aria-pressed</code> attribute (for screen
+		readers), and the label text (via a ternary). One state variable, four visual outputs.
+		This is the power of reactive primitives — change one value, and everything that depends
+		on it updates automatically.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-3-object-state">2.3 — Object $state</a> — reactive objects with deep
+		property tracking.
+	</p>
 </section>
 
 <style>
@@ -239,19 +302,6 @@
 		font-size: var(--text-sm);
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin-top: var(--space-sm);
-	}
-
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-left: var(--space-md);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-	}
 
 	@media (min-width: 768px) {
 		.demo {
@@ -282,6 +332,28 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+		& strong { font-weight: 700; }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

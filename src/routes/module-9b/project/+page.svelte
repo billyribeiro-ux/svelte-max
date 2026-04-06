@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	// --- Query section ---
 	type Product = { id: number; name: string; price: number; category: string };
 	const allProducts: Product[] = [
@@ -99,6 +100,173 @@
 		'fork() — preload on hover, commit on click',
 		'Valibot validation — schema-based type safety',
 	];
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { enhance } from '$app/forms';\n" +
+		"\n" +
+		"	// --- Query section ---\n" +
+		"	type Product = { id: number; name: string; price: number; category: string };\n" +
+		"	const allProducts: Product[] = [\n" +
+		"		{ id: 1, name: 'Wireless Keyboard', price: 59.99, category: 'peripherals' },\n" +
+		"		{ id: 2, name: 'USB-C Hub', price: 34.99, category: 'accessories' },\n" +
+		"		{ id: 3, name: 'Monitor Stand', price: 89.99, category: 'furniture' },\n" +
+		"		{ id: 4, name: '4K Webcam', price: 129.99, category: 'peripherals' },\n" +
+		"		{ id: 5, name: 'Desk Lamp', price: 44.99, category: 'furniture' },\n" +
+		"		{ id: 6, name: 'Cable Organizer', price: 12.99, category: 'accessories' },\n" +
+		"	];\n" +
+		"\n" +
+		"	let searchQuery = $state('');\n" +
+		"	let queryLoading = $state(true);\n" +
+		"	let queryProducts = $state\u003cProduct[]\u003e([]);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const t = setTimeout(() =\u003e { queryProducts = allProducts; queryLoading = false; }, 700);\n" +
+		"		return () =\u003e clearTimeout(t);\n" +
+		"	});\n" +
+		"\n" +
+		"	let filteredProducts = $derived.by(() =\u003e {\n" +
+		"		if (!searchQuery) return queryProducts;\n" +
+		"		const q = searchQuery.toLowerCase();\n" +
+		"		return queryProducts.filter((p) =\u003e p.name.toLowerCase().includes(q) || p.category.includes(q));\n" +
+		"	});\n" +
+		"\n" +
+		"	// --- Form section ---\n" +
+		"	type FormResult = {\n" +
+		"		success: boolean;\n" +
+		"		errors?: Record\u003cstring, string\u003e | null;\n" +
+		"		values?: Record\u003cstring, FormDataEntryValue\u003e | null;\n" +
+		"		entry?: { id: string; name: string; rating: number; comment: string; createdAt: string } | null;\n" +
+		"	};\n" +
+		"	let formResult = $state\u003cFormResult | null\u003e(null);\n" +
+		"	let formSubmitting = $state(false);\n" +
+		"\n" +
+		"	// --- Command section (optimistic delete) ---\n" +
+		"	type TaskItem = { id: string; text: string };\n" +
+		"	let tasks = $state\u003cTaskItem[]\u003e([\n" +
+		"		{ id: '1', text: 'Review pull request' },\n" +
+		"		{ id: '2', text: 'Update documentation' },\n" +
+		"		{ id: '3', text: 'Deploy staging build' },\n" +
+		"		{ id: '4', text: 'Run integration tests' },\n" +
+		"	]);\n" +
+		"	let deletedTask = $state\u003c{ item: TaskItem; index: number } | null\u003e(null);\n" +
+		"\n" +
+		"	function deleteTask(id: string) {\n" +
+		"		const idx = tasks.findIndex((t) =\u003e t.id === id);\n" +
+		"		if (idx === -1) return;\n" +
+		"		deletedTask = { item: tasks[idx], index: idx };\n" +
+		"		tasks = tasks.filter((t) =\u003e t.id !== id);\n" +
+		"		setTimeout(() =\u003e { deletedTask = null; }, 3000);\n" +
+		"	}\n" +
+		"\n" +
+		"	function undoDelete() {\n" +
+		"		if (!deletedTask) return;\n" +
+		"		const { item, index } = deletedTask;\n" +
+		"		tasks = [...tasks.slice(0, index), item, ...tasks.slice(index)];\n" +
+		"		deletedTask = null;\n" +
+		"	}\n" +
+		"\n" +
+		"	// --- Batch section ---\n" +
+		"	type Metric = { label: string; value: string; change: string; up: boolean };\n" +
+		"	let batchLoading = $state(true);\n" +
+		"	let metrics = $state\u003cMetric[]\u003e([]);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const t = setTimeout(() =\u003e {\n" +
+		"			metrics = [\n" +
+		"				{ label: 'Revenue', value: '$48.2K', change: '+12%', up: true },\n" +
+		"				{ label: 'Users', value: '3,847', change: '+8%', up: true },\n" +
+		"				{ label: 'Latency', value: '42ms', change: '-15%', up: true },\n" +
+		"				{ label: 'Errors', value: '0.3%', change: '+0.1%', up: false },\n" +
+		"			];\n" +
+		"			batchLoading = false;\n" +
+		"		}, 500);\n" +
+		"		return () =\u003e clearTimeout(t);\n" +
+		"	});\n" +
+		"\n" +
+		"	// --- Prerender section ---\n" +
+		"	const buildConfig = {\n" +
+		"		version: '2.4.1',\n" +
+		"		buildTime: new Date().toISOString(),\n" +
+		"		environment: 'production',\n" +
+		"		features: ['remote-functions', 'async-ssr', 'single-flight'],\n" +
+		"	};\n" +
+		"\n" +
+		"	const conceptsList = [\n" +
+		"		'query() — typed data loading with caching',\n" +
+		"		'form() — validated form submission with progressive enhancement',\n" +
+		"		'command() — optimistic mutations with rollback',\n" +
+		"		'query.batch() — N+1 elimination via batched requests',\n" +
+		"		'prerender() — static build-time data',\n" +
+		"		'Single-flight mutations — server and client refresh',\n" +
+		"		'Async SSR — await in component bodies',\n" +
+		"		'fork() — preload on hover, commit on click',\n" +
+		"		'Valibot validation — schema-based type safety',\n" +
+		"	];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eModule 9B Project — Real-Time Data App\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e A dashboard demonstrating remote function concepts through\n" +
+		"		simulated implementations. Each section represents a different remote function pattern:\n" +
+		"		query, form, command, batch, and prerender.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003c!-- QUERY SECTION --\u003e\n" +
+		"		\u003cdiv class=\"panel\"\u003e\n" +
+		"			\u003ch2 class=\"panel-title\"\u003e\n" +
+		"				\u003cspan class=\"tag\"\u003equery\u003c/span\u003e\n" +
+		"				Product Search\n" +
+		"			\u003c/h2\u003e\n" +
+		"			\u003cp class=\"panel-desc\"\u003eSimulates a typed \u003ccode\u003equery()\u003c/code\u003e with reactive search arguments.\u003c/p\u003e\n" +
+		"			\u003cinput\n" +
+		"				type=\"text\"\n" +
+		"				class=\"search-input\"\n" +
+		"				placeholder=\"Search products by name or category...\"\n" +
+		"				bind:value={searchQuery}\n" +
+		"			/\u003e\n" +
+		"			{#if queryLoading}\n" +
+		"				\u003cdiv class=\"loading-msg\"\u003eLoading products...\u003c/div\u003e\n" +
+		"			{:else}\n" +
+		"				\u003cdiv class=\"product-list\"\u003e\n" +
+		"					{#each filteredProducts as product}\n" +
+		"						\u003cdiv class=\"product-row\"\u003e\n" +
+		"							\u003cspan class=\"product-name\"\u003e{product.name}\u003c/span\u003e\n" +
+		"							\u003cspan class=\"product-cat\"\u003e{product.category}\u003c/span\u003e\n" +
+		"							\u003cspan class=\"product-price\"\u003e${product.price.toFixed(2)}\u003c/span\u003e\n" +
+		"						\u003c/div\u003e\n" +
+		"					{:else}\n" +
+		"						\u003cp class=\"empty-msg\"\u003eNo products match \"{searchQuery}\"\u003c/p\u003e\n" +
+		"					{/each}\n" +
+		"				\u003c/div\u003e\n" +
+		"			{/if}\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003c!-- FORM SECTION --\u003e\n" +
+		"		\u003cdiv class=\"panel\"\u003e\n" +
+		"			\u003ch2 class=\"panel-title\"\u003e\n" +
+		"				\u003cspan class=\"tag\"\u003eform\u003c/span\u003e\n" +
+		"				Feedback Form\n" +
+		"			\u003c/h2\u003e\n" +
+		"			\u003cp class=\"panel-desc\"\u003eReal form action with Valibot validation via \u003ccode\u003e+page.server.ts\u003c/code\u003e.\u003c/p\u003e\n" +
+		"\n" +
+		"			{#if formResult?.success}\n" +
+		"				\u003cdiv class=\"success-box\"\u003e\n" +
+		"					\u003cp\u003eFeedback submitted! Thank you, {formResult.entry?.name}.\u003c/p\u003e\n" +
+		"					\u003cbutton class=\"btn-sm\" onclick={() =\u003e { formResult = null; }}\u003eSubmit another\u003c/button\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			{:else}\n" +
+		"				\u003cform\n" +
+		"					method=\"POST\"\n" +
+		"					action=\"?/submit\"\n" +
+		"					use:enhance={() =\u003e {\n" +
+		"						formSubmitting = true;\n" +
+		"						return async ({ result, update }) =\u003e {\n" +
+		"							formSubmitting = false;\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -299,6 +467,13 @@
 		</ul>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>How each remote function pattern maps to a real dashboard feature</li>
@@ -438,5 +613,43 @@
 	@media (min-width: 768px) {
 		.form-grid { grid-template-columns: 1fr 1fr; }
 		.full { grid-column: 1 / -1; }
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

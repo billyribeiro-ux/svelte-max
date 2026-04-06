@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const remoteFileCode = `// products.remote.ts
 import { query } from '$app/server';
 
@@ -62,6 +63,120 @@ export const getProducts = query(async () => {
 		}, 800);
 		return () => clearTimeout(timer);
 	});
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"const remoteFileCode = `// products.remote.ts\n" +
+		"import { query } from '$app/server';\n" +
+		"\n" +
+		"type Product = {\n" +
+		"  id: number;\n" +
+		"  name: string;\n" +
+		"  price: number;\n" +
+		"  inStock: boolean;\n" +
+		"};\n" +
+		"\n" +
+		"export const getProducts = query(async () =\u003e {\n" +
+		"  // This runs on the server only\n" +
+		"  const products: Product[] = await db.select().from(productsTable);\n" +
+		"  return products;\n" +
+		"  // Return type is automatically inferred as Product[]\n" +
+		"});`;\n" +
+		"\n" +
+		"	const usageCode = `\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  // +page.svelte\n" +
+		"  import { getProducts } from './products.remote';\n" +
+		"\n" +
+		"  // Call it like a function — returns a reactive value\n" +
+		"  const products = getProducts();\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"{#if products.current}\n" +
+		"  {#each products.current as product}\n" +
+		"    \u003cdiv class=\"product\"\u003e\n" +
+		"      \u003ch3\u003e{product.name}\u003c/h3\u003e\n" +
+		"      \u003cp\u003e\\${product.price}\u003c/p\u003e\n" +
+		"      \u003cspan\u003e{product.inStock ? 'In Stock' : 'Out of Stock'}\u003c/span\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  {/each}\n" +
+		"{/if}`;\n" +
+		"\n" +
+		"	const cachingNote = `// Queries are automatically cached and deduplicated.\n" +
+		"// Multiple components calling getProducts() = 1 HTTP request.\n" +
+		"// The cache is invalidated when a form or command refreshes it.`;\n" +
+		"\n" +
+		"	type Product = {\n" +
+		"		id: number;\n" +
+		"		name: string;\n" +
+		"		price: number;\n" +
+		"		inStock: boolean;\n" +
+		"	};\n" +
+		"\n" +
+		"	const mockProducts: Product[] = [\n" +
+		"		{ id: 1, name: 'Wireless Keyboard', price: 59.99, inStock: true },\n" +
+		"		{ id: 2, name: 'USB-C Hub', price: 34.99, inStock: true },\n" +
+		"		{ id: 3, name: 'Monitor Stand', price: 89.99, inStock: false },\n" +
+		"		{ id: 4, name: 'Webcam HD', price: 49.99, inStock: true },\n" +
+		"	];\n" +
+		"\n" +
+		"	let loading = $state(true);\n" +
+		"	let products = $state\u003cProduct[]\u003e([]);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const timer = setTimeout(() =\u003e {\n" +
+		"			products = mockProducts;\n" +
+		"			loading = false;\n" +
+		"		}, 800);\n" +
+		"		return () =\u003e clearTimeout(timer);\n" +
+		"	});\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9B.2 — query() Reading Data\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e \u003ccode\u003equery\u003c/code\u003e from \u003ccode\u003e$app/server\u003c/code\u003e defines a server\n" +
+		"		function that returns data. The browser calls it directly — no manual fetch. Caching is\n" +
+		"		automatic and the return value is reactive.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2\u003eRemote file definition\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{remoteFileCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eComponent usage\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{usageCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eAutomatic caching\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{cachingNote}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eSimulated demo\u003c/h2\u003e\n" +
+		"		\u003cp\u003eThis simulates what \u003ccode\u003egetProducts()\u003c/code\u003e would return:\u003c/p\u003e\n" +
+		"		{#if loading}\n" +
+		"			\u003cdiv class=\"loader\"\u003eLoading products...\u003c/div\u003e\n" +
+		"		{:else}\n" +
+		"			\u003cdiv class=\"product-grid\"\u003e\n" +
+		"				{#each products as product}\n" +
+		"					\u003cdiv class=\"product-card\"\u003e\n" +
+		"						\u003ch4\u003e{product.name}\u003c/h4\u003e\n" +
+		"						\u003cp class=\"price\"\u003e${product.price.toFixed(2)}\u003c/p\u003e\n" +
+		"						\u003cspan class=\"stock\" class:out={!product.inStock}\u003e\n" +
+		"							{product.inStock ? 'In Stock' : 'Out of Stock'}\n" +
+		"						\u003c/span\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				{/each}\n" +
+		"			\u003c/div\u003e\n" +
+		"		{/if}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003equery\u003c/code\u003e defines a server function in a \u003ccode\u003e.remote.ts\u003c/code\u003e file\u003c/li\u003e\n" +
+		"		\u003cli\u003eReturn types are inferred automatically — full end-to-end type safety\u003c/li\u003e\n" +
+		"		\u003cli\u003eQueries are cached and deduplicated across components\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe result is reactive — no manual \u003ccode\u003e$state\u003c/code\u003e wiring needed\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -101,6 +216,13 @@ export const getProducts = query(async () => {
 		{/if}
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>query</code> defines a server function in a <code>.remote.ts</code> file</li>
@@ -129,5 +251,43 @@ export const getProducts = query(async () => {
 	@media (min-width: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.product-grid { grid-template-columns: 1fr 1fr; }
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

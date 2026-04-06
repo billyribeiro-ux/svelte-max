@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const problemCode = `// Without batching: 4 widgets = 4 HTTP requests
 // Widget 1: getStats('revenue')   → HTTP POST
 // Widget 2: getStats('users')     → HTTP POST
@@ -54,6 +55,126 @@ export const getStats = query.batch(async (keys: string[]) => {
 		}, 600);
 		return () => clearTimeout(timer);
 	});
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"const problemCode = `// Without batching: 4 widgets = 4 HTTP requests\n" +
+		"// Widget 1: getStats('revenue')   → HTTP POST\n" +
+		"// Widget 2: getStats('users')     → HTTP POST\n" +
+		"// Widget 3: getStats('orders')    → HTTP POST\n" +
+		"// Widget 4: getStats('inventory') → HTTP POST\n" +
+		"// Total: 4 round trips!`;\n" +
+		"\n" +
+		"	const batchCode = `// stats.remote.ts\n" +
+		"import { query } from '$app/server';\n" +
+		"\n" +
+		"// query.batch() coalesces multiple calls into one request\n" +
+		"export const getStats = query.batch(async (keys: string[]) =\u003e {\n" +
+		"  // 'keys' is an array of all arguments from all callers\n" +
+		"  // e.g., ['revenue', 'users', 'orders', 'inventory']\n" +
+		"  const results = await db.stats.getMany(keys);\n" +
+		"\n" +
+		"  // Return a resolver function\n" +
+		"  return (key: string) =\u003e results.get(key);\n" +
+		"});`;\n" +
+		"\n" +
+		"	const usageBatchCode = `\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  // Each widget calls getStats independently\n" +
+		"  import { getStats } from './stats.remote';\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"\u003c!-- These 4 calls become 1 HTTP request --\u003e\n" +
+		"\u003cWidget title=\"Revenue\" data={getStats('revenue')} /\u003e\n" +
+		"\u003cWidget title=\"Users\"   data={getStats('users')} /\u003e\n" +
+		"\u003cWidget title=\"Orders\"  data={getStats('orders')} /\u003e\n" +
+		"\u003cWidget title=\"Stock\"   data={getStats('inventory')} /\u003e`;\n" +
+		"\n" +
+		"	type WidgetData = {\n" +
+		"		label: string;\n" +
+		"		value: string;\n" +
+		"		trend: string;\n" +
+		"		trendUp: boolean;\n" +
+		"	};\n" +
+		"\n" +
+		"	const widgetConfigs: WidgetData[] = [\n" +
+		"		{ label: 'Revenue', value: '$48,290', trend: '+12.5%', trendUp: true },\n" +
+		"		{ label: 'Users', value: '3,847', trend: '+8.2%', trendUp: true },\n" +
+		"		{ label: 'Orders', value: '1,204', trend: '-2.1%', trendUp: false },\n" +
+		"		{ label: 'Inventory', value: '15,603', trend: '+0.8%', trendUp: true },\n" +
+		"	];\n" +
+		"\n" +
+		"	let loading = $state(true);\n" +
+		"	let widgets = $state\u003cWidgetData[]\u003e([]);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const timer = setTimeout(() =\u003e {\n" +
+		"			widgets = widgetConfigs;\n" +
+		"			loading = false;\n" +
+		"		}, 600);\n" +
+		"		return () =\u003e clearTimeout(timer);\n" +
+		"	});\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9B.4 — query.batch()\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e The N+1 problem: 4 widgets calling the same query with different\n" +
+		"		arguments means 4 HTTP requests. \u003ccode\u003equery.batch()\u003c/code\u003e coalesces them into a single\n" +
+		"		request. The server callback receives an array of all arguments and returns a resolver.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2\u003eThe N+1 problem\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{problemCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eThe batch solution\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{batchCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eComponent usage\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{usageBatchCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eSimulated dashboard\u003c/h2\u003e\n" +
+		"		\u003cp\u003eThese 4 widgets load from a single \u003ccode\u003ePromise.all\u003c/code\u003e — simulating batch behavior:\u003c/p\u003e\n" +
+		"\n" +
+		"		{#if loading}\n" +
+		"			\u003cdiv class=\"widget-grid\"\u003e\n" +
+		"				{#each Array(4) as _}\n" +
+		"					\u003cdiv class=\"widget skeleton\"\u003e\n" +
+		"						\u003cdiv class=\"skel-label\"\u003e\u003c/div\u003e\n" +
+		"						\u003cdiv class=\"skel-value\"\u003e\u003c/div\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				{/each}\n" +
+		"			\u003c/div\u003e\n" +
+		"		{:else}\n" +
+		"			\u003cdiv class=\"widget-grid\"\u003e\n" +
+		"				{#each widgets as widget}\n" +
+		"					\u003cdiv class=\"widget\"\u003e\n" +
+		"						\u003cspan class=\"widget-label\"\u003e{widget.label}\u003c/span\u003e\n" +
+		"						\u003cspan class=\"widget-value\"\u003e{widget.value}\u003c/span\u003e\n" +
+		"						\u003cspan class=\"widget-trend\" class:up={widget.trendUp} class:down={!widget.trendUp}\u003e\n" +
+		"							{widget.trend}\n" +
+		"						\u003c/span\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				{/each}\n" +
+		"			\u003c/div\u003e\n" +
+		"		{/if}\n" +
+		"\n" +
+		"		\u003cdiv class=\"note\"\u003e\n" +
+		"			\u003cstrong\u003eKey insight:\u003c/strong\u003e With \u003ccode\u003equery.batch()\u003c/code\u003e, SvelteKit collects all pending\n" +
+		"			query calls in the current tick, sends them as one request, then distributes results back to\n" +
+		"			each caller.\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003equery.batch()\u003c/code\u003e solves the N+1 problem by coalescing multiple calls into one request\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe server receives an array of all arguments from all callers\u003c/li\u003e\n" +
+		"		\u003cli\u003eA resolver function maps each argument back to its result\u003c/li\u003e\n" +
+		"		\u003cli\u003eComponents call the function normally — batching is transparent\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -107,6 +228,13 @@ export const getStats = query.batch(async (keys: string[]) => {
 		</div>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>query.batch()</code> solves the N+1 problem by coalescing multiple calls into one request</li>
@@ -141,4 +269,42 @@ export const getStats = query.batch(async (keys: string[]) => {
 	.note { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); font-size: var(--text-sm); }
 	@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

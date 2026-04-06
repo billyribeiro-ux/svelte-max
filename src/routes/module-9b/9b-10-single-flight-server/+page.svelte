@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const problemCode = `// Without single-flight: 2 round trips
 // 1. POST /api/add-todo  → mutation
 // 2. GET  /api/todos     → re-fetch fresh list
@@ -35,6 +36,106 @@ export const createPost = form(PostSchema, async ({ data }) => {
   getPosts.refresh();
   // Fresh posts arrive with the form response!
 });`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"const problemCode = `// Without single-flight: 2 round trips\n" +
+		"// 1. POST /api/add-todo  → mutation\n" +
+		"// 2. GET  /api/todos     → re-fetch fresh list\n" +
+		"// Total: 2 HTTP requests, 2x latency`;\n" +
+		"\n" +
+		"	const solutionCode = `// todos.remote.ts\n" +
+		"import { command, query } from '$app/server';\n" +
+		"\n" +
+		"export const getTodos = query(async () =\u003e {\n" +
+		"  return await db.todos.findAll();\n" +
+		"});\n" +
+		"\n" +
+		"export const addTodo = command(async (title: string) =\u003e {\n" +
+		"  await db.todos.create({ title, done: false });\n" +
+		"\n" +
+		"  // Refresh the query ON THE SERVER — fresh data\n" +
+		"  // piggybacks on the mutation response\n" +
+		"  getTodos.refresh();\n" +
+		"});\n" +
+		"\n" +
+		"// Result: 1 request → mutation + fresh data → 1 response`;\n" +
+		"\n" +
+		"	const formRefreshCode = `// Also works with form():\n" +
+		"import { form, query } from '$app/server';\n" +
+		"\n" +
+		"export const getPosts = query(async () =\u003e {\n" +
+		"  return await db.posts.findAll();\n" +
+		"});\n" +
+		"\n" +
+		"export const createPost = form(PostSchema, async ({ data }) =\u003e {\n" +
+		"  await db.posts.create(data);\n" +
+		"\n" +
+		"  // Refresh in the form handler\n" +
+		"  getPosts.refresh();\n" +
+		"  // Fresh posts arrive with the form response!\n" +
+		"});`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9B.10 — Single-Flight Mutations (Server)\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e Normally, a mutation followed by a data refresh requires two\n" +
+		"		round trips. With single-flight mutations, you call \u003ccode\u003e.refresh()\u003c/code\u003e on a query\n" +
+		"		inside a command or form handler. The fresh data piggybacks on the mutation response —\n" +
+		"		one request, one response.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2\u003eThe two-request problem\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{problemCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eServer-driven single-flight\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{solutionCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eWorks with forms too\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{formRefreshCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eHow it works\u003c/h2\u003e\n" +
+		"		\u003cdiv class=\"diagram\"\u003e\n" +
+		"			\u003cdiv class=\"diagram-row\"\u003e\n" +
+		"				\u003cdiv class=\"diagram-box client\"\u003eClient\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"diagram-arrow\"\u003ePOST addTodo(\"Buy milk\")\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"diagram-box server\"\u003eServer\u003c/div\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"diagram-step\"\u003e\n" +
+		"				\u003cspan class=\"step-num\"\u003e1\u003c/span\u003e\n" +
+		"				\u003cspan\u003eServer executes \u003ccode\u003eaddTodo\u003c/code\u003e mutation\u003c/span\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"diagram-step\"\u003e\n" +
+		"				\u003cspan class=\"step-num\"\u003e2\u003c/span\u003e\n" +
+		"				\u003cspan\u003eServer sees \u003ccode\u003egetTodos.refresh()\u003c/code\u003e and re-runs that query\u003c/span\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"diagram-step\"\u003e\n" +
+		"				\u003cspan class=\"step-num\"\u003e3\u003c/span\u003e\n" +
+		"				\u003cspan\u003eBoth results bundled into one response\u003c/span\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"diagram-row\"\u003e\n" +
+		"				\u003cdiv class=\"diagram-box server\"\u003eServer\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"diagram-arrow reverse\"\u003e{'{ mutation: ok, todos: [...] }'}\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"diagram-box client\"\u003eClient\u003c/div\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"diagram-step highlight\"\u003e\n" +
+		"				\u003cspan class=\"step-num\"\u003e!\u003c/span\u003e\n" +
+		"				\u003cspan\u003e\u003cstrong\u003e1 round trip\u003c/strong\u003e instead of 2. No stale data flicker.\u003c/span\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eSingle-flight mutations eliminate the second round trip for data refresh\u003c/li\u003e\n" +
+		"		\u003cli\u003eCall \u003ccode\u003e.refresh()\u003c/code\u003e on queries inside command or form handlers\u003c/li\u003e\n" +
+		"		\u003cli\u003eFresh data piggybacks on the mutation response automatically\u003c/li\u003e\n" +
+		"		\u003cli\u003eThis is server-driven — the server decides which queries to refresh\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -87,6 +188,13 @@ export const createPost = form(PostSchema, async ({ data }) => {
 		</div>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Single-flight mutations eliminate the second round trip for data refresh</li>
@@ -128,4 +236,42 @@ export const createPost = form(PostSchema, async ({ data }) => {
 	.diagram-step.highlight { background: oklch(80% 0.08 145 / 0.2); padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-sm); }
 	.diagram-step.highlight .step-num { background: oklch(60% 0.15 145); color: white; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const asyncCode = `\u003cscript lang="ts"\u003e
   // With compilerOptions.experimental.async: true
   // you can await directly in the component body!
@@ -60,6 +61,140 @@
 		setTimeout(() => { section1Loaded = true; }, 600);
 		setTimeout(() => { section2Loaded = true; }, 1400);
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"const asyncCode = `\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  // With compilerOptions.experimental.async: true\n" +
+		"  // you can await directly in the component body!\n" +
+		"  import { getUser } from './user.remote';\n" +
+		"  import { getPosts } from './posts.remote';\n" +
+		"\n" +
+		"  // These run concurrently — no waterfall\n" +
+		"  const user = await getUser();\n" +
+		"  const posts = await getPosts(user.id);\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"\u003ch1\u003eWelcome, {user.name}\u003c/h1\u003e\n" +
+		"{#each posts as post}\n" +
+		"  \u003carticle\u003e{post.title}\u003c/article\u003e\n" +
+		"{/each}`;\n" +
+		"\n" +
+		"	const boundaryCode = `\u003c!-- svelte:boundary handles loading states --\u003e\n" +
+		"\u003csvelte:boundary\u003e\n" +
+		"  {#snippet pending()}\n" +
+		"    \u003cdiv class=\"skeleton\"\u003eLoading user profile...\u003c/div\u003e\n" +
+		"  {/snippet}\n" +
+		"\n" +
+		"  \u003c!-- This component uses await internally --\u003e\n" +
+		"  \u003cUserProfile /\u003e\n" +
+		"\u003c/svelte:boundary\u003e`;\n" +
+		"\n" +
+		"	const concurrentCode = `\u003c!-- Independent sections load concurrently --\u003e\n" +
+		"\u003cdiv class=\"dashboard\"\u003e\n" +
+		"  \u003csvelte:boundary\u003e\n" +
+		"    {#snippet pending()}\n" +
+		"      \u003cp\u003eLoading stats...\u003c/p\u003e\n" +
+		"    {/snippet}\n" +
+		"    \u003cStatsWidget /\u003e\n" +
+		"  \u003c/svelte:boundary\u003e\n" +
+		"\n" +
+		"  \u003csvelte:boundary\u003e\n" +
+		"    {#snippet pending()}\n" +
+		"      \u003cp\u003eLoading feed...\u003c/p\u003e\n" +
+		"    {/snippet}\n" +
+		"    \u003cFeedWidget /\u003e\n" +
+		"  \u003c/svelte:boundary\u003e\n" +
+		"\n" +
+		"  \u003c!-- Each boundary resolves independently --\u003e\n" +
+		"  \u003c!-- Fast data appears first, slow data streams in --\u003e\n" +
+		"\u003c/div\u003e`;\n" +
+		"\n" +
+		"	let section1Loaded = $state(false);\n" +
+		"	let section2Loaded = $state(false);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const t1 = setTimeout(() =\u003e { section1Loaded = true; }, 600);\n" +
+		"		const t2 = setTimeout(() =\u003e { section2Loaded = true; }, 1400);\n" +
+		"		return () =\u003e { clearTimeout(t1); clearTimeout(t2); };\n" +
+		"	});\n" +
+		"\n" +
+		"	function reload() {\n" +
+		"		section1Loaded = false;\n" +
+		"		section2Loaded = false;\n" +
+		"		setTimeout(() =\u003e { section1Loaded = true; }, 600);\n" +
+		"		setTimeout(() =\u003e { section2Loaded = true; }, 1400);\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9B.12 — Async SSR\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e With \u003ccode\u003ecompilerOptions.experimental.async: true\u003c/code\u003e, you\n" +
+		"		can use \u003ccode\u003eawait\u003c/code\u003e directly in a component body. \u003ccode\u003e&lt;svelte:boundary&gt;\u003c/code\u003e\n" +
+		"		with a \u003ccode\u003epending\u003c/code\u003e snippet provides loading states. Independent awaits run\n" +
+		"		concurrently — no waterfall.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2\u003eAwait in component body\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{asyncCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eLoading states with svelte:boundary\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{boundaryCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eConcurrent independent loads\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{concurrentCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eSimulated concurrent loading\u003c/h2\u003e\n" +
+		"		\u003cp\u003eTwo sections load independently — fast data appears first (600ms), slow data streams in (1400ms):\u003c/p\u003e\n" +
+		"\n" +
+		"		\u003cbutton class=\"reload-btn\" onclick={reload}\u003eReload demo\u003c/button\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"concurrent-grid\"\u003e\n" +
+		"			\u003cdiv class=\"async-section\"\u003e\n" +
+		"				\u003ch4\u003eStats Widget (fast)\u003c/h4\u003e\n" +
+		"				{#if section1Loaded}\n" +
+		"					\u003cdiv class=\"loaded-content\"\u003e\n" +
+		"						\u003cp class=\"stat-value\"\u003e2,847\u003c/p\u003e\n" +
+		"						\u003cp class=\"stat-label\"\u003eActive Users\u003c/p\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				{:else}\n" +
+		"					\u003cdiv class=\"loading-placeholder\"\u003e\n" +
+		"						\u003cdiv class=\"pulse-bar\"\u003e\u003c/div\u003e\n" +
+		"						\u003cdiv class=\"pulse-bar short\"\u003e\u003c/div\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				{/if}\n" +
+		"			\u003c/div\u003e\n" +
+		"\n" +
+		"			\u003cdiv class=\"async-section\"\u003e\n" +
+		"				\u003ch4\u003eFeed Widget (slow)\u003c/h4\u003e\n" +
+		"				{#if section2Loaded}\n" +
+		"					\u003cdiv class=\"loaded-content\"\u003e\n" +
+		"						\u003cp class=\"feed-item\"\u003eNew deployment completed\u003c/p\u003e\n" +
+		"						\u003cp class=\"feed-item\"\u003eUser signup spike detected\u003c/p\u003e\n" +
+		"						\u003cp class=\"feed-item\"\u003eCache hit ratio: 98.7%\u003c/p\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				{:else}\n" +
+		"					\u003cdiv class=\"loading-placeholder\"\u003e\n" +
+		"						\u003cdiv class=\"pulse-bar\"\u003e\u003c/div\u003e\n" +
+		"						\u003cdiv class=\"pulse-bar\"\u003e\u003c/div\u003e\n" +
+		"						\u003cdiv class=\"pulse-bar short\"\u003e\u003c/div\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				{/if}\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eAsync SSR allows \u003ccode\u003eawait\u003c/code\u003e directly in component bodies\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003e&lt;svelte:boundary&gt;\u003c/code\u003e with \u003ccode\u003epending\u003c/code\u003e snippet provides loading UI\u003c/li\u003e\n" +
+		"		\u003cli\u003eIndependent async sections load concurrently — no waterfall\u003c/li\u003e\n" +
+		"		\u003cli\u003eFast data appears immediately; slow data streams in as it resolves\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -121,6 +256,13 @@
 		</div>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Async SSR allows <code>await</code> directly in component bodies</li>
@@ -165,5 +307,43 @@
 	@media (min-width: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concurrent-grid { grid-template-columns: 1fr 1fr; }
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

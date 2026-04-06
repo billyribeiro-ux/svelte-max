@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	type Row = {
 		pattern: string;
 		when: string;
@@ -66,6 +67,140 @@
 		{ question: 'Is it a public API or webhook?', yes: '+server.ts', no: 'Next question' },
 		{ question: 'Is the data static / build-time?', yes: 'prerender()', no: 'Re-evaluate needs' },
 	];
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"type Row = {\n" +
+		"		pattern: string;\n" +
+		"		when: string;\n" +
+		"		strengths: string;\n" +
+		"		limitations: string;\n" +
+		"		module: string;\n" +
+		"	};\n" +
+		"\n" +
+		"	const rows: Row[] = [\n" +
+		"		{\n" +
+		"			pattern: 'load()',\n" +
+		"			when: 'Initial page data, SSR-critical content',\n" +
+		"			strengths: 'SSR, preloading, type-safe, established pattern',\n" +
+		"			limitations: 'Page-scoped, no interactive re-fetching',\n" +
+		"			module: 'Module 9',\n" +
+		"		},\n" +
+		"		{\n" +
+		"			pattern: 'Remote query',\n" +
+		"			when: 'Interactive fetching, reactive data, component-level',\n" +
+		"			strengths: 'Cached, deduplicated, reactive, type-safe',\n" +
+		"			limitations: 'Experimental, requires .remote.ts files',\n" +
+		"			module: 'Module 9B',\n" +
+		"		},\n" +
+		"		{\n" +
+		"			pattern: 'Remote form',\n" +
+		"			when: 'Form submissions, mutations with progressive enhancement',\n" +
+		"			strengths: 'Works without JS, Valibot validation, field API',\n" +
+		"			limitations: 'Experimental, form-shaped data only',\n" +
+		"			module: 'Module 9B',\n" +
+		"		},\n" +
+		"		{\n" +
+		"			pattern: 'Remote command',\n" +
+		"			when: 'Side effects, mutations triggered by events',\n" +
+		"			strengths: 'Simple API, single-flight support',\n" +
+		"			limitations: 'Experimental, cannot call during render',\n" +
+		"			module: 'Module 9B',\n" +
+		"		},\n" +
+		"		{\n" +
+		"			pattern: '+server.ts',\n" +
+		"			when: 'Public APIs, webhooks, streaming, custom headers',\n" +
+		"			strengths: 'Full HTTP control, shareable endpoints',\n" +
+		"			limitations: 'Manual fetch, no type inference to client',\n" +
+		"			module: 'Module 9',\n" +
+		"		},\n" +
+		"		{\n" +
+		"			pattern: 'prerender',\n" +
+		"			when: 'Static data, build-time content, CDN deployment',\n" +
+		"			strengths: 'Zero runtime cost, CDN-friendly',\n" +
+		"			limitations: 'Stale until rebuild, limited inputs',\n" +
+		"			module: 'Module 9B',\n" +
+		"		},\n" +
+		"	];\n" +
+		"\n" +
+		"	type FlowStep = {\n" +
+		"		question: string;\n" +
+		"		yes: string;\n" +
+		"		no: string;\n" +
+		"	};\n" +
+		"\n" +
+		"	const flowSteps: FlowStep[] = [\n" +
+		"		{ question: 'Does it need SSR?', yes: 'load()', no: 'Next question' },\n" +
+		"		{ question: 'Is it a form submission?', yes: 'Remote form()', no: 'Next question' },\n" +
+		"		{ question: 'Is it a mutation / side effect?', yes: 'Remote command()', no: 'Next question' },\n" +
+		"		{ question: 'Is it interactive data fetching?', yes: 'Remote query()', no: 'Next question' },\n" +
+		"		{ question: 'Is it a public API or webhook?', yes: '+server.ts', no: 'Next question' },\n" +
+		"		{ question: 'Is the data static / build-time?', yes: 'prerender()', no: 'Re-evaluate needs' },\n" +
+		"	];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9B.14 — Choosing the Right Tool\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e SvelteKit offers multiple patterns for server-client data flow.\n" +
+		"		Choosing the right one depends on SSR needs, mutation type, progressive enhancement\n" +
+		"		requirements, and whether the API is public. This lesson provides a decision framework.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2\u003eDecision matrix\u003c/h2\u003e\n" +
+		"		\u003cdiv class=\"table-wrap\"\u003e\n" +
+		"			\u003ctable\u003e\n" +
+		"				\u003cthead\u003e\n" +
+		"					\u003ctr\u003e\n" +
+		"						\u003cth\u003ePattern\u003c/th\u003e\n" +
+		"						\u003cth\u003eWhen\u003c/th\u003e\n" +
+		"						\u003cth\u003eStrengths\u003c/th\u003e\n" +
+		"						\u003cth\u003eLimitations\u003c/th\u003e\n" +
+		"						\u003cth\u003eRef\u003c/th\u003e\n" +
+		"					\u003c/tr\u003e\n" +
+		"				\u003c/thead\u003e\n" +
+		"				\u003ctbody\u003e\n" +
+		"					{#each rows as row}\n" +
+		"						\u003ctr\u003e\n" +
+		"							\u003ctd\u003e\u003ccode\u003e{row.pattern}\u003c/code\u003e\u003c/td\u003e\n" +
+		"							\u003ctd\u003e{row.when}\u003c/td\u003e\n" +
+		"							\u003ctd\u003e{row.strengths}\u003c/td\u003e\n" +
+		"							\u003ctd\u003e{row.limitations}\u003c/td\u003e\n" +
+		"							\u003ctd\u003e{row.module}\u003c/td\u003e\n" +
+		"						\u003c/tr\u003e\n" +
+		"					{/each}\n" +
+		"				\u003c/tbody\u003e\n" +
+		"			\u003c/table\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eFlowchart guide\u003c/h2\u003e\n" +
+		"		\u003cdiv class=\"flow\"\u003e\n" +
+		"			{#each flowSteps as step, i}\n" +
+		"				\u003cdiv class=\"flow-step\"\u003e\n" +
+		"					\u003cdiv class=\"flow-question\"\u003e\n" +
+		"						\u003cspan class=\"flow-num\"\u003e{i + 1}\u003c/span\u003e\n" +
+		"						{step.question}\n" +
+		"					\u003c/div\u003e\n" +
+		"					\u003cdiv class=\"flow-answers\"\u003e\n" +
+		"						\u003cspan class=\"flow-yes\"\u003eYes: \u003cstrong\u003e{step.yes}\u003c/strong\u003e\u003c/span\u003e\n" +
+		"						\u003cspan class=\"flow-no\"\u003eNo: {step.no}\u003c/span\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"				{#if i \u003c flowSteps.length - 1}\n" +
+		"					\u003cdiv class=\"flow-connector\"\u003e\u003c/div\u003e\n" +
+		"				{/if}\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eQuick rules of thumb\u003c/h2\u003e\n" +
+		"		\u003cdiv class=\"rules\"\u003e\n" +
+		"			\u003cdiv class=\"rule\"\u003e\n" +
+		"				\u003cstrong\u003eStart with \u003ccode\u003eload()\u003c/code\u003e\u003c/strong\u003e for page data. It is the established,\n" +
+		"				stable pattern with full SSR support.\n" +
+		"			\u003c/div\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -143,6 +278,13 @@
 		</div>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Six patterns for server-client data flow, each with distinct use cases</li>
@@ -193,4 +335,42 @@
 	}
 	.rule strong { color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const forkCode = `\u003cscript lang="ts"\u003e
   import { fork } from 'svelte';
   import { getProductDetails } from './products.remote';
@@ -87,6 +88,180 @@
 		preloadState = 'idle';
 		contentLoaded = false;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"const forkCode = `\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  import { fork } from 'svelte';\n" +
+		"  import { getProductDetails } from './products.remote';\n" +
+		"\n" +
+		"  let productId = $state('abc');\n" +
+		"\n" +
+		"  // fork() preloads async work without applying it\n" +
+		"  const pending = fork(() =\u003e {\n" +
+		"    // This runs the async boundary eagerly\n" +
+		"    return getProductDetails(productId);\n" +
+		"  });\n" +
+		"\n" +
+		"  function handleHover() {\n" +
+		"    // Start preloading on hover\n" +
+		"    pending.start();\n" +
+		"  }\n" +
+		"\n" +
+		"  function handleClick() {\n" +
+		"    // Apply the preloaded result\n" +
+		"    pending.commit();\n" +
+		"  }\n" +
+		"\n" +
+		"  function handleCancel() {\n" +
+		"    // Abandon the preloaded work\n" +
+		"    pending.discard();\n" +
+		"  }\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"\u003cbutton\n" +
+		"  onmouseenter={handleHover}\n" +
+		"  onclick={handleClick}\n" +
+		"\u003e\n" +
+		"  View Details\n" +
+		"\u003c/button\u003e`;\n" +
+		"\n" +
+		"	const useCaseCode = `// Use cases for fork():\n" +
+		"//\n" +
+		"// 1. Preload on hover, apply on click\n" +
+		"//    → Start loading product details when user hovers\n" +
+		"//    → Show instantly when they click\n" +
+		"//\n" +
+		"// 2. Speculative prefetching\n" +
+		"//    → Load the next page while user reads current\n" +
+		"//    → Commit when they navigate\n" +
+		"//\n" +
+		"// 3. Preview before commit\n" +
+		"//    → Load a preview state\n" +
+		"//    → commit() to apply, discard() to abandon\n" +
+		"//\n" +
+		"// 4. Optimistic navigation\n" +
+		"//    → Fork the target page data\n" +
+		"//    → Commit on navigation, discard on cancel`;\n" +
+		"\n" +
+		"	let preloadState = $state\u003c'idle' | 'loading' | 'ready' | 'shown'\u003e('idle');\n" +
+		"	let contentLoaded = $state(false);\n" +
+		"\n" +
+		"	const detailContent = {\n" +
+		"		title: 'Premium Widget Pro',\n" +
+		"		description: 'A high-quality widget with advanced features for professional use.',\n" +
+		"		specs: ['Titanium build', '48-hour battery', 'IP68 waterproof', 'USB-C fast charge'],\n" +
+		"		price: '$299.99',\n" +
+		"	};\n" +
+		"\n" +
+		"	function handleHover() {\n" +
+		"		if (preloadState === 'idle') {\n" +
+		"			preloadState = 'loading';\n" +
+		"			setTimeout(() =\u003e {\n" +
+		"				contentLoaded = true;\n" +
+		"				preloadState = 'ready';\n" +
+		"			}, 600);\n" +
+		"		}\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleCommit() {\n" +
+		"		if (preloadState === 'ready') {\n" +
+		"			preloadState = 'shown';\n" +
+		"		}\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleDiscard() {\n" +
+		"		preloadState = 'idle';\n" +
+		"		contentLoaded = false;\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleReset() {\n" +
+		"		preloadState = 'idle';\n" +
+		"		contentLoaded = false;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9B.13 — fork()\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e \u003ccode\u003efork()\u003c/code\u003e preloads async work without applying it.\n" +
+		"		\u003ccode\u003epending.commit()\u003c/code\u003e applies the result. \u003ccode\u003epending.discard()\u003c/code\u003e abandons it.\n" +
+		"		Use case: preload on hover, apply on click — instant perceived performance.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2\u003efork() API\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{forkCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eUse cases\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{useCaseCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eSimulated preload demo\u003c/h2\u003e\n" +
+		"		\u003cp\u003eHover the button to preload. Click to commit (show). Or discard to cancel:\u003c/p\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"demo-area\"\u003e\n" +
+		"			\u003cdiv class=\"status-bar\"\u003e\n" +
+		"				Status: \u003cstrong\u003e{preloadState}\u003c/strong\u003e\n" +
+		"				{#if preloadState === 'loading'}\n" +
+		"					\u003cspan class=\"spinner\"\u003e\u003c/span\u003e\n" +
+		"				{/if}\n" +
+		"			\u003c/div\u003e\n" +
+		"\n" +
+		"			\u003cdiv class=\"button-row\"\u003e\n" +
+		"				\u003cbutton\n" +
+		"					class=\"action-btn primary\"\n" +
+		"					onmouseenter={handleHover}\n" +
+		"					onclick={handleCommit}\n" +
+		"					disabled={preloadState === 'shown'}\n" +
+		"				\u003e\n" +
+		"					{#if preloadState === 'idle'}\n" +
+		"						Hover to preload\n" +
+		"					{:else if preloadState === 'loading'}\n" +
+		"						Loading...\n" +
+		"					{:else if preloadState === 'ready'}\n" +
+		"						Click to commit\n" +
+		"					{:else}\n" +
+		"						Committed!\n" +
+		"					{/if}\n" +
+		"				\u003c/button\u003e\n" +
+		"\n" +
+		"				{#if preloadState === 'ready'}\n" +
+		"					\u003cbutton class=\"action-btn secondary\" onclick={handleDiscard}\u003e\n" +
+		"						Discard\n" +
+		"					\u003c/button\u003e\n" +
+		"				{/if}\n" +
+		"\n" +
+		"				{#if preloadState === 'shown'}\n" +
+		"					\u003cbutton class=\"action-btn secondary\" onclick={handleReset}\u003e\n" +
+		"						Reset\n" +
+		"					\u003c/button\u003e\n" +
+		"				{/if}\n" +
+		"			\u003c/div\u003e\n" +
+		"\n" +
+		"			{#if preloadState === 'shown'}\n" +
+		"				\u003cdiv class=\"detail-card\"\u003e\n" +
+		"					\u003ch4\u003e{detailContent.title}\u003c/h4\u003e\n" +
+		"					\u003cp class=\"detail-desc\"\u003e{detailContent.description}\u003c/p\u003e\n" +
+		"					\u003cul class=\"spec-list\"\u003e\n" +
+		"						{#each detailContent.specs as spec}\n" +
+		"							\u003cli\u003e{spec}\u003c/li\u003e\n" +
+		"						{/each}\n" +
+		"					\u003c/ul\u003e\n" +
+		"					\u003cp class=\"detail-price\"\u003e{detailContent.price}\u003c/p\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			{/if}\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003efork()\u003c/code\u003e starts async work without applying it to the UI\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003ecommit()\u003c/code\u003e applies the preloaded result instantly\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003ediscard()\u003c/code\u003e abandons preloaded work without side effects\u003c/li\u003e\n" +
+		"		\u003cli\u003eHover-to-preload, click-to-show provides perceived instant navigation\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -161,6 +336,13 @@
 		</div>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>fork()</code> starts async work without applying it to the UI</li>
@@ -209,4 +391,42 @@
 	@keyframes spin { to { transform: rotate(360deg); } }
 	@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

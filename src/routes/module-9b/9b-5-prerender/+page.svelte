@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const prerenderCode = `// config.remote.ts
 import { prerender } from '$app/server';
 
@@ -41,6 +42,108 @@ export const getPost = prerender(
 		{ key: 'Locale', value: 'en-US' },
 		{ key: 'Build Time', value: buildTime },
 	];
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"const prerenderCode = `// config.remote.ts\n" +
+		"import { prerender } from '$app/server';\n" +
+		"\n" +
+		"// Runs at build time — result is baked into the bundle\n" +
+		"export const getSiteConfig = prerender(async () =\u003e {\n" +
+		"  const config = await fetch('https://api.example.com/config');\n" +
+		"  return config.json();\n" +
+		"});`;\n" +
+		"\n" +
+		"	const inputsCode = `// blog-posts.remote.ts\n" +
+		"import { prerender } from '$app/server';\n" +
+		"\n" +
+		"// 'inputs' specifies which arguments to prerender\n" +
+		"export const getPost = prerender(\n" +
+		"  async (slug: string) =\u003e {\n" +
+		"    return await db.posts.findBySlug(slug);\n" +
+		"  },\n" +
+		"  {\n" +
+		"    inputs: ['intro-to-svelte', 'advanced-runes', 'remote-functions']\n" +
+		"  }\n" +
+		");`;\n" +
+		"\n" +
+		"	const dynamicCode = `// With dynamic: true, unknown inputs fall back to server\n" +
+		"export const getPost = prerender(\n" +
+		"  async (slug: string) =\u003e {\n" +
+		"    return await db.posts.findBySlug(slug);\n" +
+		"  },\n" +
+		"  {\n" +
+		"    inputs: ['intro-to-svelte', 'advanced-runes'],\n" +
+		"    dynamic: true  // slugs not in 'inputs' hit the server at runtime\n" +
+		"  }\n" +
+		");`;\n" +
+		"\n" +
+		"	const buildTime = new Date().toISOString();\n" +
+		"\n" +
+		"	const staticData = [\n" +
+		"		{ key: 'Site Name', value: 'SvelteMax Learning Platform' },\n" +
+		"		{ key: 'Version', value: '2.4.1' },\n" +
+		"		{ key: 'Theme', value: 'Dark' },\n" +
+		"		{ key: 'Locale', value: 'en-US' },\n" +
+		"		{ key: 'Build Time', value: buildTime },\n" +
+		"	];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9B.5 — prerender Remote Functions\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e \u003ccode\u003eprerender\u003c/code\u003e from \u003ccode\u003e$app/server\u003c/code\u003e runs at build\n" +
+		"		time, producing static data baked into the bundle. Perfect for CDN deployment. The\n" +
+		"		\u003ccode\u003einputs\u003c/code\u003e option specifies which arguments to prerender, and\n" +
+		"		\u003ccode\u003edynamic: true\u003c/code\u003e falls back to the server for unknown inputs.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2\u003eBasic prerender\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{prerenderCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003ePrerender with specific inputs\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{inputsCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eDynamic fallback\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{dynamicCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eSimulated prerendered data\u003c/h2\u003e\n" +
+		"		\u003cp\u003eThis represents what a prerendered config query would produce — static data frozen at build time:\u003c/p\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"config-table\"\u003e\n" +
+		"			{#each staticData as item}\n" +
+		"				\u003cdiv class=\"config-row\"\u003e\n" +
+		"					\u003cspan class=\"config-key\"\u003e{item.key}\u003c/span\u003e\n" +
+		"					\u003cspan class=\"config-value\"\u003e{item.value}\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"note\"\u003e\n" +
+		"			\u003cstrong\u003eCDN-friendly:\u003c/strong\u003e Prerendered data is served as static files. No server needed at\n" +
+		"			runtime for these queries. The data only changes when you rebuild.\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhen to prerender vs query\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003ePrerender\u003c/strong\u003e when data changes rarely — site config, navigation structure,\n" +
+		"		documentation index. \u003cstrong\u003eQuery at runtime\u003c/strong\u003e when data changes per request — user-specific\n" +
+		"		content, real-time dashboards. Use \u003ccode\u003edynamic: true\u003c/code\u003e for data that USUALLY doesn't change\n" +
+		"		but CAN — for example, a product catalog that you prerender at build time but fall back to the\n" +
+		"		server on cache miss for newly added items.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003eprerender\u003c/code\u003e runs queries at build time, embedding results in the bundle\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe \u003ccode\u003einputs\u003c/code\u003e option specifies which arguments to precompute\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003edynamic: true\u003c/code\u003e allows runtime fallback for unknown inputs\u003c/li\u003e\n" +
+		"		\u003cli\u003ePrerendered data is ideal for config, blog posts, and other rarely-changing content\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -89,6 +192,13 @@ export const getPost = prerender(
 		server on cache miss for newly added items.
 	</p>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>prerender</code> runs queries at build time, embedding results in the bundle</li>
@@ -113,4 +223,42 @@ export const getPost = prerender(
 	.config-value { color: var(--color-text-muted); font-family: var(--font-mono); font-size: var(--text-sm); }
 	.note { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); font-size: var(--text-sm); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const commandCode = `// todos.remote.ts
 import { command } from '$app/server';
 
@@ -74,6 +75,138 @@ deleteTodo('123');  // only in onclick, onsubmit, etc.`;
 	function handleToggle(id: string) {
 		todos = todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"const commandCode = `// todos.remote.ts\n" +
+		"import { command } from '$app/server';\n" +
+		"\n" +
+		"// command() is for mutations with side effects\n" +
+		"export const deleteTodo = command(async (id: string) =\u003e {\n" +
+		"  await db.todos.delete(id);\n" +
+		"  return { deleted: id };\n" +
+		"});\n" +
+		"\n" +
+		"export const toggleTodo = command(async (id: string) =\u003e {\n" +
+		"  const todo = await db.todos.findById(id);\n" +
+		"  await db.todos.update(id, { done: !todo.done });\n" +
+		"  return { id, done: !todo.done };\n" +
+		"});`;\n" +
+		"\n" +
+		"	const usageCommandCode = `\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  import { deleteTodo, toggleTodo } from './todos.remote';\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"{#each todos as todo}\n" +
+		"  \u003cdiv\u003e\n" +
+		"    \u003cspan\u003e{todo.title}\u003c/span\u003e\n" +
+		"    \u003c!-- command() cannot be called during render — only in handlers --\u003e\n" +
+		"    \u003cbutton onclick={() =\u003e toggleTodo(todo.id)}\u003eToggle\u003c/button\u003e\n" +
+		"    \u003cbutton onclick={() =\u003e deleteTodo(todo.id)}\u003eDelete\u003c/button\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"{/each}`;\n" +
+		"\n" +
+		"	const diffCode = `// query vs command:\n" +
+		"// query  → READ  → can be called during render → cached\n" +
+		"// command → WRITE → only in event handlers   → never cached\n" +
+		"\n" +
+		"// query runs automatically when args change\n" +
+		"const products = getProducts(); // OK during render\n" +
+		"\n" +
+		"// command must be triggered explicitly\n" +
+		"deleteTodo('123');  // only in onclick, onsubmit, etc.`;\n" +
+		"\n" +
+		"	type TodoItem = {\n" +
+		"		id: string;\n" +
+		"		title: string;\n" +
+		"		done: boolean;\n" +
+		"	};\n" +
+		"\n" +
+		"	let todos = $state\u003cTodoItem[]\u003e([\n" +
+		"		{ id: '1', title: 'Learn remote functions', done: true },\n" +
+		"		{ id: '2', title: 'Build a dashboard', done: false },\n" +
+		"		{ id: '3', title: 'Deploy to production', done: false },\n" +
+		"		{ id: '4', title: 'Write documentation', done: false },\n" +
+		"	]);\n" +
+		"\n" +
+		"	let deletedTodo = $state\u003c{ item: TodoItem; index: number } | null\u003e(null);\n" +
+		"\n" +
+		"	function handleDelete(id: string) {\n" +
+		"		const index = todos.findIndex((t) =\u003e t.id === id);\n" +
+		"		if (index === -1) return;\n" +
+		"		const item = todos[index];\n" +
+		"		deletedTodo = { item, index };\n" +
+		"		todos = todos.filter((t) =\u003e t.id !== id);\n" +
+		"\n" +
+		"		setTimeout(() =\u003e {\n" +
+		"			deletedTodo = null;\n" +
+		"		}, 3000);\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleUndo() {\n" +
+		"		if (!deletedTodo) return;\n" +
+		"		const { item, index } = deletedTodo;\n" +
+		"		todos = [...todos.slice(0, index), item, ...todos.slice(index)];\n" +
+		"		deletedTodo = null;\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleToggle(id: string) {\n" +
+		"		todos = todos.map((t) =\u003e (t.id === id ? { ...t, done: !t.done } : t));\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9B.9 — command() Mutations\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e \u003ccode\u003ecommand\u003c/code\u003e from \u003ccode\u003e$app/server\u003c/code\u003e defines server\n" +
+		"		operations with side effects. Unlike \u003ccode\u003equery\u003c/code\u003e, commands cannot be called during\n" +
+		"		render — only in event handlers. They are never cached.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2\u003eDefining commands\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{commandCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eUsing commands in components\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{usageCommandCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003equery vs command\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{diffCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eSimulated optimistic delete\u003c/h2\u003e\n" +
+		"		\u003cp\u003eClick delete to optimistically remove an item. An undo toast appears for 3 seconds:\u003c/p\u003e\n" +
+		"\n" +
+		"		{#if deletedTodo}\n" +
+		"			\u003cdiv class=\"toast\"\u003e\n" +
+		"				Deleted \"{deletedTodo.item.title}\"\n" +
+		"				\u003cbutton class=\"undo-btn\" onclick={handleUndo}\u003eUndo\u003c/button\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		{/if}\n" +
+		"\n" +
+		"		\u003cdiv class=\"todo-list\"\u003e\n" +
+		"			{#each todos as todo}\n" +
+		"				\u003cdiv class=\"todo-item\" class:done={todo.done}\u003e\n" +
+		"					\u003cbutton class=\"toggle-btn\" onclick={() =\u003e handleToggle(todo.id)}\u003e\n" +
+		"						{todo.done ? '[x]' : '[ ]'}\n" +
+		"					\u003c/button\u003e\n" +
+		"					\u003cspan class=\"todo-title\"\u003e{todo.title}\u003c/span\u003e\n" +
+		"					\u003cbutton class=\"delete-btn\" onclick={() =\u003e handleDelete(todo.id)}\u003eDelete\u003c/button\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			{:else}\n" +
+		"				\u003cp class=\"empty\"\u003eAll todos deleted!\u003c/p\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003ecommand()\u003c/code\u003e defines server-side mutations in \u003ccode\u003e.remote.ts\u003c/code\u003e files\u003c/li\u003e\n" +
+		"		\u003cli\u003eCommands can only be called in event handlers, never during render\u003c/li\u003e\n" +
+		"		\u003cli\u003eCommands are never cached, unlike queries\u003c/li\u003e\n" +
+		"		\u003cli\u003eOptimistic updates can be combined with commands for instant UI feedback\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -118,6 +251,13 @@ deleteTodo('123');  // only in onclick, onsubmit, etc.`;
 			{/each}
 		</div>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -168,4 +308,42 @@ deleteTodo('123');  // only in onclick, onsubmit, etc.`;
 	}
 	.empty { margin: 0; text-align: center; color: var(--color-text-muted); padding: var(--space-md); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

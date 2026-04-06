@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import * as v from 'valibot';
 
 	const validateCode = `// Programmatic validation
@@ -115,6 +116,199 @@ export const signup = form(Schema, async ({ data }) => {
 		errors = {};
 		submitted = true;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import * as v from 'valibot';\n" +
+		"\n" +
+		"	const validateCode = `// Programmatic validation\n" +
+		"import { submitContact } from './contact.remote';\n" +
+		"\n" +
+		"// Validate without submitting\n" +
+		"const issues = submitContact.validate();\n" +
+		"if (issues) {\n" +
+		"  console.log(issues); // field-level errors\n" +
+		"}`;\n" +
+		"\n" +
+		"	const preflightCode = `// Preflight: client-side validation before server call\n" +
+		"import { form } from '$app/server';\n" +
+		"import * as v from 'valibot';\n" +
+		"\n" +
+		"const Schema = v.object({\n" +
+		"  email: v.pipe(v.string(), v.email()),\n" +
+		"  password: v.pipe(v.string(), v.minLength(8)),\n" +
+		"});\n" +
+		"\n" +
+		"export const signup = form(Schema, async ({ data }) =\u003e {\n" +
+		"  // Only runs if preflight passes on client\n" +
+		"  await createUser(data);\n" +
+		"});\n" +
+		"\n" +
+		"// In component:\n" +
+		"// preflight(Schema) runs Valibot on the client BEFORE\n" +
+		"// the form is sent to the server — instant feedback!`;\n" +
+		"\n" +
+		"	const enhanceCode = `// Custom submission behavior with enhance()\n" +
+		"\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  import { signup } from './auth.remote';\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"\u003cform\n" +
+		"  {...signup}\n" +
+		"  enhance={() =\u003e {\n" +
+		"    // Runs before submission\n" +
+		"    return async ({ result, update }) =\u003e {\n" +
+		"      if (result.type === 'success') {\n" +
+		"        goto('/dashboard');\n" +
+		"      } else {\n" +
+		"        await update(); // Apply default behavior\n" +
+		"      }\n" +
+		"    };\n" +
+		"  }}\n" +
+		"\u003e\n" +
+		"  ...\n" +
+		"\u003c/form\u003e`;\n" +
+		"\n" +
+		"	const invalidCode = `// invalid() helper for returning field errors\n" +
+		"import { form, invalid } from '$app/server';\n" +
+		"\n" +
+		"export const signup = form(Schema, async ({ data }) =\u003e {\n" +
+		"  const existing = await db.users.findByEmail(data.email);\n" +
+		"  if (existing) {\n" +
+		"    return invalid({ email: 'This email is already registered' });\n" +
+		"  }\n" +
+		"  await createUser(data);\n" +
+		"});`;\n" +
+		"\n" +
+		"	const SignupSchema = v.object({\n" +
+		"		email: v.pipe(v.string(), v.nonEmpty('Email is required'), v.email('Must be a valid email')),\n" +
+		"		password: v.pipe(\n" +
+		"			v.string(),\n" +
+		"			v.nonEmpty('Password is required'),\n" +
+		"			v.minLength(8, 'Must be at least 8 characters')\n" +
+		"		),\n" +
+		"		confirmPassword: v.pipe(v.string(), v.nonEmpty('Please confirm your password')),\n" +
+		"	});\n" +
+		"\n" +
+		"	let email = $state('');\n" +
+		"	let password = $state('');\n" +
+		"	let confirmPassword = $state('');\n" +
+		"\n" +
+		"	type FieldErrors = { email?: string; password?: string; confirmPassword?: string };\n" +
+		"	let errors = $state\u003cFieldErrors\u003e({});\n" +
+		"	let submitted = $state(false);\n" +
+		"\n" +
+		"	function validateField(field: 'email' | 'password' | 'confirmPassword') {\n" +
+		"		const data = { email, password, confirmPassword };\n" +
+		"		const result = v.safeParse(SignupSchema, data);\n" +
+		"		if (!result.success) {\n" +
+		"			const issue = result.issues.find(\n" +
+		"				(i) =\u003e i.path?.[0] && 'key' in i.path[0] && i.path[0].key === field\n" +
+		"			);\n" +
+		"			errors = { ...errors, [field]: issue?.message };\n" +
+		"		} else {\n" +
+		"			errors = { ...errors, [field]: undefined };\n" +
+		"		}\n" +
+		"		if (field === 'confirmPassword' && confirmPassword && password !== confirmPassword) {\n" +
+		"			errors = { ...errors, confirmPassword: 'Passwords do not match' };\n" +
+		"		}\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleSubmit() {\n" +
+		"		const data = { email, password, confirmPassword };\n" +
+		"		const result = v.safeParse(SignupSchema, data);\n" +
+		"		if (!result.success) {\n" +
+		"			const newErrors: FieldErrors = {};\n" +
+		"			for (const issue of result.issues) {\n" +
+		"				const key = issue.path?.[0] && 'key' in issue.path[0] ? issue.path[0].key : null;\n" +
+		"				if (key && (key === 'email' || key === 'password' || key === 'confirmPassword')) {\n" +
+		"					if (!newErrors[key]) newErrors[key] = issue.message;\n" +
+		"				}\n" +
+		"			}\n" +
+		"			errors = newErrors;\n" +
+		"			return;\n" +
+		"		}\n" +
+		"		if (password !== confirmPassword) {\n" +
+		"			errors = { confirmPassword: 'Passwords do not match' };\n" +
+		"			return;\n" +
+		"		}\n" +
+		"		errors = {};\n" +
+		"		submitted = true;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e9B.8 — Validation, Preflight, Enhance\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e \u003ccode\u003evalidate()\u003c/code\u003e checks form data programmatically.\n" +
+		"		\u003ccode\u003epreflight(schema)\u003c/code\u003e runs Valibot on the client before sending to the server.\n" +
+		"		\u003ccode\u003eenhance()\u003c/code\u003e customizes submission behavior. \u003ccode\u003einvalid()\u003c/code\u003e returns\n" +
+		"		field-level errors from the server.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ch2\u003eProgrammatic validation\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{validateCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003ePreflight (client-side validation)\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{preflightCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eCustom enhance\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{enhanceCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eServer-side invalid() helper\u003c/h2\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{invalidCode}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003ch2\u003eLive preflight demo\u003c/h2\u003e\n" +
+		"		\u003cp\u003eValibot validates on blur before \"submitting\" — demonstrating the preflight concept:\u003c/p\u003e\n" +
+		"\n" +
+		"		{#if submitted}\n" +
+		"			\u003cdiv class=\"success\"\u003e\n" +
+		"				\u003cp\u003ePreflight passed! Form would be sent to server.\u003c/p\u003e\n" +
+		"				\u003cbutton class=\"btn\" onclick={() =\u003e { submitted = false; email = ''; password = ''; confirmPassword = ''; }}\u003e\n" +
+		"					Reset\n" +
+		"				\u003c/button\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		{:else}\n" +
+		"			\u003cform class=\"demo-form\" onsubmit={(e) =\u003e { e.preventDefault(); handleSubmit(); }}\u003e\n" +
+		"				\u003clabel class=\"field\"\u003e\n" +
+		"					\u003cspan\u003eEmail\u003c/span\u003e\n" +
+		"					\u003cinput type=\"email\" bind:value={email} onblur={() =\u003e validateField('email')} placeholder=\"you@example.com\" /\u003e\n" +
+		"					{#if errors.email}\n" +
+		"						\u003cspan class=\"field-error\"\u003e{errors.email}\u003c/span\u003e\n" +
+		"					{/if}\n" +
+		"				\u003c/label\u003e\n" +
+		"\n" +
+		"				\u003clabel class=\"field\"\u003e\n" +
+		"					\u003cspan\u003ePassword\u003c/span\u003e\n" +
+		"					\u003cinput type=\"password\" bind:value={password} onblur={() =\u003e validateField('password')} placeholder=\"At least 8 characters\" /\u003e\n" +
+		"					{#if errors.password}\n" +
+		"						\u003cspan class=\"field-error\"\u003e{errors.password}\u003c/span\u003e\n" +
+		"					{/if}\n" +
+		"				\u003c/label\u003e\n" +
+		"\n" +
+		"				\u003clabel class=\"field\"\u003e\n" +
+		"					\u003cspan\u003eConfirm Password\u003c/span\u003e\n" +
+		"					\u003cinput type=\"password\" bind:value={confirmPassword} onblur={() =\u003e validateField('confirmPassword')} placeholder=\"Repeat password\" /\u003e\n" +
+		"					{#if errors.confirmPassword}\n" +
+		"						\u003cspan class=\"field-error\"\u003e{errors.confirmPassword}\u003c/span\u003e\n" +
+		"					{/if}\n" +
+		"				\u003c/label\u003e\n" +
+		"\n" +
+		"				\u003cbutton class=\"btn\" type=\"submit\"\u003eSign Up\u003c/button\u003e\n" +
+		"			\u003c/form\u003e\n" +
+		"		{/if}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003evalidate()\u003c/code\u003e checks form data without submitting\u003c/li\u003e\n" +
+		"		\u003cli\u003ePreflight runs Valibot on the client for instant feedback before the server round trip\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003eenhance()\u003c/code\u003e gives full control over submission behavior (redirects, custom error handling)\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003einvalid()\u003c/code\u003e returns structured field errors from server-side validation logic\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -180,6 +374,13 @@ export const signup = form(Schema, async ({ data }) => {
 		{/if}
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>validate()</code> checks form data without submitting</li>
@@ -216,4 +417,42 @@ export const signup = form(Schema, async ({ data }) => {
 	.success { text-align: center; padding: var(--space-lg); }
 	.success p { color: oklch(60% 0.15 145); font-weight: 600; margin: 0 0 var(--space-md) 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

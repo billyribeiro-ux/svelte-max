@@ -1,0 +1,8 @@
+pnpm install
+pnpm dev
+pnpm add dompurify
+node --version && which node
+command -v nvm && nvm --version 2>/dev/null; command -v fnm && fnm --version 2>/dev/null; command -v volta && volta --version 2>/dev/null; echo "done"
+source ~/.nvm/nvm.sh && nvm alias default 'lts/*' && node --version
+source ~/.nvm/nvm.sh && nvm use 'lts/*' && rm -rf node_modules && pnpm install
+source ~/.nvm/nvm.sh && nvm use 'lts/*' && pnpm dev

@@ -94,7 +94,7 @@
 /\u003e
 
 \u003cscript lang="ts"\u003e
-  import Button from './Button.svelte';
+  ${'im' + 'port'} Button from './Button.svelte';
 
   interface Props {
     variant?: 'primary' | 'secondary' | 'ghost';
@@ -121,7 +121,7 @@
 /\u003e
 
 \u003cscript lang="ts"\u003e
-  import Badge from './Badge.svelte';
+  ${'im' + 'port'} Badge from './Badge.svelte';
 
   interface Props {
     variant?: 'default' | 'success' | 'warning' | 'error';

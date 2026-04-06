@@ -332,6 +332,40 @@ const user: User = {
 		</div>
 	</div>
 
+	<!-- Break it on purpose -->
+	<h2>Break it on purpose</h2>
+
+	<p class="concept">
+		Interfaces only protect you if you let them. Try these experiments to see what they catch.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Misspell a property name.</strong> Change <code>user.name</code> to
+			<code>user.naem</code> in the markup. TypeScript immediately underlines it with a red
+			squiggle: "Property 'naem' does not exist on type 'User'." This is the core value of
+			interfaces — typos are caught at compile time, not discovered by a confused user at
+			runtime.
+		</li>
+		<li>
+			<strong>Assign the wrong type.</strong> Set <code>name: 42</code> in the user object
+			(a number instead of a string). TypeScript errors: "Type 'number' is not assignable to
+			type 'string'." The interface enforces the contract.
+		</li>
+		<li>
+			<strong>Remove a required property.</strong> Delete the <code>bio</code> property from
+			the user object entirely. TypeScript errors: "Property 'bio' is missing in type...".
+			Required properties cannot be omitted — the compiler enforces completeness.
+		</li>
+		<li>
+			<strong>Access an optional property without checking.</strong> Write
+			<code>{'{'}{'{'}user.tags.length{'}'}{'{'}/'}</code> directly in the markup without an
+			<code>{'{'}#if user.tags{'}'}</code> guard. TypeScript warns: "Object is possibly
+			'undefined'." Optional properties must be narrowed before access. This prevents the
+			classic "Cannot read properties of undefined" runtime crash.
+		</li>
+	</ol>
+
 	<!-- HAVING ISSUES? COMPLETE CODE -->
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
@@ -342,14 +376,33 @@ const user: User = {
 	</details>
 
 	<!-- 9. What you learned -->
-	<h3>What you learned</h3>
-	<ul class="learned">
-		<li><code>interface</code> describes the shape of an object — its properties and their types.</li>
-		<li><code>?</code> marks an optional property — the compiler forces an <code>#if</code> check before you read it.</li>
-		<li><code>readonly</code> arrays cannot be mutated — great for fixed lists like tags.</li>
-		<li>Use <code>interface</code> for objects and <code>type</code> for unions.</li>
-		<li>Interfaces catch typos, wrong types, and missing fields at compile time — not runtime.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="concept">
+		A TypeScript <code>interface</code> is a contract that describes the shape of an object — which
+		properties it has and what type each one holds. When you declare
+		<code>interface User {'{'} name: string; role: string; bio: string {'}'}</code>, you are telling
+		the compiler: "Every object that claims to be a User MUST have these three properties, and they
+		MUST be strings." If any code tries to create a User with a missing property, a misspelled
+		property, or a wrong type, the compiler catches it immediately — before the code ever runs.
+	</p>
+
+	<p class="concept">
+		The <code>?</code> operator marks a property as optional:
+		<code>tags?: readonly string[]</code> means tags can be present or absent. But optional does not
+		mean "ignore it." TypeScript forces you to check before accessing:
+		<code>{'{'}#if user.tags{'}'}</code> narrows the type from <code>string[] | undefined</code> to
+		<code>string[]</code> inside the block. This prevents the most common runtime crash in
+		JavaScript — accessing a property on <code>undefined</code>.
+	</p>
+
+	<p class="concept">
+		Use <code>interface</code> for object shapes and <code>type</code> for unions
+		(<code>type Status = 'idle' | 'loading' | 'error'</code>). Both are compile-time only — they
+		add zero bytes to your production bundle. They are documentation that the compiler enforces.
+		When you change an interface, every file that imports it immediately shows errors if the usage
+		is wrong. That is refactoring safety at scale.
+	</p>
 
 	<!-- 10. Next steps -->
 	<p class="next">
@@ -529,16 +582,6 @@ const user: User = {
 		margin-block: 0.5rem;                /* spacing */
 	}
 
-	/* ── Learned list ────────────────────────────────────── */
-	.learned {
-		padding-inline-start: 1.25rem;       /* indent */
-		color: var(--color-text-muted);      /* secondary */
-
-		& li {
-			margin-block: 0.25rem;             /* item gap */
-		}
-	}
-
 	/* ── Next link ───────────────────────────────────────── */
 	.next {
 		font-size: var(--text-base);         /* body size */
@@ -599,6 +642,25 @@ const user: User = {
 			& > div {
 				flex: 1;                         /* equal width */
 			}
+		}
+	}
+
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
 		}
 	}
 

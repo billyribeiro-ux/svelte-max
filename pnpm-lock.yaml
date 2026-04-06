@@ -17,6 +17,9 @@ importers:
       '@threlte/extras':
         specifier: ^9.14.4
         version: 9.14.4(@types/three@0.183.1)(svelte@5.55.1)(three@0.183.2)
+      apexcharts:
+        specifier: ^5.10.5
+        version: 5.10.5
       dompurify:
         specifier: 3.3.3
         version: 3.3.3
@@ -623,6 +626,9 @@ packages:
   ansi-styles@5.2.0:
     resolution: {integrity: sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==}
     engines: {node: '>=10'}
+
+  apexcharts@5.10.5:
+    resolution: {integrity: sha512-RirosfLQLqYpWBdn4Pdv9B1M0M2FepzVxPRpcuXQPTilvuZvKt02vgVlEexhCVu2p4fApDIV/3yC9voAIK+qjw==}
 
   aria-query@5.3.0:
     resolution: {integrity: sha512-b0P0sZPKtyu8HkeRAfCq0IfURZK+SuwMjY1UXGBU27wpAiTwQAIlq56IbIO+ytk/JjS1fMR14ee5WBBfKi5J6A==}
@@ -1672,6 +1678,8 @@ snapshots:
   ansi-regex@5.0.1: {}
 
   ansi-styles@5.2.0: {}
+
+  apexcharts@5.10.5: {}
 
   aria-query@5.3.0:
     dependencies:

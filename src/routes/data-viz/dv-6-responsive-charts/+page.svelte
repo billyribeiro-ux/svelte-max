@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface CountryGDP {
 		country: string;
 		gdp: number;
@@ -45,6 +46,119 @@
 	function formatGDP(value: number): string {
 		return `$${Math.round(value / 1000)}k`;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface CountryGDP {\n" +
+		"		country: string;\n" +
+		"		gdp: number;\n" +
+		"	}\n" +
+		"\n" +
+		"	const data: CountryGDP[] = [\n" +
+		"		{ country: 'Luxembourg', gdp: 126598 },\n" +
+		"		{ country: 'Ireland', gdp: 106999 },\n" +
+		"		{ country: 'Switzerland', gdp: 99994 },\n" +
+		"		{ country: 'Norway', gdp: 87925 },\n" +
+		"		{ country: 'Singapore', gdp: 82807 },\n" +
+		"		{ country: 'United States', gdp: 80035 },\n" +
+		"		{ country: 'Iceland', gdp: 75180 },\n" +
+		"		{ country: 'Denmark', gdp: 67803 },\n" +
+		"		{ country: 'Australia', gdp: 65366 },\n" +
+		"		{ country: 'Netherlands', gdp: 61098 }\n" +
+		"	];\n" +
+		"\n" +
+		"	const maxGDP = Math.max(...data.map((d) =\u003e d.gdp));\n" +
+		"\n" +
+		"	let smallWidth = $state(0);\n" +
+		"	let fullWidth = $state(0);\n" +
+		"	let sliderContainerWidth = $state(0);\n" +
+		"	let sliderTargetWidth = $state(300);\n" +
+		"\n" +
+		"	function barHeight(containerW: number): number {\n" +
+		"		return containerW \u003c 400 ? 18 : 26;\n" +
+		"	}\n" +
+		"\n" +
+		"	function labelSize(containerW: number): number {\n" +
+		"		return containerW \u003c 400 ? 9 : 12;\n" +
+		"	}\n" +
+		"\n" +
+		"	function valueSize(containerW: number): number {\n" +
+		"		return containerW \u003c 400 ? 8 : 11;\n" +
+		"	}\n" +
+		"\n" +
+		"	function chartHeight(containerW: number): number {\n" +
+		"		const bh = barHeight(containerW);\n" +
+		"		const gap = Math.round(bh * 0.5);\n" +
+		"		return data.length * (bh + gap) + gap;\n" +
+		"	}\n" +
+		"\n" +
+		"	function formatGDP(value: number): string {\n" +
+		"		return `$${Math.round(value / 1000)}k`;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eDV.6 — Responsive Charts\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eCharts must adapt to their container.\u003c/strong\u003e A sidebar chart is 240px wide, a hero\n" +
+		"		chart is 1200px. Use \u003ccode\u003ebind:clientWidth\u003c/code\u003e on a wrapper\n" +
+		"		\u003ccode\u003e&lt;div&gt;\u003c/code\u003e to read the container's width reactively. Derive the SVG\n" +
+		"		\u003ccode\u003eviewBox\u003c/code\u003e and all scale functions from this width. The chart re-renders perfectly at any\n" +
+		"		size with zero media queries. This is how The Pudding builds responsive interactives — one chart definition,\n" +
+		"		infinite sizes.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eSmall container (300px)\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"chart-container chart-container--small\" bind:clientWidth={smallWidth}\u003e\n" +
+		"			{#if smallWidth \u003e 0}\n" +
+		"				{@const bh = barHeight(smallWidth)}\n" +
+		"				{@const gap = Math.round(bh * 0.5)}\n" +
+		"				{@const labelW = smallWidth \u003c 400 ? 70 : 110}\n" +
+		"				{@const barArea = smallWidth - labelW - 40}\n" +
+		"				{@const h = chartHeight(smallWidth)}\n" +
+		"				\u003csvg\n" +
+		"					width={smallWidth}\n" +
+		"					height={h}\n" +
+		"					viewBox=\"0 0 {smallWidth} {h}\"\n" +
+		"					role=\"img\"\n" +
+		"					aria-label=\"GDP per capita bar chart, small view\"\n" +
+		"				\u003e\n" +
+		"					{#each data as item, i}\n" +
+		"						{@const y = gap + i * (bh + gap)}\n" +
+		"						{@const barW = (item.gdp / maxGDP) * barArea}\n" +
+		"						\u003ctext\n" +
+		"							x={labelW - 6}\n" +
+		"							y={y + bh / 2}\n" +
+		"							text-anchor=\"end\"\n" +
+		"							dominant-baseline=\"central\"\n" +
+		"							fill=\"var(--color-text-muted)\"\n" +
+		"							font-size={labelSize(smallWidth)}\n" +
+		"						\u003e\n" +
+		"							{item.country}\n" +
+		"						\u003c/text\u003e\n" +
+		"						\u003crect\n" +
+		"							x={labelW}\n" +
+		"							{y}\n" +
+		"							width={barW}\n" +
+		"							height={bh}\n" +
+		"							rx=\"3\"\n" +
+		"							fill=\"oklch(60% 0.18 250)\"\n" +
+		"						/\u003e\n" +
+		"						\u003ctext\n" +
+		"							x={labelW + barW + 4}\n" +
+		"							y={y + bh / 2}\n" +
+		"							dominant-baseline=\"central\"\n" +
+		"							fill=\"var(--color-text-muted)\"\n" +
+		"							font-size={valueSize(smallWidth)}\n" +
+		"						\u003e\n" +
+		"							{formatGDP(item.gdp)}\n" +
+		"						\u003c/text\u003e\n" +
+		"					{/each}\n" +
+		"				\u003c/svg\u003e\n" +
+		"			{/if}\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -231,6 +345,13 @@
 		</div>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>bind:clientWidth</code> gives you a reactive container width — no ResizeObserver boilerplate.</li>
@@ -287,5 +408,42 @@
 
 	svg {
 		display: block;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

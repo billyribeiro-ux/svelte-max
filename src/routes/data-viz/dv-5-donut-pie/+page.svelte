@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface EnergySlice {
 		source: string;
 		percent: number;
@@ -84,6 +85,158 @@
 	function toggleMode(): void {
 		isDonut = !isDonut;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface EnergySlice {\n" +
+		"		source: string;\n" +
+		"		percent: number;\n" +
+		"		hue: number;\n" +
+		"	}\n" +
+		"\n" +
+		"	const slices: EnergySlice[] = [\n" +
+		"		{ source: 'Oil', percent: 30, hue: 40 },\n" +
+		"		{ source: 'Coal', percent: 27, hue: 25 },\n" +
+		"		{ source: 'Natural Gas', percent: 23, hue: 200 },\n" +
+		"		{ source: 'Hydro', percent: 7, hue: 220 },\n" +
+		"		{ source: 'Wind + Solar', percent: 6, hue: 145 },\n" +
+		"		{ source: 'Nuclear', percent: 4, hue: 280 },\n" +
+		"		{ source: 'Other Renewables', percent: 3, hue: 90 }\n" +
+		"	];\n" +
+		"\n" +
+		"	const totalTWh = 178_899;\n" +
+		"\n" +
+		"	let hoveredIdx = $state\u003cnumber | null\u003e(null);\n" +
+		"	let isDonut = $state(true);\n" +
+		"\n" +
+		"	const cx = 160;\n" +
+		"	const cy = 160;\n" +
+		"	const outerR = 140;\n" +
+		"	const innerRDonut = 80;\n" +
+		"\n" +
+		"	const innerR = $derived(isDonut ? innerRDonut : 0);\n" +
+		"\n" +
+		"	interface ArcData {\n" +
+		"		startAngle: number;\n" +
+		"		endAngle: number;\n" +
+		"		path: string;\n" +
+		"		midAngle: number;\n" +
+		"	}\n" +
+		"\n" +
+		"	const arcs = $derived.by\u003cArcData[]\u003e(() =\u003e {\n" +
+		"		const result: ArcData[] = [];\n" +
+		"		let cumulative = 0;\n" +
+		"\n" +
+		"		for (const slice of slices) {\n" +
+		"			const startAngle = (cumulative / 100) * 2 * Math.PI - Math.PI / 2;\n" +
+		"			cumulative += slice.percent;\n" +
+		"			const endAngle = (cumulative / 100) * 2 * Math.PI - Math.PI / 2;\n" +
+		"			const midAngle = (startAngle + endAngle) / 2;\n" +
+		"			const largeArc = slice.percent \u003e 50 ? 1 : 0;\n" +
+		"\n" +
+		"			const x1 = cx + outerR * Math.cos(startAngle);\n" +
+		"			const y1 = cy + outerR * Math.sin(startAngle);\n" +
+		"			const x2 = cx + outerR * Math.cos(endAngle);\n" +
+		"			const y2 = cy + outerR * Math.sin(endAngle);\n" +
+		"\n" +
+		"			let path: string;\n" +
+		"			if (innerR \u003e 0) {\n" +
+		"				const ix1 = cx + innerR * Math.cos(endAngle);\n" +
+		"				const iy1 = cy + innerR * Math.sin(endAngle);\n" +
+		"				const ix2 = cx + innerR * Math.cos(startAngle);\n" +
+		"				const iy2 = cy + innerR * Math.sin(startAngle);\n" +
+		"				path = [\n" +
+		"					`M ${x1.toFixed(2)},${y1.toFixed(2)}`,\n" +
+		"					`A ${outerR},${outerR} 0 ${largeArc},1 ${x2.toFixed(2)},${y2.toFixed(2)}`,\n" +
+		"					`L ${ix1.toFixed(2)},${iy1.toFixed(2)}`,\n" +
+		"					`A ${innerR},${innerR} 0 ${largeArc},0 ${ix2.toFixed(2)},${iy2.toFixed(2)}`,\n" +
+		"					'Z'\n" +
+		"				].join(' ');\n" +
+		"			} else {\n" +
+		"				path = [\n" +
+		"					`M ${cx},${cy}`,\n" +
+		"					`L ${x1.toFixed(2)},${y1.toFixed(2)}`,\n" +
+		"					`A ${outerR},${outerR} 0 ${largeArc},1 ${x2.toFixed(2)},${y2.toFixed(2)}`,\n" +
+		"					'Z'\n" +
+		"				].join(' ');\n" +
+		"			}\n" +
+		"\n" +
+		"			result.push({ startAngle, endAngle, path, midAngle });\n" +
+		"		}\n" +
+		"		return result;\n" +
+		"	});\n" +
+		"\n" +
+		"	function sliceColor(hue: number): string {\n" +
+		"		return `oklch(65% 0.18 ${hue})`;\n" +
+		"	}\n" +
+		"\n" +
+		"	function toggleMode(): void {\n" +
+		"		isDonut = !isDonut;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eDV.5 — Donut + Pie Chart\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e Pie and donut charts use SVG arcs. Each slice is a\n" +
+		"		\u003ccode\u003e&lt;path&gt;\u003c/code\u003e with an arc command. The math: for each slice, compute start angle\n" +
+		"		and end angle from cumulative percentages. For a donut, add an inner radius arc going\n" +
+		"		counter-clockwise. Avoid pie charts with many slices — 5 to 7 max is ideal. Use OKLCH with\n" +
+		"		distinct hues for each slice.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"toolbar\"\u003e\n" +
+		"			\u003cbutton class=\"toggle-btn\" onclick={toggleMode}\u003e\n" +
+		"				{isDonut ? 'Switch to Pie' : 'Switch to Donut'}\n" +
+		"			\u003c/button\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"chart-row\"\u003e\n" +
+		"			\u003csvg viewBox=\"0 0 320 320\" class=\"donut-chart\" role=\"img\" aria-label=\"Donut chart of global energy mix 2024\"\u003e\n" +
+		"				{#each slices as slice, i (slice.source)}\n" +
+		"					{@const arc = arcs[i]}\n" +
+		"					{@const isHovered = hoveredIdx === i}\n" +
+		"					{@const scale = isHovered ? 'scale(1.04)' : 'scale(1)'}\n" +
+		"					\u003cpath\n" +
+		"						role=\"img\"\n" +
+		"						aria-label=\"{slice.source}: {slice.percent}%\"\n" +
+		"						d={arc.path}\n" +
+		"						fill={sliceColor(slice.hue)}\n" +
+		"						stroke=\"var(--color-surface-1)\"\n" +
+		"						stroke-width=\"2\"\n" +
+		"						style=\"transform-origin: {cx}px {cy}px; transform: {scale}; transition: transform var(--dur-fast) var(--ease-out);\"\n" +
+		"						onpointerenter={() =\u003e (hoveredIdx = i)}\n" +
+		"						onpointerleave={() =\u003e (hoveredIdx = null)}\n" +
+		"						class=\"slice\"\n" +
+		"					/\u003e\n" +
+		"				{/each}\n" +
+		"\n" +
+		"				\u003c!-- center text --\u003e\n" +
+		"				{#if isDonut}\n" +
+		"					{#if hoveredIdx !== null}\n" +
+		"						\u003ctext x={cx} y={cy - 8} text-anchor=\"middle\" class=\"center-source\"\u003e\n" +
+		"							{slices[hoveredIdx].source}\n" +
+		"						\u003c/text\u003e\n" +
+		"						\u003ctext x={cx} y={cy + 14} text-anchor=\"middle\" class=\"center-pct\"\u003e\n" +
+		"							{slices[hoveredIdx].percent}%\n" +
+		"						\u003c/text\u003e\n" +
+		"					{:else}\n" +
+		"						\u003ctext x={cx} y={cy - 8} text-anchor=\"middle\" class=\"center-label\"\u003e\n" +
+		"							Total\n" +
+		"						\u003c/text\u003e\n" +
+		"						\u003ctext x={cx} y={cy + 16} text-anchor=\"middle\" class=\"center-twh\"\u003e\n" +
+		"							{totalTWh.toLocaleString()} TWh\n" +
+		"						\u003c/text\u003e\n" +
+		"					{/if}\n" +
+		"				{/if}\n" +
+		"			\u003c/svg\u003e\n" +
+		"\n" +
+		"			\u003cdiv class=\"legend\"\u003e\n" +
+		"				\u003ch4\u003eGlobal Energy Mix 2024\u003c/h4\u003e\n" +
+		"				{#each slices as slice, i (slice.source)}\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -162,6 +315,13 @@
 			</div>
 		</div>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -323,5 +483,42 @@
 		font-size: var(--text-xs);
 		color: var(--color-text-muted);
 		margin-block-start: var(--space-xs);
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

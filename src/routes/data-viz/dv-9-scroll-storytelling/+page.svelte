@@ -2,6 +2,7 @@
 	import { Tween, prefersReducedMotion } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface EnergyBar {
 		label: string;
 		color: string;
@@ -100,6 +101,174 @@
 	function yScale(val: number): number {
 		return plotH - (val / maxVal) * plotH;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { Tween, prefersReducedMotion } from 'svelte/motion';\n" +
+		"	import { cubicOut } from 'svelte/easing';\n" +
+		"\n" +
+		"	interface EnergyBar {\n" +
+		"		label: string;\n" +
+		"		color: string;\n" +
+		"	}\n" +
+		"\n" +
+		"	const sources: EnergyBar[] = [\n" +
+		"		{ label: 'Coal', color: 'oklch(45% 0.05 60)' },\n" +
+		"		{ label: 'Gas', color: 'oklch(55% 0.08 80)' },\n" +
+		"		{ label: 'Oil', color: 'oklch(50% 0.06 50)' },\n" +
+		"		{ label: 'Nuclear', color: 'oklch(55% 0.12 280)' },\n" +
+		"		{ label: 'Hydro', color: 'oklch(55% 0.15 230)' },\n" +
+		"		{ label: 'Wind', color: 'oklch(60% 0.18 200)' },\n" +
+		"		{ label: 'Solar', color: 'oklch(75% 0.18 85)' },\n" +
+		"		{ label: 'Other RE', color: 'oklch(55% 0.12 145)' }\n" +
+		"	];\n" +
+		"\n" +
+		"	// Approximate % of global electricity generation\n" +
+		"	const data2010 = [40, 22, 5, 13, 16, 2, 0.5, 1.5];\n" +
+		"	const data2024 = [34, 22, 3, 10, 15, 8, 5, 3];\n" +
+		"	const data2030 = [22, 18, 2, 10, 14, 14, 12, 8];\n" +
+		"\n" +
+		"	// Chapter states: which data to show, which highlights, which annotations\n" +
+		"	interface ChapterState {\n" +
+		"		values: number[];\n" +
+		"		highlight: number | null;\n" +
+		"		showCostAnnotation: boolean;\n" +
+		"		showProjection: boolean;\n" +
+		"	}\n" +
+		"\n" +
+		"	const chapters: ChapterState[] = [\n" +
+		"		{ values: data2010, highlight: null, showCostAnnotation: false, showProjection: false },\n" +
+		"		{ values: data2010, highlight: 6, showCostAnnotation: true, showProjection: false },\n" +
+		"		{ values: data2024, highlight: null, showCostAnnotation: false, showProjection: false },\n" +
+		"		{ values: data2030, highlight: null, showCostAnnotation: false, showProjection: true }\n" +
+		"	];\n" +
+		"\n" +
+		"	const chapterTexts = [\n" +
+		"		{ title: 'Chapter 1: The Starting Line', body: 'In 2010, renewables were roughly 20% of global electricity — mostly hydropower. Coal dominated at 40%. The energy transition had barely begun.' },\n" +
+		"		{ title: 'Chapter 2: The Solar Revolution', body: 'Solar costs dropped over 90% in a single decade. From $4.46/W in 2010 to $0.27/W in 2023. This cost collapse changed everything — solar went from niche to the cheapest energy source in history.' },\n" +
+		"		{ title: 'Chapter 3: Present Day', body: 'By 2024, renewables hit 31% of global electricity. Wind grew 4x, solar grew 10x. Coal is declining but still the single largest source. The transition is underway but far from complete.' },\n" +
+		"		{ title: 'Chapter 4: The Horizon', body: 'Projections suggest renewables could reach 50% by 2030. Solar and wind continue their exponential growth. But reaching net zero requires even faster deployment — every bar in this chart needs to shift.' }\n" +
+		"	];\n" +
+		"\n" +
+		"	let activeChapter = $state(0);\n" +
+		"	let containerWidth = $state(0);\n" +
+		"\n" +
+		"	// Create tweens for each source\n" +
+		"	const barTweens = sources.map(\n" +
+		"		(_, i) =\u003e new Tween(data2010[i], { duration: 700, easing: cubicOut })\n" +
+		"	);\n" +
+		"	const annotationOpacity = new Tween(0, { duration: 400, easing: cubicOut });\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const chapter = chapters[activeChapter];\n" +
+		"		const opts = prefersReducedMotion.current ? { duration: 0 } : undefined;\n" +
+		"		for (let i = 0; i \u003c barTweens.length; i++) {\n" +
+		"			barTweens[i].set(chapter.values[i], opts);\n" +
+		"		}\n" +
+		"		annotationOpacity.set(chapter.showCostAnnotation ? 1 : 0, opts);\n" +
+		"	});\n" +
+		"\n" +
+		"	let chapterEls: HTMLElement[] = [];\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		if (typeof IntersectionObserver === 'undefined') return;\n" +
+		"		const observers: IntersectionObserver[] = [];\n" +
+		"		for (let i = 0; i \u003c chapterEls.length; i++) {\n" +
+		"			const el = chapterEls[i];\n" +
+		"			if (!el) continue;\n" +
+		"			const obs = new IntersectionObserver(\n" +
+		"				(entries) =\u003e {\n" +
+		"					for (const entry of entries) {\n" +
+		"						if (entry.isIntersecting) {\n" +
+		"							activeChapter = i;\n" +
+		"						}\n" +
+		"					}\n" +
+		"				},\n" +
+		"				{ threshold: 0.5 }\n" +
+		"			);\n" +
+		"			obs.observe(el);\n" +
+		"			observers.push(obs);\n" +
+		"		}\n" +
+		"		return () =\u003e {\n" +
+		"			for (const obs of observers) obs.disconnect();\n" +
+		"		};\n" +
+		"	});\n" +
+		"\n" +
+		"	const padding = { top: 24, right: 20, bottom: 36, left: 70 };\n" +
+		"	const chartHeight = 340;\n" +
+		"	const plotH = chartHeight - padding.top - padding.bottom;\n" +
+		"	const plotW = $derived(Math.max(containerWidth - padding.left - padding.right, 100));\n" +
+		"	const barGroupW = $derived(plotW / sources.length);\n" +
+		"	const barW = $derived(Math.min(barGroupW * 0.65, 60));\n" +
+		"	const maxVal = 50;\n" +
+		"\n" +
+		"	function yScale(val: number): number {\n" +
+		"		return plotH - (val / maxVal) * plotH;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eDV.9 — Scroll-Driven Storytelling\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eThe Pudding's signature:\u003c/strong\u003e as you scroll, the chart transforms. Data points\n" +
+		"		filter, annotations appear, axes shift. Use \u003ccode\u003eIntersectionObserver\u003c/code\u003e to detect which\n" +
+		"		\"chapter\" the viewport is in. Derive the chart state from the chapter index. Each chapter adds\n" +
+		"		or changes something. The reader's scroll IS the interaction.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"scroll-container\"\u003e\n" +
+		"		\u003cdiv class=\"sticky-chart\" bind:clientWidth={containerWidth}\u003e\n" +
+		"			\u003cdiv class=\"chapter-indicator\"\u003e\n" +
+		"				{#each chapterTexts as _, i}\n" +
+		"					\u003cspan class=\"dot\" class:active={activeChapter === i}\u003e\u003c/span\u003e\n" +
+		"				{/each}\n" +
+		"			\u003c/div\u003e\n" +
+		"\n" +
+		"			{#if containerWidth \u003e 0}\n" +
+		"				\u003csvg\n" +
+		"					width={containerWidth}\n" +
+		"					height={chartHeight}\n" +
+		"					viewBox=\"0 0 {containerWidth} {chartHeight}\"\n" +
+		"					role=\"img\"\n" +
+		"					aria-label=\"Global electricity generation by source, animated by scroll chapter\"\n" +
+		"				\u003e\n" +
+		"					\u003cg transform=\"translate({padding.left}, {padding.top})\"\u003e\n" +
+		"						\u003c!-- Grid lines --\u003e\n" +
+		"						{#each [0, 10, 20, 30, 40, 50] as val}\n" +
+		"							\u003cline\n" +
+		"								x1={0}\n" +
+		"								y1={yScale(val)}\n" +
+		"								x2={plotW}\n" +
+		"								y2={yScale(val)}\n" +
+		"								stroke=\"var(--color-border)\"\n" +
+		"								stroke-width=\"0.5\"\n" +
+		"							/\u003e\n" +
+		"							\u003ctext\n" +
+		"								x={-8}\n" +
+		"								y={yScale(val)}\n" +
+		"								text-anchor=\"end\"\n" +
+		"								dominant-baseline=\"central\"\n" +
+		"								fill=\"var(--color-text-muted)\"\n" +
+		"								font-size=\"10\"\n" +
+		"							\u003e\n" +
+		"								{val}%\n" +
+		"							\u003c/text\u003e\n" +
+		"						{/each}\n" +
+		"\n" +
+		"						\u003c!-- Bars --\u003e\n" +
+		"						{#each sources as source, i}\n" +
+		"							{@const cx = i * barGroupW + barGroupW / 2}\n" +
+		"							{@const val = barTweens[i].current}\n" +
+		"							{@const h = (val / maxVal) * plotH}\n" +
+		"							{@const isHighlighted = chapters[activeChapter].highlight === i}\n" +
+		"							{@const isProjection = chapters[activeChapter].showProjection}\n" +
+		"							\u003crect\n" +
+		"								x={cx - barW / 2}\n" +
+		"								y={plotH - h}\n" +
+		"								width={barW}\n" +
+		"								height={h}\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -245,6 +414,13 @@
 		</div>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Use <code>IntersectionObserver</code> to detect which scroll chapter is active.</li>
@@ -345,5 +521,42 @@
 
 	svg {
 		display: block;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

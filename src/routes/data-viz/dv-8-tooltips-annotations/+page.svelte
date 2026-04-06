@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface DataPoint {
 		year: number;
 		return_pct: number;
@@ -110,6 +111,184 @@
 	function handlePointerLeave(): void {
 		hoveredIndex = null;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface DataPoint {\n" +
+		"		year: number;\n" +
+		"		return_pct: number;\n" +
+		"	}\n" +
+		"\n" +
+		"	const sp500Data: DataPoint[] = [\n" +
+		"		{ year: 2000, return_pct: -9.1 },\n" +
+		"		{ year: 2001, return_pct: -11.9 },\n" +
+		"		{ year: 2002, return_pct: -22.1 },\n" +
+		"		{ year: 2003, return_pct: 28.7 },\n" +
+		"		{ year: 2004, return_pct: 10.9 },\n" +
+		"		{ year: 2005, return_pct: 4.9 },\n" +
+		"		{ year: 2006, return_pct: 15.8 },\n" +
+		"		{ year: 2007, return_pct: 5.5 },\n" +
+		"		{ year: 2008, return_pct: -37.0 },\n" +
+		"		{ year: 2009, return_pct: 26.5 },\n" +
+		"		{ year: 2010, return_pct: 15.1 },\n" +
+		"		{ year: 2011, return_pct: 2.1 },\n" +
+		"		{ year: 2012, return_pct: 16.0 },\n" +
+		"		{ year: 2013, return_pct: 32.4 },\n" +
+		"		{ year: 2014, return_pct: 13.7 },\n" +
+		"		{ year: 2015, return_pct: 1.4 },\n" +
+		"		{ year: 2016, return_pct: 12.0 },\n" +
+		"		{ year: 2017, return_pct: 21.8 },\n" +
+		"		{ year: 2018, return_pct: -4.4 },\n" +
+		"		{ year: 2019, return_pct: 31.5 },\n" +
+		"		{ year: 2020, return_pct: 18.4 },\n" +
+		"		{ year: 2021, return_pct: 28.7 },\n" +
+		"		{ year: 2022, return_pct: -18.1 },\n" +
+		"		{ year: 2023, return_pct: 26.3 },\n" +
+		"		{ year: 2024, return_pct: 25.0 }\n" +
+		"	];\n" +
+		"\n" +
+		"	interface Annotation {\n" +
+		"		year: number;\n" +
+		"		label: string;\n" +
+		"		color: string;\n" +
+		"	}\n" +
+		"\n" +
+		"	const annotations: Annotation[] = [\n" +
+		"		{ year: 2008, label: '2008 Financial Crisis', color: 'oklch(55% 0.2 25)' },\n" +
+		"		{ year: 2020, label: '2020 COVID Crash & Recovery', color: 'oklch(55% 0.18 280)' },\n" +
+		"		{ year: 2022, label: '2022 Rate Hikes', color: 'oklch(55% 0.15 50)' }\n" +
+		"	];\n" +
+		"\n" +
+		"	let containerWidth = $state(0);\n" +
+		"	let hoveredIndex = $state\u003cnumber | null\u003e(null);\n" +
+		"	let mouseX = $state(0);\n" +
+		"	let mouseY = $state(0);\n" +
+		"	let svgEl = $state\u003cSVGSVGElement | null\u003e(null);\n" +
+		"\n" +
+		"	const padding = { top: 30, right: 30, bottom: 50, left: 55 };\n" +
+		"	const chartHeight = 360;\n" +
+		"	const plotW = $derived(Math.max(containerWidth - padding.left - padding.right, 100));\n" +
+		"	const plotH = chartHeight - padding.top - padding.bottom;\n" +
+		"\n" +
+		"	const minReturn = Math.min(...sp500Data.map((d) =\u003e d.return_pct));\n" +
+		"	const maxReturn = Math.max(...sp500Data.map((d) =\u003e d.return_pct));\n" +
+		"	const yMin = Math.floor(minReturn / 10) * 10 - 5;\n" +
+		"	const yMax = Math.ceil(maxReturn / 10) * 10 + 5;\n" +
+		"\n" +
+		"	function xScale(year: number): number {\n" +
+		"		return ((year - 2000) / 24) * plotW;\n" +
+		"	}\n" +
+		"\n" +
+		"	function yScale(val: number): number {\n" +
+		"		return plotH - ((val - yMin) / (yMax - yMin)) * plotH;\n" +
+		"	}\n" +
+		"\n" +
+		"	const linePath = $derived(\n" +
+		"		sp500Data\n" +
+		"			.map((d, i) =\u003e {\n" +
+		"				const x = xScale(d.year);\n" +
+		"				const y = yScale(d.return_pct);\n" +
+		"				return `${i === 0 ? 'M' : 'L'}${x},${y}`;\n" +
+		"			})\n" +
+		"			.join(' ')\n" +
+		"	);\n" +
+		"\n" +
+		"	const yTicks = $derived(() =\u003e {\n" +
+		"		const ticks: number[] = [];\n" +
+		"		for (let v = yMin; v \u003c= yMax; v += 10) {\n" +
+		"			ticks.push(v);\n" +
+		"		}\n" +
+		"		return ticks;\n" +
+		"	});\n" +
+		"\n" +
+		"	const xTicks = [2000, 2004, 2008, 2012, 2016, 2020, 2024];\n" +
+		"\n" +
+		"	function handlePointerMove(e: PointerEvent): void {\n" +
+		"		if (!svgEl) return;\n" +
+		"		const rect = svgEl.getBoundingClientRect();\n" +
+		"		const svgX = e.clientX - rect.left - padding.left;\n" +
+		"		mouseX = e.clientX;\n" +
+		"		mouseY = e.clientY;\n" +
+		"\n" +
+		"		let closest = 0;\n" +
+		"		let minDist = Infinity;\n" +
+		"		for (let i = 0; i \u003c sp500Data.length; i++) {\n" +
+		"			const d = Math.abs(xScale(sp500Data[i].year) - svgX);\n" +
+		"			if (d \u003c minDist) {\n" +
+		"				minDist = d;\n" +
+		"				closest = i;\n" +
+		"			}\n" +
+		"		}\n" +
+		"		hoveredIndex = minDist \u003c plotW / 10 ? closest : null;\n" +
+		"	}\n" +
+		"\n" +
+		"	function handlePointerLeave(): void {\n" +
+		"		hoveredIndex = null;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eDV.8 — Tooltips & Annotations\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eRaw charts lack context.\u003c/strong\u003e Tooltips show exact values on hover. Annotations call\n" +
+		"		out significant events — peaks, crashes, milestones. Build tooltips as positioned\n" +
+		"		\u003ccode\u003e&lt;div&gt;\u003c/code\u003es overlaying the SVG (HTML tooltips are more flexible than SVG\n" +
+		"		\u003ccode\u003e&lt;text&gt;\u003c/code\u003e). Track mouse position with \u003ccode\u003eonpointermove\u003c/code\u003e, find the\n" +
+		"		nearest data point, and position the tooltip absolutely.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"chart-wrapper\" bind:clientWidth={containerWidth}\u003e\n" +
+		"			{#if containerWidth \u003e 0}\n" +
+		"				\u003csvg\n" +
+		"					bind:this={svgEl}\n" +
+		"					width={containerWidth}\n" +
+		"					height={chartHeight}\n" +
+		"					viewBox=\"0 0 {containerWidth} {chartHeight}\"\n" +
+		"					role=\"img\"\n" +
+		"					aria-label=\"S&P 500 annual returns from 2000 to 2024 with annotations for major market events\"\n" +
+		"					onpointermove={handlePointerMove}\n" +
+		"					onpointerleave={handlePointerLeave}\n" +
+		"				\u003e\n" +
+		"					\u003cg transform=\"translate({padding.left}, {padding.top})\"\u003e\n" +
+		"						\u003c!-- Zero line --\u003e\n" +
+		"						\u003cline\n" +
+		"							x1={0}\n" +
+		"							y1={yScale(0)}\n" +
+		"							x2={plotW}\n" +
+		"							y2={yScale(0)}\n" +
+		"							stroke=\"var(--color-text-muted)\"\n" +
+		"							stroke-width=\"1\"\n" +
+		"							opacity=\"0.5\"\n" +
+		"						/\u003e\n" +
+		"\n" +
+		"						\u003c!-- Y grid lines --\u003e\n" +
+		"						{#each yTicks() as val}\n" +
+		"							\u003cline\n" +
+		"								x1={0}\n" +
+		"								y1={yScale(val)}\n" +
+		"								x2={plotW}\n" +
+		"								y2={yScale(val)}\n" +
+		"								stroke=\"var(--color-border)\"\n" +
+		"								stroke-width=\"0.5\"\n" +
+		"							/\u003e\n" +
+		"							\u003ctext\n" +
+		"								x={-8}\n" +
+		"								y={yScale(val)}\n" +
+		"								text-anchor=\"end\"\n" +
+		"								dominant-baseline=\"central\"\n" +
+		"								fill=\"var(--color-text-muted)\"\n" +
+		"								font-size=\"10\"\n" +
+		"							\u003e\n" +
+		"								{val \u003e 0 ? '+' : ''}{val}%\n" +
+		"							\u003c/text\u003e\n" +
+		"						{/each}\n" +
+		"\n" +
+		"						\u003c!-- X axis labels --\u003e\n" +
+		"						{#each xTicks as year}\n" +
+		"							\u003ctext\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -273,6 +452,13 @@
 		</div>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Use <code>onpointermove</code> on the SVG to track cursor position and find the nearest data point.</li>
@@ -349,5 +535,42 @@
 		inline-size: 16px;
 		block-size: 0;
 		border-block-start: 2px dashed;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface TempPoint {
 		year: number;
 		anomalyNH: number;
@@ -74,6 +75,148 @@
 
 	const nhColor = 'oklch(65% 0.22 270)';
 	const shColor = 'oklch(60% 0.20 155)';
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface TempPoint {\n" +
+		"		year: number;\n" +
+		"		anomalyNH: number;\n" +
+		"		anomalySH: number;\n" +
+		"	}\n" +
+		"\n" +
+		"	const data: TempPoint[] = [\n" +
+		"		{ year: 1970, anomalyNH: 0.02, anomalySH: -0.01 },\n" +
+		"		{ year: 1975, anomalyNH: -0.05, anomalySH: -0.04 },\n" +
+		"		{ year: 1980, anomalyNH: 0.18, anomalySH: 0.08 },\n" +
+		"		{ year: 1985, anomalyNH: 0.10, anomalySH: 0.06 },\n" +
+		"		{ year: 1990, anomalyNH: 0.38, anomalySH: 0.15 },\n" +
+		"		{ year: 1995, anomalyNH: 0.42, anomalySH: 0.22 },\n" +
+		"		{ year: 2000, anomalyNH: 0.55, anomalySH: 0.28 },\n" +
+		"		{ year: 2005, anomalyNH: 0.72, anomalySH: 0.35 },\n" +
+		"		{ year: 2010, anomalyNH: 0.82, anomalySH: 0.40 },\n" +
+		"		{ year: 2015, anomalyNH: 1.10, anomalySH: 0.55 },\n" +
+		"		{ year: 2020, anomalyNH: 1.35, anomalySH: 0.68 },\n" +
+		"		{ year: 2024, anomalyNH: 1.52, anomalySH: 0.78 }\n" +
+		"	];\n" +
+		"\n" +
+		"	const chartW = 640;\n" +
+		"	const chartH = 380;\n" +
+		"	const pad = { top: 30, right: 120, bottom: 50, left: 60 };\n" +
+		"	const plotW = chartW - pad.left - pad.right;\n" +
+		"	const plotH = chartH - pad.top - pad.bottom;\n" +
+		"\n" +
+		"	const yearMin = 1970;\n" +
+		"	const yearMax = 2025;\n" +
+		"	const anomalyMin = -0.2;\n" +
+		"	const anomalyMax = 1.7;\n" +
+		"\n" +
+		"	const scaleX = (year: number): number =\u003e\n" +
+		"		((year - yearMin) / (yearMax - yearMin)) * plotW;\n" +
+		"\n" +
+		"	const scaleY = (val: number): number =\u003e\n" +
+		"		plotH - ((val - anomalyMin) / (anomalyMax - anomalyMin)) * plotH;\n" +
+		"\n" +
+		"	const buildPath = (points: Array\u003c{ x: number; y: number }\u003e): string =\u003e\n" +
+		"		points.map((p, i) =\u003e `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');\n" +
+		"\n" +
+		"	const nhPoints = $derived(data.map((d) =\u003e ({ x: scaleX(d.year), y: scaleY(d.anomalyNH) })));\n" +
+		"	const shPoints = $derived(data.map((d) =\u003e ({ x: scaleX(d.year), y: scaleY(d.anomalySH) })));\n" +
+		"\n" +
+		"	const nhPath = $derived(buildPath(nhPoints));\n" +
+		"	const shPath = $derived(buildPath(shPoints));\n" +
+		"\n" +
+		"	const xTicks = [1970, 1980, 1990, 2000, 2010, 2020];\n" +
+		"	const yTicks = [0, 0.5, 1.0, 1.5];\n" +
+		"\n" +
+		"	let hoveredIndex = $state\u003cnumber | null\u003e(null);\n" +
+		"\n" +
+		"	function handlePointerMove(e: PointerEvent): void {\n" +
+		"		const svg = e.currentTarget as SVGSVGElement;\n" +
+		"		const rect = svg.getBoundingClientRect();\n" +
+		"		const svgX = ((e.clientX - rect.left) / rect.width) * chartW - pad.left;\n" +
+		"\n" +
+		"		let closest = 0;\n" +
+		"		let minDist = Infinity;\n" +
+		"		for (let i = 0; i \u003c data.length; i++) {\n" +
+		"			const dist = Math.abs(scaleX(data[i].year) - svgX);\n" +
+		"			if (dist \u003c minDist) {\n" +
+		"				minDist = dist;\n" +
+		"				closest = i;\n" +
+		"			}\n" +
+		"		}\n" +
+		"		hoveredIndex = minDist \u003c 40 ? closest : null;\n" +
+		"	}\n" +
+		"\n" +
+		"	function handlePointerLeave(): void {\n" +
+		"		hoveredIndex = null;\n" +
+		"	}\n" +
+		"\n" +
+		"	const nhColor = 'oklch(65% 0.22 270)';\n" +
+		"	const shColor = 'oklch(60% 0.20 155)';\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eDV.3 — Line Chart\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e Line charts show change over time. The \u003ccode\u003e&lt;path&gt;\u003c/code\u003e\n" +
+		"		element with its \u003ccode\u003ed\u003c/code\u003e attribute draws any shape — including a line through data\n" +
+		"		points. Build the \u003ccode\u003ed\u003c/code\u003e string from data:\n" +
+		"		\u003ccode\u003eM x0,y0 L x1,y1 L x2,y2 ...\u003c/code\u003e. Add \u003ccode\u003e&lt;circle&gt;\u003c/code\u003e dots at each data\n" +
+		"		point for hover targets. Multiple lines mean multiple \u003ccode\u003e&lt;path&gt;\u003c/code\u003e elements with\n" +
+		"		different stroke colors.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003csvg\n" +
+		"			viewBox=\"0 0 {chartW} {chartH}\"\n" +
+		"			class=\"chart\"\n" +
+		"			role=\"img\"\n" +
+		"			aria-label=\"Line chart of global temperature anomalies 1970-2024\"\n" +
+		"			onpointermove={handlePointerMove}\n" +
+		"			onpointerleave={handlePointerLeave}\n" +
+		"		\u003e\n" +
+		"			\u003cg transform=\"translate({pad.left}, {pad.top})\"\u003e\n" +
+		"				\u003c!-- zero baseline --\u003e\n" +
+		"				\u003cline x1={0} y1={scaleY(0)} x2={plotW} y2={scaleY(0)} class=\"zero-line\" /\u003e\n" +
+		"\n" +
+		"				\u003c!-- gridlines --\u003e\n" +
+		"				{#each yTicks as tick}\n" +
+		"					\u003cline x1={0} y1={scaleY(tick)} x2={plotW} y2={scaleY(tick)} class=\"gridline\" /\u003e\n" +
+		"				{/each}\n" +
+		"\n" +
+		"				\u003c!-- x axis --\u003e\n" +
+		"				\u003cline x1={0} y1={plotH} x2={plotW} y2={plotH} class=\"axis-line\" /\u003e\n" +
+		"				{#each xTicks as tick}\n" +
+		"					\u003cline x1={scaleX(tick)} y1={plotH} x2={scaleX(tick)} y2={plotH + 6} class=\"axis-line\" /\u003e\n" +
+		"					\u003ctext x={scaleX(tick)} y={plotH + 22} class=\"tick-label\" text-anchor=\"middle\"\u003e\n" +
+		"						{tick}\n" +
+		"					\u003c/text\u003e\n" +
+		"				{/each}\n" +
+		"				\u003ctext x={plotW / 2} y={plotH + 42} class=\"axis-title\" text-anchor=\"middle\"\u003eYear\u003c/text\u003e\n" +
+		"\n" +
+		"				\u003c!-- y axis --\u003e\n" +
+		"				\u003cline x1={0} y1={0} x2={0} y2={plotH} class=\"axis-line\" /\u003e\n" +
+		"				{#each yTicks as tick}\n" +
+		"					\u003ctext x={-10} y={scaleY(tick) + 4} class=\"tick-label\" text-anchor=\"end\"\u003e\n" +
+		"						{tick === 0 ? '0' : `+${tick.toFixed(1)}`}°C\n" +
+		"					\u003c/text\u003e\n" +
+		"				{/each}\n" +
+		"\n" +
+		"				\u003c!-- NH line --\u003e\n" +
+		"				\u003cpath d={nhPath} fill=\"none\" stroke={nhColor} stroke-width={2.5} class=\"data-line\" /\u003e\n" +
+		"				\u003c!-- SH line --\u003e\n" +
+		"				\u003cpath d={shPath} fill=\"none\" stroke={shColor} stroke-width={2.5} class=\"data-line\" /\u003e\n" +
+		"\n" +
+		"				\u003c!-- dots --\u003e\n" +
+		"				{#each data as point, i (point.year)}\n" +
+		"					\u003ccircle\n" +
+		"						cx={scaleX(point.year)}\n" +
+		"						cy={scaleY(point.anomalyNH)}\n" +
+		"						r={hoveredIndex === i ? 5 : 3}\n" +
+		"						fill={nhColor}\n" +
+		"						class=\"dot\"\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -181,6 +324,13 @@
 			Temperature anomalies relative to 1951–1980 baseline. Source: NOAA approximate data.
 		</p>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -302,5 +452,42 @@
 		font-size: var(--text-sm);
 		color: var(--color-text-muted);
 		margin: 0;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

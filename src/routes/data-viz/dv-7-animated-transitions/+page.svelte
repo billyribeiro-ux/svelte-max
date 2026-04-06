@@ -2,6 +2,7 @@
 	import { Tween, prefersReducedMotion } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface YearData {
 		solar: number;
 		wind: number;
@@ -83,6 +84,157 @@
 	}
 
 	const gridLines = [0, 400, 800, 1200, 1600];
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { Tween, prefersReducedMotion } from 'svelte/motion';\n" +
+		"	import { cubicOut } from 'svelte/easing';\n" +
+		"\n" +
+		"	interface YearData {\n" +
+		"		solar: number;\n" +
+		"		wind: number;\n" +
+		"		hydro: number;\n" +
+		"		biomass: number;\n" +
+		"		geothermal: number;\n" +
+		"	}\n" +
+		"\n" +
+		"	const years: number[] = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];\n" +
+		"\n" +
+		"	const renewableData: Record\u003cnumber, YearData\u003e = {\n" +
+		"		2015: { solar: 227, wind: 432, hydro: 1064, biomass: 106, geothermal: 13 },\n" +
+		"		2016: { solar: 303, wind: 487, hydro: 1096, biomass: 112, geothermal: 13 },\n" +
+		"		2017: { solar: 402, wind: 539, hydro: 1112, biomass: 121, geothermal: 14 },\n" +
+		"		2018: { solar: 512, wind: 591, hydro: 1132, biomass: 130, geothermal: 14 },\n" +
+		"		2019: { solar: 627, wind: 651, hydro: 1150, biomass: 139, geothermal: 15 },\n" +
+		"		2020: { solar: 760, wind: 743, hydro: 1170, biomass: 145, geothermal: 15 },\n" +
+		"		2021: { solar: 942, wind: 837, hydro: 1197, biomass: 152, geothermal: 16 },\n" +
+		"		2022: { solar: 1185, wind: 906, hydro: 1212, biomass: 160, geothermal: 16 },\n" +
+		"		2023: { solar: 1483, wind: 1017, hydro: 1240, biomass: 168, geothermal: 17 },\n" +
+		"		2024: { solar: 1810, wind: 1132, hydro: 1260, biomass: 175, geothermal: 17 }\n" +
+		"	};\n" +
+		"\n" +
+		"	const sources = ['solar', 'wind', 'hydro', 'biomass', 'geothermal'] as const;\n" +
+		"	type Source = (typeof sources)[number];\n" +
+		"\n" +
+		"	const sourceColors: Record\u003cSource, string\u003e = {\n" +
+		"		solar: 'oklch(75% 0.18 85)',\n" +
+		"		wind: 'oklch(60% 0.18 220)',\n" +
+		"		hydro: 'oklch(55% 0.15 250)',\n" +
+		"		biomass: 'oklch(55% 0.12 145)',\n" +
+		"		geothermal: 'oklch(60% 0.15 25)'\n" +
+		"	};\n" +
+		"\n" +
+		"	const sourceLabels: Record\u003cSource, string\u003e = {\n" +
+		"		solar: 'Solar',\n" +
+		"		wind: 'Wind',\n" +
+		"		hydro: 'Hydro',\n" +
+		"		biomass: 'Biomass',\n" +
+		"		geothermal: 'Geothermal'\n" +
+		"	};\n" +
+		"\n" +
+		"	let selectedYear = $state(2024);\n" +
+		"\n" +
+		"	const solarTween = new Tween(0, { duration: 600, easing: cubicOut });\n" +
+		"	const windTween = new Tween(0, { duration: 600, easing: cubicOut });\n" +
+		"	const hydroTween = new Tween(0, { duration: 600, easing: cubicOut });\n" +
+		"	const biomassTween = new Tween(0, { duration: 600, easing: cubicOut });\n" +
+		"	const geothermalTween = new Tween(0, { duration: 600, easing: cubicOut });\n" +
+		"\n" +
+		"	const tweens: Record\u003cSource, Tween\u003cnumber\u003e\u003e = {\n" +
+		"		solar: solarTween,\n" +
+		"		wind: windTween,\n" +
+		"		hydro: hydroTween,\n" +
+		"		biomass: biomassTween,\n" +
+		"		geothermal: geothermalTween\n" +
+		"	};\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const d = renewableData[selectedYear];\n" +
+		"		const opts = prefersReducedMotion.current ? { duration: 0 } : undefined;\n" +
+		"		for (const s of sources) {\n" +
+		"			tweens[s].set(d[s], opts);\n" +
+		"		}\n" +
+		"	});\n" +
+		"\n" +
+		"	const maxValue = 1900;\n" +
+		"	let containerWidth = $state(0);\n" +
+		"\n" +
+		"	const chartPadding = { top: 30, right: 50, bottom: 40, left: 90 };\n" +
+		"	const chartW = $derived(Math.max(containerWidth - chartPadding.left - chartPadding.right, 100));\n" +
+		"	const barGroupWidth = $derived(chartW / sources.length);\n" +
+		"	const barWidth = $derived(Math.min(barGroupWidth * 0.7, 80));\n" +
+		"	const chartHeight = 320;\n" +
+		"	const plotH = chartHeight - chartPadding.top - chartPadding.bottom;\n" +
+		"\n" +
+		"	function scaleY(value: number): number {\n" +
+		"		return plotH - (value / maxValue) * plotH;\n" +
+		"	}\n" +
+		"\n" +
+		"	const gridLines = [0, 400, 800, 1200, 1600];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eDV.7 — Animated Transitions\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eWhen data changes, chart elements should morph smoothly.\u003c/strong\u003e Bars grow, lines\n" +
+		"		redraw, points glide. Use \u003ccode\u003eTween\u003c/code\u003e from \u003ccode\u003esvelte/motion\u003c/code\u003e to interpolate\n" +
+		"		numeric values. For each data point, tween its visual position so transitions feel fluid.\n" +
+		"		Respect \u003ccode\u003eprefersReducedMotion\u003c/code\u003e — skip animation when the user has requested it.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\" bind:clientWidth={containerWidth}\u003e\n" +
+		"		\u003cdiv class=\"year-controls\"\u003e\n" +
+		"			\u003cspan class=\"year-label\"\u003eYear:\u003c/span\u003e\n" +
+		"			{#each years as year}\n" +
+		"				\u003cbutton\n" +
+		"					type=\"button\"\n" +
+		"					class=\"year-btn\"\n" +
+		"					class:active={selectedYear === year}\n" +
+		"					onclick={() =\u003e (selectedYear = year)}\n" +
+		"				\u003e\n" +
+		"					{year}\n" +
+		"				\u003c/button\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"year-slider\"\u003e\n" +
+		"			\u003cinput\n" +
+		"				type=\"range\"\n" +
+		"				min={2015}\n" +
+		"				max={2024}\n" +
+		"				step={1}\n" +
+		"				bind:value={selectedYear}\n" +
+		"				class=\"slider\"\n" +
+		"			/\u003e\n" +
+		"			\u003cspan class=\"slider-value\"\u003e{selectedYear}\u003c/span\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		{#if containerWidth \u003e 0}\n" +
+		"			\u003csvg\n" +
+		"				width={containerWidth - 32}\n" +
+		"				height={chartHeight}\n" +
+		"				viewBox=\"0 0 {containerWidth - 32} {chartHeight}\"\n" +
+		"				role=\"img\"\n" +
+		"				aria-label=\"Renewable energy capacity by source for {selectedYear}\"\n" +
+		"			\u003e\n" +
+		"				\u003cg transform=\"translate({chartPadding.left}, {chartPadding.top})\"\u003e\n" +
+		"					\u003c!-- Grid lines --\u003e\n" +
+		"					{#each gridLines as val}\n" +
+		"						\u003cline\n" +
+		"							x1={0}\n" +
+		"							y1={scaleY(val)}\n" +
+		"							x2={chartW}\n" +
+		"							y2={scaleY(val)}\n" +
+		"							stroke=\"var(--color-border)\"\n" +
+		"							stroke-width=\"1\"\n" +
+		"							stroke-dasharray={val === 0 ? 'none' : '3,3'}\n" +
+		"						/\u003e\n" +
+		"						\u003ctext\n" +
+		"							x={-8}\n" +
+		"							y={scaleY(val)}\n" +
+		"							text-anchor=\"end\"\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -213,6 +365,13 @@
 		</div>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Create a <code>Tween</code> per data value — set <code>.target</code> to animate.</li>
@@ -299,5 +458,42 @@
 	}
 	svg {
 		display: block;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

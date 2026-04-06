@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface City {
 		name: string;
 		population: number;
@@ -50,6 +51,124 @@
 		Mumbai: 'oklch(65% 0.22 0)',
 		Beijing: 'oklch(65% 0.18 210)'
 	};
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface City {\n" +
+		"		name: string;\n" +
+		"		population: number;\n" +
+		"		area: number;\n" +
+		"		density: number;\n" +
+		"	}\n" +
+		"\n" +
+		"	const cities: City[] = [\n" +
+		"		{ name: 'Tokyo', population: 13.96, area: 2194, density: 6363 },\n" +
+		"		{ name: 'Delhi', population: 32.94, area: 1484, density: 22195 },\n" +
+		"		{ name: 'Shanghai', population: 28.52, area: 6341, density: 4498 },\n" +
+		"		{ name: 'São Paulo', population: 22.43, area: 1521, density: 14747 },\n" +
+		"		{ name: 'Mexico City', population: 21.78, area: 1485, density: 14667 },\n" +
+		"		{ name: 'Cairo', population: 22.18, area: 3085, density: 7192 },\n" +
+		"		{ name: 'Mumbai', population: 21.67, area: 603, density: 35935 },\n" +
+		"		{ name: 'Beijing', population: 21.54, area: 16411, density: 1313 }\n" +
+		"	];\n" +
+		"\n" +
+		"	const chartW = 600;\n" +
+		"	const chartH = 400;\n" +
+		"	const pad = { top: 30, right: 30, bottom: 50, left: 60 };\n" +
+		"	const plotW = chartW - pad.left - pad.right;\n" +
+		"	const plotH = chartH - pad.top - pad.bottom;\n" +
+		"\n" +
+		"	const areaMin = 0;\n" +
+		"	const areaMax = 17000;\n" +
+		"	const popMin = 0;\n" +
+		"	const popMax = 36;\n" +
+		"	const densityMax = 36000;\n" +
+		"\n" +
+		"	const scaleX = (v: number): number =\u003e (v - areaMin) / (areaMax - areaMin) * plotW;\n" +
+		"	const scaleY = (v: number): number =\u003e plotH - (v - popMin) / (popMax - popMin) * plotH;\n" +
+		"	const scaleR = (density: number, mult: number): number =\u003e\n" +
+		"		3 + (density / densityMax) * 20 * mult;\n" +
+		"\n" +
+		"	let radiusMultiplier = $state(1);\n" +
+		"	let hoveredCity = $state\u003cstring | null\u003e(null);\n" +
+		"\n" +
+		"	const xTicks = [0, 4000, 8000, 12000, 16000];\n" +
+		"	const yTicks = [0, 10, 20, 30];\n" +
+		"\n" +
+		"	const cityColors: Record\u003cstring, string\u003e = {\n" +
+		"		Tokyo: 'oklch(65% 0.22 270)',\n" +
+		"		Delhi: 'oklch(65% 0.20 30)',\n" +
+		"		Shanghai: 'oklch(65% 0.18 150)',\n" +
+		"		'São Paulo': 'oklch(65% 0.20 90)',\n" +
+		"		'Mexico City': 'oklch(65% 0.18 330)',\n" +
+		"		Cairo: 'oklch(65% 0.20 60)',\n" +
+		"		Mumbai: 'oklch(65% 0.22 0)',\n" +
+		"		Beijing: 'oklch(65% 0.18 210)'\n" +
+		"	};\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eDV.1 — SVG Fundamentals in Svelte\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e SVG is a first-class citizen in Svelte — you write SVG elements\n" +
+		"		directly in markup, bind attributes reactively, and scope styles. No library needed. The\n" +
+		"		\u003ccode\u003eviewBox\u003c/code\u003e attribute makes SVGs resolution-independent. \u003ccode\u003e&lt;g&gt;\u003c/code\u003e groups\n" +
+		"		elements for transforms. Svelte's \u003ccode\u003e{'{#each}'}\u003c/code\u003e iterates to create data-driven\n" +
+		"		elements. This is how The New York Times, The Pudding, and Reuters Graphics build their\n" +
+		"		charts — from SVG primitives, not library abstractions.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"controls\"\u003e\n" +
+		"			\u003clabel\u003e\n" +
+		"				\u003cspan\u003eCircle size: {radiusMultiplier.toFixed(1)}x\u003c/span\u003e\n" +
+		"				\u003cinput type=\"range\" min=\"0.3\" max=\"2.5\" step=\"0.1\" bind:value={radiusMultiplier} /\u003e\n" +
+		"			\u003c/label\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003csvg viewBox=\"0 0 {chartW} {chartH}\" class=\"chart\" role=\"img\" aria-label=\"Scatter plot of world cities by area and population\"\u003e\n" +
+		"			\u003cg transform=\"translate({pad.left}, {pad.top})\"\u003e\n" +
+		"				\u003c!-- gridlines --\u003e\n" +
+		"				{#each yTicks as tick}\n" +
+		"					\u003cline\n" +
+		"						x1={0}\n" +
+		"						y1={scaleY(tick)}\n" +
+		"						x2={plotW}\n" +
+		"						y2={scaleY(tick)}\n" +
+		"						class=\"gridline\"\n" +
+		"					/\u003e\n" +
+		"				{/each}\n" +
+		"\n" +
+		"				\u003c!-- x axis --\u003e\n" +
+		"				\u003cline x1={0} y1={plotH} x2={plotW} y2={plotH} class=\"axis-line\" /\u003e\n" +
+		"				{#each xTicks as tick}\n" +
+		"					\u003cline x1={scaleX(tick)} y1={plotH} x2={scaleX(tick)} y2={plotH + 6} class=\"axis-line\" /\u003e\n" +
+		"					\u003ctext x={scaleX(tick)} y={plotH + 22} class=\"tick-label\" text-anchor=\"middle\"\u003e\n" +
+		"						{tick === 0 ? '0' : `${(tick / 1000).toFixed(0)}k`}\n" +
+		"					\u003c/text\u003e\n" +
+		"				{/each}\n" +
+		"				\u003ctext x={plotW / 2} y={plotH + 42} class=\"axis-title\" text-anchor=\"middle\"\u003e\n" +
+		"					Area (km²)\n" +
+		"				\u003c/text\u003e\n" +
+		"\n" +
+		"				\u003c!-- y axis --\u003e\n" +
+		"				\u003cline x1={0} y1={0} x2={0} y2={plotH} class=\"axis-line\" /\u003e\n" +
+		"				{#each yTicks as tick}\n" +
+		"					\u003cline x1={-6} y1={scaleY(tick)} x2={0} y2={scaleY(tick)} class=\"axis-line\" /\u003e\n" +
+		"					\u003ctext x={-12} y={scaleY(tick) + 4} class=\"tick-label\" text-anchor=\"end\"\u003e\n" +
+		"						{tick}M\n" +
+		"					\u003c/text\u003e\n" +
+		"				{/each}\n" +
+		"				\u003ctext\n" +
+		"					x={-45}\n" +
+		"					y={plotH / 2}\n" +
+		"					class=\"axis-title\"\n" +
+		"					text-anchor=\"middle\"\n" +
+		"					transform=\"rotate(-90, -45, {plotH / 2})\"\n" +
+		"				\u003e\n" +
+		"					Population (millions)\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -163,6 +282,13 @@
 			Bubble size encodes population density. Hover a city for details.
 		</p>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -279,5 +405,42 @@
 		font-size: var(--text-sm);
 		color: var(--color-text-muted);
 		margin: 0;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

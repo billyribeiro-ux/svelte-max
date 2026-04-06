@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface Metric {
 		name: string;
 		unit: string;
@@ -102,6 +103,176 @@
 	function selectMetric(idx: number): void {
 		selectedIdx = idx;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface Metric {\n" +
+		"		name: string;\n" +
+		"		unit: string;\n" +
+		"		values: number[];\n" +
+		"		color: string;\n" +
+		"	}\n" +
+		"\n" +
+		"	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];\n" +
+		"\n" +
+		"	const metrics: Metric[] = [\n" +
+		"		{\n" +
+		"			name: 'Monthly Active Users',\n" +
+		"			unit: 'K',\n" +
+		"			values: [124, 131, 128, 142, 155, 163, 158, 172, 185, 198, 210, 224],\n" +
+		"			color: 'oklch(65% 0.22 270)'\n" +
+		"		},\n" +
+		"		{\n" +
+		"			name: 'Revenue',\n" +
+		"			unit: '$K',\n" +
+		"			values: [89, 94, 91, 102, 108, 115, 122, 118, 131, 140, 148, 156],\n" +
+		"			color: 'oklch(60% 0.20 155)'\n" +
+		"		},\n" +
+		"		{\n" +
+		"			name: 'Churn Rate',\n" +
+		"			unit: '%',\n" +
+		"			values: [4.2, 3.8, 4.1, 3.6, 3.4, 3.1, 3.3, 2.9, 2.7, 2.5, 2.4, 2.2],\n" +
+		"			color: 'oklch(65% 0.22 25)'\n" +
+		"		},\n" +
+		"		{\n" +
+		"			name: 'NPS Score',\n" +
+		"			unit: '',\n" +
+		"			values: [42, 44, 43, 47, 49, 52, 51, 55, 58, 60, 63, 67],\n" +
+		"			color: 'oklch(65% 0.20 90)'\n" +
+		"		}\n" +
+		"	];\n" +
+		"\n" +
+		"	let selectedIdx = $state(0);\n" +
+		"\n" +
+		"	const selected = $derived(metrics[selectedIdx]);\n" +
+		"\n" +
+		"	function pctChange(vals: number[]): number {\n" +
+		"		const first = vals[0];\n" +
+		"		const last = vals[vals.length - 1];\n" +
+		"		return first === 0 ? 0 : ((last - first) / Math.abs(first)) * 100;\n" +
+		"	}\n" +
+		"\n" +
+		"	function sparklinePath(vals: number[], w: number, h: number): string {\n" +
+		"		const min = Math.min(...vals);\n" +
+		"		const max = Math.max(...vals);\n" +
+		"		const range = max - min || 1;\n" +
+		"		const points = vals.map((v, i) =\u003e ({\n" +
+		"			x: (i / (vals.length - 1)) * w,\n" +
+		"			y: h - ((v - min) / range) * h\n" +
+		"		}));\n" +
+		"		const line = points.map((p, i) =\u003e `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');\n" +
+		"		const area = `${line} L${w},${h} L0,${h} Z`;\n" +
+		"		return area;\n" +
+		"	}\n" +
+		"\n" +
+		"	function sparklineStroke(vals: number[], w: number, h: number): string {\n" +
+		"		const min = Math.min(...vals);\n" +
+		"		const max = Math.max(...vals);\n" +
+		"		const range = max - min || 1;\n" +
+		"		const points = vals.map((v, i) =\u003e ({\n" +
+		"			x: (i / (vals.length - 1)) * w,\n" +
+		"			y: h - ((v - min) / range) * h\n" +
+		"		}));\n" +
+		"		return points.map((p, i) =\u003e `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');\n" +
+		"	}\n" +
+		"\n" +
+		"	// Full area chart dimensions\n" +
+		"	const chartW = 640;\n" +
+		"	const chartH = 300;\n" +
+		"	const pad = { top: 20, right: 20, bottom: 40, left: 55 };\n" +
+		"	const plotW = chartW - pad.left - pad.right;\n" +
+		"	const plotH = chartH - pad.top - pad.bottom;\n" +
+		"\n" +
+		"	const areaChartData = $derived.by(() =\u003e {\n" +
+		"		const vals = selected.values;\n" +
+		"		const min = Math.min(...vals) * 0.8;\n" +
+		"		const max = Math.max(...vals) * 1.1;\n" +
+		"		const range = max - min || 1;\n" +
+		"\n" +
+		"		const points = vals.map((v, i) =\u003e ({\n" +
+		"			x: (i / (vals.length - 1)) * plotW,\n" +
+		"			y: plotH - ((v - min) / range) * plotH,\n" +
+		"			val: v\n" +
+		"		}));\n" +
+		"\n" +
+		"		const line = points.map((p, i) =\u003e `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');\n" +
+		"		const area = `${line} L${plotW},${plotH} L0,${plotH} Z`;\n" +
+		"\n" +
+		"		const yMin = min;\n" +
+		"		const yMax = max;\n" +
+		"		const yStep = (yMax - yMin) / 4;\n" +
+		"		const yTicks = Array.from({ length: 5 }, (_, i) =\u003e yMin + yStep * i);\n" +
+		"\n" +
+		"		return { points, line, area, yTicks, yMin, yMax };\n" +
+		"	});\n" +
+		"\n" +
+		"	function selectMetric(idx: number): void {\n" +
+		"		selectedIdx = idx;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eDV.4 — Area Chart + Sparkline\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e An area chart is a line chart with the space below filled — use\n" +
+		"		\u003ccode\u003e&lt;path&gt;\u003c/code\u003e with the line path plus a baseline closure\n" +
+		"		(\u003ccode\u003eL xN,baseline L x0,baseline Z\u003c/code\u003e). Sparklines are tiny inline charts — no axes,\n" +
+		"		no labels, just the shape. They communicate trends at a glance (think stock tickers, dashboard\n" +
+		"		KPIs). Build both from the same data and scale logic.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"kpi-grid\"\u003e\n" +
+		"			{#each metrics as metric, i (metric.name)}\n" +
+		"				{@const change = pctChange(metric.values)}\n" +
+		"				{@const isDown = change \u003c 0}\n" +
+		"				{@const isSelected = selectedIdx === i}\n" +
+		"				\u003cbutton\n" +
+		"					class=\"kpi-card\"\n" +
+		"					class:selected={isSelected}\n" +
+		"					onclick={() =\u003e selectMetric(i)}\n" +
+		"				\u003e\n" +
+		"					\u003cspan class=\"kpi-name\"\u003e{metric.name}\u003c/span\u003e\n" +
+		"					\u003cspan class=\"kpi-value\"\u003e\n" +
+		"						{metric.values[metric.values.length - 1]}{metric.unit}\n" +
+		"					\u003c/span\u003e\n" +
+		"					\u003cspan class=\"kpi-change\" class:down={isDown}\u003e\n" +
+		"						{isDown ? '' : '+'}{change.toFixed(1)}%\n" +
+		"					\u003c/span\u003e\n" +
+		"					\u003csvg viewBox=\"0 0 60 20\" class=\"sparkline\" aria-hidden=\"true\"\u003e\n" +
+		"						\u003cpath\n" +
+		"							d={sparklinePath(metric.values, 60, 20)}\n" +
+		"							fill={metric.color}\n" +
+		"							opacity=\"0.2\"\n" +
+		"						/\u003e\n" +
+		"						\u003cpath\n" +
+		"							d={sparklineStroke(metric.values, 60, 20)}\n" +
+		"							fill=\"none\"\n" +
+		"							stroke={metric.color}\n" +
+		"							stroke-width=\"1.5\"\n" +
+		"							stroke-linejoin=\"round\"\n" +
+		"						/\u003e\n" +
+		"					\u003c/svg\u003e\n" +
+		"				\u003c/button\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003csvg viewBox=\"0 0 {chartW} {chartH}\" class=\"area-chart\" role=\"img\" aria-label=\"Area chart of {selected.name}\"\u003e\n" +
+		"			\u003cdefs\u003e\n" +
+		"				\u003clinearGradient id=\"area-fill\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"\u003e\n" +
+		"					\u003cstop offset=\"0%\" stop-color={selected.color} stop-opacity=\"0.35\" /\u003e\n" +
+		"					\u003cstop offset=\"100%\" stop-color={selected.color} stop-opacity=\"0.03\" /\u003e\n" +
+		"				\u003c/linearGradient\u003e\n" +
+		"			\u003c/defs\u003e\n" +
+		"			\u003cg transform=\"translate({pad.left}, {pad.top})\"\u003e\n" +
+		"				\u003c!-- y gridlines --\u003e\n" +
+		"				{#each areaChartData.yTicks as tick, i}\n" +
+		"					{@const y = plotH - ((tick - areaChartData.yMin) / (areaChartData.yMax - areaChartData.yMin)) * plotH}\n" +
+		"					\u003cline x1={0} y1={y} x2={plotW} y2={y} class=\"gridline\" /\u003e\n" +
+		"					\u003ctext x={-8} y={y + 4} class=\"tick-label\" text-anchor=\"end\"\u003e\n" +
+		"						{tick.toFixed(tick \u003c 10 ? 1 : 0)}{selected.unit}\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -200,6 +371,13 @@
 			<strong>{selected.name}</strong> — 12-month trend
 		</p>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -340,5 +518,42 @@
 	}
 	.chart-title strong {
 		color: var(--color-text);
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

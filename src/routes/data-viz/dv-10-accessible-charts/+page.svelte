@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface EmissionData {
 		country: string;
 		emissions: number;
@@ -45,6 +46,119 @@
 	function handleBarBlur(): void {
 		focusedIndex = null;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface EmissionData {\n" +
+		"		country: string;\n" +
+		"		emissions: number;\n" +
+		"		code: string;\n" +
+		"	}\n" +
+		"\n" +
+		"	const data: EmissionData[] = [\n" +
+		"		{ country: 'China', emissions: 12667, code: 'CN' },\n" +
+		"		{ country: 'United States', emissions: 5007, code: 'US' },\n" +
+		"		{ country: 'India', emissions: 2830, code: 'IN' },\n" +
+		"		{ country: 'Russia', emissions: 1909, code: 'RU' },\n" +
+		"		{ country: 'Japan', emissions: 1080, code: 'JP' },\n" +
+		"		{ country: 'Germany', emissions: 637, code: 'DE' },\n" +
+		"		{ country: 'South Korea', emissions: 616, code: 'KR' },\n" +
+		"		{ country: 'Iran', emissions: 580, code: 'IR' },\n" +
+		"		{ country: 'Canada', emissions: 544, code: 'CA' },\n" +
+		"		{ country: 'Indonesia', emissions: 530, code: 'ID' }\n" +
+		"	];\n" +
+		"\n" +
+		"	const maxEmissions = Math.max(...data.map((d) =\u003e d.emissions));\n" +
+		"	let containerWidth = $state(0);\n" +
+		"	let focusedIndex = $state\u003cnumber | null\u003e(null);\n" +
+		"	let hoveredIndex = $state\u003cnumber | null\u003e(null);\n" +
+		"	let showTable = $state(false);\n" +
+		"\n" +
+		"	const activeIndex = $derived(focusedIndex ?? hoveredIndex);\n" +
+		"\n" +
+		"	const padding = { top: 20, right: 60, bottom: 40, left: 110 };\n" +
+		"	const barHeight = 28;\n" +
+		"	const barGap = 10;\n" +
+		"	const chartHeight = padding.top + data.length * (barHeight + barGap) + padding.bottom;\n" +
+		"	const plotW = $derived(Math.max(containerWidth - padding.left - padding.right, 50));\n" +
+		"\n" +
+		"	function barWidth(emissions: number): number {\n" +
+		"		return (emissions / maxEmissions) * plotW;\n" +
+		"	}\n" +
+		"\n" +
+		"	const chartSummary = `Bar chart showing CO2 emissions by country in 2023. China leads with ${data[0].emissions.toLocaleString()} megatons, followed by the United States at ${data[1].emissions.toLocaleString()} megatons. The top 10 emitters account for over 70% of global CO2 emissions.`;\n" +
+		"\n" +
+		"	function handleBarFocus(index: number): void {\n" +
+		"		focusedIndex = index;\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleBarBlur(): void {\n" +
+		"		focusedIndex = null;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eDV.10 — Accessible Charts\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eCharts are visual — screen readers cannot see them.\u003c/strong\u003e Every chart needs:\n" +
+		"		(1) \u003ccode\u003erole=\"img\"\u003c/code\u003e + \u003ccode\u003earia-label\u003c/code\u003e describing the chart's message,\n" +
+		"		(2) a \u003ccode\u003e&lt;desc&gt;\u003c/code\u003e inside the SVG with a text summary,\n" +
+		"		(3) a visually-hidden \u003ccode\u003e&lt;table&gt;\u003c/code\u003e with raw data as a fallback,\n" +
+		"		(4) \u003ccode\u003earia-hidden=\"true\"\u003c/code\u003e on decorative elements,\n" +
+		"		(5) focus-visible outlines on interactive elements with \u003ccode\u003etabindex=\"0\"\u003c/code\u003e.\n" +
+		"		This is how you pass WCAG 2.1 AA for data visualization.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\" bind:clientWidth={containerWidth}\u003e\n" +
+		"		{#if containerWidth \u003e 0}\n" +
+		"			\u003csvg\n" +
+		"				width={containerWidth}\n" +
+		"				height={chartHeight}\n" +
+		"				viewBox=\"0 0 {containerWidth} {chartHeight}\"\n" +
+		"				role=\"img\"\n" +
+		"				aria-label=\"CO2 emissions by country, 2023. China is the top emitter at 12,667 megatons.\"\n" +
+		"			\u003e\n" +
+		"				\u003cdesc\u003e{chartSummary}\u003c/desc\u003e\n" +
+		"\n" +
+		"				\u003cg transform=\"translate({padding.left}, {padding.top})\"\u003e\n" +
+		"					\u003c!-- Grid lines (decorative) --\u003e\n" +
+		"					\u003cg aria-hidden=\"true\"\u003e\n" +
+		"						{#each [0, 3000, 6000, 9000, 12000] as val}\n" +
+		"							{@const x = (val / maxEmissions) * plotW}\n" +
+		"							\u003cline\n" +
+		"								x1={x}\n" +
+		"								y1={0}\n" +
+		"								x2={x}\n" +
+		"								y2={data.length * (barHeight + barGap)}\n" +
+		"								stroke=\"var(--color-border)\"\n" +
+		"								stroke-width=\"0.5\"\n" +
+		"							/\u003e\n" +
+		"							\u003ctext\n" +
+		"								x={x}\n" +
+		"								y={data.length * (barHeight + barGap) + 18}\n" +
+		"								text-anchor=\"middle\"\n" +
+		"								fill=\"var(--color-text-muted)\"\n" +
+		"								font-size=\"10\"\n" +
+		"							\u003e\n" +
+		"								{val \u003e 0 ? `${(val / 1000).toFixed(0)}k` : '0'}\n" +
+		"							\u003c/text\u003e\n" +
+		"						{/each}\n" +
+		"						\u003ctext\n" +
+		"							x={plotW / 2}\n" +
+		"							y={data.length * (barHeight + barGap) + 34}\n" +
+		"							text-anchor=\"middle\"\n" +
+		"							fill=\"var(--color-text-muted)\"\n" +
+		"							font-size=\"10\"\n" +
+		"						\u003e\n" +
+		"							Megatons CO2\n" +
+		"						\u003c/text\u003e\n" +
+		"					\u003c/g\u003e\n" +
+		"\n" +
+		"					\u003c!-- Country labels (decorative — data is in hidden table) --\u003e\n" +
+		"					\u003cg aria-hidden=\"true\"\u003e\n" +
+		"						{#each data as d, i}\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -221,6 +335,13 @@
 		<li>Focus and hover both highlight bars — no mouse-only interactions.</li>
 	</ul>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Use <code>role="img"</code> and <code>aria-label</code> on SVG charts to convey the key insight to screen readers.</li>
@@ -308,5 +429,42 @@
 
 	.visible-table tbody tr:hover {
 		background: var(--color-surface-2);
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

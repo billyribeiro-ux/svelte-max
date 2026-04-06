@@ -283,7 +283,17 @@
 		</div>
 	</div>
 
-	<!-- 9. WHAT YOU LEARNED -->
+	<!-- 9. HAVING ISSUES? COMPLETE CODE -->
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>
+			If your version is not working, compare it line-by-line with this reference. Every line
+			is annotated so you can spot what went wrong.
+		</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
+	<!-- 10. WHAT YOU LEARNED -->
 	<h3>What you learned</h3>
 	<ul>
 		<li>Svelte is a <strong>compiler</strong> — it emits vanilla JS at build time.</li>
@@ -439,6 +449,30 @@
 		padding-inline: var(--space-md);     /* horizontal padding for content */
 	}
 
+	/* ── Having issues? — collapsible reference code ── */
+	.having-issues {
+		margin-block: var(--space-xl);        /* generous spacing around */
+		border: 2px dashed var(--color-warning); /* dashed border to stand out */
+		border-radius: var(--radius-lg);      /* rounded corners */
+		overflow: hidden;                     /* clip children to rounded corners */
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
 	/* ── General list styling ── */
 	ul {
 		color: var(--color-text);            /* standard text color */
@@ -446,6 +480,58 @@
 
 		& code {
 			color: var(--color-brand);       /* highlight code in brand purple */
+		}
+	}
+
+	/* ═══════════════════════════════════
+	   RESPONSIVE BREAKPOINTS
+	   Mobile-first: base is 320px+
+	   ═══════════════════════════════════ */
+
+	/* ── 480px — large phones / small tablets ── */
+	@media (min-width: 480px) {
+		.analogy,
+		.concept,
+		.hint {
+			max-inline-size: 65ch;            /* widen prose slightly */
+		}
+
+		.card {
+			padding: var(--space-lg);
+		}
+	}
+
+	/* ── 768px — tablets / small desktops ── */
+	@media (min-width: 768px) {
+		h1 {
+			font-size: var(--text-2xl);       /* scale heading up */
+		}
+
+		h2 {
+			font-size: var(--text-xl);
+		}
+
+		.analogy,
+		.concept,
+		.hint {
+			max-inline-size: 72ch;            /* wider reading column */
+		}
+
+		.mistake-pair {
+			grid-template-columns: 1fr 1fr;   /* side-by-side wrong/right */
+		}
+
+		.card {
+			padding: var(--space-xl);         /* more breathing room */
+		}
+	}
+
+	/* ── 1024px — desktops ── */
+	@media (min-width: 1024px) {
+		.analogy,
+		.concept,
+		.hint {
+			max-inline-size: 80ch;            /* full reading width */
 		}
 	}
 </style>

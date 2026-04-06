@@ -205,22 +205,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Test what happens when you ignore or improperly handle the reduced motion preference to understand why it matters.</p>
+	<ol class="experiments">
+		<li><strong>Ignore <code>prefers-reduced-motion</code></strong> — vestibular disorder users get nauseated. Failing to check this preference means your animations actively harm users who have explicitly told their operating system they need reduced motion.</li>
+		<li><strong>Check <code>prefersReducedMotion.current</code></strong> — disable all animation. Reading this reactive property and branching your transition logic ensures that users who need reduced motion get a comfortable experience.</li>
+		<li><strong>Provide ALTERNATIVE static experience, not just "disabled"</strong> — reduced motion does not mean no visual feedback. Replace spatial movement with subtle opacity changes, ensure state transitions remain visible, and keep the interface informative.</li>
+		<li><strong>Test in OS settings</strong> — toggle reduce motion preference. Go to your operating system's accessibility settings, enable reduced motion, reload the page, and verify that every animation in your application respects the preference.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>
-			<code>prefersReducedMotion</code> from <code>svelte/motion</code> is reactive — read
-			<code>.current</code>.
-		</li>
-		<li>Swap <code>fly</code>/<code>slide</code>/<code>scale</code> for <code>fade</code> when on.</li>
-		<li>Drop stagger delays — users want content fast, not choreographed.</li>
-		<li>Always provide a dev toggle so instructors can demo both branches.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Respecting <code>prefers-reduced-motion</code> is not a nice-to-have feature -- it is an accessibility requirement on par with providing alt text for images or semantic HTML for screen readers. Users who enable this OS-level preference include people with vestibular disorders (who experience dizziness or nausea from motion), people with seizure conditions (who can be triggered by rapid visual changes), and people with attention disorders (who find animation distracting). Ignoring this preference means your application actively causes harm to these users, which is both an ethical failure and, in many jurisdictions, a legal liability under accessibility regulations.</p>
+	<p class="prose">Svelte provides <code>prefersReducedMotion</code> from <code>svelte/motion</code> as a reactive object whose <code>.current</code> property updates live when the user toggles the OS preference. The recommended pattern is to derive a reduced-motion flag and use it to branch your transition logic: when active, replace <code>fly</code>, <code>slide</code>, and <code>scale</code> with short <code>fade</code> transitions, drop stagger delays entirely, and set spring/tween durations to zero or near-zero. The goal is not to eliminate all visual feedback -- state changes should still be visible -- but to remove spatial movement and long-duration choreography that triggers vestibular responses.</p>
+	<p class="prose">Building a development toggle that simulates reduced motion (as demonstrated in this lesson) is essential for testing. Developers typically do not have reduced motion enabled on their own machines, so without a toggle they cannot verify the reduced-motion branch of their code. The toggle pattern -- <code>const reduced = $derived(prefersReducedMotion.current || forceReduced)</code> -- lets instructors and QA testers switch between both branches instantly without changing OS settings. Every code review that touches animation should include verification of both branches: the full-motion experience for users who want it, and the reduced-motion alternative for users who need it.</p>
+	<p class="next"><a href="/module-6/project">Next: Module 6 project</a></p>
 </section>
 
 <style>
@@ -261,20 +265,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.row {
 		display: flex;
 		flex-wrap: wrap;

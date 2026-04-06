@@ -104,19 +104,26 @@
     </div>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Stress-test CSS Grid to learn how track sizing, overlap, and subgrid behave under real conditions.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>fr</code> with no min</strong> — columns can shrink to 0. Without a minimum width constraint, <code>1fr</code> columns will collapse to nothing if the container is too narrow.</li>
+		<li><strong>Use <code>minmax(0, 1fr)</code> vs <code>minmax(auto, 1fr)</code></strong> — different overflow behavior. With <code>auto</code> as the minimum, content sets a floor; with <code>0</code>, content can overflow its track.</li>
+		<li><strong>Overlap grid items</strong> — later items layer on top. Place two items in the same grid cell and the later one in source order paints on top, or use <code>z-index</code> to control stacking.</li>
+		<li><strong>Use subgrid</strong> — child inherits parent's tracks. <code>grid-template-columns: subgrid</code> on a nested grid makes it align to the parent's column lines, solving the "aligned card headers" problem.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>auto-fit + minmax()</code> is the intrinsic responsive grid recipe.</li>
-    <li><code>auto-fit</code> collapses empty tracks; <code>auto-fill</code> keeps them.</li>
-    <li>One rule replaces three or four breakpoints for card grids.</li>
-    <li>Feed the min size via a custom property to animate the breakpoints.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">CSS Grid's <code>repeat(auto-fit, minmax(16rem, 1fr))</code> pattern is one of the most powerful single lines in modern CSS. It creates a responsive grid that automatically determines how many columns fit at the current container width, wrapping items to new rows as needed, all without a single media query. The <code>auto-fit</code> keyword collapses empty tracks so existing items stretch to fill the space, while <code>auto-fill</code> preserves empty tracks as blank space. The <code>minmax()</code> function sets a floor and ceiling for each track, ensuring columns never shrink below readability or stretch beyond usability.</p>
+	<p class="prose">Grid excels at two-dimensional layouts because it controls both rows and columns simultaneously. Unlike flexbox, which distributes space along a single axis and lets the cross axis handle itself, Grid lets you define explicit track sizes for both dimensions. This makes it the natural choice for card grids, dashboard layouts, and any design where items need to align both horizontally and vertically. Feeding the minimum column size through a custom property like <code>--grid-min</code> gives you runtime control over the grid's breakpoints, allowing interactive demos or user preferences to reshape the layout dynamically.</p>
+	<p class="prose">Advanced Grid features like subgrid, named grid lines, and the <code>round()</code> function extend its capabilities further. Subgrid allows a nested grid container to inherit its parent's track definitions, solving the persistent problem of aligning internal elements across sibling grid items -- such as making all card titles sit at the same height. Named lines (<code>[sidebar-start]</code>) make complex layouts self-documenting. The <code>round()</code> function snaps computed values to clean increments, preventing fractional pixel rendering artifacts in fluid grid calculations.</p>
+	<p class="next"><a href="/module-6/6-7-flexbox">Next lesson: 6.7 Flexbox</a></p>
 </section>
 
 <style>
@@ -154,17 +161,9 @@
     padding: 0 var(--space-xs);
     border-radius: var(--radius-xs);
   }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
   .control {
     display: flex;

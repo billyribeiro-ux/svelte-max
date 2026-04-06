@@ -88,19 +88,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Experiment with the Tween class to understand its reactive behavior and how it handles interruption.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>new Tween()</code> without <code>$state</code></strong> — it's already reactive (class-based). The Tween class manages its own reactivity internally; you don't need to wrap it in <code>$state</code> because <code>.current</code> is already a reactive property.</li>
+		<li><strong>Set duration to 0</strong> — instant snap, no animation. With zero duration, the tween jumps immediately to the target value, which is useful for bypassing animation when reduced motion is preferred.</li>
+		<li><strong>Change <code>.target</code> while animating</strong> — smoothly redirects. If you set a new target before the current animation completes, the tween recalculates from its current interpolated position, creating natural-feeling interruptions.</li>
+		<li><strong>Use with <code>prefersReducedMotion</code></strong> — skip animation, snap to target. Check <code>prefersReducedMotion.current</code> and set duration to 0 or use <code>.set(value, &lbrace; instant: true &rbrace;)</code> to respect accessibility preferences.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Use the <code>Tween</code> class, not the deprecated <code>tweened</code> store.</li>
-		<li>Read <code>.current</code> for the reactive interpolated value.</li>
-		<li>Assign <code>.target</code> to animate toward a new value.</li>
-		<li>Ideal for non-CSS values like counters, SVG paths, and canvas.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>Tween</code> class from <code>svelte/motion</code> is the Svelte 5 replacement for the deprecated <code>tweened</code> store, providing duration-based interpolation for JavaScript values that cannot be animated with CSS transitions. While CSS transitions handle property changes on DOM elements, many UI effects require animating raw numbers -- progress bars driven by data, counting text that increments from 0 to a target, SVG path lengths, canvas draw coordinates, and any computed value that feeds into a template expression. Tween fills this gap by interpolating between a starting value and a target value over a specified duration with a chosen easing curve.</p>
+	<p class="prose">The API is class-based and reactive by design. You construct a tween with <code>new Tween(initialValue, &lbrace; duration, easing &rbrace;)</code>, read the interpolated value through <code>.current</code> (which updates reactively every animation frame), and drive animation by assigning to <code>.target</code>. This two-property interface -- target in, current out -- makes the data flow explicit and predictable. When you set a new target while the tween is mid-animation, it does not restart from the initial value; instead, it smoothly redirects from wherever <code>.current</code> is at that moment, creating natural-feeling interruptions that never jerk or teleport.</p>
+	<p class="prose">Tween differs from Spring in a fundamental way: Tween uses duration and easing (time-based), while Spring uses stiffness and damping (physics-based). Choose Tween when you need precise timing control -- a progress bar should take exactly 800ms to fill, a counter should increment over exactly 1.2 seconds. Choose Spring when the animation should feel physically natural regardless of the distance traveled -- a dragged element should bounce with consistent energy whether it moved 10 pixels or 200. Both classes share the same <code>.target</code> / <code>.current</code> API, making them interchangeable if you change your mind about which motion model better suits the interaction.</p>
+	<p class="next"><a href="/module-6/6-15-spring">Next lesson: 6.15 Spring</a></p>
 </section>
 
 <style>
@@ -138,20 +145,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.bar {
 		inline-size: 100%;
 		block-size: 16px;

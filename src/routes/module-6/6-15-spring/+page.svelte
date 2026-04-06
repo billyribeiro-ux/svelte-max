@@ -137,19 +137,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Tweak spring parameters to extremes to develop intuition for how stiffness and damping shape motion feel.</p>
+	<ol class="experiments">
+		<li><strong>Set stiffness very high (0.9)</strong> — snappy, almost no spring. High stiffness pulls the value toward the target aggressively, minimizing overshoot and settling almost instantly.</li>
+		<li><strong>Set stiffness very low (0.01)</strong> — extremely bouncy, never settles. Low stiffness creates a weak restoring force, so the value oscillates around the target for a long time before converging.</li>
+		<li><strong>Set damping to 0</strong> — infinite oscillation. Without damping to absorb energy, the spring oscillates indefinitely, never reaching its target. This demonstrates why damping is essential.</li>
+		<li><strong>Change <code>.target</code> rapidly</strong> — spring naturally handles interruption. Unlike tween, which restarts or redirects its easing curve, a spring simply accumulates velocity from the new target, creating organic-feeling motion.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>Spring</code> is a physics simulation — no fixed duration.</li>
-		<li>Stiffness and damping shape the feel: snappy vs. bouncy.</li>
-		<li>Set <code>.target</code> to move, read <code>.current</code> to render.</li>
-		<li>Always respect <code>prefersReducedMotion.current</code> and bypass animation when set.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>Spring</code> class from <code>svelte/motion</code> provides physics-based motion that feels fundamentally different from duration-based tweening. Instead of specifying how long an animation takes, you specify how the system behaves physically: <code>stiffness</code> controls how strongly the value is pulled toward the target (the spring constant), and <code>damping</code> controls how quickly oscillations decay (the friction coefficient). The spring simulation runs every frame, computing velocity and position based on these parameters, which means the animation duration is emergent rather than prescribed -- it takes as long as the physics requires to settle.</p>
+	<p class="prose">This physics-based approach produces superior results for interactive motion like cursor following, drag gestures, and scroll-linked animations. When you rapidly move a pointer across the tracking area, a tween would need to constantly restart or redirect its easing curve, potentially creating jerky motion. A spring naturally absorbs rapid target changes because its simulation is continuous -- each new target position simply changes the force vector while preserving the current velocity. The result is smooth, organic motion that feels like the UI element has physical mass and momentum, which is exactly the feel that polished applications achieve.</p>
+	<p class="prose">Accessibility requires that spring animations be disabled when <code>prefersReducedMotion.current</code> is true. The recommended pattern is to check this preference and either set <code>&lbrace; hard: true &rbrace;</code> in the spring constructor (which makes it snap instantly) or use the raw pointer coordinates directly instead of the spring's interpolated values. The <code>$derived</code> rune makes this branching clean: <code>const displayX = $derived(prefersReducedMotion.current ? rawX : x.current)</code>. This ensures that users who experience discomfort from animated motion still get a fully functional interface where the dot follows the pointer immediately without any oscillation or bounce.</p>
+	<p class="next"><a href="/module-6/6-16-custom-transitions">Next lesson: 6.16 Custom transitions</a></p>
 </section>
 
 <style>
@@ -190,20 +197,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.hint {
 		margin: 0;
 		color: var(--color-text-muted);

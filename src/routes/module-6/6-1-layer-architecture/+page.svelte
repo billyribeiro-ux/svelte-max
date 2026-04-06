@@ -104,19 +104,26 @@
     </table>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try these experiments to see how cascade layers actually resolve conflicts and why the declaration order matters more than you might expect.</p>
+	<ol class="experiments">
+		<li><strong>Put a rule outside any @layer</strong> — it beats EVERYTHING. Unlayered styles have higher priority than any layer, regardless of specificity or source order.</li>
+		<li><strong>Swap two layer declarations</strong> — watch specificity order change. The order in the <code>@layer</code> statement determines which layer wins, so reordering flips the outcome.</li>
+		<li><strong>Delete the reset layer</strong> — browser defaults leak through. Without a reset layer normalizing element styles, you get inconsistent margins, padding, and font sizes across browsers.</li>
+		<li><strong>Add !important in the tokens layer</strong> — it overrides higher layers. Important declarations in lower layers actually beat normal declarations in higher layers, inverting the usual cascade.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Layer order beats specificity and source order.</li>
-    <li>Declare the order once at the top with <code>@layer a, b, c;</code>.</li>
-    <li>Typical PE7 order: reset, tokens, base, layout, components, animations.</li>
-    <li>Unlayered styles win over layered ones — use that for true overrides.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">Cascade layers fundamentally change how CSS specificity conflicts are resolved. Instead of relying on selector weight or source order to determine which rule wins, <code>@layer</code> introduces a new, higher-priority axis to the cascade. When you declare <code>@layer reset, tokens, base, layout, components, animations;</code> at the top of your stylesheet, you establish a deterministic order that no amount of selector specificity can override. A simple <code>.card</code> selector in the components layer will always beat an <code>#app .wrapper .card</code> selector in the base layer. This eliminates the entire class of bugs where utility classes lose to deeply nested component selectors.</p>
+	<p class="prose">The architecture behind layering mirrors how professional design systems separate concerns. The reset layer strips away browser defaults so every element starts from a known baseline. The tokens layer defines all design tokens as custom properties on <code>:root</code>. The base layer applies those tokens to bare HTML elements. Layout handles page-level structures, components encapsulate scoped styles, and animations hold keyframes. Each layer has a single responsibility, and the cascade order ensures that more specific layers naturally override more general ones without any developer intervention.</p>
+	<p class="prose">One subtle but critical behavior is that unlayered styles always beat layered ones. This means any CSS written outside of a <code>@layer</code> block sits at the very top of the cascade hierarchy, making it the ideal escape hatch for one-off overrides during development or debugging. Additionally, <code>!important</code> declarations inside layers invert the layer order -- an important rule in a lower layer beats an important rule in a higher layer. Understanding these edge cases prevents confusion when layered architectures interact with third-party CSS that may use importance liberally.</p>
+	<p class="next"><a href="/module-6/6-2-oklch-deep">Next lesson: 6.2 OKLCH in depth</a></p>
 </section>
 
 <style>
@@ -157,18 +164,10 @@
     padding: 0 var(--space-xs);
     border-radius: var(--radius-xs);
   }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
   h4 { margin: 0; color: var(--color-text); }
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   table {
     inline-size: 100%;
     border-collapse: collapse;

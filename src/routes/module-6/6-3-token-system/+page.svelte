@@ -214,19 +214,26 @@
     but never drops below 1.125rem or exceeds 1.5rem.
   </p>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Intentionally break the token system to understand why indirection through custom properties is worth the abstraction cost.</p>
+	<ol class="experiments">
+		<li><strong>Use a raw color instead of a token</strong> — works but breaks theme switching. Hardcoding <code>#3b82f6</code> instead of <code>var(--color-brand)</code> means the value cannot adapt when dark mode or a page personality overrides the token.</li>
+		<li><strong>Override a token on a child element</strong> — cascades to all descendants. Setting <code>--color-brand</code> on a wrapper element changes every nested component that reads that token, demonstrating the cascade's power.</li>
+		<li><strong>Delete a token definition</strong> — every usage shows the fallback or nothing. When a custom property is undefined, <code>var(--missing)</code> resolves to the initial value of the property it's used in, often producing invisible or broken layouts.</li>
+		<li><strong>Use a token in a <code>calc()</code></strong> — tokens compose with math. You can write <code>calc(var(--space-md) * 2)</code> to derive new spacing values from existing tokens, keeping the system internally consistent.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Tokens are the contract — consumers never reference raw values.</li>
-    <li>Fluid tokens use <code>clamp()</code> so the ramp scales with the viewport.</li>
-    <li>Motion tokens (durations + easings) are just as important as color tokens.</li>
-    <li>One token change propagates across every component that reads it.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">A design token system is fundamentally a contract between design intent and code implementation. When every component references <code>var(--color-brand)</code> instead of a raw hex value, you gain a single point of control over the entire application's visual identity. Changing that one token definition in <code>:root</code> propagates instantly to every button, link, border, and accent across hundreds of components. This is not merely convenient -- it is the mechanism that makes theming, dark mode, and per-page color personalities possible without touching a single component file.</p>
+	<p class="prose">The token categories in this system -- typography, spacing, colors, durations, easings, radii, and shadows -- mirror the full spectrum of design decisions that a UI requires. Typography tokens use <code>clamp(min, preferred, max)</code> to create fluid type scales that grow with the viewport without ever exceeding comfortable reading sizes. Spacing tokens follow the same fluid pattern, ensuring that padding and gaps scale proportionally. Motion tokens for durations and easings are equally critical: consistent animation timing across the application creates a coherent personality, and centralizing these values means you can tune the entire app's feel by adjusting a handful of variables.</p>
+	<p class="prose">The real power of tokens emerges when you combine them with other CSS features. Custom properties cascade, so overriding a token on a specific element or page changes everything beneath it. They compose with <code>calc()</code>, letting you derive new values mathematically. They work inside <code>clamp()</code>, <code>min()</code>, <code>max()</code>, and even OKLCH color functions. This composability means a small token vocabulary can express a vast design space, keeping your stylesheet DRY while maintaining the flexibility to adapt to any context.</p>
+	<p class="next"><a href="/module-6/6-4-nesting">Next lesson: 6.4 CSS nesting</a></p>
 </section>
 
 <style>
@@ -264,17 +271,9 @@
     padding: 0 var(--space-xs);
     border-radius: var(--radius-xs);
   }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
   details {
     border: 1px solid var(--color-border);

@@ -147,19 +147,26 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Test the boundaries of Svelte's transition system to understand when transitions fire and how they interact with conditional rendering.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>transition:</code> without <code>{'{#if}'}</code></strong> — error, transitions need conditional blocks. The transition directive only fires when an element is added to or removed from the DOM, which requires a conditional or keyed each block.</li>
+		<li><strong>Use <code>in:</code> and <code>out:</code> separately</strong> — different enter/exit animations. Splitting the transition into separate directives lets you fly in from below but fade out, creating asymmetric motion that feels more natural.</li>
+		<li><strong>Add <code>|global</code> modifier</strong> — transition plays even when parent <code>{'{#if}'}</code> removes it. By default, transitions only play when the element's own conditional changes; <code>|global</code> ensures it plays even when an ancestor block triggers removal.</li>
+		<li><strong>Custom transition function</strong> — return <code>{'{ duration, css }'}</code>. Writing a function that takes <code>(node, params)</code> and returns a transition config gives you full control over the animation.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Import transitions from <code>svelte/transition</code>.</li>
-		<li><code>transition:</code> runs the same animation in and out.</li>
-		<li>Keyed each blocks are required for per-item enter/exit.</li>
-		<li>Parameters tune duration, delay, and easing.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Svelte's transition system bridges the gap between CSS transitions and JavaScript animation by providing a declarative API that hooks into the component lifecycle. When you write <code>transition:fly={'{{ y: 20, duration: 300 }}'}</code>, Svelte generates optimized CSS keyframes at mount time and applies them as the element enters or leaves the DOM. This means the animation runs on the compositor thread (GPU-accelerated) while Svelte handles the lifecycle coordination -- measuring when the element should appear or disappear and managing the timing of DOM removal so the exit animation completes before the node is destroyed.</p>
+	<p class="prose">The built-in transitions -- <code>fade</code>, <code>fly</code>, <code>slide</code>, <code>scale</code>, <code>blur</code>, and <code>draw</code> -- cover the vast majority of UI animation needs. Each accepts a parameter object with <code>duration</code>, <code>delay</code>, and <code>easing</code> properties, where easings are imported from <code>svelte/easing</code> (which provides every standard easing curve from <code>linear</code> to <code>elasticOut</code>). The <code>transition:</code> directive is bidirectional -- the same animation runs in reverse on exit. For keyed <code>{'{#each}'}</code> blocks, each item gets its own independent transition lifecycle, enabling smooth per-item enter and exit animations in lists.</p>
+	<p class="prose">Understanding the distinction between <code>transition:</code>, <code>in:</code>, and <code>out:</code> is essential for expressive motion design. A bidirectional <code>transition:</code> is appropriate when the same animation works for both directions, like a tooltip fading in and out. When the enter and exit should feel different -- a modal flying up from below but fading out on close -- you split into <code>in:fly</code> and <code>out:fade</code>. The <code>|global</code> modifier ensures transitions play even when a parent conditional removes the element, which is important for components that live inside conditionally rendered layouts. These tools together give you cinema-quality control over motion in a declarative syntax.</p>
+	<p class="next"><a href="/module-6/6-12-in-out">Next lesson: 6.12 in: and out: directives</a></p>
 </section>
 
 <style>
@@ -197,20 +204,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.controls {
 		display: flex;
 		gap: var(--space-sm);

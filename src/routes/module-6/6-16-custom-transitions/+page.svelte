@@ -156,19 +156,26 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Experiment with custom transition function signatures to understand the difference between CSS and JS animation paths.</p>
+	<ol class="experiments">
+		<li><strong>Return only <code>css</code></strong> — works for CSS-animatable properties. The <code>css(t, u)</code> function returns a CSS string that Svelte compiles into a <code>@keyframes</code> rule, running the animation on the compositor thread for maximum performance.</li>
+		<li><strong>Return only <code>tick</code></strong> — works for JS-driven animation (canvas, WebGL). The <code>tick(t, u)</code> callback fires every frame on the main thread, allowing direct DOM manipulation that CSS keyframes cannot express.</li>
+		<li><strong>Forget to return <code>{'{ duration }'}</code></strong> — transition runs for 0ms. Without a duration in the returned config, Svelte defaults to zero, causing the transition to complete instantly with no visible animation.</li>
+		<li><strong>Use <code>easing: cubicOut</code></strong> — smoother than linear. Adding an easing function to the returned config transforms the linear <code>t</code> progression into a curve, making the animation feel more natural.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Custom transitions are just functions returning a <code>TransitionConfig</code>.</li>
-		<li>Use <code>css(t, u)</code> for CSS-expressible animations.</li>
-		<li>Use <code>tick(t, u)</code> when you need to touch the DOM directly each frame.</li>
-		<li>Parameterize with a typed params object for reusability.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Custom transitions unlock unlimited animation possibilities beyond what Svelte's built-in transitions provide. A custom transition is simply a function with the signature <code>(node: Element, params: object) => TransitionConfig</code>. The returned config object specifies <code>duration</code>, optionally <code>delay</code> and <code>easing</code>, and either a <code>css(t, u)</code> function for CSS-expressible animations or a <code>tick(t, u)</code> callback for JavaScript-driven effects. The parameter <code>t</code> progresses from 0 to 1 during entry and from 1 to 0 during exit; <code>u</code> is always <code>1 - t</code>, provided as a convenience.</p>
+	<p class="prose">The choice between <code>css</code> and <code>tick</code> has significant performance implications. When you return a <code>css</code> function, Svelte samples it at several points along the duration, generates a <code>@keyframes</code> rule, and applies it as a CSS animation. This runs entirely on the browser's compositor thread, meaning it will not jank even if the main thread is busy with JavaScript. The <code>tick</code> callback, by contrast, runs on the main thread every animation frame, giving you direct access to the DOM node but at the cost of potential jank under load. Use <code>css</code> whenever the effect can be expressed as CSS properties; reserve <code>tick</code> for effects that require DOM manipulation, like the typewriter effect that progressively reveals text content character by character.</p>
+	<p class="prose">Parameterizing custom transitions with a typed interface makes them reusable across your application. The typewriter transition in this lesson accepts a <code>speed</code> parameter that controls how quickly characters appear, and the duration is computed dynamically based on the text length. This pattern -- measuring the node, computing duration from content, and exposing tuning knobs via parameters -- is how production transition libraries are built. You can create transitions for text scramble effects, pixel dissolves, SVG path drawing, and any other creative animation, all with the same declarative <code>in:</code> / <code>out:</code> / <code>transition:</code> syntax that Svelte developers already know.</p>
+	<p class="next"><a href="/module-6/6-17-stagger-patterns">Next lesson: 6.17 Stagger patterns</a></p>
 </section>
 
 <style>
@@ -209,20 +216,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.row {
 		display: flex;
 		gap: var(--space-sm);

@@ -137,20 +137,26 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Modify stagger timing to understand how delay offsets create visual rhythm and when they become problematic.</p>
+	<ol class="experiments">
+		<li><strong>Same delay for all items</strong> — they all animate together. Without per-index delay offsets, every item enters simultaneously, creating a single flash rather than a cascading sequence.</li>
+		<li><strong>Add <code>index * 50ms</code> delay</strong> — sequential cascade effect. Each successive item enters 50ms after the previous one, creating the characteristic stagger waterfall that draws the eye through the content.</li>
+		<li><strong>Reverse the stagger</strong> — items animate from bottom to top. Using <code>(cards.length - i) * 50ms</code> inverts the sequence, which can create interesting effects for exit animations or upward-flowing content.</li>
+		<li><strong>Use GSAP <code>stagger.from</code></strong> — center, edges, random patterns. While Svelte's built-in stagger uses index math, libraries like GSAP offer stagger patterns that originate from the center, edges, or random positions.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Stagger = per-index delay offset inside a loop.</li>
-		<li>Capture the index in <code>{'{#each items as item, i}'}</code>.</li>
-		<li>Keep each item keyed so re-mounts retrigger the transition.</li>
-		<li>Separate <code>in:</code> and <code>out:</code> directives for entrance vs. exit.</li>
-		<li>Stagger <strong>must</strong> respect <code>prefersReducedMotion</code> — repeated delayed motion is a vestibular trigger. When reduced motion is active, drop delays and use short fades instead.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Stagger is the technique of adding incrementally increasing delays to items in a list so they animate sequentially rather than simultaneously. In Svelte, this is achieved with a single expression inside a keyed each block: <code>in:fly={'{{ delay: i * 80, y: 30 }}'}</code>, where <code>i</code> is the loop index. The effect transforms a sudden batch appearance into a flowing cascade that guides the user's eye through the content in a deliberate order. The delay increment (typically 40-100ms per item) controls the speed of the cascade -- too fast and items blur together, too slow and the user waits impatiently for the last item to appear.</p>
+	<p class="prose">Stagger creates visual hierarchy and rhythm without any additional markup or state management. The first item appears immediately, drawing the eye to the top of the list, and subsequent items follow in sequence, reinforcing the reading order. This is particularly effective for card grids, feature lists, dashboard widgets, and any collection of items that benefit from progressive disclosure. Separating <code>in:</code> and <code>out:</code> directives allows the entrance to use a staggered fly while the exit uses a simultaneous fade, avoiding the awkward reverse-stagger that would occur with a bidirectional <code>transition:</code> directive.</p>
+	<p class="prose">Stagger animations require careful attention to accessibility. Repeated delayed spatial movement is a known vestibular trigger -- the kind of motion that causes nausea or discomfort for users with motion sensitivities. When <code>prefersReducedMotion.current</code> is true, the correct approach is to drop all delays and replace spatial transitions (fly, slide) with a short, simultaneous fade. The conditional expression <code>prefersReducedMotion.current ? {'{ y: 0, delay: 0, duration: 150 }'} : {'{ y: 30, delay: i * 80, duration: 500 }'}</code> provides a complete alternative branch that delivers the content without any spatial movement or sequential timing.</p>
+	<p class="next"><a href="/module-6/6-18-reduced-motion">Next lesson: 6.18 Reduced motion</a></p>
 </section>
 
 <style>
@@ -191,20 +197,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.row {
 		display: flex;
 		gap: var(--space-sm);

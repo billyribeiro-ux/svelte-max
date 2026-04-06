@@ -160,19 +160,26 @@
     <pre><code>{cssSource}</code></pre>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Push CSS nesting to its limits to understand where it shines and where it creates maintainability problems.</p>
+	<ol class="experiments">
+		<li><strong>Nest too deep (4+ levels)</strong> — specificity compounds. Each nesting level adds to the generated selector's specificity, making overrides progressively harder and your CSS more brittle.</li>
+		<li><strong>Use <code>&amp;</code> explicitly vs implicitly</strong> — <code>&amp;</code> refers to the parent selector. Writing <code>&amp;:hover</code> is required for pseudo-classes, while <code>&amp; .child</code> and <code>.child</code> (without <code>&amp;</code>) produce the same descendant selector in most cases.</li>
+		<li><strong>Nest <code>@media</code> inside a rule</strong> — works in modern CSS. You can place a media query inside a selector block to keep responsive adjustments co-located with the styles they modify.</li>
+		<li><strong>Nest <code>@scope</code></strong> — scoped nesting for isolation. The <code>@scope</code> at-rule limits style application to a subtree, and nesting it inside a rule block produces highly targeted styles.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>&amp;</code> is the parent reference — required for pseudo-class nesting.</li>
-    <li>You can nest state, media, and descendant rules in one block.</li>
-    <li>Shallow nesting (2–3 levels) is still best practice for readability.</li>
-    <li>Svelte's scoped styles wrap nested CSS without any extra config.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">Native CSS nesting, available in all major browsers since 2023, eliminates the need for preprocessors like Sass or Less for one of their most popular features. The <code>&amp;</code> selector refers to the enclosing rule's selector, allowing you to write pseudo-classes (<code>&amp;:hover</code>), pseudo-elements (<code>&amp;::before</code>), compound selectors (<code>&amp;.active</code>), and descendant selectors (<code>&amp; .child</code>) all within a single block. This co-location of related styles dramatically improves readability because you can see every state, variant, and responsive adjustment for a component in one place.</p>
+	<p class="prose">Svelte's scoped style system and native CSS nesting compose without friction. When Svelte adds its scoping hash to selectors, nested rules inherit the scope automatically. This means you get the organizational benefits of nesting while retaining Svelte's guarantee that styles cannot leak to other components. You can even nest <code>@media</code> queries inside selector blocks, keeping responsive adjustments physically close to the base styles they modify rather than scattered at the bottom of the file.</p>
+	<p class="prose">The discipline of shallow nesting remains important even with native support. Every level of nesting increases the specificity of the generated selector, which compounds quickly. A three-level nest like <code>.nav &amp; a &amp;:hover</code> produces a selector with the combined specificity of all three levels. When you later need to override that style, you must match or exceed that specificity. Professional practice limits nesting to two or three levels and uses it primarily for states and pseudo-classes, not for expressing deep DOM hierarchies that are better served by flat class selectors.</p>
+	<p class="next"><a href="/module-6/6-5-logical-props">Next lesson: 6.5 Logical properties</a></p>
 </section>
 
 <style>
@@ -210,17 +217,9 @@
     padding: 0 var(--space-xs);
     border-radius: var(--radius-xs);
   }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
   .hint { margin: 0; color: var(--color-text-muted); font-size: var(--text-sm); }
 

@@ -110,19 +110,26 @@
     </div>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Experiment with container queries to understand the relationship between containment context and query behavior.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>@container</code> without <code>container-type</code></strong> — query doesn't work. The browser needs an explicit containment context to measure; without <code>container-type: inline-size</code>, the query has nothing to evaluate against.</li>
+		<li><strong>Add <code>container-type: inline-size</code></strong> — queries work. Setting containment on the parent establishes a measurement context, and the child's <code>@container</code> rules now fire based on the parent's actual width.</li>
+		<li><strong>Use <code>@container style(--variant: compact)</code></strong> — style-based queries. Container style queries let you respond to custom property values on an ancestor, enabling variant-driven styling without JavaScript.</li>
+		<li><strong>Nest containers</strong> — inner measures nearest container ancestor. When multiple ancestors have <code>container-type</code>, <code>@container</code> queries match the closest one unless you specify a <code>container-name</code>.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>container-type: inline-size</code> turns a parent into a query target.</li>
-    <li><code>@container (min-width: ...)</code> reacts to the parent, not the viewport.</li>
-    <li>Same component markup, different layout per container — true reuse.</li>
-    <li>Name containers with <code>container-name</code> to disambiguate ancestors.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">Container queries solve a problem that media queries fundamentally cannot: making a component responsive to its own context rather than the viewport. A card component placed in a narrow sidebar should display vertically, while the same card in a wide main column should display horizontally. Media queries cannot distinguish between these two contexts because they only measure the viewport. Container queries measure the component's own parent container, enabling truly reusable components that adapt their layout to wherever they are placed in the DOM tree.</p>
+	<p class="prose">The mechanism requires two parts: a containment context and a query. Setting <code>container-type: inline-size</code> on a parent element tells the browser to track that element's inline dimension and make it available for queries. Child elements can then use <code>@container (min-width: 20rem)</code> to conditionally apply styles based on the container's actual width. You can name containers with <code>container-name: card-wrapper</code> and target them explicitly with <code>@container card-wrapper (min-width: 30rem)</code>, which prevents ambiguity when multiple containment contexts are nested.</p>
+	<p class="prose">Container style queries extend this model beyond dimensions. The <code>@container style(--variant: compact)</code> syntax lets you query the computed value of a custom property on an ancestor container. This opens a powerful pattern where a parent sets a custom property like <code>--variant: compact</code>, and descendant components automatically adjust their padding, font sizes, and layout density in response. Combined with Svelte's scoped styles, container queries make it possible to build component libraries that are genuinely context-independent, adapting seamlessly to any layout context without prop drilling or JavaScript-based resize observers.</p>
+	<p class="next"><a href="/module-6/6-9-page-personalities">Next lesson: 6.9 Page personalities</a></p>
 </section>
 
 <style>
@@ -160,17 +167,9 @@
     padding: 0 var(--space-xs);
     border-radius: var(--radius-xs);
   }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
   .demo {
     display: flex;

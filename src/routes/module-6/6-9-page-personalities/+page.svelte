@@ -86,19 +86,26 @@
     {/each}
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Manipulate the page personality system to understand how token overrides cascade through components.</p>
+	<ol class="experiments">
+		<li><strong>Remove the OKLCH hue variable</strong> — personality disappears. Without the brand color override, every component falls back to the global token, and the section loses its distinctive identity.</li>
+		<li><strong>Change only the hue</strong> — entire page shifts mood. Because every component reads <code>--color-brand</code>, changing a single hue value in OKLCH transforms buttons, borders, links, and accents simultaneously.</li>
+		<li><strong>Combine with dark mode</strong> — personality should work in both themes. A well-designed personality uses OKLCH lightness values that remain legible in both light and dark contexts, or adjusts lightness per color scheme.</li>
+		<li><strong>Conflict two personalities on one page</strong> — last one wins via cascade. If two personality classes both set <code>--color-brand</code>, the one lower in source order or with higher specificity takes precedence.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Override <code>--color-brand</code> at a page-level class, not the component.</li>
-    <li>Every consumer re-reads the custom property — instant retheming.</li>
-    <li>OKLCH makes it trivial to derive <code>brand-dim</code> from <code>brand</code>.</li>
-    <li>Keep components token-consuming, not color-hardcoding.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">Page personalities demonstrate the full power of a token-based architecture. By overriding a small set of semantic tokens -- typically <code>--color-brand</code> and <code>--color-brand-dim</code> -- at a page-level wrapper class, every component nested within that wrapper automatically adopts the new visual identity. Buttons change color, borders shift hue, links update, and accent lines adapt, all without modifying a single component file. This is not a hack but a deliberate application of the CSS cascade: custom properties inherit through the DOM tree, and every <code>var()</code> reference resolves to the nearest ancestor's value.</p>
+	<p class="prose">OKLCH makes personality generation trivial because you can derive an entire tonal system from a single hue value. The brand color might be <code>oklch(62% 0.19 180)</code> for a teal personality, and the dim variant is simply the same hue and chroma at a lower lightness: <code>oklch(52% 0.15 180)</code>. To create a rose personality, you change only the hue angle to 0. To create amber, you use 60. Because OKLCH lightness is perceptually uniform, the contrast relationships between brand, background, and text remain consistent across every personality, ensuring accessibility standards are met without per-personality auditing.</p>
+	<p class="prose">The key architectural principle is that components should consume tokens, never hardcode colors. A button that uses <code>background: var(--color-brand)</code> is infinitely reusable because its visual output depends entirely on its context. A button that uses <code>background: oklch(62% 0.19 180)</code> is permanently teal. This separation of concern -- components define structure, tokens define appearance -- is what enables design systems to scale across dozens of product sections, each with a unique personality, while sharing a single component library with zero duplication.</p>
+	<p class="next"><a href="/module-6/6-10-css-transitions">Next lesson: 6.10 CSS transitions</a></p>
 </section>
 
 <style>
@@ -136,17 +143,9 @@
     padding: 0 var(--space-xs);
     border-radius: var(--radius-xs);
   }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
   .mini {
     display: flex;

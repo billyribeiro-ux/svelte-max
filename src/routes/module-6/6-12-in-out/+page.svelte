@@ -97,18 +97,26 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Test the constraints and combinations of directional transition directives to master asymmetric animation.</p>
+	<ol class="experiments">
+		<li><strong>Use both <code>transition:</code> and <code>in:</code> on the same element</strong> — error, pick one. Svelte does not allow mixing bidirectional and directional transition directives on a single element because their lifecycles would conflict.</li>
+		<li><strong>Use only <code>in:</code></strong> — element appears animated but disappears instantly. Without an <code>out:</code> directive, the element is removed from the DOM immediately when its condition becomes false, with no exit animation.</li>
+		<li><strong>Use only <code>out:</code></strong> — element appears instantly but disappears animated. The element mounts without any entrance animation but plays the out transition when removed, useful for persistent UI that only animates on dismiss.</li>
+		<li><strong>Combine <code>in:fly</code> and <code>out:fade</code></strong> — different effects for enter and exit. This asymmetric pattern feels natural because spatial movement draws attention on entrance while opacity change provides a quiet exit.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>transition:</code> is bidirectional, <code>in:</code>/<code>out:</code> are not.</li>
-		<li>Mix and match functions (fly in, fade out) for expressive UX.</li>
-		<li>Both directives accept the same parameter objects.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>in:</code> and <code>out:</code> directives give you independent control over entrance and exit animations, which is essential for creating motion that feels intentional rather than mechanical. A bidirectional <code>transition:</code> plays the same animation forward on enter and backward on exit. While this works for simple effects like fading, it produces unnatural results for spatial animations -- a modal that flies up from below should not fly back down when closed, because the user's mental model is that the modal is being dismissed, not returning to where it came from. A fade-out feels more appropriate because it communicates disappearance rather than movement.</p>
+	<p class="prose">The rule that you cannot mix <code>transition:</code> with <code>in:</code> or <code>out:</code> on the same element is a deliberate design constraint. Both systems manage the element's lifecycle -- specifically, when the DOM node is actually removed after the exit animation completes. Having two competing lifecycle managers would create race conditions and unpredictable behavior. You must choose: either use <code>transition:</code> for symmetric animation, or use <code>in:</code> and/or <code>out:</code> for asymmetric animation. You can use just one of the pair if you only need animation in one direction.</p>
+	<p class="prose">The parameter objects for <code>in:</code> and <code>out:</code> are identical to those for <code>transition:</code>, accepting <code>duration</code>, <code>delay</code>, and <code>easing</code>. This means you can use completely different easing curves for entrance and exit -- perhaps a bouncy <code>backOut</code> easing on enter for playfulness, and a quick linear fade on exit for efficiency. The modal pattern demonstrated in this lesson (fly-in with <code>backOut</code>, fade-out in 200ms) is a professional-grade animation pattern used in production applications because it creates an entrance that draws attention and an exit that doesn't slow the user down.</p>
+	<p class="next"><a href="/module-6/6-13-animate-flip">Next lesson: 6.13 animate:flip</a></p>
 </section>
 
 <style>
@@ -147,20 +155,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.open-btn {
 		align-self: flex-start;
 		padding: var(--space-sm) var(--space-md);

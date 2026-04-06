@@ -148,19 +148,26 @@
     </div>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Experiment with the OKLCH color space to build intuition for how lightness, chroma, and hue interact in a perceptually uniform model.</p>
+	<ol class="experiments">
+		<li><strong>Set chroma to 0</strong> — pure grayscale regardless of hue. When chroma is zero, the hue channel has no effect, proving that chroma controls saturation independently.</li>
+		<li><strong>Set lightness to 0%</strong> — pure black. No matter what chroma or hue you choose, zero lightness always produces black because there is no luminance to carry color information.</li>
+		<li><strong>Compare same-lightness hex colors</strong> — they don't LOOK the same lightness. OKLCH does. This is the core advantage: perceptual uniformity means the math matches what your eyes perceive.</li>
+		<li><strong>Use <code>light-dark()</code> with OKLCH</strong> — theme-aware colors. Combine OKLCH with the CSS <code>light-dark()</code> function to produce colors that automatically adapt to the user's preferred color scheme.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>OKLCH is perceptually uniform — ramps look even by math.</li>
-    <li>Lock chroma and hue, vary lightness to generate tonal ramps.</li>
-    <li>Chroma gets clipped at extreme lightness values in sRGB.</li>
-    <li>HSL saturation lies — equal numbers don't mean equal appearance.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">OKLCH represents a paradigm shift in how web developers work with color. Unlike RGB and HSL, which are defined by the physics of display hardware, OKLCH is defined by human perception. The "OK" prefix denotes the improved Oklab color space, and the LCH suffix stands for Lightness, Chroma, and Hue. When you set two OKLCH colors to the same lightness value, they genuinely appear equally bright to the human eye -- something HSL cannot guarantee because its lightness calculation ignores how our visual system processes different wavelengths of light.</p>
+	<p class="prose">For design systems, this perceptual uniformity unlocks mathematical color generation. You can lock a chroma and hue, then sweep lightness from 95% down to 15% to produce a tonal ramp where each step looks like an even progression. This is precisely how professional design tokens work: instead of hand-picking nine shades of blue, you compute them from a single hue with predictable lightness intervals. The chroma channel caps out at the boundary of the sRGB gamut, which means extremely light or dark colors physically cannot be highly saturated on current displays.</p>
+	<p class="prose">Understanding OKLCH also clarifies why HSL has always been misleading. An HSL yellow at 50% lightness appears far brighter than an HSL blue at the same 50% lightness, because HSL treats all hues as contributing equally to perceived brightness. OKLCH corrects this by modeling lightness according to actual psychophysical research. When building accessible interfaces where contrast ratios matter, OKLCH lightness values give you reliable predictions of how text will read against a background, eliminating the guesswork that plagued hex and HSL workflows.</p>
+	<p class="next"><a href="/module-6/6-3-token-system">Next lesson: 6.3 Token system</a></p>
 </section>
 
 <style>
@@ -198,18 +205,10 @@
     padding: 0 var(--space-xs);
     border-radius: var(--radius-xs);
   }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
   h4 { margin: 0; color: var(--color-text); }
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
   .controls {
     display: flex;

@@ -136,19 +136,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Push the FLIP animation system to its limits to understand its requirements and how it composes with transitions.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>animate:</code> without a keyed <code>{'{#each}'}</code></strong> — error. The <code>animate:</code> directive requires a keyed each block because it needs stable identity to track which item moved from which position to which.</li>
+		<li><strong>Add <code>animate:flip</code></strong> — items smoothly reposition on sort. FLIP measures each item's position before and after the DOM update, then animates the transform to create the illusion of smooth movement.</li>
+		<li><strong>Combine with <code>in:</code>/<code>out:</code></strong> — new items fly in, removed items fade out, remaining items flip. All three animation systems compose: transitions handle enter/exit while animate handles repositioning.</li>
+		<li><strong>Set duration too high (2000ms)</strong> — feels sluggish, use 200-400ms. Reorder animations should feel snappy and responsive; long durations make the interface feel laggy and unresponsive to user actions.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul class="learned">
-		<li><code>animate:flip</code> smoothly tweens reordered items.</li>
-		<li>Only works inside keyed <code>&lbrace;#each&rbrace;</code> blocks.</li>
-		<li>Import <code>flip</code> from <code>svelte/animate</code>.</li>
-		<li>Great for sortable lists, drag-to-reorder, and filtering UIs.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The FLIP technique (First, Last, Invert, Play) is a performance optimization pattern for animating layout changes. When items in a list reorder, the naive approach would be to animate each item's CSS properties directly, which triggers expensive layout recalculations every frame. FLIP avoids this by measuring each item's position before the change (First), allowing the DOM to update instantly to the new positions (Last), applying a CSS transform that moves each item back to its old position (Invert), and then animating that transform to zero (Play). Because transforms are compositor-accelerated, the entire animation runs at 60fps without triggering layout recalculation.</p>
+	<p class="prose">Svelte's <code>animate:flip</code> directive automates this entire process. You import <code>flip</code> from <code>svelte/animate</code>, add <code>animate:flip={'{{ duration: 400, easing: cubicOut }}'}</code> to items inside a keyed each block, and Svelte handles the measurement, inversion, and playback automatically. The key requirement is that the each block must be keyed with a stable identifier -- <code>(task.id)</code>, not <code>(index)</code> -- because Svelte needs to match items before and after the reorder to calculate their position deltas. Without stable keys, Svelte cannot determine which item moved where.</p>
+	<p class="prose">The animate directive composes naturally with <code>in:</code> and <code>out:</code> transitions. When you add a new item to the list, it can fly in with <code>in:fly</code>. When you remove an item, it can fade out with <code>out:fade</code>. Meanwhile, all remaining items smoothly slide to their new positions via <code>animate:flip</code>. This three-layer animation system -- enter, exit, and reposition -- creates the polished list interactions seen in production applications like task managers, email clients, and kanban boards. Duration values between 200ms and 400ms hit the sweet spot of feeling responsive while still being perceptible.</p>
+	<p class="next"><a href="/module-6/6-14-tween">Next lesson: 6.14 Tween</a></p>
 </section>
 
 <style>
@@ -186,20 +193,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	.learned {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.controls {
 		display: flex;
 		gap: var(--space-sm);

@@ -100,19 +100,26 @@
     </div>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Test the difference between physical and logical properties by switching text direction and observing what breaks.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>margin-left</code> on RTL text</strong> — wrong side. Physical properties are anchored to the screen, so <code>margin-left</code> always pushes from the left regardless of reading direction.</li>
+		<li><strong>Use <code>margin-inline-start</code></strong> — correct in both directions. Logical properties follow the writing mode, so inline-start maps to left in LTR and right in RTL automatically.</li>
+		<li><strong>Set <code>direction:rtl</code></strong> — watch logical properties adapt. Toggling the direction attribute on the card demonstrates how every logical property mirrors without any CSS changes.</li>
+		<li><strong>Use <code>lh</code> units for vertical rhythm</strong> — spacing that matches line height. The <code>lh</code> unit equals the element's computed line-height, creating block-axis spacing that stays proportional to the text rhythm.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Logical properties follow writing-mode, not physical sides.</li>
-    <li><code>inline-start</code> / <code>inline-end</code> flip for RTL automatically.</li>
-    <li><code>block-start</code> / <code>block-end</code> are top/bottom in horizontal writing.</li>
-    <li>Use them everywhere — <code>max-inline-size</code> instead of <code>max-width</code>.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">Logical properties represent a fundamental shift in how CSS describes layout relationships. Instead of binding styles to the physical edges of the screen -- left, right, top, bottom -- logical properties use <code>inline-start</code>, <code>inline-end</code>, <code>block-start</code>, and <code>block-end</code>, which adapt to the document's writing mode and text direction. In a left-to-right language like English, <code>inline-start</code> maps to left; in a right-to-left language like Arabic, it maps to right. This single abstraction eliminates the need for separate RTL stylesheets or direction-specific overrides.</p>
+	<p class="prose">The inline axis runs in the direction text flows, while the block axis runs perpendicular to it. For horizontal writing modes (the vast majority of web content), inline is horizontal and block is vertical. This means <code>margin-inline-start</code> replaces <code>margin-left</code>, <code>padding-block-end</code> replaces <code>padding-bottom</code>, and <code>max-inline-size</code> replaces <code>max-width</code>. The shorthand <code>margin-inline</code> sets both start and end in one declaration. Every new CSS rule you write should use logical properties by default -- the cost is zero and the benefit is automatic internationalization support.</p>
+	<p class="prose">Logical properties also extend to borders, border-radius, and positioning. The four corners use compound names like <code>border-start-start-radius</code> (block-start, inline-start corner) and <code>border-end-end-radius</code> (block-end, inline-end corner). Inset properties like <code>inset-inline-start</code> replace <code>left</code> for positioned elements. Combined with the <code>lh</code> unit for block-axis spacing that scales with line height, logical properties give you a complete vocabulary for writing direction-agnostic CSS that works correctly in every language and writing system supported by the web.</p>
+	<p class="next"><a href="/module-6/6-6-grid">Next lesson: 6.6 CSS Grid</a></p>
 </section>
 
 <style>
@@ -150,17 +157,9 @@
     padding: 0 var(--space-xs);
     border-radius: var(--radius-xs);
   }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
   .toggle {
     align-self: flex-start;

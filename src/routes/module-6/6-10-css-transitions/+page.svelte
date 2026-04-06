@@ -74,19 +74,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Explore the boundaries of CSS transitions to understand which properties can animate and what happens when they cannot.</p>
+	<ol class="experiments">
+		<li><strong>Transition <code>display:none</code> to <code>display:block</code></strong> — doesn't work (discrete property). Display is not interpolatable, so the transition has no intermediate frames to animate through.</li>
+		<li><strong>Use <code>@starting-style</code></strong> — now it animates from <code>display:none</code>. The <code>@starting-style</code> at-rule defines initial values for elements entering the DOM, enabling transitions on first render.</li>
+		<li><strong>Transition <code>all</code></strong> — works but animates things you didn't intend. Using <code>transition: all</code> catches every property change, including ones like <code>height</code> or <code>color</code> that you may not want to animate.</li>
+		<li><strong>Use <code>interpolate-size: allow-keywords</code></strong> — transition height to/from <code>auto</code>. This modern CSS feature lets you smoothly animate between a fixed height and the <code>auto</code> keyword.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Use motion tokens (<code>--dur-*</code>, <code>--ease-*</code>) for every transition.</li>
-		<li>Comma-separate to transition multiple properties at once.</li>
-		<li><code>transition-delay</code> staggers parts of an animation.</li>
-		<li>Respect <code>prefers-reduced-motion</code> globally in <code>app.css</code>.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">CSS transitions are the foundation of motion in web interfaces, providing smooth interpolation between property values triggered by state changes like hover, focus, and active. The canonical pattern <code>transition: property var(--dur-fast) var(--ease-out)</code> uses motion tokens for duration and easing, ensuring that every animated interaction in the application feels cohesive. By comma-separating multiple properties, you can orchestrate complex multi-property transitions -- background, color, transform, and box-shadow can all animate simultaneously with different durations and delays if needed.</p>
+	<p class="prose">Motion tokens are as essential to a design system as color or typography tokens. Centralizing durations (<code>--dur-instant</code> through <code>--dur-slower</code>) and easings (<code>--ease-out</code>, <code>--ease-expressive</code>) in your token layer means every developer on the team uses the same timing vocabulary. This prevents the common problem where one developer uses 200ms ease-out while another uses 350ms cubic-bezier, creating a jarring mix of fast and slow transitions across the interface. When the design team decides that all interactions should feel snappier, a single token change accomplishes it globally.</p>
+	<p class="prose">Respecting <code>prefers-reduced-motion</code> is a non-negotiable accessibility requirement. Users who experience vestibular disorders, motion sickness, or seizure conditions enable this OS-level preference to indicate that they need reduced or eliminated animation. The course's <code>app.css</code> handles this globally with a media query that zeroes out transition durations and animation iterations, but developers must still ensure that essential state changes remain visible -- a button should still change color on hover, just without the animated interpolation. Modern CSS features like <code>@starting-style</code> and <code>interpolate-size: allow-keywords</code> are expanding what transitions can do, enabling animation of previously discrete properties and the long-requested height-to-auto transition.</p>
+	<p class="next"><a href="/module-6/6-11-svelte-transitions">Next lesson: 6.11 Svelte transitions</a></p>
 </section>
 
 <style>
@@ -124,20 +131,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.btn {
 		font-size: var(--text-lg);
 		padding: var(--space-md) var(--space-xl);

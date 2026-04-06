@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface Product {
 		id: number;
 		name: string;
@@ -74,6 +75,177 @@
 		const full = Math.round(rating);
 		return '★'.repeat(full) + '☆'.repeat(5 - full);
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"interface Product {\n" +
+		"\t\tid: number;\n" +
+		"\t\tname: string;\n" +
+		"\t\tcategory: 'audio' | 'wearable' | 'camera' | 'laptop';\n" +
+		"\t\tprice: number;\n" +
+		"\t\tinStock: boolean;\n" +
+		"\t\trating: number;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst SEED: readonly Product[] = [\n" +
+		"\t\t{ id: 1, name: 'Aurora Wireless Headphones', category: 'audio', price: 249, inStock: true, rating: 4.6 },\n" +
+		"\t\t{ id: 2, name: 'Pulse Fitness Band', category: 'wearable', price: 89, inStock: true, rating: 4.2 },\n" +
+		"\t\t{ id: 3, name: 'Vista 4K Mirrorless', category: 'camera', price: 1299, inStock: false, rating: 4.8 },\n" +
+		"\t\t{ id: 4, name: 'Nimbus Ultrabook 14', category: 'laptop', price: 1499, inStock: true, rating: 4.5 },\n" +
+		"\t\t{ id: 5, name: 'Echo Studio Earbuds', category: 'audio', price: 179, inStock: true, rating: 4.3 },\n" +
+		"\t\t{ id: 6, name: 'Orbit Smartwatch Pro', category: 'wearable', price: 329, inStock: true, rating: 4.4 },\n" +
+		"\t\t{ id: 7, name: 'Lumen Action Camera', category: 'camera', price: 399, inStock: true, rating: 4.1 },\n" +
+		"\t\t{ id: 8, name: 'Forge Gaming Laptop 16', category: 'laptop', price: 2199, inStock: false, rating: 4.7 },\n" +
+		"\t\t{ id: 9, name: 'Resonance Bookshelf Speakers', category: 'audio', price: 549, inStock: true, rating: 4.9 },\n" +
+		"\t\t{ id: 10, name: 'Trek Sports Watch', category: 'wearable', price: 199, inStock: true, rating: 4.0 },\n" +
+		"\t\t{ id: 11, name: 'Clarity Compact Camera', category: 'camera', price: 649, inStock: true, rating: 4.3 },\n" +
+		"\t\t{ id: 12, name: 'Driftwood Chromebook 13', category: 'laptop', price: 499, inStock: true, rating: 4.2 }\n" +
+		"\t] as const;\n" +
+		"\n" +
+		"\tasync function loadProducts(): Promise\u003creadonly Product[]\u003e {\n" +
+		"\t\t// Simulated fetch — real version: return (await fetch('/api/products')).json()\n" +
+		"\t\tawait new Promise((resolve) =\u003e setTimeout(resolve, 600));\n" +
+		"\t\treturn SEED;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tlet query = $state('');\n" +
+		"\tlet category = $state\u003c'all' | Product['category']\u003e('all');\n" +
+		"\tlet searchEl: HTMLInputElement | null = $state(null);\n" +
+		"\tlet promise = $state\u003cPromise\u003creadonly Product[]\u003e\u003e(loadProducts());\n" +
+		"\n" +
+		"\tconst visible = $derived.by\u003creadonly Product[]\u003e(() =\u003e {\n" +
+		"\t\t// visible is derived from the resolved SEED, filtered client-side.\n" +
+		"\t\t// We only filter once the promise resolves — for the in-flight state, the\n" +
+		"\t\t// await block renders skeletons. Here we use the seed directly since it's\n" +
+		"\t\t// the same source of truth the promise resolves to.\n" +
+		"\t\tconst q = query.trim().toLowerCase();\n" +
+		"\t\treturn SEED.filter((p) =\u003e {\n" +
+		"\t\t\tconst matchesQuery = q === '' || p.name.toLowerCase().includes(q);\n" +
+		"\t\t\tconst matchesCategory = category === 'all' || p.category === category;\n" +
+		"\t\t\treturn matchesQuery && matchesCategory;\n" +
+		"\t\t});\n" +
+		"\t});\n" +
+		"\n" +
+		"\tfunction reload(): void {\n" +
+		"\t\tpromise = loadProducts();\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction handleKey(e: KeyboardEvent): void {\n" +
+		"\t\tconst active = document.activeElement;\n" +
+		"\t\tconst activeTag = active?.tagName;\n" +
+		"\t\tif (e.key === '/' && activeTag !== 'INPUT' && activeTag !== 'TEXTAREA') {\n" +
+		"\t\t\te.preventDefault();\n" +
+		"\t\t\tsearchEl?.focus();\n" +
+		"\t\t} else if (e.key === 'Escape') {\n" +
+		"\t\t\tquery = '';\n" +
+		"\t\t}\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction formatPrice(cents: number): string {\n" +
+		"\t\treturn new Intl.NumberFormat('en-US', {\n" +
+		"\t\t\tstyle: 'currency',\n" +
+		"\t\t\tcurrency: 'USD',\n" +
+		"\t\t\tmaximumFractionDigits: 0\n" +
+		"\t\t}).format(cents);\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction stars(rating: number): string {\n" +
+		"\t\tconst full = Math.round(rating);\n" +
+		"\t\treturn '★'.repeat(full) + '☆'.repeat(5 - full);\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csvelte:window onkeydown={handleKey} /\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page catalog\"\u003e\n" +
+		"\t\u003cheader class=\"hero\"\u003e\n" +
+		"\t\t\u003ch1\u003eModule 4 Project — Dynamic Product Listing\u003c/h1\u003e\n" +
+		"\t\t\u003cp class=\"tagline\"\u003e\n" +
+		"\t\t\tA typed, filterable product catalog that combines every Module 4 concept: typed state,\n" +
+		"\t\t\tderived filters, \u003ccode\u003e{`{#await}`}\u003c/code\u003e, \u003ccode\u003e&lt;svelte:window&gt;\u003c/code\u003e, and keyed\n" +
+		"\t\t\t\u003ccode\u003e{`{#each}`}\u003c/code\u003e.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\u003c/header\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"toolbar\"\u003e\n" +
+		"\t\t\u003clabel class=\"search\"\u003e\n" +
+		"\t\t\t\u003cspan class=\"sr-only\"\u003eSearch products\u003c/span\u003e\n" +
+		"\t\t\t\u003cinput\n" +
+		"\t\t\t\ttype=\"search\"\n" +
+		"\t\t\t\tbind:value={query}\n" +
+		"\t\t\t\tbind:this={searchEl}\n" +
+		"\t\t\t\tplaceholder=\"Search products... (/ to focus)\"\n" +
+		"\t\t\t/\u003e\n" +
+		"\t\t\u003c/label\u003e\n" +
+		"\n" +
+		"\t\t\u003clabel class=\"filter\"\u003e\n" +
+		"\t\t\t\u003cspan class=\"sr-only\"\u003eFilter by category\u003c/span\u003e\n" +
+		"\t\t\t\u003cselect bind:value={category}\u003e\n" +
+		"\t\t\t\t\u003coption value=\"all\"\u003eAll categories\u003c/option\u003e\n" +
+		"\t\t\t\t\u003coption value=\"audio\"\u003eAudio\u003c/option\u003e\n" +
+		"\t\t\t\t\u003coption value=\"wearable\"\u003eWearable\u003c/option\u003e\n" +
+		"\t\t\t\t\u003coption value=\"camera\"\u003eCamera\u003c/option\u003e\n" +
+		"\t\t\t\t\u003coption value=\"laptop\"\u003eLaptop\u003c/option\u003e\n" +
+		"\t\t\t\u003c/select\u003e\n" +
+		"\t\t\u003c/label\u003e\n" +
+		"\n" +
+		"\t\t\u003cbutton type=\"button\" class=\"reload\" onclick={reload}\u003eReload\u003c/button\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t{#await promise}\n" +
+		"\t\t\u003cdiv class=\"grid\" aria-busy=\"true\" aria-label=\"Loading products\"\u003e\n" +
+		"\t\t\t{#each Array.from({ length: 6 }, (_, i) =\u003e i) as i (i)}\n" +
+		"\t\t\t\t\u003cdiv class=\"skeleton\"\u003e\n" +
+		"\t\t\t\t\t\u003cdiv class=\"skeleton-line skeleton-title\"\u003e\u003c/div\u003e\n" +
+		"\t\t\t\t\t\u003cdiv class=\"skeleton-line skeleton-sub\"\u003e\u003c/div\u003e\n" +
+		"\t\t\t\t\t\u003cdiv class=\"skeleton-line skeleton-sub short\"\u003e\u003c/div\u003e\n" +
+		"\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t{/each}\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t{:then _products}\n" +
+		"\t\t{#if visible.length === 0}\n" +
+		"\t\t\t\u003cp class=\"empty\"\u003eNo products match your filters.\u003c/p\u003e\n" +
+		"\t\t{:else}\n" +
+		"\t\t\t\u003cdiv class=\"grid\"\u003e\n" +
+		"\t\t\t\t{#each visible as product (product.id)}\n" +
+		"\t\t\t\t\t\u003carticle class=\"card\"\u003e\n" +
+		"\t\t\t\t\t\t\u003cdiv class=\"card-head\"\u003e\n" +
+		"\t\t\t\t\t\t\t\u003ch2\u003e{product.name}\u003c/h2\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cspan class=\"badge badge-{product.category}\"\u003e{product.category}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\t\t\t\u003cp class=\"price\"\u003e{formatPrice(product.price)}\u003c/p\u003e\n" +
+		"\t\t\t\t\t\t\u003cp class=\"rating\" aria-label={`Rated ${product.rating} out of 5`}\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cspan class=\"stars\"\u003e{stars(product.rating)}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cspan class=\"rating-num\"\u003e{product.rating.toFixed(1)}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003c/p\u003e\n" +
+		"\t\t\t\t\t\t\u003cspan class=\"pill {product.inStock ? 'in' : 'out'}\"\u003e\n" +
+		"\t\t\t\t\t\t\t{product.inStock ? 'In stock' : 'Sold out'}\n" +
+		"\t\t\t\t\t\t\u003c/span\u003e\n" +
+		"\t\t\t\t\t\u003c/article\u003e\n" +
+		"\t\t\t\t{/each}\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t{/if}\n" +
+		"\t{:catch err}\n" +
+		"\t\t\u003cdiv class=\"error-card\"\u003e\n" +
+		"\t\t\t\u003cp\u003e{err instanceof Error ? err.message : 'Failed to load products'}\u003c/p\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" onclick={reload}\u003eRetry\u003c/button\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t{/await}\n" +
+		"\n" +
+		"\t\u003cfooter class=\"built-with\"\u003e\n" +
+		"\t\t\u003ch3\u003eBuilt with\u003c/h3\u003e\n" +
+		"\t\t\u003cul\u003e\n" +
+		"\t\t\t\u003cli\u003eTyped interfaces and literal unions for the \u003ccode\u003eProduct\u003c/code\u003e model\u003c/li\u003e\n" +
+		"\t\t\t\u003cli\u003e\u003ccode\u003e$state\u003c/code\u003e for query, category, input ref, and promise\u003c/li\u003e\n" +
+		"\t\t\t\u003cli\u003e\u003ccode\u003e$derived\u003c/code\u003e for the filtered product list\u003c/li\u003e\n" +
+		"\t\t\t\u003cli\u003e\u003ccode\u003e{`{#await}`}\u003c/code\u003e with pending skeletons, then branch, and catch\u003c/li\u003e\n" +
+		"\t\t\t\u003cli\u003eKeyed \u003ccode\u003e{`{#each}`}\u003c/code\u003e for stable product cards\u003c/li\u003e\n" +
+		"\t\t\t\u003cli\u003e\u003ccode\u003e&lt;svelte:window&gt;\u003c/code\u003e for global \u003ckbd\u003e/\u003c/kbd\u003e and \u003ckbd\u003eEsc\u003c/kbd\u003e shortcuts\u003c/li\u003e\n" +
+		"\t\t\t\u003cli\u003e\u003ccode\u003ebind:this\u003c/code\u003e for imperative focus on the search input\u003c/li\u003e\n" +
+		"\t\t\u003c/ul\u003e\n" +
+		"\t\u003c/footer\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <svelte:window onkeydown={handleKey} />
@@ -165,6 +337,12 @@
 			<li><code>bind:this</code> for imperative focus on the search input</li>
 		</ul>
 	</footer>
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 </section>
 
 <style>
@@ -467,5 +645,35 @@
 		.grid {
 			grid-template-columns: repeat(4, 1fr);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
 	}
 </style>

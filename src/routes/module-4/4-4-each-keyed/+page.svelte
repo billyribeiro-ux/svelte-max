@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface Task {
 		id: number;
 		title: string;
@@ -23,6 +24,100 @@
 	function reverse() {
 		tasks = [...tasks].reverse();
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"interface Task {\n" +
+		"\t\tid: number;\n" +
+		"\t\ttitle: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tlet tasks = $state\u003cTask[]\u003e([\n" +
+		"\t\t{ id: 1, title: 'Write blog post' },\n" +
+		"\t\t{ id: 2, title: 'Water the plants' },\n" +
+		"\t\t{ id: 3, title: 'Review pull request' },\n" +
+		"\t\t{ id: 4, title: 'Ship the release' }\n" +
+		"\t]);\n" +
+		"\n" +
+		"\tfunction shuffle() {\n" +
+		"\t\tconst next = [...tasks];\n" +
+		"\t\tfor (let i = next.length - 1; i \u003e 0; i--) {\n" +
+		"\t\t\tconst j = Math.floor(Math.random() * (i + 1));\n" +
+		"\t\t\t[next[i], next[j]] = [next[j], next[i]];\n" +
+		"\t\t}\n" +
+		"\t\ttasks = next;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction reverse() {\n" +
+		"\t\ttasks = [...tasks].reverse();\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e4.4 — {'{#each}'} with keys\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e\n" +
+		"\t\tWithout a key, Svelte matches each-block items by position — reordering the array patches the\n" +
+		"\t\texisting DOM nodes in place instead of moving them. That's fine for static display, but it\n" +
+		"\t\tbreaks anything with local state (inputs, timers, animations). Adding\n" +
+		"\t\t\u003ccode\u003e{'(item.id)'}\u003c/code\u003e tells Svelte to match by identity, so reorders move nodes instead of\n" +
+		"\t\tmutating them. Rule of thumb: always key an \u003ccode\u003e{'{#each}'}\u003c/code\u003e when items have identity.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cp class=\"note\"\u003e\n" +
+		"\t\t\tType something into a few inputs on both sides, then click \u003cstrong\u003eShuffle\u003c/strong\u003e or\n" +
+		"\t\t\t\u003cstrong\u003eReverse\u003c/strong\u003e. The unkeyed list scrambles the typed text; the keyed list keeps\n" +
+		"\t\t\tit attached to the right task.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"controls\"\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" onclick={shuffle}\u003eShuffle\u003c/button\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" onclick={reverse}\u003eReverse\u003c/button\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"lists\"\u003e\n" +
+		"\t\t\t\u003cdiv class=\"list\"\u003e\n" +
+		"\t\t\t\t\u003ch4\u003eNo key (buggy)\u003c/h4\u003e\n" +
+		"\t\t\t\t{#each tasks as task, i}\n" +
+		"\t\t\t\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\t\t\t\u003cspan class=\"num\"\u003e{i + 1}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003cspan class=\"title\"\u003e{task.title}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003cinput type=\"text\" placeholder=\"note…\" /\u003e\n" +
+		"\t\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\t{/each}\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\t\u003cdiv class=\"list\"\u003e\n" +
+		"\t\t\t\t\u003ch4\u003eKeyed by id\u003c/h4\u003e\n" +
+		"\t\t\t\t{#each tasks as task, i (task.id)}\n" +
+		"\t\t\t\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\t\t\t\u003cspan class=\"num\"\u003e{i + 1}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003cspan class=\"title\"\u003e{task.title}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003cinput type=\"text\" placeholder=\"note…\" /\u003e\n" +
+		"\t\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\t{/each}\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat if your data has no stable ID?\u003c/h3\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\tOptions: (1) Generate one on creation (\u003ccode\u003ecrypto.randomUUID()\u003c/code\u003e),\n" +
+		"\t\t(2) Use a composite key (\u003ccode\u003e{`\\${item.name}-\\${item.date}`}\u003c/code\u003e),\n" +
+		"\t\t(3) NEVER use the array index as a key — it defeats the purpose entirely.\n" +
+		"\t\tIf you can't guarantee uniqueness, add a unique field to your data model.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eDefault each blocks match by position, not identity.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eAdd \u003ccode\u003e{'(item.id)'}\u003c/code\u003e to key by a stable identifier.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eKeys are essential when list items hold local state (inputs, focus, animations).\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eKeys unlock efficient move-based updates on reorders.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -80,6 +175,12 @@
 		(3) NEVER use the array index as a key — it defeats the purpose entirely.
 		If you can't guarantee uniqueness, add a unique field to your data model.
 	</p>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -218,5 +319,41 @@
 	@media (min-width: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.lists { grid-template-columns: 1fr 1fr; }
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

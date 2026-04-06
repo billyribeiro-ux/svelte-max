@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface User {
 		id: number;
 		name: string;
@@ -18,6 +19,70 @@
 	function refresh(): void {
 		promise = fetchUser();
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"interface User {\n" +
+		"\t\tid: number;\n" +
+		"\t\tname: string;\n" +
+		"\t\temail: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction fetchUser(): Promise\u003cUser\u003e {\n" +
+		"\t\treturn new Promise\u003cUser\u003e((resolve) =\u003e {\n" +
+		"\t\t\tsetTimeout(() =\u003e {\n" +
+		"\t\t\t\tresolve({ id: 1, name: 'Ada Lovelace', email: 'ada@example.com' });\n" +
+		"\t\t\t}, 900);\n" +
+		"\t\t});\n" +
+		"\t}\n" +
+		"\n" +
+		"\tlet promise = $state\u003cPromise\u003cUser\u003e\u003e(fetchUser());\n" +
+		"\n" +
+		"\tfunction refresh(): void {\n" +
+		"\t\tpromise = fetchUser();\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e4.8 — {`{#await}`} block\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e\n" +
+		"\t\t\u003ccode\u003e{`{#await promise}...{:then value}...{:catch err}...{/await}`}\u003c/code\u003e is Svelte's built-in async\n" +
+		"\t\tstate machine. One promise, three branches, zero manual state variables. There's a short form\n" +
+		"\t\t\u003ccode\u003e{`{#await promise then value}`}\u003c/code\u003e that skips the pending branch entirely. Use it\n" +
+		"\t\twhenever a component's UI is driven by a promise's lifecycle.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cbutton type=\"button\" onclick={refresh}\u003eRefresh\u003c/button\u003e\n" +
+		"\n" +
+		"\t\t{#await promise}\n" +
+		"\t\t\t\u003cp class=\"status\"\u003eLoading user…\u003c/p\u003e\n" +
+		"\t\t{:then user}\n" +
+		"\t\t\t\u003carticle class=\"user\"\u003e\n" +
+		"\t\t\t\t\u003ch2\u003e{user.name}\u003c/h2\u003e\n" +
+		"\t\t\t\t\u003cp\u003e{user.email}\u003c/p\u003e\n" +
+		"\t\t\t\t\u003cp class=\"muted\"\u003eID: {user.id}\u003c/p\u003e\n" +
+		"\t\t\t\u003c/article\u003e\n" +
+		"\t\t{:catch err}\n" +
+		"\t\t\t\u003cp class=\"pill error\"\u003eError: {err.message}\u003c/p\u003e\n" +
+		"\t\t{/await}\n" +
+		"\n" +
+		"\t\t\u003cp class=\"note\"\u003e\n" +
+		"\t\t\tCompare this to 4.7: no \u003ccode\u003eloading\u003c/code\u003e, no \u003ccode\u003eerror\u003c/code\u003e, no\n" +
+		"\t\t\t\u003ccode\u003euser\u003c/code\u003e state. Just one promise.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003e{`{#await}`}\u003c/code\u003e replaces three state variables with one\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eThree branches: pending, \u003ccode\u003e{`{:then}`}\u003c/code\u003e, \u003ccode\u003e{`{:catch}`}\u003c/code\u003e\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eReassigning the promise re-runs the block\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eShort form: \u003ccode\u003e{`{#await promise then value}`}\u003c/code\u003e skips pending\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -50,6 +115,12 @@
 			<code>user</code> state. Just one promise.
 		</p>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -161,5 +232,42 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

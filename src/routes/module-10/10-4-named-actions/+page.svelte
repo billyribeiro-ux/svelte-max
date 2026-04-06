@@ -1,10 +1,85 @@
 <script lang="ts">
 	import type { ActionData } from './$types';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let { form }: { form: ActionData } = $props();
 
 	const loginForm = $derived(form?.action === 'login' ? form : null);
 	const registerForm = $derived(form?.action === 'register' ? form : null);
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import type { ActionData } from './$types';\n" +
+		"\n" +
+		"	let { form }: { form: ActionData } = $props();\n" +
+		"\n" +
+		"	const loginForm = $derived(form?.action === 'login' ? form : null);\n" +
+		"	const registerForm = $derived(form?.action === 'register' ? form : null);\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e10.4 — Named actions\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e A page can have multiple forms — login, register, delete-account, etc.\n" +
+		"		Give each a named action:\n" +
+		"		\u003ccode\u003e{\"actions: { login: async (e) =\u003e {}, register: async (e) =\u003e {} }\"}\u003c/code\u003e. Route a form to a\n" +
+		"		named action with \u003ccode\u003e{'action=\"?/login\"'}\u003c/code\u003e. The default action is called\n" +
+		"		\u003ccode\u003edefault\u003c/code\u003e. Only ONE action runs per submit.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"forms\"\u003e\n" +
+		"			\u003cform method=\"POST\" action=\"?/login\"\u003e\n" +
+		"				\u003ch3\u003eLog in\u003c/h3\u003e\n" +
+		"				\u003clabel class=\"field\"\u003e\n" +
+		"					\u003cspan\u003eEmail\u003c/span\u003e\n" +
+		"					\u003cinput type=\"email\" name=\"email\" value={loginForm?.email ?? ''} required /\u003e\n" +
+		"				\u003c/label\u003e\n" +
+		"				\u003clabel class=\"field\"\u003e\n" +
+		"					\u003cspan\u003ePassword\u003c/span\u003e\n" +
+		"					\u003cinput type=\"password\" name=\"password\" required /\u003e\n" +
+		"				\u003c/label\u003e\n" +
+		"				\u003cbutton type=\"submit\" class=\"cta\"\u003eLog in\u003c/button\u003e\n" +
+		"				\u003cp class=\"hint\"\u003eTry password: \u003ccode\u003edemo\u003c/code\u003e\u003c/p\u003e\n" +
+		"				{#if loginForm?.error}\n" +
+		"					\u003cp class=\"pill error\"\u003e{loginForm.error}\u003c/p\u003e\n" +
+		"				{/if}\n" +
+		"				{#if loginForm?.success}\n" +
+		"					\u003cp class=\"pill success\"\u003e{loginForm.message}\u003c/p\u003e\n" +
+		"				{/if}\n" +
+		"			\u003c/form\u003e\n" +
+		"\n" +
+		"			\u003cform method=\"POST\" action=\"?/register\"\u003e\n" +
+		"				\u003ch3\u003eRegister\u003c/h3\u003e\n" +
+		"				\u003clabel class=\"field\"\u003e\n" +
+		"					\u003cspan\u003eEmail\u003c/span\u003e\n" +
+		"					\u003cinput type=\"email\" name=\"email\" value={registerForm?.email ?? ''} required /\u003e\n" +
+		"				\u003c/label\u003e\n" +
+		"				\u003clabel class=\"field\"\u003e\n" +
+		"					\u003cspan\u003ePassword\u003c/span\u003e\n" +
+		"					\u003cinput type=\"password\" name=\"password\" required minlength=\"6\" /\u003e\n" +
+		"				\u003c/label\u003e\n" +
+		"				\u003cbutton type=\"submit\" class=\"cta\"\u003eCreate account\u003c/button\u003e\n" +
+		"				\u003cp class=\"hint\"\u003eAt least 6 characters.\u003c/p\u003e\n" +
+		"				{#if registerForm?.error}\n" +
+		"					\u003cp class=\"pill error\"\u003e{registerForm.error}\u003c/p\u003e\n" +
+		"				{/if}\n" +
+		"				{#if registerForm?.success}\n" +
+		"					\u003cp class=\"pill success\"\u003e{registerForm.message}\u003c/p\u003e\n" +
+		"				{/if}\n" +
+		"			\u003c/form\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eName actions inside the \u003ccode\u003eactions\u003c/code\u003e object — any key other than \u003ccode\u003edefault\u003c/code\u003e.\u003c/li\u003e\n" +
+		"		\u003cli\u003eTarget them with \u003ccode\u003e{'action=\"?/name\"'}\u003c/code\u003e on the \u003ccode\u003e&lt;form&gt;\u003c/code\u003e.\u003c/li\u003e\n" +
+		"		\u003cli\u003eReturn a discriminant like \u003ccode\u003e{\"{ action: 'login' as const }\"}\u003c/code\u003e so TS narrows correctly.\u003c/li\u003e\n" +
+		"		\u003cli\u003eOnly one action runs per submit — the rest are untouched.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -60,6 +135,13 @@
 			</form>
 		</div>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -206,5 +288,42 @@
 		.forms {
 			flex-direction: row;
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept, .hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept, .hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

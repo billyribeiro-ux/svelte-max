@@ -1,7 +1,76 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let { form, data }: { form: ActionData; data: PageData } = $props();
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import type { ActionData, PageData } from './$types';\n" +
+		"\n" +
+		"	let { form, data }: { form: ActionData; data: PageData } = $props();\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e10.3 — Form actions\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e Form actions live in \u003ccode\u003e+page.server.ts\u003c/code\u003e as an\n" +
+		"		\u003ccode\u003eactions\u003c/code\u003e export. Each action is an async function that receives the request event. The\n" +
+		"		browser submits the form natively (no JS required) — SvelteKit intercepts server-side, runs the\n" +
+		"		action, and either redirects or returns \u003ccode\u003eActionData\u003c/code\u003e that the page renders. This is the\n" +
+		"		default pattern for mutations. Progressive enhancement: works without JS, faster with it.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cform method=\"POST\"\u003e\n" +
+		"			\u003clabel class=\"field\"\u003e\n" +
+		"				\u003cspan\u003eName\u003c/span\u003e\n" +
+		"				\u003cinput type=\"text\" name=\"name\" value={form?.name ?? ''} required /\u003e\n" +
+		"			\u003c/label\u003e\n" +
+		"			\u003clabel class=\"field\"\u003e\n" +
+		"				\u003cspan\u003eMessage\u003c/span\u003e\n" +
+		"				\u003ctextarea name=\"body\" rows=\"3\" required\u003e{form?.body ?? ''}\u003c/textarea\u003e\n" +
+		"			\u003c/label\u003e\n" +
+		"			\u003cbutton type=\"submit\" class=\"cta\"\u003eSend message\u003c/button\u003e\n" +
+		"		\u003c/form\u003e\n" +
+		"\n" +
+		"		{#if form?.error}\n" +
+		"			\u003cp class=\"pill error\"\u003e{form.error}\u003c/p\u003e\n" +
+		"		{/if}\n" +
+		"		{#if form?.success}\n" +
+		"			\u003cp class=\"pill success\"\u003eSent! Total messages: {form.messageCount}\u003c/p\u003e\n" +
+		"		{/if}\n" +
+		"\n" +
+		"		\u003ch3\u003eRecent messages\u003c/h3\u003e\n" +
+		"		{#if data.messages.length === 0}\n" +
+		"			\u003cp class=\"muted\"\u003eNo messages yet — send one above.\u003c/p\u003e\n" +
+		"		{:else}\n" +
+		"			\u003cul class=\"msgs\"\u003e\n" +
+		"				{#each data.messages as m (m.id)}\n" +
+		"					\u003cli\u003e\n" +
+		"						\u003cstrong\u003e{m.name}\u003c/strong\u003e\n" +
+		"						\u003cspan class=\"muted\"\u003e· {new Date(m.at).toLocaleTimeString()}\u003c/span\u003e\n" +
+		"						\u003cp\u003e{m.body}\u003c/p\u003e\n" +
+		"					\u003c/li\u003e\n" +
+		"				{/each}\n" +
+		"			\u003c/ul\u003e\n" +
+		"		{/if}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Try disabling JavaScript in DevTools and submitting — it still works. That is progressive\n" +
+		"		enhancement.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eExport \u003ccode\u003eactions\u003c/code\u003e from \u003ccode\u003e+page.server.ts\u003c/code\u003e; the \u003ccode\u003edefault\u003c/code\u003e action handles unnamed submits.\u003c/li\u003e\n" +
+		"		\u003cli\u003eRead fields with \u003ccode\u003eawait request.formData()\u003c/code\u003e.\u003c/li\u003e\n" +
+		"		\u003cli\u003eReturn \u003ccode\u003efail(400, {'{...}'})\u003c/code\u003e for validation errors; return a plain object on success.\u003c/li\u003e\n" +
+		"		\u003cli\u003eAccess the result on the page via the \u003ccode\u003eform\u003c/code\u003e prop, typed as \u003ccode\u003eActionData\u003c/code\u003e.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -54,6 +123,13 @@
 		Try disabling JavaScript in DevTools and submitting — it still works. That is progressive
 		enhancement.
 	</p>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -203,5 +279,42 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

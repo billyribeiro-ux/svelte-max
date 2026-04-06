@@ -2,8 +2,85 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let { form }: { form: ActionData } = $props();
 	let submitting = $state(false);
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { enhance } from '$app/forms';\n" +
+		"	import type { ActionData } from './$types';\n" +
+		"\n" +
+		"	let { form }: { form: ActionData } = $props();\n" +
+		"	let submitting = $state(false);\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e10.5 — use:enhance\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e \u003ccode\u003euse:enhance\u003c/code\u003e from \u003ccode\u003e$app/forms\u003c/code\u003e progressively\n" +
+		"		enhances a form — JS intercepts the submit and handles it via \u003ccode\u003efetch\u003c/code\u003e in the background\n" +
+		"		without a page reload, but the form still works if JS is disabled. The default enhancement updates\n" +
+		"		the page with the action result automatically. Passing a callback gives you pending state,\n" +
+		"		success/error handling, and control over whether to apply the default update.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cform\n" +
+		"			method=\"POST\"\n" +
+		"			use:enhance={() =\u003e {\n" +
+		"				submitting = true;\n" +
+		"				return async ({ update }) =\u003e {\n" +
+		"					await update();\n" +
+		"					submitting = false;\n" +
+		"				};\n" +
+		"			}}\n" +
+		"		\u003e\n" +
+		"			\u003clabel class=\"field\"\u003e\n" +
+		"				\u003cspan\u003eTask\u003c/span\u003e\n" +
+		"				\u003cinput type=\"text\" name=\"task\" placeholder=\"Ship the feature\" required /\u003e\n" +
+		"			\u003c/label\u003e\n" +
+		"			\u003cbutton type=\"submit\" class=\"cta\" disabled={submitting}\u003e\n" +
+		"				{submitting ? 'Saving...' : 'Create task'}\n" +
+		"			\u003c/button\u003e\n" +
+		"		\u003c/form\u003e\n" +
+		"\n" +
+		"		{#if submitting}\n" +
+		"			\u003cp class=\"pill pending\"\u003ePending — server is working...\u003c/p\u003e\n" +
+		"		{/if}\n" +
+		"		{#if form?.error}\n" +
+		"			\u003cp class=\"pill error\"\u003e{form.error}\u003c/p\u003e\n" +
+		"		{/if}\n" +
+		"		{#if form?.success}\n" +
+		"			\u003cp class=\"pill success\"\u003e\n" +
+		"				Created \u003cstrong\u003e{form.task}\u003c/strong\u003e at {new Date(form.createdAt).toLocaleTimeString()}\n" +
+		"			\u003c/p\u003e\n" +
+		"		{/if}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		The outer callback runs \u003cem\u003ebefore\u003c/em\u003e the request is sent — call \u003ccode\u003ecancel()\u003c/code\u003e there to\n" +
+		"		abort. The inner callback runs \u003cem\u003eafter\u003c/em\u003e the response; call \u003ccode\u003eupdate()\u003c/code\u003e to apply\n" +
+		"		the default behavior (update \u003ccode\u003eform\u003c/code\u003e, invalidate, reset the form).\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eCancel and result branches.\u003c/strong\u003e The \u003ccode\u003euse:enhance\u003c/code\u003e callback receives\n" +
+		"		\u003ccode\u003e{'{ cancel }'}\u003c/code\u003e — call it to abort submission. The inner callback receives\n" +
+		"		\u003ccode\u003e{'{ result }'}\u003c/code\u003e with \u003ccode\u003eresult.type\u003c/code\u003e being \u003ccode\u003e'success'\u003c/code\u003e,\n" +
+		"		\u003ccode\u003e'failure'\u003c/code\u003e, \u003ccode\u003e'redirect'\u003c/code\u003e, or \u003ccode\u003e'error'\u003c/code\u003e. Check\n" +
+		"		\u003ccode\u003eresult.type\u003c/code\u003e to handle each case differently.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003euse:enhance\u003c/code\u003e turns a native POST form into an AJAX submit with zero extra code.\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe callback shape is outer (before submit) returning inner (after response).\u003c/li\u003e\n" +
+		"		\u003cli\u003eUse a \u003ccode\u003esubmitting\u003c/code\u003e \u003ccode\u003e$state\u003c/code\u003e flag to render pending UI.\u003c/li\u003e\n" +
+		"		\u003cli\u003eCall \u003ccode\u003eawait update()\u003c/code\u003e to apply the default result handling, or skip it to take control.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -62,6 +139,13 @@
 		<code>'failure'</code>, <code>'redirect'</code>, or <code>'error'</code>. Check
 		<code>result.type</code> to handle each case differently.
 	</p>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -195,5 +279,42 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

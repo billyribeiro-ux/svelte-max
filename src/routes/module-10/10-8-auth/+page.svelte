@@ -1,7 +1,90 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let { form, data }: { form: ActionData; data: PageData } = $props();
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import type { ActionData, PageData } from './$types';\n" +
+		"\n" +
+		"	let { form, data }: { form: ActionData; data: PageData } = $props();\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e10.8 — Cookie-based authentication\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e A session cookie is just a random token. On login, the server creates\n" +
+		"		the token, maps it to a user in memory (or a database), and calls\n" +
+		"		\u003ccode\u003ecookies.set('session', token, &lbrace; httpOnly, secure, sameSite, maxAge &rbrace;)\u003c/code\u003e.\n" +
+		"		On every later request, \u003ccode\u003ecookies.get('session')\u003c/code\u003e yields the token and the server\n" +
+		"		looks the user back up. Real apps put this lookup in \u003ccode\u003ehooks.server.ts\u003c/code\u003e so every load\n" +
+		"		and action sees \u003ccode\u003elocals.user\u003c/code\u003e. This demo has no password — the point is the cookie\n" +
+		"		flow, not credential handling.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		{#if data.user}\n" +
+		"			\u003ch3\u003eSigned in\u003c/h3\u003e\n" +
+		"			\u003cp\u003eHi, \u003cstrong\u003e{data.user.name}\u003c/strong\u003e — your session cookie is set.\u003c/p\u003e\n" +
+		"			\u003cform method=\"POST\" action=\"?/logout\"\u003e\n" +
+		"				\u003cbutton class=\"cta\" type=\"submit\"\u003eLog out\u003c/button\u003e\n" +
+		"			\u003c/form\u003e\n" +
+		"			{#if form && 'loggedOut' in form && form.loggedOut}\n" +
+		"				\u003cspan class=\"success-pill\"\u003eSession cleared.\u003c/span\u003e\n" +
+		"			{/if}\n" +
+		"		{:else}\n" +
+		"			\u003ch3\u003eLog in\u003c/h3\u003e\n" +
+		"			\u003cform method=\"POST\" action=\"?/login\" class=\"stack\"\u003e\n" +
+		"				\u003clabel class=\"field\"\u003e\n" +
+		"					\u003cspan\u003eEmail\u003c/span\u003e\n" +
+		"					\u003cinput\n" +
+		"						type=\"email\"\n" +
+		"						name=\"email\"\n" +
+		"						list=\"known-emails\"\n" +
+		"						value={form && 'email' in form ? (form.email ?? '') : ''}\n" +
+		"						placeholder=\"ada@example.com\"\n" +
+		"					/\u003e\n" +
+		"					\u003cdatalist id=\"known-emails\"\u003e\n" +
+		"						{#each data.availableEmails as e (e)}\n" +
+		"							\u003coption value={e}\u003e\u003c/option\u003e\n" +
+		"						{/each}\n" +
+		"					\u003c/datalist\u003e\n" +
+		"				\u003c/label\u003e\n" +
+		"				{#if form && 'error' in form && form.error}\n" +
+		"					\u003cspan class=\"error-pill\"\u003e{form.error}\u003c/span\u003e\n" +
+		"				{/if}\n" +
+		"				\u003cbutton class=\"cta\" type=\"submit\"\u003eLog in\u003c/button\u003e\n" +
+		"			\u003c/form\u003e\n" +
+		"		{/if}\n" +
+		"\n" +
+		"		\u003ch3\u003eCookie attributes\u003c/h3\u003e\n" +
+		"		\u003cul\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003ehttpOnly: true\u003c/code\u003e — JS in the page cannot read the cookie (blocks XSS theft).\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003esameSite: 'lax'\u003c/code\u003e — cookie is not sent on cross-site POSTs (blocks CSRF).\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003esecure: true\u003c/code\u003e — only sent over HTTPS. Enable in production.\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003emaxAge\u003c/code\u003e — seconds until expiry. Omit for a session cookie.\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003epath: '/'\u003c/code\u003e — scope so every route receives the cookie.\u003c/li\u003e\n" +
+		"		\u003c/ul\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eSecurity in production.\u003c/strong\u003e (1) \u003ccode\u003ehttpOnly: true\u003c/code\u003e prevents JavaScript from\n" +
+		"		reading the cookie — protects against XSS. (2) \u003ccode\u003esecure: true\u003c/code\u003e ensures the cookie only\n" +
+		"		travels over HTTPS. (3) \u003ccode\u003esameSite: 'lax'\u003c/code\u003e blocks cross-site request forgery.\n" +
+		"		(4) Set \u003ccode\u003emaxAge\u003c/code\u003e to limit session lifetime. This demo skips the password — real auth\n" +
+		"		uses bcrypt hashing and never stores plaintext.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eSession cookies hold opaque tokens, not user data.\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe server-side map is the source of truth — losing it logs everyone out.\u003c/li\u003e\n" +
+		"		\u003cli\u003eNamed actions \u003ccode\u003e?/login\u003c/code\u003e and \u003ccode\u003e?/logout\u003c/code\u003e let one page own both flows.\u003c/li\u003e\n" +
+		"		\u003cli\u003eWith no \u003ccode\u003euse:enhance\u003c/code\u003e, the page still works — the form does a full POST and reload.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -69,6 +152,13 @@
 		uses bcrypt hashing and never stores plaintext.
 	</p>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Session cookies hold opaque tokens, not user data.</li>
@@ -98,4 +188,41 @@
 	p { color: var(--color-text-muted); margin: 0; line-height: 1.6; }
 	p strong { color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

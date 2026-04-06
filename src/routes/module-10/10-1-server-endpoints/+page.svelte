@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface Item {
 		id: number;
 		name: string;
@@ -48,6 +49,118 @@
 			postLoading = false;
 		}
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface Item {\n" +
+		"		id: number;\n" +
+		"		name: string;\n" +
+		"	}\n" +
+		"	interface GetResponse {\n" +
+		"		items: Item[];\n" +
+		"	}\n" +
+		"	interface PostResponse {\n" +
+		"		item?: Item;\n" +
+		"		error?: string;\n" +
+		"	}\n" +
+		"\n" +
+		"	let getResult = $state\u003cGetResponse | null\u003e(null);\n" +
+		"	let getError = $state\u003cstring | null\u003e(null);\n" +
+		"	let getLoading = $state(false);\n" +
+		"\n" +
+		"	let newName = $state('');\n" +
+		"	let postResult = $state\u003cPostResponse | null\u003e(null);\n" +
+		"	let postLoading = $state(false);\n" +
+		"\n" +
+		"	async function fetchItems() {\n" +
+		"		getLoading = true;\n" +
+		"		getError = null;\n" +
+		"		try {\n" +
+		"			const res = await fetch('./api');\n" +
+		"			if (!res.ok) throw new Error(`HTTP ${res.status}`);\n" +
+		"			getResult = (await res.json()) as GetResponse;\n" +
+		"		} catch (e) {\n" +
+		"			getError = e instanceof Error ? e.message : 'Unknown error';\n" +
+		"		} finally {\n" +
+		"			getLoading = false;\n" +
+		"		}\n" +
+		"	}\n" +
+		"\n" +
+		"	async function createItem(e: SubmitEvent) {\n" +
+		"		e.preventDefault();\n" +
+		"		postLoading = true;\n" +
+		"		try {\n" +
+		"			const res = await fetch('./api', {\n" +
+		"				method: 'POST',\n" +
+		"				headers: { 'content-type': 'application/json' },\n" +
+		"				body: JSON.stringify({ name: newName })\n" +
+		"			});\n" +
+		"			postResult = (await res.json()) as PostResponse;\n" +
+		"			if (res.ok) newName = '';\n" +
+		"		} finally {\n" +
+		"			postLoading = false;\n" +
+		"		}\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e10.1 — +server.ts endpoints\u003c/h1\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eConcept.\u003c/strong\u003e\n" +
+		"		\u003ccode\u003e+server.ts\u003c/code\u003e files define HTTP endpoints — GET, POST, PUT, DELETE, PATCH. Each method exports\n" +
+		"		a function that receives a typed event and returns a \u003ccode\u003eResponse\u003c/code\u003e. Use the\n" +
+		"		\u003ccode\u003ejson()\u003c/code\u003e helper for typed JSON and \u003ccode\u003eerror()\u003c/code\u003e for typed error throws. Reach for\n" +
+		"		\u003ccode\u003e+server.ts\u003c/code\u003e when you need a public API for mobile apps, webhooks, or third parties; for\n" +
+		"		internal page data prefer \u003ccode\u003eload()\u003c/code\u003e, and for mutations from forms prefer form actions.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"row\"\u003e\n" +
+		"			\u003cbutton type=\"button\" class=\"cta\" onclick={fetchItems} disabled={getLoading}\u003e\n" +
+		"				{getLoading ? 'Loading...' : 'Fetch GET /api'}\n" +
+		"			\u003c/button\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		{#if getError}\n" +
+		"			\u003cp class=\"error\"\u003eError: {getError}\u003c/p\u003e\n" +
+		"		{/if}\n" +
+		"		{#if getResult}\n" +
+		"			\u003cul class=\"items\"\u003e\n" +
+		"				{#each getResult.items as item (item.id)}\n" +
+		"					\u003cli\u003e\u003ccode\u003e#{item.id}\u003c/code\u003e {item.name}\u003c/li\u003e\n" +
+		"				{/each}\n" +
+		"			\u003c/ul\u003e\n" +
+		"		{/if}\n" +
+		"\n" +
+		"		\u003cform onsubmit={createItem}\u003e\n" +
+		"			\u003clabel class=\"field\"\u003e\n" +
+		"				\u003cspan\u003eNew item name\u003c/span\u003e\n" +
+		"				\u003cinput type=\"text\" bind:value={newName} placeholder=\"A fresh idea\" required /\u003e\n" +
+		"			\u003c/label\u003e\n" +
+		"			\u003cbutton type=\"submit\" class=\"cta\" disabled={postLoading || !newName.trim()}\u003e\n" +
+		"				{postLoading ? 'Posting...' : 'POST to /api'}\n" +
+		"			\u003c/button\u003e\n" +
+		"		\u003c/form\u003e\n" +
+		"\n" +
+		"		{#if postResult}\n" +
+		"			\u003cpre\u003e{JSON.stringify(postResult, null, 2)}\u003c/pre\u003e\n" +
+		"		{/if}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		The endpoint is reachable from any client, for example\n" +
+		"		\u003ccode\u003ecurl https://your.site/module-10/10-1-server-endpoints/api\u003c/code\u003e.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eExport HTTP method handlers (\u003ccode\u003eGET\u003c/code\u003e, \u003ccode\u003ePOST\u003c/code\u003e, ...) from \u003ccode\u003e+server.ts\u003c/code\u003e.\u003c/li\u003e\n" +
+		"		\u003cli\u003eReturn \u003ccode\u003ejson(data, init)\u003c/code\u003e for typed JSON responses.\u003c/li\u003e\n" +
+		"		\u003cli\u003eCall endpoints from the client with \u003ccode\u003efetch\u003c/code\u003e, or from anywhere with \u003ccode\u003ecurl\u003c/code\u003e.\u003c/li\u003e\n" +
+		"		\u003cli\u003eUse \u003ccode\u003e+server.ts\u003c/code\u003e for public APIs; prefer \u003ccode\u003eload()\u003c/code\u003e/form actions for internal pages.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -98,6 +211,13 @@
 		The endpoint is reachable from any client, for example
 		<code>curl https://your.site/module-10/10-1-server-endpoints/api</code>.
 	</p>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -236,5 +356,42 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

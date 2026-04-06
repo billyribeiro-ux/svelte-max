@@ -96,6 +96,51 @@
 			href: '/module-10/10-1-server-endpoints'
 		},
 		{
+			id: 7,
+			title: 'GSAP Integration',
+			summary:
+				'GSAP timelines, ScrollTrigger, bind:this, $effect bridge, stagger, use: actions, {@attach} attachments.',
+			project: 'Premium Marketing Page',
+			status: 'ready',
+			href: '/module-7/7-1-what-is-gsap'
+		},
+		{
+			id: 11,
+			title: 'State Management at Scale',
+			summary:
+				'createContext, .svelte.ts stores, reactive classes, URL state, TanStack Table, optimistic UI.',
+			project: 'Admin Dashboard',
+			status: 'ready',
+			href: '/module-11/11-1-prop-drilling'
+		},
+		{
+			id: 12,
+			title: 'Performance & Production',
+			summary:
+				'Core Web Vitals, error boundaries, Vitest + Playwright, service workers, deployment.',
+			project: 'Production-Ready App',
+			status: 'ready',
+			href: '/module-12/12-1-core-web-vitals'
+		},
+		{
+			id: 14,
+			title: 'Custom Elements & Library Publishing',
+			summary:
+				'<svelte:options customElement>, $host(), @sveltejs/package, npm publishing.',
+			project: 'Component Library + Custom Elements',
+			status: 'ready',
+			href: '/module-14/14-1-what-are-custom-elements'
+		},
+		{
+			id: 15,
+			title: '3D with Threlte',
+			summary:
+				'Three.js via Threlte — Canvas, cameras, lights, reactive scenes, GLTF models, performance.',
+			project: 'Immersive 3D Landing Page',
+			status: 'ready',
+			href: '/module-15/15-1-what-is-threlte'
+		},
+		{
 			id: 13,
 			title: 'SEO',
 			summary:

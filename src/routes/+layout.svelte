@@ -195,6 +195,89 @@
 			]
 		},
 		{
+			id: 7,
+			title: 'Module 7 — GSAP Integration',
+			hasProject: true,
+			lessons: [
+				{ slug: '7-1-what-is-gsap', title: '7.1 — What GSAP is' },
+				{ slug: '7-2-installing-gsap', title: '7.2 — Installing GSAP' },
+				{ slug: '7-3-to-from-fromto', title: '7.3 — to/from/fromTo' },
+				{ slug: '7-4-timelines', title: '7.4 — Timelines' },
+				{ slug: '7-5-bind-this', title: '7.5 — bind:this' },
+				{ slug: '7-6-effect-bridge', title: '7.6 — $effect bridge' },
+				{ slug: '7-7-cleanup', title: '7.7 — GSAP cleanup' },
+				{ slug: '7-8-stagger', title: '7.8 — Stagger animations' },
+				{ slug: '7-9-scrolltrigger', title: '7.9 — ScrollTrigger' },
+				{ slug: '7-10-scrolltrigger-nav', title: '7.10 — ScrollTrigger + nav' },
+				{ slug: '7-11-actions', title: '7.11 — use: actions' },
+				{ slug: '7-12-attachments', title: '7.12 — Attachments' },
+				{ slug: '7-13-scroll-reveal', title: '7.13 — Scroll reveal' },
+				{ slug: '7-14-gsap-svelte-together', title: '7.14 — GSAP + Svelte' }
+			]
+		},
+		{
+			id: 11,
+			title: 'Module 11 — State at Scale',
+			hasProject: true,
+			lessons: [
+				{ slug: '11-1-prop-drilling', title: '11.1 — Prop drilling' },
+				{ slug: '11-2-context', title: '11.2 — createContext' },
+				{ slug: '11-3-svelte-ts', title: '11.3 — .svelte.ts files' },
+				{ slug: '11-4-shared-state', title: '11.4 — Shared state' },
+				{ slug: '11-5-reactive-classes', title: '11.5 — Reactive classes' },
+				{ slug: '11-6-url-state', title: '11.6 — URL as state' },
+				{ slug: '11-7-reactive-window', title: '11.7 — Reactive window' },
+				{ slug: '11-8-tanstack-table', title: '11.8 — TanStack Table' },
+				{ slug: '11-9-tanstack-features', title: '11.9 — Sort/filter/page' },
+				{ slug: '11-10-tanstack-typed', title: '11.10 — Typed tables' },
+				{ slug: '11-11-optimistic-ui', title: '11.11 — Optimistic UI' }
+			]
+		},
+		{
+			id: 12,
+			title: 'Module 12 — Performance',
+			hasProject: true,
+			lessons: [
+				{ slug: '12-1-core-web-vitals', title: '12.1 — Vitals fundamentals' },
+				{ slug: '12-2-images', title: '12.2 — Image optimization' },
+				{ slug: '12-3-code-splitting', title: '12.3 — Code splitting' },
+				{ slug: '12-4-effect-perf', title: '12.4 — $effect performance' },
+				{ slug: '12-5-memoization', title: '12.5 — Memoization' },
+				{ slug: '12-6-actions-attachments', title: '12.6 — Actions + attachments' },
+				{ slug: '12-7-error-boundaries', title: '12.7 — Error boundaries' },
+				{ slug: '12-8-accessibility', title: '12.8 — Accessibility' },
+				{ slug: '12-9-vitest', title: '12.9 — Vitest unit tests' },
+				{ slug: '12-10-playwright', title: '12.10 — Playwright E2E' },
+				{ slug: '12-11-deployment', title: '12.11 — Deployment' },
+				{ slug: '12-12-service-worker', title: '12.12 — Service workers' }
+			]
+		},
+		{
+			id: 14,
+			title: 'Module 14 — Custom Elements',
+			hasProject: true,
+			lessons: [
+				{ slug: '14-1-what-are-custom-elements', title: '14.1 — What custom elements are' },
+				{ slug: '14-2-building', title: '14.2 — Building with Svelte' },
+				{ slug: '14-3-lifecycle', title: '14.3 — Lifecycle + options' },
+				{ slug: '14-4-host-rune', title: '14.4 — $host() rune' },
+				{ slug: '14-5-packaging', title: '14.5 — @sveltejs/package' },
+				{ slug: '14-6-publishing', title: '14.6 — Publishing' }
+			]
+		},
+		{
+			id: 15,
+			title: 'Module 15 — Threlte 3D',
+			hasProject: true,
+			lessons: [
+				{ slug: '15-1-what-is-threlte', title: '15.1 — What Threlte is' },
+				{ slug: '15-2-fundamentals', title: '15.2 — Canvas + Camera' },
+				{ slug: '15-3-reactive-scenes', title: '15.3 — Reactive scenes' },
+				{ slug: '15-4-extras', title: '15.4 — Text + GLTF + Env' },
+				{ slug: '15-5-performance', title: '15.5 — 3D performance' }
+			]
+		},
+		{
 			id: 13,
 			title: 'Module 13 — SEO',
 			hasProject: true,

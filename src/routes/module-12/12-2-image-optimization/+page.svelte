@@ -1,0 +1,165 @@
+<script lang="ts">
+	let loaded = $state({ hero: false, gallery: false, icon: false });
+
+	function markLoaded(key: 'hero' | 'gallery' | 'icon') {
+		loaded[key] = true;
+	}
+</script>
+
+<section class="page">
+	<h1>12.2 — Image Optimization</h1>
+
+	<p class="concept">
+		Every image on the web needs <strong>explicit width and height attributes</strong> so the browser
+		can reserve space before the image loads, preventing Cumulative Layout Shift (CLS).
+		Combined with <code>loading="lazy"</code>, <code>fetchpriority</code>, <code>srcset</code>,
+		and <code>sizes</code>, you get optimal loading for every viewport.
+	</p>
+
+	<h3>Why Explicit Dimensions Matter</h3>
+	<p class="concept">
+		Without <code>width</code> and <code>height</code>, the browser doesn't know how much space
+		to allocate. When the image finally loads, surrounding content shifts — causing a poor CLS score.
+		The browser uses the aspect ratio from these attributes to calculate intrinsic size, even before
+		the image downloads.
+	</p>
+
+	<h3>Key Attributes</h3>
+	<div class="build">
+		<ul>
+			<li><strong><code>width</code> / <code>height</code></strong> — Prevents CLS by reserving space. Always include both.</li>
+			<li><strong><code>loading="lazy"</code></strong> — Defers off-screen images until they approach the viewport.</li>
+			<li><strong><code>fetchpriority="high"</code></strong> — Tells the browser to prioritize this image (use on LCP element).</li>
+			<li><strong><code>srcset</code></strong> — Provides multiple resolutions so the browser picks the best one.</li>
+			<li><strong><code>sizes</code></strong> — Tells the browser how wide the image will display at various breakpoints.</li>
+		</ul>
+	</div>
+
+	<h3>Demo: Three Optimized Images</h3>
+	<div class="build">
+		<div class="image-demo">
+			<h4>1. Hero Image (fetchpriority="high")</h4>
+			<p class="image-note">Above-the-fold hero — loads with highest priority, no lazy loading.</p>
+			<div class="image-placeholder" class:loaded={loaded.hero}>
+				<img
+					src="https://picsum.photos/seed/hero/800/400"
+					alt="Hero placeholder demonstrating fetchpriority high"
+					width="800"
+					height="400"
+					fetchpriority="high"
+					onload={() => markLoaded('hero')}
+				/>
+			</div>
+			<pre>{`<img
+  src="hero.jpg"
+  alt="Hero banner"
+  width="800"
+  height="400"
+  fetchpriority="high"
+/>`}</pre>
+		</div>
+
+		<div class="image-demo">
+			<h4>2. Gallery Image (loading="lazy" + srcset)</h4>
+			<p class="image-note">Below-the-fold — lazy loaded with responsive srcset.</p>
+			<div class="image-placeholder" class:loaded={loaded.gallery}>
+				<img
+					src="https://picsum.photos/seed/gallery/600/400"
+					alt="Gallery placeholder demonstrating lazy loading and srcset"
+					width="600"
+					height="400"
+					loading="lazy"
+					srcset="https://picsum.photos/seed/gallery/300/200 300w,
+							https://picsum.photos/seed/gallery/600/400 600w,
+							https://picsum.photos/seed/gallery/1200/800 1200w"
+					sizes="(max-width: 600px) 100vw, 600px"
+					onload={() => markLoaded('gallery')}
+				/>
+			</div>
+			<pre>{`<img
+  src="gallery.jpg"
+  alt="Gallery photo"
+  width="600"
+  height="400"
+  loading="lazy"
+  srcset="gallery-300.jpg 300w,
+          gallery-600.jpg 600w,
+          gallery-1200.jpg 1200w"
+  sizes="(max-width: 600px) 100vw, 600px"
+/>`}</pre>
+		</div>
+
+		<div class="image-demo">
+			<h4>3. Icon Image (small, lazy)</h4>
+			<p class="image-note">Small decorative image — lazy loaded with fixed dimensions.</p>
+			<div class="image-placeholder small" class:loaded={loaded.icon}>
+				<img
+					src="https://picsum.photos/seed/icon/100/100"
+					alt="Icon placeholder demonstrating small lazy image"
+					width="100"
+					height="100"
+					loading="lazy"
+					onload={() => markLoaded('icon')}
+				/>
+			</div>
+			<pre>{`<img
+  src="icon.png"
+  alt="Feature icon"
+  width="100"
+  height="100"
+  loading="lazy"
+/>`}</pre>
+		</div>
+	</div>
+
+	<h3>Load Status</h3>
+	<div class="build">
+		<ul>
+			<li>Hero: {loaded.hero ? 'Loaded' : 'Loading...'}</li>
+			<li>Gallery: {loaded.gallery ? 'Loaded' : 'Loading...'}</li>
+			<li>Icon: {loaded.icon ? 'Loaded' : 'Loading...'}</li>
+		</ul>
+	</div>
+</section>
+
+<style>
+	.concept { font-size: var(--text-base); color: var(--color-text-muted); max-inline-size: 65ch; line-height: 1.6; margin: 0; }
+	.concept strong { color: var(--color-text); }
+	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
+	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
+	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
+	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
+	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+	.image-demo {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+	}
+	.image-demo h4 { margin: 0; }
+	.image-note {
+		color: var(--color-text-muted);
+		font-size: var(--text-sm);
+		margin: 0;
+	}
+	.image-placeholder {
+		max-width: 100%;
+		border-radius: var(--radius-md);
+		overflow: hidden;
+		border: 2px dashed var(--color-border);
+		transition: border-color 0.3s;
+	}
+	.image-placeholder.loaded {
+		border-color: #2d8a4e;
+		border-style: solid;
+	}
+	.image-placeholder img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+	.image-placeholder.small {
+		max-width: 100px;
+	}
+</style>

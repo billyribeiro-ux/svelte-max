@@ -388,6 +388,41 @@
 		</div>
 	</div>
 
+	<!-- Break it on purpose -->
+	<h2>Break it on purpose</h2>
+
+	<p class="concept">
+		Template expressions are powerful — which means they can surprise you. Try these.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Put a statement inside curly braces.</strong> Write
+			<code>{'{'}let x = 5{'}'}</code> in the markup. Svelte throws an error. Curly braces
+			only accept <em>expressions</em> (things that produce a value), not statements
+			(things that perform an action). <code>let x = 5</code> is a declaration — it does
+			not produce a value. Use <code>{'{@const}'}</code> instead if you need a local binding.
+		</li>
+		<li>
+			<strong>Forget the closing brace.</strong> Write <code>{'{'}name</code> without the
+			closing <code>{'}'}</code>. The Svelte compiler highlights the entire rest of the file
+			as an error. Every opening brace MUST have a matching close.
+		</li>
+		<li>
+			<strong>Pass user input to <code>{'{@html}'}</code>.</strong> Create a text input
+			bound to a variable, then render it via <code>{'{@html userInput}'}</code>. Type
+			<code>&lt;b&gt;bold&lt;/b&gt;</code> — it renders bold. Now type
+			<code>&lt;img src=x onerror="alert(1)"&gt;</code> — the alert fires. That is XSS.
+			Never use <code>{'{@html}'}</code> with user-controlled strings without sanitization.
+		</li>
+		<li>
+			<strong>Use <code>{'{@const}'}</code> outside a block.</strong> Place it at the top
+			level of your markup, not inside <code>{'{#if}'}</code>, <code>{'{#each}'}</code>,
+			or <code>{'{#snippet}'}</code>. Svelte errors: "@const must be the immediate child
+			of a block." It only works inside control flow blocks where it scopes to that block.
+		</li>
+	</ol>
+
 	<!-- HAVING ISSUES? COMPLETE CODE -->
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
@@ -398,15 +433,33 @@
 	</details>
 
 	<!-- 9. What you learned -->
-	<h3>What you learned</h3>
-	<ul class="learned">
-		<li>Anything inside <code>{'{}'}</code> is a real JavaScript expression.</li>
-		<li>Use ternaries inline for small conditional text or class decisions.</li>
-		<li><code>{'{@const}'}</code> scopes a computed value to the block it lives in.</li>
-		<li><code>{'{@html}'}</code> exists for rendering raw HTML, but never hand it untrusted strings.</li>
-		<li>An XSS payload like <code>&lt;img onerror="..."&gt;</code> executes arbitrary JavaScript if rendered via <code>{'{@html}'}</code>.</li>
-		<li>Use <strong>DOMPurify</strong> to sanitize any HTML from untrusted sources.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="concept">
+		Template expressions — anything inside <code>{'{}'}</code> — are the bridge between your
+		script block and your markup. They accept any JavaScript expression: variable references,
+		method calls, math, ternaries, string concatenation. The one thing they do not accept is
+		statements — <code>let</code>, <code>if</code>, <code>for</code> cannot go inside curly
+		braces. If you need conditional rendering, use <code>{'{#if}'}</code>. If you need a local
+		computed value, use <code>{'{@const}'}</code>.
+	</p>
+
+	<p class="concept">
+		<code>{'{@const}'}</code> creates a block-scoped constant inside control flow blocks. It is
+		like <code>const</code> in JavaScript but scoped to the <code>{'{#if}'}</code> or
+		<code>{'{#each}'}</code> block it lives in. Use it to avoid repeating expensive expressions:
+		<code>{'{@const savings = plan.monthly * 12 - plan.annual}'}</code> computes once, then
+		you reference <code>savings</code> wherever you need it in that block.
+	</p>
+
+	<p class="concept">
+		<code>{'{@html}'}</code> is the most dangerous tool in Svelte. It renders raw HTML strings
+		without escaping. This is correct for trusted content — markdown rendered by your build
+		pipeline, HTML from your own CMS. It is catastrophically wrong for user input. An
+		attacker who gets <code>&lt;img onerror="..."&gt;</code> into an <code>{'{@html}'}</code>
+		expression can execute arbitrary JavaScript in every visitor's browser. If you must render
+		HTML from an untrusted source, sanitize it with DOMPurify first.
+	</p>
 
 	<!-- 10. Next steps -->
 	<p class="next">
@@ -664,13 +717,22 @@
 		margin-block: 0.5rem;                /* spacing */
 	}
 
-	/* ── Learned list ────────────────────────────────────── */
-	.learned {
-		padding-inline-start: 1.25rem;       /* indent */
-		color: var(--color-text-muted);      /* secondary */
-
-		& li {
-			margin-block: 0.25rem;             /* item gap */
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
 		}
 	}
 

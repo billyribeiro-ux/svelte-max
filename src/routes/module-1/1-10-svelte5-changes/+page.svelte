@@ -472,6 +472,36 @@ export function increment(): void { count++; }
 		</div>
 	</div>
 
+	<!-- Break it on purpose -->
+	<h2>Break it on purpose</h2>
+
+	<p class="concept">
+		The best way to internalize these changes is to try the OLD syntax and watch it fail.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Write <code>export let name = 'test'</code> in a runes-mode component.</strong>
+			Svelte errors immediately — <code>export let</code> is not allowed when runes mode is
+			enabled. The replacement is <code>let {'{'} name {'}'} = $props()</code>.
+		</li>
+		<li>
+			<strong>Write <code>$: doubled = count * 2</code>.</strong> The <code>$:</code> reactive
+			label does not exist in Svelte 5 runes mode. The replacement is
+			<code>const doubled = $derived(count * 2)</code>.
+		</li>
+		<li>
+			<strong>Use <code>on:click</code> instead of <code>onclick</code>.</strong> The
+			<code>on:</code> directive syntax was removed in Svelte 5. Use the native HTML event
+			attribute directly: <code>onclick={'{handler}'}</code>.
+		</li>
+		<li>
+			<strong>Try <code>&lt;slot /&gt;</code> in a component.</strong> Svelte 5 replaces
+			slots with snippets. Use <code>{'{#snippet children()}'}</code> and
+			<code>{'{@render children()}'}</code> instead.
+		</li>
+	</ol>
+
 	<!-- HAVING ISSUES? COMPLETE CODE -->
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
@@ -482,16 +512,29 @@ export function increment(): void { count++; }
 	</details>
 
 	<!-- 9. What you learned -->
-	<h3>What you learned</h3>
-	<ul class="learned">
-		<li><code>$props()</code> replaces <code>export let</code> for receiving props.</li>
-		<li><code>$derived()</code> and <code>$derived.by()</code> replace <code>$:</code> reactive statements.</li>
-		<li><code>$effect()</code> replaces <code>$: {'{ ... }'}</code> reactive blocks for side effects.</li>
-		<li>Native event attributes (<code>onclick</code>) replace the <code>on:</code> directive.</li>
-		<li><code>{'{#snippet}'}</code> and <code>{'{@render}'}</code> replace <code>&lt;slot&gt;</code>.</li>
-		<li>Callback props replace <code>createEventDispatcher()</code>.</li>
-		<li><code>.svelte.ts</code> rune files replace stores for shared reactive state.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="concept">
+		Svelte 5 is a ground-up rewrite of the reactivity system. The old implicit reactivity
+		(<code>$:</code> labels, <code>export let</code> props, stores) is replaced by explicit
+		runes (<code>$state</code>, <code>$derived</code>, <code>$effect</code>, <code>$props</code>).
+		Runes are clearer because they tell both the developer and the compiler exactly what is
+		reactive and why. There is no magic — every piece of reactive state is explicitly declared.
+	</p>
+
+	<p class="concept">
+		Events switched from the <code>on:</code> directive to native HTML attributes
+		(<code>onclick</code>). Slots were replaced by snippets (<code>{'{#snippet}'}</code> and
+		<code>{'{@render}'}</code>), which are more flexible because they can accept parameters
+		and be passed as typed props. <code>createEventDispatcher</code> was replaced by simple
+		callback props — just pass a function.
+	</p>
+
+	<p class="concept">
+		If you encounter Svelte 4 code in the wild (blog posts, Stack Overflow, older tutorials),
+		you now know exactly how to translate it to Svelte 5 runes syntax. The table above is your
+		translation dictionary. Every pattern has a 1:1 replacement.
+	</p>
 
 	<!-- 10. Next steps -->
 	<p class="next">
@@ -659,14 +702,22 @@ export function increment(): void { count++; }
 		margin-block: 0.5rem;                /* spacing */
 	}
 
-	/* ── Learned list ────────────────────────────────────── */
-	.learned {
-		padding-inline-start: 1.25rem;       /* indent */
-		color: var(--color-text-muted);      /* secondary */
-		line-height: 1.6;                    /* readable */
-
-		& li {
-			margin-block: 0.25rem;             /* item gap */
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
 		}
 	}
 

@@ -1,7 +1,17 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import AnimatedCounter from '$lib/components/AnimatedCounter.svelte';
-	import { prefersReducedMotion } from 'svelte/motion';
+	import { Spring, prefersReducedMotion } from 'svelte/motion';
+
+	// Spring — alternative physics-based number animation for the first counter
+	const springCounter = new Spring(0, { stiffness: 0.05, damping: 0.4 });
+	$effect(() => {
+		if (prefersReducedMotion.current) {
+			springCounter.set(targets[0], { instant: true });
+		} else {
+			springCounter.target = targets[0];
+		}
+	});
 
 	let targets = $state([1234, 98.7, 42500, 2_500_000]);
 

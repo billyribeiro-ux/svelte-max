@@ -1,7 +1,10 @@
 <script lang="ts">
-	import { Tween, prefersReducedMotion } from 'svelte/motion';
+	import { Tween, Spring, prefersReducedMotion } from 'svelte/motion';
 	import { cubicInOut } from 'svelte/easing';
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+
+	// Spring — organic, physics-based morph interpolation as alternative to Tween
+	const springProgress = new Spring(0, { stiffness: 0.08, damping: 0.35 });
 
 	/**
 	 * Each shape is defined as an array of [x, y] coordinate pairs.

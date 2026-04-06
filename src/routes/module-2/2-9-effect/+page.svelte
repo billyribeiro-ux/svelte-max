@@ -8,6 +8,9 @@
 		unread > 0 ? `(${unread}) ${pageTopic} — ${siteName}` : `${pageTopic} — ${siteName}`
 	);
 
+	// $inspect — dev-only reactive value logging to see effect tracking
+	$inspect(title);
+
 	$effect(() => {
 		document.title = title;
 	});

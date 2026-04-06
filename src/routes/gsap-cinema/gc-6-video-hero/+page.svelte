@@ -11,6 +11,12 @@
 	let subtitleEl: HTMLParagraphElement | null = $state(null);
 	let ctaEl: HTMLButtonElement | null = $state(null);
 
+	// <svelte:document> — detect fullscreen changes for video hero
+	let isFullscreen = $state(false);
+	function handleFullscreenChange() {
+		isFullscreen = !!document.fullscreenElement;
+	}
+
 	$effect(() => {
 		if (!sectionEl) return;
 
@@ -103,6 +109,9 @@
   });
 <\/script>`;
 </script>
+
+<!-- svelte:document — listen for fullscreen changes -->
+<svelte:document onfullscreenchange={handleFullscreenChange} />
 
 <section class="page">
 	<h1>GC.6 — Cinematic Video Hero</h1>

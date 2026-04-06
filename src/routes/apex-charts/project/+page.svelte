@@ -1,7 +1,17 @@
 <script lang="ts">
 	import ApexChart from '$lib/components/ApexChart.svelte';
 	import { MediaQuery } from 'svelte/reactivity';
+	import { Spring, prefersReducedMotion } from 'svelte/motion';
 	import { onMount } from 'svelte';
+
+	// Spring — physics-based hover scale for chart card interactions
+	const hoverScale = new Spring(1, { stiffness: 0.15, damping: 0.4 });
+	function onCardHover() {
+		if (!prefersReducedMotion.current) hoverScale.target = 1.02;
+	}
+	function onCardLeave() {
+		hoverScale.target = 1;
+	}
 	import type { TimeSeriesPoint, HeatmapPoint } from '$lib/types/apex';
 
 	const PE7_COLORS = [

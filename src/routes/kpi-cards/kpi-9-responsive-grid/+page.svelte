@@ -1,6 +1,7 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import KpiCard from '$lib/components/KpiCard.svelte';
+	import { flip } from 'svelte/animate';
 	import type { KpiMetric } from '$lib/types/kpi';
 
 	const metrics: KpiMetric[] = [
@@ -88,8 +89,11 @@
 			</header>
 
 			<div class="kpi-row">
+				<!-- animate:flip — smooth reorder when cards are sorted or filtered -->
 				{#each metrics as metric (metric.id)}
-					<KpiCard {metric} />
+					<div animate:flip={{ duration: 300 }}>
+						<KpiCard {metric} />
+					</div>
 				{/each}
 			</div>
 

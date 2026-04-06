@@ -26,7 +26,8 @@
 		}));
 	}
 
-	let series: TimeSeriesPoint[] = $state(initialData());
+	// $state.raw — large array swapped wholesale on each tick; raw avoids deep proxy overhead
+	let series: TimeSeriesPoint[] = $state.raw(initialData());
 	let running = $state(true);
 
 	$effect(() => {

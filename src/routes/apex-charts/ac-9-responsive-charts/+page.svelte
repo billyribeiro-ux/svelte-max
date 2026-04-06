@@ -1,6 +1,13 @@
 <script lang="ts">
 	import ApexChart from '$lib/components/ApexChart.svelte';
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+	import { SvelteURL } from 'svelte/reactivity';
+
+	// SvelteURL — reactive URL encoding the current chart configuration as query params
+	const configUrl = new SvelteURL('https://example.com/charts/responsive');
+	$effect(() => {
+		configUrl.searchParams.set('width', String(sliderWidth));
+	});
 
 	const PE7_COLORS = [
 		'#7c5cfc',
@@ -193,6 +200,9 @@
 		</div>
 		<p class="chart-note">
 			Touch-friendly: on mobile, tooltips use <code>followCursor</code> for easier targeting on small screens.
+		</p>
+		<p class="chart-note">
+			Shareable config (SvelteURL): <code>{configUrl.href}</code>
 		</p>
 	</div>
 

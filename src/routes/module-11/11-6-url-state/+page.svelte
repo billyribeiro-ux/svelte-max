@@ -1,7 +1,11 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+	import { SvelteURL } from 'svelte/reactivity';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+
+	// SvelteURL — reactive URL class for building/inspecting URL state
+	const demoUrl = new SvelteURL('https://example.com/tasks?filter=active');
 
 	interface Task {
 		id: number;
@@ -206,6 +210,21 @@ function setFilter(f: string) &#123;
 		</div>
 
 		<p class="task-count">{filteredTasks.length} task{filteredTasks.length === 1 ? '' : 's'} shown</p>
+	</div>
+
+	<h3>SvelteURL Demo</h3>
+	<div class="build">
+		<p class="url-display">
+			SvelteURL href: <code>{demoUrl.href}</code>
+		</p>
+		<p class="url-display">
+			searchParams.get('filter'): <code>{demoUrl.searchParams.get('filter')}</code>
+		</p>
+		<div class="filter-bar">
+			<button class="filter-btn" onclick={() => { demoUrl.searchParams.set('filter', 'active'); }}>Set active</button>
+			<button class="filter-btn" onclick={() => { demoUrl.searchParams.set('filter', 'completed'); }}>Set completed</button>
+			<button class="filter-btn" onclick={() => { demoUrl.searchParams.delete('filter'); }}>Remove filter</button>
+		</div>
 	</div>
 
 	<h3>Key Takeaways</h3>

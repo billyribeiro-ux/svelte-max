@@ -20,6 +20,10 @@
 
 	// Shared reactive state — Module 11
 	import { CartStore } from '$lib/stores/cart.svelte';
+	import { SvelteSet } from 'svelte/reactivity';
+
+	// SvelteSet — reactive set of bookmarked project IDs
+	const bookmarkedIds = new SvelteSet<string>();
 
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	// Register GSAP plugin — Module 7

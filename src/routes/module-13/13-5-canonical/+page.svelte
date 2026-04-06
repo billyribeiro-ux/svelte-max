@@ -1,9 +1,20 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+	import { SvelteURL } from 'svelte/reactivity';
   import { page } from '$app/state';
 
   const canonical = $derived(`${page.url.origin}${page.url.pathname}`);
   const fullUrl = $derived(page.url.href);
+
+  // SvelteURL — reactive URL for building canonical URLs with fine-grained control
+  const canonicalUrl = new SvelteURL(page.url.href);
+  $effect(() => {
+    canonicalUrl.href = page.url.href;
+    // Strip search params for canonical
+    canonicalUrl.search = '';
+    canonicalUrl.hash = '';
+  });
+  const builtCanonical = $derived(canonicalUrl.href);
 
 
 	/* ── Complete code for "Having issues?" ── */
@@ -98,6 +109,10 @@
     <div class="row">
       <span class="label">Computed canonical:</span>
       <code class="value">{canonical}</code>
+    </div>
+    <div class="row">
+      <span class="label">SvelteURL canonical:</span>
+      <code class="value">{builtCanonical}</code>
     </div>
 
     <p class="hint">

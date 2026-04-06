@@ -8,6 +8,8 @@
 	let wrongRunCount = $state(0);
 
 	$effect(() => {
+		// $inspect.trace — logs which dependency triggered this re-run (dev-only)
+		$inspect.trace();
 		const q = wrongQuery;
 		if (q.length > 0) {
 			wrongRunCount++;

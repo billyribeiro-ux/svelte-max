@@ -58,6 +58,14 @@
 		reset();
 	}
 
+	// <svelte:body> — global pointer tracking for position display
+	let globalPointerX = $state(0);
+	let globalPointerY = $state(0);
+	function handleGlobalPointerMove(e: PointerEvent) {
+		globalPointerX = Math.round(e.clientX);
+		globalPointerY = Math.round(e.clientY);
+	}
+
 	/* ── Complete code for CodeCanvas ── */
 	const fullCode =
 		"\u003cscript lang=\"ts\"\u003e\n" +
@@ -173,6 +181,9 @@
 		"\u003c/section\u003e";
 </script>
 
+<!-- svelte:body — track global pointer position across the entire page -->
+<svelte:body onpointermove={handleGlobalPointerMove} />
+
 <section class="page">
 	<h1>5.11 — Touch and pointer</h1>
 	<p class="concept">
@@ -221,6 +232,10 @@
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
+
+	<p class="state" style="font-size:var(--text-xs); color:var(--color-text-muted);">
+		Global pointer (via <code>&lt;svelte:body&gt;</code>): <code>{globalPointerX}, {globalPointerY}</code>
+	</p>
 
 	<h3>What you learned</h3>
 	<ul>

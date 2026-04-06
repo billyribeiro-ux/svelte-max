@@ -2,8 +2,29 @@
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import KpiCard from '$lib/components/KpiCard.svelte';
 	import { dashboard } from '$lib/stores/dashboard.svelte';
+	import { SvelteSet } from 'svelte/reactivity';
 
 	let running = $state(true);
+
+	// SvelteSet — track IDs of metrics currently in alert state (above target)
+	const activeAlertIds = new SvelteSet<string>();
+	$effect(() => {
+		activeAlertIds.clear();
+		for (const m of dashboard.metrics) {
+			if (m.value > m.target) activeAlertIds.add(m.id);
+		}
+	});
+
+	// $inspect — dev-only reactive value logging for dashboard metrics
+	$inspect(dashboard.metrics);
+
+	// $effect.pre — snapshot activity feed scroll position before DOM update
+	let feedEl: HTMLDivElement | undefined = $state(undefined);
+	let savedScrollTop = 0;
+	$effect.pre(() => {
+		const _activities = dashboard.activities.length;
+		if (feedEl) savedScrollTop = feedEl.scrollTop;
+	});
 
 	$effect(() => {
 		if (!running) return;
@@ -86,6 +107,11 @@
 			<span class="status-badge" class:active={running}>
 				{running ? 'LIVE' : 'PAUSED'}
 			</span>
+			{#if activeAlertIds.size > 0}
+				<span class="status-badge" style:background="var(--color-error, #c33)" style:color="white">
+					{activeAlertIds.size} alert{activeAlertIds.size === 1 ? '' : 's'}
+				</span>
+			{/if}
 		</div>
 
 		<div class="kpi-grid">
@@ -95,7 +121,7 @@
 		</div>
 
 		<h2>Activity feed (last 10 events)</h2>
-		<div class="activity-feed" role="log" aria-label="Dashboard activity feed">
+		<div class="activity-feed" role="log" aria-label="Dashboard activity feed" bind:this={feedEl}>
 			{#each recentActivities as event (event.id)}
 				<div class="activity-item">
 					<span class="activity-dot" style:background={levelColor[event.level]}></span>

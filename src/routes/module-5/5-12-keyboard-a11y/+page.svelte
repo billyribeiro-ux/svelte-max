@@ -20,6 +20,13 @@
 	let triggerEl: HTMLButtonElement | null = $state(null);
 	let listboxEl: HTMLUListElement | null = $state(null);
 
+	// <svelte:document> — pause listbox interaction when the tab is hidden
+	let tabHidden = $state(false);
+	function handleVisibilityChange() {
+		tabHidden = document.hidden;
+		if (tabHidden && open) closeList(false);
+	}
+
 	function currentLabel(): string {
 		return options.find((o) => o.id === selected)?.label ?? '';
 	}
@@ -242,6 +249,9 @@
 		"\t\u003c/ul\u003e\n" +
 		"\u003c/section\u003e";
 </script>
+
+<!-- svelte:document — pause listbox when tab is hidden -->
+<svelte:document onvisibilitychange={handleVisibilityChange} />
 
 <section class="page">
 	<h1>5.12 — Keyboard accessibility</h1>

@@ -1,7 +1,15 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+	import { SvelteSet } from 'svelte/reactivity';
+
 	// 1) bind:group
 	let prefs = $state<string[]>([]);
+
+	// SvelteSet — reactive Set that tracks which checkboxes have ever been checked
+	const everChecked = new SvelteSet<string>();
+	$effect(() => {
+		for (const p of prefs) everChecked.add(p);
+	});
 
 	// 2) dimension bindings on a resizable textarea
 	let taWidth = $state(0);
@@ -111,6 +119,7 @@
 				<label><input type="checkbox" bind:group={prefs} value="push" /> Push</label>
 			</div>
 			<p class="state">prefs = <code>[{prefs.map((p) => `"${p}"`).join(', ')}]</code></p>
+			<p class="state">everChecked (SvelteSet) = <code>{'{'}{ [...everChecked].join(', ') }{'}'}</code></p>
 		</section>
 
 		<section class="part">

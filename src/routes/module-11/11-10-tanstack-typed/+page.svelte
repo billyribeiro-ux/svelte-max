@@ -9,7 +9,19 @@
 	} from '@tanstack/svelte-table';
 	import type { ColumnDef, TableOptions, SortingState, VisibilityState, RowSelectionState } from '@tanstack/svelte-table';
 
+	import { SvelteSet } from 'svelte/reactivity';
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+
+	// SvelteSet — reactive Set mirroring selected row IDs for O(1) lookup
+	const selectedIds = new SvelteSet<number>();
+	$effect(() => {
+		selectedIds.clear();
+		for (const key of Object.keys(rowSelection)) {
+			const row = data[Number(key)];
+			if (row) selectedIds.add(row.id);
+		}
+	});
+
 	interface Member {
 		id: number;
 		name: string;
@@ -320,6 +332,7 @@
 		<div class="selection-actions">
 			<span class="selection-count">
 				{Object.keys(rowSelection).length} row{Object.keys(rowSelection).length === 1 ? '' : 's'} selected
+				(IDs: {[...selectedIds].join(', ') || 'none'})
 			</span>
 			<button onclick={exportSelected}>Export Selected as JSON</button>
 		</div>

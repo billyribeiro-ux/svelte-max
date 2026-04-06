@@ -4,6 +4,9 @@
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const cart = new CartStore();
 
+	// $inspect — dev-only logging of reactive class state changes
+	$inspect(cart.items);
+
 	const products = [
 		{ id: 'p1', name: 'Svelte T-Shirt', price: 29.99 },
 		{ id: 'p2', name: 'Runes Mug', price: 14.99 },

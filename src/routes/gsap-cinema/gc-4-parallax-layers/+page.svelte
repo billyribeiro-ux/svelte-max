@@ -25,6 +25,14 @@
 	let layerEls: HTMLDivElement[] = $state([]);
 	let speedMultiplier = $state(1);
 
+	// <svelte:body> — track cursor position for mouse-driven parallax offset
+	let cursorX = $state(0);
+	let cursorY = $state(0);
+	function handleBodyMouseMove(e: MouseEvent) {
+		cursorX = e.clientX;
+		cursorY = e.clientY;
+	}
+
 	$effect(() => {
 		if (!sceneEl || layerEls.length === 0) return;
 		if (prefersReducedMotion.current) return;
@@ -91,6 +99,9 @@
   });
 <\/script>`;
 </script>
+
+<!-- svelte:body — capture mousemove globally for cursor-driven parallax -->
+<svelte:body onmousemove={handleBodyMouseMove} />
 
 <section class="page">
 	<h1>GC.4 — Deep Parallax Layer Systems</h1>

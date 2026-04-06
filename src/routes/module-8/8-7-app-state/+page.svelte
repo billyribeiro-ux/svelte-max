@@ -2,6 +2,9 @@
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import { page } from '$app/state';
 
+	// <svelte:document> — track the currently focused element reactively
+	let activeEl: Element | null = $state(null);
+
 	/* ── Complete code for CodeCanvas ── */
 	const fullCode =
 		"\u003cscript lang=\"ts\"\u003e\n" +
@@ -69,6 +72,9 @@
 		"\u003c/section\u003e";
 </script>
 
+<!-- svelte:document — bind:activeElement tracks which element has focus -->
+<svelte:document bind:activeElement={activeEl} />
+
 <section class="page">
 	<h1>8.7 — $app/state — reactive page state</h1>
 	<p class="concept">
@@ -117,6 +123,12 @@
 		<p class="hint">
 			Click a link — the display above updates instantly, no full reload. SvelteKit intercepts the
 			navigation, updates <code>page.url</code>, and the template re-reads the new value.
+		</p>
+
+		<h3 class="sub">Active element (via <code>&lt;svelte:document&gt;</code>)</h3>
+		<p class="hint">
+			Focus changes tracked via <code>bind:activeElement</code>:
+			<code>{activeEl?.tagName ?? 'null'}{activeEl?.id ? `#${activeEl.id}` : ''}</code>
 		</p>
 	</div>
 

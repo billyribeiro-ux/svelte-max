@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+	import { flip } from 'svelte/animate';
 	import {
 		createSvelteTable,
 		flexRender,
@@ -230,8 +231,9 @@ const table = createSvelteTable(options);</code></pre>
 					{/each}
 				</thead>
 				<tbody>
-					{#each $table.getRowModel().rows as row}
-						<tr>
+					<!-- animate:flip — rows animate smoothly when sort order changes -->
+					{#each $table.getRowModel().rows as row (row.id)}
+						<tr animate:flip={{ duration: 250 }}>
 							{#each row.getVisibleCells() as cell}
 								<td>
 									{#if true}

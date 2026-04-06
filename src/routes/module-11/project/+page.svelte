@@ -160,6 +160,15 @@
 
 	const table = createSvelteTable(options);
 
+	// $effect.pre — snapshot table scroll position before DOM update (e.g. sort/filter)
+	let tableWrapperEl: HTMLDivElement | undefined = $state(undefined);
+	let savedTableScroll = 0;
+	$effect.pre(() => {
+		const _sort = sorting;
+		const _filter = globalFilter;
+		if (tableWrapperEl) savedTableScroll = tableWrapperEl.scrollTop;
+	});
+
 	// ─── Responsive ───
 	let isMobile = $derived((innerWidth?.current ?? 1024) < 768);
 
@@ -449,7 +458,7 @@
 
 	<!-- Table -->
 	<div class="build table-section">
-		<div class="table-wrapper">
+		<div class="table-wrapper" bind:this={tableWrapperEl}>
 			<table>
 				<thead>
 					{#each $table.getHeaderGroups() as headerGroup}

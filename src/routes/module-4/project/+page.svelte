@@ -1,5 +1,7 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+	import { flip } from 'svelte/animate';
+
 	interface Product {
 		id: number;
 		name: string;
@@ -300,8 +302,9 @@
 			<p class="empty">No products match your filters.</p>
 		{:else}
 			<div class="grid">
+				<!-- animate:flip — products slide smoothly when the grid reorders -->
 				{#each visible as product (product.id)}
-					<article class="card">
+					<article class="card" animate:flip={{ duration: 300 }}>
 						<div class="card-head">
 							<h2>{product.name}</h2>
 							<span class="badge badge-{product.category}">{product.category}</span>

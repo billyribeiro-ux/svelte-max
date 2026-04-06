@@ -10,6 +10,14 @@
 	let rawX = $state(0);
 	let rawY = $state(0);
 
+	// <svelte:body> — track pointer globally so the spring dot can follow outside the box
+	let bodyPointerX = $state(0);
+	let bodyPointerY = $state(0);
+	function handleBodyPointerMove(e: PointerEvent) {
+		bodyPointerX = Math.round(e.clientX);
+		bodyPointerY = Math.round(e.clientY);
+	}
+
 	function handleMove(e: PointerEvent) {
 		const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
 		const nx = e.clientX - rect.left;
@@ -97,6 +105,9 @@
 		"\t\u003c/ul\u003e\n" +
 		"\u003c/section\u003e";
 </script>
+
+<!-- svelte:body — global pointermove for cursor position outside the box -->
+<svelte:body onpointermove={handleBodyPointerMove} />
 
 <section class="page">
 	<h1>6.15 — Spring class</h1>

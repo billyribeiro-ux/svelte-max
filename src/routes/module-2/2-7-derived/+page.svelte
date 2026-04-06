@@ -17,6 +17,9 @@
 	const tax = $derived(subtotal * 0.08);
 	const total = $derived(subtotal + tax);
 
+	// $inspect — dev-only reactive value logging (stripped in production)
+	$inspect(subtotal, tax, total);
+
 	const formatter = new Intl.NumberFormat('en-US', {
 		style: 'currency',
 		currency: 'USD'

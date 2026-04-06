@@ -47,6 +47,12 @@
 
 	let selectedYear = $state(2024);
 
+	// $state.raw — the yearly dataset object is swapped wholesale (read-only snapshot)
+	let rawYearData: YearData = $state.raw(renewableData[2024]);
+	$effect(() => {
+		rawYearData = renewableData[selectedYear];
+	});
+
 	const solarTween = new Tween(0, { duration: 600, easing: cubicOut });
 	const windTween = new Tween(0, { duration: 600, easing: cubicOut });
 	const hydroTween = new Tween(0, { duration: 600, easing: cubicOut });

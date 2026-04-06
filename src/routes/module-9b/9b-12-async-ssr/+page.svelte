@@ -257,19 +257,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>await</code> in a component without enabling <code>compilerOptions.experimental.async</code>.</strong> The compiler errors because top-level <code>await</code> in components is gated behind the experimental flag. It is not enabled by default.</li>
+		<li><strong>Remove the <code>&lt;svelte:boundary&gt;</code> wrapper around an async component.</strong> The parent component blocks on the child's <code>await</code>, and nothing renders until all async work completes. The boundary is what enables streaming and loading states.</li>
+		<li><strong>Put two independent awaits in sequence instead of letting them run concurrently.</strong> The total load time becomes the sum of both delays instead of the maximum, creating a waterfall. Independent boundaries run concurrently by default.</li>
+		<li><strong>Omit the <code>pending</code> snippet from a <code>&lt;svelte:boundary&gt;</code>.</strong> While the async work is in progress, the boundary renders nothing at all. Users see a blank gap until data arrives, which is a worse experience than showing a skeleton or spinner.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Async SSR allows <code>await</code> directly in component bodies</li>
-		<li><code>&lt;svelte:boundary&gt;</code> with <code>pending</code> snippet provides loading UI</li>
-		<li>Independent async sections load concurrently — no waterfall</li>
-		<li>Fast data appears immediately; slow data streams in as it resolves</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">With <code>compilerOptions.experimental.async: true</code>, Svelte components can use <code>await</code> directly in their script body, just like top-level await in ES modules. This eliminates the need for <code>{'{#await}'}</code> blocks or manual loading state management for server data.</p>
+	<p class="prose"><code>&lt;svelte:boundary&gt;</code> with a <code>pending</code> snippet provides loading UI while async work resolves. Each boundary acts independently, so fast sections render immediately while slow sections show their pending state. There is no waterfall between independent boundaries.</p>
+	<p class="prose">This pattern is the modern alternative to <code>load()</code> for component-level data fetching. Instead of centralizing all data requirements in a page loader, each component declares its own async dependencies and Svelte handles the orchestration, streaming, and loading states automatically.</p>
+	<p class="next">Next up: preloading async work with <code>fork()</code>.</p>
 </section>
 
 <style>
@@ -277,8 +284,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; white-space: pre-wrap; }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.reload-btn {

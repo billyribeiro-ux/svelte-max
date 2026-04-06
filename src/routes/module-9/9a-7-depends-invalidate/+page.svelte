@@ -99,19 +99,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>depends('app:demo-timer')</code> call from the loader.</strong> Clicking Refresh now does nothing because <code>invalidate('app:demo-timer')</code> finds no loaders registered for that key. The button fires but the data stays stale.</li>
+		<li><strong>Change the dependency key to <code>'app:other'</code> while keeping the invalidate key as <code>'app:demo-timer'</code>.</strong> Same result: keys must match exactly. There is no pattern matching between different string keys.</li>
+		<li><strong>Replace <code>invalidate('app:demo-timer')</code> with <code>invalidateAll()</code>.</strong> The page refreshes, but now every active loader on the page re-runs, including layout loaders and sibling routes. This is heavier than targeted invalidation.</li>
+		<li><strong>Call <code>invalidate</code> with a URL string like <code>invalidate('/api/data')</code>.</strong> This works too because SvelteKit auto-registers a dependency on any URL you <code>fetch</code> inside load. Custom keys give you finer control when you want to group invalidations logically.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>depends(key)</code> registers a custom dependency inside load</li>
-		<li><code>invalidate(key)</code> re-runs every load that depends on that key</li>
-		<li><code>invalidateAll()</code> re-runs every active loader</li>
-		<li>Namespace your keys (e.g. <code>app:*</code>) to avoid collisions</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">By default, load functions re-run only when route parameters change. But many real applications need to refresh data in response to user actions, timers, or external events. That is where <code>depends()</code> and <code>invalidate()</code> come in: <code>depends('app:weather')</code> registers a custom dependency key inside a loader, and <code>invalidate('app:weather')</code> from a component tells SvelteKit to re-run every loader that depends on that key.</p>
+	<p class="prose">Custom keys let you scope invalidation precisely. Instead of reloading everything with <code>invalidateAll()</code>, you can refresh just the weather widget, just the notification count, or just the shopping cart. Namespace your keys with a prefix like <code>app:</code> to avoid collisions with URL-based dependencies that SvelteKit registers automatically.</p>
+	<p class="prose">This mechanism is the bridge between SvelteKit's declarative data loading and imperative user interactions. A button click, a WebSocket message, or a timer can trigger a surgical re-fetch of exactly the data that changed, keeping the rest of the page untouched.</p>
+	<p class="next">Next up: handling errors and redirects inside load functions.</p>
 </section>
 
 <style>
@@ -190,20 +197,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

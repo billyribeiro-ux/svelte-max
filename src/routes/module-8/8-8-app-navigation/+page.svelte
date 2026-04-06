@@ -144,19 +144,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments reveal edge cases in programmatic navigation. Undo each before the next.</p>
+	<ol class="experiments">
+		<li><strong>Call <code>goto('/nonexistent-route')</code> and observe the result.</strong> SvelteKit navigates to the route and triggers its <code>+error.svelte</code> boundary (or the default error page) with a 404 status. Unlike <code>fetch</code>, <code>goto</code> does not throw on missing routes — it navigates to the error state, which means you must handle not-found scenarios in your error boundaries, not in try/catch blocks around <code>goto</code>.</li>
+		<li><strong>Inside <code>beforeNavigate</code>, call <code>nav.cancel()</code> unconditionally.</strong> Every navigation is blocked — clicking links, pressing back, and calling <code>goto</code> all silently fail. The page becomes a roach motel. This demonstrates that <code>beforeNavigate</code> is a powerful guard that can veto any client-side navigation, which is useful for "unsaved changes" prompts but dangerous if misused.</li>
+		<li><strong>Call <code>invalidateAll()</code> inside an <code>afterNavigate</code> callback.</strong> This triggers an infinite loop: the invalidation re-runs loads, which triggers a navigation, which fires <code>afterNavigate</code> again. The browser tab will hang or crash, proving that lifecycle hooks must not trigger the events they listen to.</li>
+		<li><strong>Call <code>preloadData('/module-8/8-7-app-state')</code> and then immediately navigate away before the preload resolves.</strong> The preloaded data is discarded because the route was never activated. Network requests still fire, but their results are thrown away. This shows that preloading is speculative — it is an optimization hint, not a guarantee that the data will be used.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>{'goto(url)'}</code> is the programmatic equivalent of clicking a link.</li>
-		<li><code>{'preloadData(url)'}</code> warms a route's data before the user commits.</li>
-		<li><code>beforeNavigate</code> / <code>afterNavigate</code> are your lifecycle hooks.</li>
-		<li><code>invalidate</code> and <code>invalidateAll</code> re-run active <code>load</code> functions.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>$app/navigation</code> module is SvelteKit's imperative navigation API. <code>goto(url)</code> triggers a client-side navigation identical to clicking an <code>&lt;a&gt;</code> link — it runs load functions, updates the page state, and pushes a history entry. Options let you replace the history entry, preserve scroll position, or invalidate specific data dependencies. For programmatic redirects after form submissions, conditional routing, or wizard flows, <code>goto</code> is the primary tool.</p>
+	<p class="prose"><code>preloadData(url)</code> and <code>preloadCode(url)</code> warm a route before the user commits to navigating. <code>preloadData</code> fetches the route's load function data; <code>preloadCode</code> imports the route's JavaScript chunk. Together they eliminate the latency between a click and the page appearing, which is especially valuable for hover-intent patterns where the user's pointer rests on a link before clicking.</p>
+	<p class="prose">The lifecycle hooks — <code>beforeNavigate</code>, <code>afterNavigate</code>, and <code>onNavigate</code> — fire around every client-side navigation. <code>beforeNavigate</code> can cancel a navigation (useful for unsaved-changes guards), <code>afterNavigate</code> runs after the new page is rendered (useful for analytics or scroll restoration), and <code>onNavigate</code> fires synchronously during the navigation for use with the View Transitions API. <code>invalidate(key)</code> and <code>invalidateAll()</code> re-run active load functions to refresh data without a full navigation.</p>
+	<p class="next">Next, you will see how declarative link options let you configure preloading and navigation behavior with HTML attributes alone.</p>
 </section>
 
 <style>
@@ -238,20 +245,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

@@ -100,20 +100,26 @@
 	</p>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Add <code>await</code> before the slow promise in the loader's return.</strong> The page now waits for the full 1.5 seconds before rendering anything. The fast data is ready instantly, but the user sees nothing until the slow data also resolves because the loader blocks on it.</li>
+		<li><strong>Remove the <code>{'{#await data.slow}'}</code> block and try to access <code>data.slow.details</code> directly.</strong> During SSR the value is still a Promise, so you get <code>[object Promise]</code> rendered as text instead of the actual details string.</li>
+		<li><strong>Make the slow promise reject with an error.</strong> Without a <code>{'{:catch}'}</code> block the error is unhandled and the entire page may crash. Add a <code>{'{:catch error}'}</code> clause to gracefully show an error message instead.</li>
+		<li><strong>Return two non-awaited promises and stream both.</strong> Both sections show placeholders simultaneously, then each resolves independently at its own pace. This proves that streaming is per-property, not all-or-nothing.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Return a non-awaited Promise to enable streaming</li>
-		<li>Use <code>{'{#await}'}</code> blocks to render placeholders</li>
-		<li>Fast data feels instant; slow data streams in when ready</li>
-		<li>Only use streaming when a page has a clear fast/slow split</li>
-		<li>Best candidates for streaming: analytics panels, AI-generated text, historical comparisons — anything slow that isn't above the fold</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Streaming lets you send the fast parts of a page immediately while slow data resolves in the background. The trick is to return a non-awaited Promise as a property from your loader. SvelteKit flushes the initial HTML right away and streams the resolved value later, so the user sees useful content in milliseconds instead of waiting seconds for everything.</p>
+	<p class="prose">In the component, you use <code>{'{#await data.slow}'}</code> blocks to show a placeholder while the promise is pending. When it resolves, Svelte swaps in the real content. Always add a <code>{'{:catch}'}</code> clause so errors are handled gracefully instead of crashing the page.</p>
+	<p class="prose">Stream when your page has a clear split between fast above-the-fold content (headers, navigation, primary data) and slow below-the-fold content (analytics panels, AI-generated summaries, historical comparisons). If all your data is equally fast, streaming adds complexity without benefit.</p>
+	<p class="next">Next up: prerendering pages at build time for zero-latency static delivery.</p>
 </section>
 
 <style>
@@ -184,20 +190,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

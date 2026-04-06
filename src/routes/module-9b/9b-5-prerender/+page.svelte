@@ -193,19 +193,26 @@ export const getPost = prerender(
 	</p>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Call a prerendered function with an argument not listed in <code>inputs</code> and without <code>dynamic: true</code>.</strong> The build fails because SvelteKit does not know how to prerender an unspecified input. Every possible argument must be listed or dynamic fallback must be enabled.</li>
+		<li><strong>Access request-specific data like cookies inside a <code>prerender</code> function.</strong> The build fails because there is no request context at build time. Prerendered functions must be pure data fetchers with no per-request dependencies.</li>
+		<li><strong>Set <code>dynamic: true</code> and call the function with a new argument in the browser.</strong> The first call hits the server at runtime, but subsequent calls are cached. This hybrid approach lets you prerender known content while handling new entries gracefully.</li>
+		<li><strong>Check the bundle output after build and look for the prerendered data.</strong> The result is embedded as a static JSON file, proving that no server is needed at runtime. The client loads it like a static asset with CDN-level performance.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>prerender</code> runs queries at build time, embedding results in the bundle</li>
-		<li>The <code>inputs</code> option specifies which arguments to precompute</li>
-		<li><code>dynamic: true</code> allows runtime fallback for unknown inputs</li>
-		<li>Prerendered data is ideal for config, blog posts, and other rarely-changing content</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>prerender</code> function from <code>$app/server</code> runs your query at build time and bakes the result directly into the output bundle. At runtime, the client loads this data as a static file with zero server cost and CDN-level latency. It is the fastest possible data delivery for content that does not change between builds.</p>
+	<p class="prose">For functions that accept arguments, the <code>inputs</code> option specifies which argument values to precompute. If you also set <code>dynamic: true</code>, any argument not in the inputs list falls back to a runtime server call, giving you a hybrid approach: prerender the known content, serve the unknown on demand.</p>
+	<p class="prose">Prerendering is ideal for site configuration, navigation structures, documentation indexes, blog post catalogs, and any data that changes rarely. Avoid it for per-user content, real-time dashboards, or anything that must reflect the current state of the world on every request.</p>
+	<p class="next">Next up: handling form submissions with <code>form()</code> remote functions.</p>
 </section>
 
 <style>
@@ -213,8 +220,9 @@ export const getPost = prerender(
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; white-space: pre-wrap; }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.config-table { display: flex; flex-direction: column; gap: 1px; background: var(--color-border); border-radius: var(--radius-md); overflow: hidden; }

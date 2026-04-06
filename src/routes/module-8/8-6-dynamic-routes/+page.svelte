@@ -195,20 +195,26 @@ export function match(param: string): boolean {
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments expose dynamic routing edge cases. Revert each change before the next.</p>
+	<ol class="experiments">
+		<li><strong>Create both <code>[slug]/+page.svelte</code> and <code>[id]/+page.svelte</code> as siblings in the same folder.</strong> SvelteKit throws a build error about conflicting routes because two single-segment dynamic params at the same level are ambiguous — the router cannot determine which one to match. This proves that param names must be unique per directory level.</li>
+		<li><strong>Navigate to a <code>[...rest]</code> route with zero segments (e.g., <code>/docs</code> instead of <code>/docs/something</code>).</strong> The rest parameter is an empty string, not <code>undefined</code>. If your load function splits on <code>/</code> expecting at least one segment, it produces an array with a single empty string, which can cause subtle bugs. Use <code>[[...rest]]</code> (optional rest) if you want the empty case to be truly absent.</li>
+		<li><strong>Create a matcher in <code>src/params/</code> that always returns <code>false</code> and use it on a route like <code>[id=always_false]</code>.</strong> Every URL that would match that route now 404s, because the matcher rejects all values. The route exists in the filesystem but is unreachable, demonstrating that matchers act as gatekeepers at the routing layer, not inside load functions.</li>
+		<li><strong>Access <code>params.slug</code> without importing from <code>./$types</code> and use it as a number directly.</strong> TypeScript does not warn you that params are always strings. Passing a string param to an API that expects a number silently breaks. Importing the generated types from <code>./$types</code> would have caught this at compile time.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Square brackets in folder names create dynamic URL parameters.</li>
-		<li><code>[...rest]</code> captures multi-segment paths as a single string.</li>
-		<li><code>[[optional]]</code> makes the segment optional.</li>
-		<li>Matchers in <code>src/params/</code> validate param shape at the routing layer.</li>
-		<li>Types for params are auto-generated per route — import from <code>./$types</code>.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Dynamic routes in SvelteKit use square-bracket syntax in folder names to capture URL segments as parameters. A folder named <code>[slug]</code> matches any single segment and exposes it as <code>params.slug</code> in load functions and page components. Multiple dynamic segments can appear in a single route path, such as <code>[userId]/posts/[postId]</code>, and each one becomes a separate key in the params object. All param values are strings, regardless of whether they look like numbers in the URL.</p>
+	<p class="prose">Rest parameters (<code>[...rest]</code>) capture an arbitrary number of path segments as a single slash-delimited string, making them ideal for catch-all routes like documentation trees or CMS paths. Optional parameters (<code>[[param]]</code>) match whether the segment is present or absent, allowing a single route to serve both <code>/shop</code> and <code>/shop/shoes</code>. These two features combine with regular dynamic segments to express complex URL patterns without a centralized route table.</p>
+	<p class="prose">Matcher functions in <code>src/params/</code> add validation at the routing layer. A matcher receives the raw param string and returns a boolean; if it returns <code>false</code>, the route does not match and SvelteKit falls through to the next candidate or returns a 404. This pushes input validation upstream from load functions to the router itself, reducing boilerplate and ensuring that invalid params never reach your application logic. The generated types in <code>./$types</code> reflect these constraints, giving you compile-time safety for every parameter.</p>
+	<p class="next">Next, you will explore the reactive <code>page</code> object from <code>$app/state</code> and how it tracks navigation in real time.</p>
 </section>
 
 <style>
@@ -217,9 +223,10 @@ export function match(param: string): boolean {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
 	.sub { margin-block-start: 0; font-size: var(--text-lg); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	pre code { background: transparent; padding: 0; font-size: inherit; }
 	.examples { display: flex; flex-direction: column; gap: var(--space-sm); margin: 0; }

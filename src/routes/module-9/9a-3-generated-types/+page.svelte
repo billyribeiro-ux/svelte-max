@@ -91,19 +91,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Rename <code>price</code> to <code>cost</code> in the loader's return object.</strong> The component immediately shows a TypeScript error on <code>data.product.price</code> because <code>PageData</code> no longer has that property, proving the generated types catch drift at compile time.</li>
+		<li><strong>Replace the <code>PageData</code> import with a hand-written interface.</strong> The code compiles, but you lose the automatic contract between loader and component. Add a new field to the loader and notice the component does not complain because your manual type is stale.</li>
+		<li><strong>Change the loader return type to include a <code>Date</code> object.</strong> TypeScript accepts it in the loader, but on the client the value arrives as a string because SvelteKit serializes via JSON. This reveals why <code>PageData</code> strips non-serializable types.</li>
+		<li><strong>Delete the <code>./$types</code> import and type <code>data</code> as <code>any</code>.</strong> Everything compiles silently, but now typos like <code>data.prodcut.name</code> go undetected. Re-add the import to see TypeScript catch the mistake instantly.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Never hand-type <code>data</code> — import <code>PageData</code> from <code>./$types</code>.</li>
-		<li>The generated types flow directly from your loader's return value.</li>
-		<li>Renaming a field in the loader surfaces the mismatch in the component at compile time.</li>
-		<li>The same pattern works for layouts via <code>LayoutData</code>.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit generates typed helpers under <code>.svelte-kit/types/</code> for every route, including <code>PageLoad</code>, <code>PageServerLoad</code>, <code>PageData</code>, and <code>LayoutData</code>. These types are derived directly from whatever your loader returns, so you never need to manually define the shape of <code>data</code> in the component.</p>
+	<p class="prose">The beauty of this system is that renaming a field, removing a property, or changing a type in your loader instantly surfaces mismatches in every component that consumes that data. The feedback loop is compile-time, not runtime, which means bugs are caught before the page ever renders in a browser.</p>
+	<p class="prose">The same pattern extends to layout loaders via <code>LayoutData</code>. Because SvelteKit merges layout data into child pages, the generated types for a child route automatically include properties from parent layouts, giving you full type coverage across nested route trees.</p>
+	<p class="next">Next up: the enhanced <code>fetch</code> that SvelteKit passes into your load function.</p>
 </section>
 
 <style>
@@ -184,20 +191,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

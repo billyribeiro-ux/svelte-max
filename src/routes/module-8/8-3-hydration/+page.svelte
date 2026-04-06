@@ -128,19 +128,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments reveal what happens when hydration assumptions are violated. Undo each before proceeding.</p>
+	<ol class="experiments">
+		<li><strong>Render <code>{Math.random()}</code> directly in the template markup.</strong> The server produces one random number and the client produces a different one during hydration. Open the console and you will see a hydration mismatch warning, because the DOM the client expects does not match what the server sent.</li>
+		<li><strong>Move the <code>hydrated = true</code> assignment out of <code>$effect</code> and into the module top level.</strong> Now <code>hydrated</code> is <code>true</code> on both server and client from the start. Step 3 of the timeline shows "yes" even in the initial HTML, which is a lie — the page was not actually interactive yet. This demonstrates why <code>$effect</code> is the correct "client ready" signal.</li>
+		<li><strong>Remove the button's <code>onclick</code> handler and try clicking it.</strong> The button renders fine from SSR but does nothing — it is inert HTML. This is what the entire page looks like before hydration completes: visible but non-interactive, proving that SSR delivers appearance while hydration delivers behavior.</li>
+		<li><strong>Wrap the timeline in <code>&lt;svelte:boundary&gt;</code> with a fallback snippet, then force a mismatch inside it.</strong> Instead of crashing the entire page, only the bounded subtree shows the fallback. This confirms that error boundaries isolate hydration failures, keeping the rest of the page functional.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Hydration re-runs the component in the browser and binds reactivity to the existing DOM.</li>
-		<li><code>$effect</code> only runs after hydration — useful as a "client ready" signal.</li>
-		<li>Hydration mismatches come from non-deterministic values differing between server and client.</li>
-		<li>Wrap risky subtrees in <code>&lt;svelte:boundary&gt;</code> to catch hydration errors.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Hydration is the process by which the browser takes the static HTML produced by SSR and "wakes it up" — re-running the Svelte component on the client side to attach event listeners, bind reactive state, and make the page interactive. The existing DOM nodes are reused rather than recreated, so there is no flash of re-rendered content. This two-phase approach gives you the best of both worlds: fast first paint from SSR and full interactivity from the client.</p>
+	<p class="prose">The <code>$effect</code> rune is the canonical way to detect that hydration has completed, because effects only fire in the browser after the component has been mounted and wired up. Any code that depends on browser APIs, measures DOM dimensions, or starts timers should live inside an effect. Module-level code, by contrast, runs during both SSR and hydration, so it must remain free of browser-only references.</p>
+	<p class="prose">Hydration mismatches occur when the server and client produce different markup for the same component — typically from non-deterministic expressions like <code>Math.random()</code>, <code>new Date()</code>, or conditional logic that depends on browser state. Svelte warns about these mismatches in development. For subtrees where mismatches are unavoidable, wrapping them in <code>&lt;svelte:boundary&gt;</code> with a fallback prevents the error from propagating and crashing the entire page.</p>
+	<p class="next">Next, you will explore how SvelteKit maps the filesystem to URLs with file-based routing.</p>
 </section>
 
 <style>
@@ -149,9 +156,10 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
 	.sub { margin-block-start: 0; }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.timeline { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
 	.timeline li { display: flex; gap: var(--space-sm); align-items: flex-start; padding: var(--space-sm); background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); opacity: 0.55; transition: opacity var(--dur-base) var(--ease-out); }
 	.timeline li.done { opacity: 1; border-color: var(--color-success); }

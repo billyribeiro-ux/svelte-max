@@ -91,19 +91,26 @@ export const load: PageLoad = async () => ({
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Add <code>url.searchParams</code> access inside the prerendered loader.</strong> SvelteKit fails the build because prerendered pages cannot depend on request-specific data like query parameters. The error message tells you exactly which API is not available during prerendering.</li>
+		<li><strong>Set <code>export const prerender = true</code> on a page that uses <code>cookies</code> in its server loader.</strong> The build fails because cookies are per-request and do not exist at build time. This enforces the rule that prerendered content must be the same for every visitor.</li>
+		<li><strong>Remove the <code>entries()</code> export from a dynamic route like <code>[slug]</code>.</strong> SvelteKit cannot discover which slugs to prerender and skips the route entirely, or errors if you set <code>prerender: true</code> explicitly without entries.</li>
+		<li><strong>Check the <code>builtAt</code> timestamp after multiple page visits without rebuilding.</strong> It never changes, proving the data was frozen at build time. Run <code>pnpm build</code> again and the timestamp updates to the new build time.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>export const prerender = true</code> renders once at build time</li>
-		<li>The output is static HTML — fast, cacheable, CDN-friendly</li>
-		<li>Dynamic routes need <code>entries()</code> to enumerate paths</li>
-		<li>Avoid for per-user or frequently changing content</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Setting <code>export const prerender = true</code> in a loader tells SvelteKit to render the page once at build time and serve the resulting static HTML for every request. This is perfect for content that does not change per user or per request: blog posts, documentation, landing pages, and marketing sites.</p>
+	<p class="prose">The output is a plain HTML file that any CDN can serve with zero server cost and sub-millisecond latency. For dynamic routes like <code>[slug]</code>, you export an <code>entries()</code> function that returns the list of slugs to prerender, so SvelteKit knows which pages to generate at build time.</p>
+	<p class="prose">The tradeoff is staleness. Prerendered data is frozen until the next build. Never prerender dashboards, account pages, or anything that varies per user. For content that changes infrequently, prerendering is the fastest delivery mechanism SvelteKit offers.</p>
+	<p class="next">That wraps up Module 9. Head to Module 9B to explore remote functions.</p>
 </section>
 
 <style>
@@ -178,20 +185,9 @@ export const load: PageLoad = async () => ({
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

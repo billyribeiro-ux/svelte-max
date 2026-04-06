@@ -215,19 +215,26 @@ export const getConfig = prerender(async () => { ... });`;
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Rename a <code>.remote.ts</code> file to <code>.server.ts</code>.</strong> The imports in the component break because SvelteKit only recognizes the <code>.remote.ts</code> extension for remote functions. The server code is no longer callable from the browser.</li>
+		<li><strong>Remove <code>kit.experimental.remoteFunctions: true</code> from the config.</strong> All remote function imports fail at build time because the feature gate is disabled. This is the single flag that enables the entire system.</li>
+		<li><strong>Try importing a <code>query</code> from <code>$app/server</code> directly in a <code>+page.svelte</code> file.</strong> SvelteKit errors because <code>$app/server</code> modules can only be used in server-side files. Remote functions must be defined in <code>.remote.ts</code> files, not inline.</li>
+		<li><strong>Export a regular async function from a <code>.remote.ts</code> file without wrapping it in <code>query</code>, <code>form</code>, or <code>command</code>.</strong> The export compiles but SvelteKit does not wire it up as a remote function. It runs only on the server and is not callable from the client.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Remote functions let you call server code directly from components via <code>.remote.ts</code> files</li>
-		<li>Four types exist: <code>query</code>, <code>form</code>, <code>command</code>, and <code>prerender</code></li>
-		<li>They eliminate the manual endpoint + fetch pattern and provide end-to-end type safety</li>
-		<li>The feature requires <code>kit.experimental.remoteFunctions: true</code> in your SvelteKit config</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Remote functions are an experimental SvelteKit feature that lets you write server code in <code>.remote.ts</code> files and import it directly into browser components. Under the hood, SvelteKit generates an HTTP endpoint for each remote function and replaces the import in the client bundle with a typed fetch call. You get the developer experience of calling a local function with the safety of server-side execution.</p>
+	<p class="prose">There are four types of remote functions, each designed for a specific data pattern. <code>query</code> is for reading cached, reactive data. <code>form</code> handles form submissions with progressive enhancement. <code>command</code> is for mutations triggered by event handlers. And <code>prerender</code> runs at build time to produce static data baked into the bundle.</p>
+	<p class="prose">The traditional pattern of defining endpoints, writing fetch calls, parsing JSON, and manually typing both sides is replaced by a single function definition. Return types flow automatically from server to client, and caching, deduplication, and single-flight mutations are built in.</p>
+	<p class="next">Next up: using <code>query()</code> to read data from the server.</p>
 </section>
 
 <style>
@@ -235,8 +242,9 @@ export const getConfig = prerender(async () => { ... });`;
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; white-space: pre-wrap; }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.why-box { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); }

@@ -261,19 +261,26 @@ export const updateProfile = form(ProfileSchema, async ({ data }) => {
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>.as('text')</code> on a boolean field like <code>newsletter</code>.</strong> The input renders as a text box instead of a checkbox. The form still submits, but the server receives a string instead of a boolean, causing Valibot validation to fail on type mismatch.</li>
+		<li><strong>Access <code>fields.nonExistent.as('text')</code> for a property not in the schema.</strong> TypeScript flags the error because the fields API is typed against your Valibot schema. Non-existent fields are caught at compile time, not runtime.</li>
+		<li><strong>Remove the <code>.issues()</code> check and submit invalid data.</strong> The form still validates server-side, but users get no inline feedback. They see a generic error instead of per-field messages, degrading the user experience significantly.</li>
+		<li><strong>Try <code>fields.info.height.as('number')</code> on a flat schema that has no <code>info</code> object.</strong> TypeScript errors because nested field accessors only work when the Valibot schema has nested <code>v.object()</code> definitions. The dot notation mirrors the schema structure exactly.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>.as()</code> binds form fields to schema properties with the correct input type</li>
-		<li><code>.issues()</code> returns per-field validation errors</li>
-		<li><code>.value()</code> reads the current value reactively</li>
-		<li>Nested schemas map to nested field accessors via dot notation</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The form fields API provides typed helpers that bind schema properties directly to HTML input elements. Calling <code>.as('text')</code>, <code>.as('checkbox')</code>, <code>.as('radio', value)</code>, <code>.as('select')</code>, or <code>.as('file')</code> returns the correct HTML attributes for that input type, including the <code>name</code> attribute that maps to the schema key.</p>
+	<p class="prose">Per-field validation feedback comes from <code>.issues()</code>, which returns the Valibot validation errors for that specific field. Combined with <code>.value()</code> for reading the current input value reactively, you can build forms that validate as the user types and show inline error messages without writing any custom validation logic.</p>
+	<p class="prose">For complex schemas with nested objects, the fields API uses dot notation: <code>fields.info.height.as('number')</code> maps to the <code>info.height</code> path in your Valibot schema. This means your form structure mirrors your data structure, keeping the mapping between UI and server-side types transparent and type-safe.</p>
+	<p class="next">Next up: advanced validation with preflight, enhance, and the invalid helper.</p>
 </section>
 
 <style>
@@ -281,8 +288,9 @@ export const updateProfile = form(ProfileSchema, async ({ data }) => {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; white-space: pre-wrap; }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.demo-form { display: flex; flex-direction: column; gap: var(--space-sm); }

@@ -186,19 +186,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment highlights a tradeoff or pitfall of a specific rendering mode. Undo after each one.</p>
+	<ol class="experiments">
+		<li><strong>Set <code>prerender = true</code> on a route that reads <code>cookies</code> in its server load function.</strong> The build fails because prerendering happens at build time when there is no real request and therefore no cookies. This reveals the fundamental constraint of SSG: prerendered pages cannot depend on per-request data like authentication, cookies, or headers.</li>
+		<li><strong>Set <code>ssr = false</code> on a content-heavy page, then view the page source.</strong> The source shows an empty <code>&lt;div&gt;</code> shell with no content. Run a Lighthouse audit and watch the SEO score drop because crawlers see nothing to index. This proves that CSR is unsuitable for pages where search visibility or first-paint speed matters.</li>
+		<li><strong>Set <code>prerender = true</code> on a page that links to a dynamic route like <code>/blog/[slug]</code> without providing an <code>entries</code> function.</strong> The build completes but the dynamic links return 404 in production because the prerenderer only discovered the pages it could crawl from the entry points. This demonstrates that prerendered apps with dynamic routes need explicit <code>entries()</code> functions to tell SvelteKit which param values to generate.</li>
+		<li><strong>Set <code>csr = false</code> (note: <code>csr</code>, not <code>ssr</code>) on a page with interactive elements like buttons and form bindings.</strong> The page renders via SSR with full HTML, but none of the event handlers or reactive bindings work because the client-side JavaScript is never loaded. This shows that <code>csr = false</code> produces a truly static page — useful for pure content but fatal for interactivity.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>SSR is the right default — fresh data plus fast first paint.</li>
-		<li>SSG (<code>prerender = true</code>) is perfect for docs and marketing.</li>
-		<li>CSR (<code>ssr = false</code>) is fine for auth-gated internal tools.</li>
-		<li>Hybrid routing is the norm for real apps — pick per route.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit offers four rendering modes that you select per route through exported constants. SSR (the default, <code>ssr = true</code>) renders each page on the server per request, providing fresh data, strong SEO, and fast first paint. SSG (<code>prerender = true</code>) renders pages once at build time and serves them as static HTML, which is ideal for documentation, blog posts, and marketing pages where content does not change between requests. CSR (<code>ssr = false</code>) skips server rendering entirely and lets the browser do all the work, which is appropriate for auth-gated dashboards where SEO is irrelevant.</p>
+	<p class="prose">The hybrid approach — mixing modes across routes in the same application — is the norm for real-world projects. A SaaS application might prerender its marketing pages, SSR its product pages for SEO, and CSR its admin dashboard for simplicity. SvelteKit's per-route configuration makes this trivial: each route folder can export its own <code>ssr</code>, <code>prerender</code>, and <code>csr</code> constants independently. The adapter you choose (Node, Vercel, Cloudflare, static) determines which modes are available in production, so your deployment target influences your rendering strategy.</p>
+	<p class="prose">The less common <code>csr = false</code> option disables client-side JavaScript entirely for a route, producing a page that is rendered by the server but never hydrated. This is useful for content pages that need zero interactivity — no event handlers, no reactive bindings, no client-side navigation. It reduces the JavaScript payload to zero for that route but means that any interactive elements will be inert. Understanding all four knobs — <code>ssr</code>, <code>prerender</code>, <code>csr</code>, and their combinations — lets you make informed tradeoffs between performance, interactivity, and developer experience for every route in your application.</p>
+	<p class="next">You have completed Module 8. Head to the project to put these routing and navigation concepts into practice.</p>
 </section>
 
 <style>
@@ -275,20 +282,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

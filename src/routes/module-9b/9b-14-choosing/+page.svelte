@@ -279,20 +279,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>query()</code> for data that absolutely must be in the SSR HTML.</strong> The query fires after hydration, so the content is missing from the initial HTML source. Search engines and users on slow connections see a blank page until JavaScript loads. Use <code>load()</code> instead for SSR-critical data.</li>
+		<li><strong>Use <code>load()</code> for a component-level data need deep in the tree.</strong> You must thread the data through props from the page down to the component, creating prop drilling. A remote <code>query()</code> lets the component fetch its own data without involving the page loader.</li>
+		<li><strong>Use <code>command()</code> for a form submission instead of <code>form()</code>.</strong> You lose progressive enhancement. With JavaScript disabled, the form does nothing because commands require JS. The <code>form()</code> pattern works without JavaScript via standard POST.</li>
+		<li><strong>Use <code>+server.ts</code> for an internal data fetch that only your own components consume.</strong> You must manually write the fetch call, parse JSON, and type both sides. A remote <code>query()</code> does this automatically with type inference and caching.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Six patterns for server-client data flow, each with distinct use cases</li>
-		<li>A flowchart to decide which pattern fits your needs</li>
-		<li><code>load()</code> remains the primary pattern for SSR page data</li>
-		<li>Remote functions excel at interactive, component-level data fetching and mutations</li>
-		<li><code>+server.ts</code> is still the right choice for public APIs and webhooks</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit provides six distinct patterns for server-client data flow, and choosing the right one depends on your specific requirements. <code>load()</code> is the stable, proven pattern for SSR page data. Remote <code>query()</code> excels at interactive, component-level fetching with caching and reactivity. Remote <code>form()</code> handles submissions with progressive enhancement. Remote <code>command()</code> covers event-driven mutations. <code>prerender()</code> produces static build-time data. And <code>+server.ts</code> remains essential for public APIs and webhooks.</p>
+	<p class="prose">The decision flowchart is straightforward: if you need SSR, start with <code>load()</code>. If it is a form, use <code>form()</code>. If it is a mutation, use <code>command()</code>. If it is interactive data, use <code>query()</code>. If it is a public API, use <code>+server.ts</code>. If it is static, use <code>prerender()</code>. Most applications will use a combination of these patterns across different routes and components.</p>
+	<p class="prose">Remember that remote functions are experimental. For production applications, start with <code>load()</code> and form actions from the stable SvelteKit API. Adopt remote functions incrementally as the API matures, using them where their strengths (type safety, caching, component-level fetching) provide the most value.</p>
+	<p class="next">That wraps up Module 9B. You now have a complete toolkit for every data-fetching scenario in SvelteKit.</p>
 </section>
 
 <style>
@@ -300,8 +306,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.table-wrap { overflow-x: auto; }
 	table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }

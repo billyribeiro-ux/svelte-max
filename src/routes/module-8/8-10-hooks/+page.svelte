@@ -127,18 +127,26 @@ export const handleFetch: HandleFetch = async ({ request, fetch }) => {
 		<li><code>handleFetch</code> lets you attach trace IDs to internal API calls from loads.</li>
 	</ul>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment exposes a different failure mode of the hooks system. Revert after each one.</p>
+	<ol class="experiments">
+		<li><strong>In your <code>handle</code> function, forget to call <code>resolve(event)</code> and just return a new <code>Response('hello')</code>.</strong> Every single route in the application returns the string "hello" — pages, API endpoints, everything. This demonstrates that <code>handle</code> wraps the entire request pipeline, and calling <code>resolve</code> is what lets the normal routing continue. Skipping it short-circuits the entire application.</li>
+		<li><strong>Reverse the order of handlers in <code>sequence(securityHeaders, logger)</code>.</strong> The logger now measures time including the header-setting work, and the log appears after headers are set. While functionally similar here, in real middleware (auth before logging, for example) order determines whether the downstream handler sees authenticated context. This proves that <code>sequence</code> composes left-to-right like function composition.</li>
+		<li><strong>Throw an unhandled error inside <code>handle</code> without a <code>handleError</code> export.</strong> SvelteKit returns its default 500 page with a generic "Internal Error" message. No useful information reaches the user, and the error details only appear in the server console. Adding <code>handleError</code> gives you control over the error shape returned to the client.</li>
+		<li><strong>In <code>handleFetch</code>, return a completely fabricated <code>new Response('{"{}"}')</code> instead of calling <code>fetch(request)</code>.</strong> Every server-side fetch inside load functions receives your fake response. Data loading appears to work but returns empty data. This shows that <code>handleFetch</code> is a powerful interception point that can mock, redirect, or tamper with any fetch made during SSR.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Hooks are SvelteKit's middleware layer — one file, three exports.</li>
-		<li><code>sequence()</code> lets you compose small single-purpose handlers.</li>
-		<li><code>handleFetch</code> is how you add auth headers to internal APIs.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit's hooks system is the framework's middleware layer, centralized in a single file at <code>src/hooks.server.ts</code>. The <code>handle</code> export wraps every incoming request and gives you access to the event object (containing the request, URL, locals, and more) and a <code>resolve</code> function that continues to the normal routing pipeline. By choosing when and whether to call <code>resolve</code>, you can log requests, authenticate users, add security headers, rewrite responses, or short-circuit the pipeline entirely.</p>
+	<p class="prose">The <code>sequence()</code> helper from <code>@sveltejs/kit/hooks</code> composes multiple handle functions into a single pipeline, executing them left-to-right. Each handler receives the event and a resolve function that calls the next handler in the chain, following the same middleware pattern used by Express, Koa, and other server frameworks. This composability encourages writing small, focused handlers — one for logging, one for auth, one for CORS — rather than a monolithic function that handles everything.</p>
+	<p class="prose">The two companion exports, <code>handleError</code> and <code>handleFetch</code>, cover the remaining server-side concerns. <code>handleError</code> is invoked for any uncaught server error and lets you log the full error while returning a safe, user-friendly message to the client. <code>handleFetch</code> intercepts every <code>fetch</code> call made inside load functions during SSR, enabling you to attach authentication headers, rewrite URLs to internal services, or even mock responses during testing. Together, these three exports give you comprehensive control over the server-side request lifecycle.</p>
+	<p class="next">Next, you will learn how shallow routing lets you update history state without a full navigation.</p>
 </section>
 
 <style>
@@ -193,20 +201,9 @@ export const handleFetch: HandleFetch = async ({ request, fetch }) => {
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

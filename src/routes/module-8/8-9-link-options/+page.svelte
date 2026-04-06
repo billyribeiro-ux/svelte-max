@@ -213,18 +213,26 @@
 		</table>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments reveal the cascade and override behavior of link option attributes. Undo each before the next.</p>
+	<ol class="experiments">
+		<li><strong>Put <code>data-sveltekit-reload</code> on the <code>&lt;body&gt;</code> element (in your root layout or <code>app.html</code>).</strong> Every single link in the application now triggers a full page reload instead of a client-side navigation. The SPA behavior is completely disabled. This demonstrates that link options cascade from parent elements to all descendant links, which is powerful but dangerous at the root level.</li>
+		<li><strong>Add <code>data-sveltekit-preload-data="hover"</code> to a parent <code>&lt;div&gt;</code>, then add <code>data-sveltekit-preload-data="off"</code> to one child link.</strong> Open the Network tab — the opted-out link does not trigger a preload request on hover, while its siblings do. This confirms that <code>"off"</code> is the escape hatch for canceling an inherited setting on a per-link basis.</li>
+		<li><strong>Add <code>data-sveltekit-noscroll</code> to a link, then navigate to a long page and scroll down.</strong> When you click the noscroll link, the scroll position stays where it is instead of jumping to the top. Navigate with a normal link afterward and the scroll resets. This reveals that noscroll is useful for tab-like navigation where preserving scroll context matters.</li>
+		<li><strong>Combine <code>data-sveltekit-replacestate</code> and <code>data-sveltekit-reload</code> on the same link.</strong> The reload attribute wins — the browser does a full navigation and replacestate has no visible effect because the history is managed by the browser, not SvelteKit. This shows that some attribute combinations are redundant because a full reload bypasses the client-side router entirely.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Link options are declarative — no hooks, no JS, just attributes on <code>&lt;a&gt;</code>.</li>
-		<li>They can also be set on a parent element to cascade to all descendant links.</li>
-		<li>Use <code>"off"</code> as the value to opt a link out of an inherited setting.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit's link option attributes provide a declarative, zero-JavaScript way to customize navigation behavior on a per-link or per-section basis. Attributes like <code>data-sveltekit-preload-data="hover"</code> and <code>data-sveltekit-preload-code="viewport"</code> control when route data and code are fetched relative to the user's intent, letting you trade bandwidth for perceived speed. These attributes are parsed by SvelteKit's client-side router and have no effect during SSR or on full-page navigations.</p>
+	<p class="prose">The cascade mechanism means that placing an attribute on a parent element — a <code>&lt;nav&gt;</code>, a <code>&lt;div&gt;</code>, or even the <code>&lt;body&gt;</code> — applies that behavior to every descendant <code>&lt;a&gt;</code> tag. This is convenient for applying a policy to an entire section, but it requires the <code>"off"</code> escape value to exempt individual links. Understanding this inheritance is critical to avoiding surprises like accidentally disabling client-side routing across the entire application.</p>
+	<p class="prose">The remaining attributes — <code>data-sveltekit-reload</code>, <code>data-sveltekit-replacestate</code>, <code>data-sveltekit-noscroll</code>, and <code>data-sveltekit-keepfocus</code> — each address a specific navigation UX pattern. Reload forces a full browser navigation (useful for routes that need a clean server round-trip), replacestate prevents cluttering the back button history, noscroll preserves scroll position for tab-like interfaces, and keepfocus prevents focus loss during form-heavy workflows. Together, they cover the most common navigation customization needs without writing a single line of imperative code.</p>
+	<p class="next">Next, you will learn about SvelteKit's server hooks and the middleware pattern in <code>hooks.server.ts</code>.</p>
 </section>
 
 <style>
@@ -293,20 +301,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

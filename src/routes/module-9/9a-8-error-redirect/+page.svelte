@@ -85,19 +85,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Throw a plain <code>new Error('boom')</code> instead of using <code>error()</code> from <code>@sveltejs/kit</code>.</strong> SvelteKit treats unrecognized throws as unexpected 500 errors. The error page shows a generic message instead of your custom one because SvelteKit hides unexpected error details in production.</li>
+		<li><strong>Change <code>error(418, ...)</code> to <code>error(200, ...)</code>.</strong> SvelteKit rejects the call because 200 is not an error status code. The <code>error()</code> helper requires a 4xx or 5xx code.</li>
+		<li><strong>Change the redirect status from 302 to 301.</strong> The browser caches a 301 redirect permanently. Even after you revert the code, the browser keeps redirecting until you clear the cache. This is why 302 (temporary) is safer during development.</li>
+		<li><strong>Add a <code>+error.svelte</code> file next to this page.</strong> Now when you trigger the error, your custom error component renders instead of SvelteKit's default. Remove it again to see the default return. This proves that error boundaries are resolved by walking up the layout tree.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>throw error(status, message)</code> renders the nearest error page</li>
-		<li><code>throw redirect(status, location)</code> navigates elsewhere</li>
-		<li>Both are imported from <code>@sveltejs/kit</code></li>
-		<li>Use 302/307 for temporary, 301/308 for permanent redirects</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit provides two special throw helpers for load functions: <code>error(status, message)</code> and <code>redirect(status, location)</code>, both imported from <code>@sveltejs/kit</code>. When a loader throws <code>error()</code>, SvelteKit walks up the layout tree looking for the nearest <code>+error.svelte</code> component and renders it with the status and message you provided.</p>
+	<p class="prose">Redirects work similarly: throwing <code>redirect(302, '/login')</code> sends the user to another URL before the page component ever renders. Use 302 or 307 for temporary redirects, and 301 or 308 for permanent ones. Be careful with permanent redirects during development because browsers cache them aggressively.</p>
+	<p class="prose">Both helpers must be thrown, not returned. SvelteKit catches these specific throw types and handles them through its internal routing logic. Any other thrown value is treated as an unexpected error and triggers a 500 response with sanitized details in production.</p>
+	<p class="next">Next up: streaming slow data while showing fast data instantly.</p>
 </section>
 
 <style>
@@ -166,20 +173,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

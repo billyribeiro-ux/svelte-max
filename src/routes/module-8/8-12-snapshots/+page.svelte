@@ -108,19 +108,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment exposes a limitation or requirement of the snapshot API. Undo before continuing.</p>
+	<ol class="experiments">
+		<li><strong>Return a value containing a circular reference from <code>capture</code> (e.g., an object that references itself).</strong> The snapshot fails to serialize and throws a <code>TypeError</code> because SvelteKit stores snapshot data in <code>sessionStorage</code>, which requires JSON-serializable values. This proves that <code>capture</code> must return a plain, acyclic data structure.</li>
+		<li><strong>Return a very large string (e.g., 10 MB of text) from <code>capture</code>.</strong> Depending on the browser, <code>sessionStorage</code> throws a quota-exceeded error and the snapshot is silently lost. When the user navigates back, the fields are empty instead of restored. This reveals the storage limits of the snapshot mechanism and why it should only be used for small, ephemeral state.</li>
+		<li><strong>Remove the <code>restore</code> function but keep <code>capture</code>.</strong> TypeScript errors because the <code>Snapshot</code> type requires both methods. Even if you bypass the type check, SvelteKit has no way to apply the saved data on return. This shows that capture and restore are a matched pair — one without the other is meaningless.</li>
+		<li><strong>Navigate away using a full page reload (e.g., via <code>data-sveltekit-reload</code>) instead of a client-side navigation, then press back.</strong> The snapshot is still restored because the data lives in <code>sessionStorage</code>, which persists across reloads within the same browser session. This demonstrates that snapshots are more durable than in-memory state but less durable than <code>localStorage</code>.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>snapshot.capture</code> returns a JSON-serializable value on leave.</li>
-		<li><code>snapshot.restore</code> receives that value on return.</li>
-		<li>State persists in <code>sessionStorage</code> for the session.</li>
-		<li>Use <code>$state.snapshot()</code> if you capture complex reactive state.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit's snapshot API solves a common problem: preserving ephemeral form state — text drafts, scroll positions, toggle states — when the user navigates away and then returns. By exporting a <code>snapshot</code> object with <code>capture</code> and <code>restore</code> methods from a <code>+page.svelte</code> or <code>+layout.svelte</code>, you tell SvelteKit to serialize your chosen state before leaving and rehydrate it on return. The API is minimal by design: <code>capture</code> returns any JSON-serializable value, and <code>restore</code> receives it back.</p>
+	<p class="prose">Under the hood, snapshot data is stored in the browser's <code>sessionStorage</code>, keyed by the history entry index. This means snapshots survive page reloads and full navigations within the same browser session, but they do not persist across sessions or across tabs. The <code>sessionStorage</code> quota (typically 5-10 MB depending on the browser) imposes a practical size limit, so snapshots should capture only the minimum state needed to restore the user's context — not large datasets or binary blobs.</p>
+	<p class="prose">When working with Svelte 5's deeply reactive state (created via <code>$state</code>), the captured value may be a reactive proxy rather than a plain object. Passing a proxy to <code>sessionStorage</code> serialization can produce unexpected results. The solution is to call <code>$state.snapshot()</code> inside <code>capture</code> to produce a plain, non-reactive copy of the state tree. This one-line addition ensures clean serialization and is a best practice whenever reactive state participates in snapshot capture.</p>
+	<p class="next">Next, you will learn how to add smooth page transitions using the View Transitions API and <code>onNavigate</code>.</p>
 </section>
 
 <style>
@@ -189,20 +196,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

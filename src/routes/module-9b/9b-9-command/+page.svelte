@@ -253,19 +253,26 @@ deleteTodo('123');  // only in onclick, onsubmit, etc.`;
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Call a <code>command()</code> function at the top level of a component, outside any event handler.</strong> SvelteKit throws an error because commands are explicitly forbidden during render. They can only be invoked in response to user events like <code>onclick</code> or <code>onsubmit</code>.</li>
+		<li><strong>Replace <code>command()</code> with <code>query()</code> for a delete operation.</strong> The delete runs during render, which means navigating to the page deletes data without user intent. This is exactly why mutations must use <code>command</code>, not <code>query</code>.</li>
+		<li><strong>Call the same command twice rapidly without waiting for the first to resolve.</strong> Both requests fire independently because commands are not deduplicated or cached. You may get race conditions if the server does not handle concurrent mutations idempotently.</li>
+		<li><strong>Remove the optimistic UI update and wait for the server response before updating the list.</strong> The delete feels sluggish because the user sees no change for several hundred milliseconds while the round trip completes. Optimistic updates mask this latency.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>command()</code> defines server-side mutations in <code>.remote.ts</code> files</li>
-		<li>Commands can only be called in event handlers, never during render</li>
-		<li>Commands are never cached, unlike queries</li>
-		<li>Optimistic updates can be combined with commands for instant UI feedback</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>command()</code> function from <code>$app/server</code> defines server-side operations that have side effects: deleting records, toggling state, sending emails, or any mutation that changes data. Unlike <code>query</code>, commands can only be called inside event handlers like <code>onclick</code> or <code>onsubmit</code>, and they are never cached.</p>
+	<p class="prose">The restriction against calling commands during render is a safety feature. Queries are safe to run on every render because they only read data. Commands mutate data, so running them during render would cause unintended side effects every time the component re-renders.</p>
+	<p class="prose">For the best user experience, pair commands with optimistic UI updates. Immediately reflect the expected change in the UI, then reconcile with the server response when it arrives. If the server rejects the mutation, roll back the optimistic change. This pattern makes interactions feel instant even over slow networks.</p>
+	<p class="next">Next up: single-flight mutations that bundle data refresh with the mutation response.</p>
 </section>
 
 <style>
@@ -273,8 +280,9 @@ deleteTodo('123');  // only in onclick, onsubmit, etc.`;
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; white-space: pre-wrap; }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.todo-list { display: flex; flex-direction: column; gap: var(--space-xs); }

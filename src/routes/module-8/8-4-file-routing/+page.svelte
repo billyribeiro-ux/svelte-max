@@ -131,18 +131,26 @@
 		</dl>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment teaches a routing rule by breaking it. Undo each change before trying the next.</p>
+	<ol class="experiments">
+		<li><strong>Create a folder <code>src/routes/test/</code> with no <code>+page.svelte</code> inside it and navigate to <code>/test</code>.</strong> SvelteKit returns a 404 because a folder without a <code>+page.svelte</code> does not define a route. The folder alone is not enough — the special file is what registers the URL.</li>
+		<li><strong>Place a file named <code>helper.svelte</code> (no <code>+</code> prefix) inside a route folder and navigate to that path.</strong> Nothing happens — the file is ignored by the router and treated as a colocated module. This proves that only files prefixed with <code>+</code> participate in routing; everything else is invisible to SvelteKit.</li>
+		<li><strong>Create two folders that resolve to the same URL, for example <code>src/routes/(a)/demo/+page.svelte</code> and <code>src/routes/(b)/demo/+page.svelte</code>.</strong> SvelteKit throws a build error about conflicting routes, because two route groups produce the same <code>/demo</code> path. This reveals that route groups strip their parenthetical name from the URL.</li>
+		<li><strong>Rename <code>+page.server.ts</code> to <code>+page.server.js</code> and try to use TypeScript types inside it.</strong> The file runs fine as plain JavaScript, but you lose type checking on <code>PageServerLoad</code>. This shows that the file extension controls the language, not the routing — SvelteKit recognizes both <code>.ts</code> and <code>.js</code> variants of every special file.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>The filesystem under <code>src/routes/</code> defines every URL.</li>
-		<li>Files starting with <code>+</code> are SvelteKit-reserved; other files are just colocated modules.</li>
-		<li>Every route can have its own page, layout, load, server load, endpoint, and error boundary.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit's file-based router eliminates the need for a centralized route configuration file. Every folder under <code>src/routes/</code> maps directly to a URL path, and the presence of a <code>+page.svelte</code> file inside that folder is what makes the route exist. This one-to-one mapping between filesystem structure and URL hierarchy means you can read the URL space of your application by browsing the directory tree.</p>
+	<p class="prose">Each route folder can contain up to eight special files, all distinguished by the <code>+</code> prefix: <code>+page.svelte</code> for the component, <code>+page.ts</code> and <code>+page.server.ts</code> for universal and server-only load functions, <code>+layout.svelte</code> and its load counterparts for wrapping layouts, <code>+server.ts</code> for standalone API endpoints, and <code>+error.svelte</code> for error boundaries. Any file without the <code>+</code> prefix is treated as a regular colocated module, which means you can keep helper components, utilities, and tests right next to the routes they serve.</p>
+	<p class="prose">Route groups — folders wrapped in parentheses like <code>(marketing)</code> — let you share a layout across multiple routes without adding a segment to the URL. This is particularly useful when different sections of your application need different chrome (navigation bars, sidebars, footers) but their URLs should not reflect that structural grouping. The group name is stripped during URL resolution, so <code>(marketing)/pricing/+page.svelte</code> serves <code>/pricing</code>, not <code>/(marketing)/pricing</code>.</p>
+	<p class="next">Next, you will see how layouts nest and compose to create shared UI shells.</p>
 </section>
 
 <style>
@@ -151,9 +159,10 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
 	.sub { margin-block-start: 0; font-size: var(--text-lg); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.routes { display: flex; flex-direction: column; gap: var(--space-xs); margin: 0; }
 	.row { display: flex; flex-direction: column; gap: var(--space-xs); padding: var(--space-sm); background: var(--color-surface-2); border-radius: var(--radius-md); border: 1px solid var(--color-border); }
 	dt { font-weight: 600; }

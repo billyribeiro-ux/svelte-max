@@ -87,19 +87,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Replace <code>Promise.all</code> with sequential <code>await</code> calls.</strong> The duration jumps from ~150ms to ~410ms because each fetch now waits for the previous one to complete before starting, creating a classic waterfall.</li>
+		<li><strong>Use <code>Promise.allSettled</code> instead of <code>Promise.all</code>.</strong> The page still loads, but now a single failed fetch does not abort the others. The tradeoff is that you must check each result's <code>status</code> property to distinguish fulfilled from rejected.</li>
+		<li><strong>Make one of the fetches throw an error inside <code>Promise.all</code>.</strong> The entire load function rejects and SvelteKit shows an error page, even though the other two fetches succeeded. This demonstrates the all-or-nothing behavior of <code>Promise.all</code>.</li>
+		<li><strong>Remove <code>performance.now()</code> timing and try to estimate duration by feel.</strong> It is nearly impossible to tell 150ms from 400ms by eye, which is why measuring load duration with precise timers is essential for performance work.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>Promise.all</code> runs fetches concurrently</li>
-		<li>Total duration equals the slowest promise, not the sum</li>
-		<li>Sequential <code>await</code> creates a waterfall — avoid it for independent data</li>
-		<li>Use <code>performance.now()</code> to measure load duration precisely</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">When your load function needs data from multiple independent sources, the order in which you <code>await</code> them matters enormously. Sequential awaits create a waterfall where each fetch must complete before the next begins, summing all latencies together. <code>Promise.all</code> fires every fetch at once and waits only for the slowest one.</p>
+	<p class="prose">The rule is simple: if fetches do not depend on each other's results, kick them all off before awaiting any of them. The total load time drops from the sum of all latencies to just the maximum latency. In this demo, that is the difference between ~410ms and ~150ms.</p>
+	<p class="prose">Use <code>performance.now()</code> before and after your parallel block to measure the actual duration. This data is invaluable for spotting regressions and proving to your team that the parallel pattern is paying off in real numbers.</p>
+	<p class="next">Next up: fine-grained re-fetching with <code>depends()</code> and <code>invalidate()</code>.</p>
 </section>
 
 <style>
@@ -151,20 +158,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

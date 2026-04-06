@@ -93,19 +93,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Move the <code>serverSecret</code> into <code>+page.ts</code> instead of <code>+page.server.ts</code>.</strong> The secret is now bundled into the client JavaScript and visible in the browser's network tab, demonstrating why sensitive data must live in server-only loaders.</li>
+		<li><strong>Delete the <code>+page.ts</code> file entirely.</strong> The page still renders using only server data, but <code>clientTs</code> and <code>combined</code> disappear because those were computed by the universal loader.</li>
+		<li><strong>Remove <code>event.data</code> from the universal loader and try to access <code>serverSecret</code> directly.</strong> TypeScript errors because the universal loader has no independent access to the server loader's return value without going through <code>event.data</code>.</li>
+		<li><strong>Navigate away and back using client-side links, then hard-refresh.</strong> On client-side nav, <code>processedAt</code> stays frozen (server loader did not re-run) but <code>clientTs</code> updates. On hard refresh, both update because the server re-runs.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>+page.server.ts</code> is server-only — use it for secrets and DB reads.</li>
-		<li><code>+page.ts</code> is universal — it runs on both server and client.</li>
-		<li>When both exist, the universal loader receives server data via <code>event.data</code>.</li>
-		<li>Client-side navigation re-runs the universal loader but reuses server data from SSR.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit gives you two loader flavors for a reason. The server-only loader (<code>+page.server.ts</code>) is the right home for anything that must never reach the browser: database queries, API keys, environment secrets, and file-system reads. Its code is stripped entirely from the client bundle.</p>
+	<p class="prose">The universal loader (<code>+page.ts</code>) runs on the server during SSR and then again in the browser on every client-side navigation. When both loaders coexist, the server loader runs first and its return value is passed to the universal loader via <code>event.data</code>, letting you merge, transform, or enrich server-only data with client-safe logic.</p>
+	<p class="prose">This two-layer design means you can keep secrets locked on the server while still computing derived values that need to update on every navigation. The pattern is especially powerful for combining auth state (server) with client-side timestamps, preferences, or browser-only APIs.</p>
+	<p class="next">Next up: how SvelteKit auto-generates types to keep loaders and components in sync.</p>
 </section>
 
 <style>
@@ -160,20 +167,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

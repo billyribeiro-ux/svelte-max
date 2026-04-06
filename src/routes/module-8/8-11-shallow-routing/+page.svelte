@@ -188,19 +188,26 @@
 		<code>{'(page.state as { photoId?: number } | undefined)?.photoId'}</code>.
 	</p>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments reveal edge cases in shallow routing and history state. Undo each before the next.</p>
+	<ol class="experiments">
+		<li><strong>Pass a non-serializable value (like a function or a DOM element) to <code>pushState</code>.</strong> The state appears to work initially, but after a page reload the browser's <code>history.state</code> loses the non-serializable value and your derived state becomes <code>undefined</code>. This proves that shallow routing state must be JSON-serializable to survive session restores.</li>
+		<li><strong>Call <code>pushState</code> multiple times in rapid succession (e.g., in a loop).</strong> Each call creates a separate history entry, so pressing back requires multiple clicks to return to the original state. This demonstrates that <code>pushState</code> is not debounced — every call is a real history entry, so you should use <code>replaceState</code> when updating the same logical state repeatedly.</li>
+		<li><strong>Open the modal, then navigate to a completely different route using <code>goto()</code>.</strong> The modal disappears because <code>page.state</code> resets on a full navigation — shallow state is tied to the current history entry, not to the page component. Navigating away creates a new entry with empty state.</li>
+		<li><strong>Open a modal, copy the URL, and paste it in a new tab.</strong> The modal does not appear because <code>page.state</code> is stored in the browser's session history, not in the URL. The URL did not change during <code>pushState</code>, so the new tab has no way to know about the modal. For shareable state, encode it in query parameters or the URL path instead.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>pushState</code> updates history without navigating.</li>
-		<li><code>page.state</code> is reactive — derive UI from it.</li>
-		<li>Back / forward work for free because it's a real history entry.</li>
-		<li>Declare <code>PageState</code> in <code>app.d.ts</code> for type safety.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Shallow routing via <code>pushState</code> and <code>replaceState</code> from <code>$app/navigation</code> lets you update the browser's history stack without triggering a SvelteKit navigation. The URL can stay the same (by passing an empty string) or change to a new path, but either way no load functions run and no page component swaps. The state you pass is stored in the browser's <code>history.state</code> object and exposed reactively through <code>page.state</code>, making it ideal for transient UI like modals, drawers, and detail panels that should participate in browser back/forward but do not warrant their own route.</p>
+	<p class="prose">Because shallow state lives in the browser's session history rather than the URL, it has important limitations. It is not shareable — copying the URL and opening it in another tab will not reproduce the state. It must be JSON-serializable to survive browser session restores. And each <code>pushState</code> call creates a distinct history entry, so rapid-fire calls without debouncing will clutter the back button. Use <code>replaceState</code> when you are updating the same logical state (e.g., tracking a slider position) to avoid this problem.</p>
+	<p class="prose">For full TypeScript support, declare the shape of your shallow state in the <code>App.PageState</code> interface inside <code>src/app.d.ts</code>. This gives you type checking on both the <code>pushState</code> call site and the <code>page.state</code> read site. Without this declaration, you must narrow the type inline with a cast, which is fragile and easy to get wrong. As your application grows, typed page state prevents entire classes of bugs where one part of the code pushes a shape that another part does not expect.</p>
+	<p class="next">Next, you will learn how snapshots preserve ephemeral form state across navigations.</p>
 </section>
 
 <style>
@@ -304,20 +311,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

@@ -217,19 +217,26 @@ export const getProducts = query(async () => {
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Call <code>getProducts()</code> inside an event handler instead of at the top level.</strong> The query still works, but it loses its reactive behavior because it is not tracked by the component's render cycle. Queries are designed to be called during component initialization.</li>
+		<li><strong>Return a non-serializable value like a <code>Map</code> from the query without configuring devalue.</strong> The client receives an empty object because plain JSON serialization drops Map entries. Remote functions use devalue for rich type support, but you must verify the types you return.</li>
+		<li><strong>Import the same query in two different components on the same page.</strong> Open the network tab and observe that only one HTTP request is made. SvelteKit deduplicates identical query calls within the same render cycle.</li>
+		<li><strong>Access <code>products.current</code> before the query resolves.</strong> The value is <code>undefined</code> initially because the query is asynchronous. Always guard with <code>{'{#if products.current}'}</code> or provide a fallback to avoid rendering undefined data.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>query</code> defines a server function in a <code>.remote.ts</code> file</li>
-		<li>Return types are inferred automatically — full end-to-end type safety</li>
-		<li>Queries are cached and deduplicated across components</li>
-		<li>The result is reactive — no manual <code>$state</code> wiring needed</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>query</code> function from <code>$app/server</code> defines a server-side data fetcher in a <code>.remote.ts</code> file. You import it into your component, call it like a regular function, and get back a reactive value. No manual <code>fetch</code>, no JSON parsing, no loading state boilerplate. The return type flows directly from the server function to the client, providing end-to-end type safety.</p>
+	<p class="prose">Queries are automatically cached and deduplicated. If three components on the same page call <code>getProducts()</code>, SvelteKit sends only one HTTP request and shares the result. The cache is invalidated when a related <code>form</code> or <code>command</code> triggers a refresh, keeping data consistent without manual intervention.</p>
+	<p class="prose">The reactive nature of query results means the component re-renders automatically when the data arrives or when the cache is refreshed. There is no need to wire up <code>$state</code> or <code>$effect</code> manually. The query function handles the entire lifecycle from fetch to render to refresh.</p>
+	<p class="next">Next up: passing arguments to queries for parameterized server requests.</p>
 </section>
 
 <style>
@@ -237,8 +244,9 @@ export const getProducts = query(async () => {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; white-space: pre-wrap; }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.loader { padding: var(--space-md); text-align: center; color: var(--color-text-muted); }

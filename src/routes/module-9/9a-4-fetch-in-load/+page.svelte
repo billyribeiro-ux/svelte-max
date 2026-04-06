@@ -89,19 +89,26 @@ export const load: PageLoad = async ({ fetch }) => {
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Replace the destructured <code>fetch</code> with <code>globalThis.fetch</code>.</strong> During SSR the call to <code>/api/tip</code> fails because <code>globalThis.fetch</code> does not know the server's origin. The enhanced fetch resolves same-origin URLs automatically.</li>
+		<li><strong>Use an absolute URL like <code>http://localhost:5173/api/tip</code> in the loader.</strong> It works in dev but breaks in production because the port and host differ. The enhanced fetch handles relative URLs portably across environments.</li>
+		<li><strong>Inspect the SSR HTML source and look for the inlined response.</strong> You will see the fetched JSON embedded in a <code>script</code> tag. Delete that tag manually in DevTools and reload client-side to watch the client re-fetch, proving the inline prevents a redundant request.</li>
+		<li><strong>Add <code>credentials: 'omit'</code> to the fetch options.</strong> Cookies are no longer forwarded to the API endpoint, so any auth-gated endpoint returns 401 during SSR. The default behavior inherits credentials from the incoming request.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Destructure <code>fetch</code> from the load event — don't import a global.</li>
-		<li>The enhanced fetch inherits credentials and is SSR-aware.</li>
-		<li>SSR responses are inlined so the client doesn't re-request on hydration.</li>
-		<li>Same-origin requests short-circuit directly to the endpoint handler.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>fetch</code> you destructure from the load event is not the browser's native <code>fetch</code>. It is SvelteKit's enhanced version that inherits cookies and credentials from the incoming request, resolves relative URLs correctly during SSR, and short-circuits same-origin calls by invoking your API endpoint handler directly instead of making a real HTTP round trip.</p>
+	<p class="prose">On top of that, responses from the enhanced fetch are inlined into the SSR HTML. When the client hydrates, it reuses the inlined data instead of re-fetching, which eliminates the flash of loading state that plagues many SSR frameworks. This is why the page feels instant on first load.</p>
+	<p class="prose">Always use the destructured <code>fetch</code> inside load functions. Using <code>globalThis.fetch</code> or importing <code>fetch</code> from somewhere else bypasses all of these optimizations and breaks SSR for same-origin routes.</p>
+	<p class="next">Next up: sharing data across routes with layout loaders.</p>
 </section>
 
 <style>
@@ -168,20 +175,9 @@ export const load: PageLoad = async ({ fetch }) => {
 		font-size: var(--text-sm);
 		margin: 0;
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

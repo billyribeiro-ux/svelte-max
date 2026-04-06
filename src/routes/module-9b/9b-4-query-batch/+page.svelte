@@ -229,19 +229,26 @@ export const getStats = query.batch(async (keys: string[]) => {
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Replace <code>query.batch()</code> with four separate <code>query()</code> calls.</strong> The network tab now shows four individual HTTP requests instead of one. The page still works but uses four times the round trips, demonstrating the N+1 problem batch was designed to solve.</li>
+		<li><strong>Return <code>undefined</code> from the resolver for one of the keys.</strong> That specific widget receives no data and renders empty or throws, while the others work fine. The resolver must handle every key in the input array.</li>
+		<li><strong>Add a fifth widget calling <code>getStats('conversion')</code> without updating the server handler.</strong> The resolver does not recognize the key and returns <code>undefined</code>. Batch resolvers must be prepared for any argument the client might send.</li>
+		<li><strong>Delay one of the widget renders with <code>setTimeout</code> so it calls <code>getStats</code> in the next tick.</strong> It gets its own separate HTTP request because batching only coalesces calls within the same microtask. Calls in different ticks become separate batches.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>query.batch()</code> solves the N+1 problem by coalescing multiple calls into one request</li>
-		<li>The server receives an array of all arguments from all callers</li>
-		<li>A resolver function maps each argument back to its result</li>
-		<li>Components call the function normally — batching is transparent</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>query.batch()</code> solves the N+1 problem for remote functions. When multiple components on the same page call the same query with different arguments, SvelteKit collects all pending calls within the current microtask and sends them as a single HTTP request. The server callback receives an array of all arguments and returns a resolver function that maps each argument back to its result.</p>
+	<p class="prose">From the component's perspective, nothing changes. Each widget calls <code>getStats('revenue')</code> independently, unaware that its call is being batched with others. The batching is entirely transparent to consumers, which means you can add or remove widgets without changing the data-fetching logic.</p>
+	<p class="prose">The key insight is that batching happens per-tick. Calls made in the same synchronous render cycle are coalesced, but calls deferred to a later tick (via <code>setTimeout</code> or <code>await</code>) become separate batches. Design your components to make all their query calls eagerly during initialization for maximum batching efficiency.</p>
+	<p class="next">Next up: prerendering remote function results at build time.</p>
 </section>
 
 <style>
@@ -249,8 +256,9 @@ export const getStats = query.batch(async (keys: string[]) => {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; white-space: pre-wrap; }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.widget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }

@@ -106,19 +106,26 @@
 		</nav>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments reveal the mechanics and limitations of view transitions. Undo each before proceeding.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>typeof document.startViewTransition</code> feature check and test in a browser that does not support it (e.g., Firefox as of early 2026).</strong> The code throws a <code>TypeError</code> because <code>document.startViewTransition</code> is undefined. This demonstrates why feature detection is mandatory — the View Transitions API is not universally supported, and your navigation must still work without it.</li>
+		<li><strong>Assign the same <code>view-transition-name</code> to two elements that are visible on the same page at the same time.</strong> The browser's view transition fails silently or produces glitchy animations because transition names must be unique per snapshot. Each name identifies a single element to morph, and duplicates create ambiguity the browser cannot resolve.</li>
+		<li><strong>Inside <code>onNavigate</code>, return a promise that never resolves.</strong> The navigation hangs indefinitely — the old page stays visible, the new page never appears, and the user is stuck. This shows that <code>onNavigate</code> is a blocking hook: SvelteKit waits for your promise to resolve before completing the DOM swap.</li>
+		<li><strong>Remove the <code>await navigation.complete</code> line from inside <code>startViewTransition</code>.</strong> The transition fires immediately with the old DOM snapshot and never sees the new DOM, resulting in a flash or no visible animation. The <code>await navigation.complete</code> is what tells the browser "the new DOM is ready to snapshot now," and without it the transition has nothing to morph to.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>onNavigate</code> can return a promise to delay the DOM update.</li>
-		<li><code>document.startViewTransition</code> snapshots, morphs, and animates.</li>
-		<li>Add <code>view-transition-name</code> to elements that should morph across routes.</li>
-		<li>Feature-detect — not every browser supports it yet.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The View Transitions API, accessible through <code>document.startViewTransition</code>, gives browsers a native mechanism for animating between two DOM states. SvelteKit integrates with it via the <code>onNavigate</code> hook from <code>$app/navigation</code>. By returning a promise from <code>onNavigate</code>, you delay the DOM update until the view transition is ready, letting the browser snapshot the old page, apply the new page, and cross-fade or morph between them. The result is smooth, app-like transitions without any JavaScript animation libraries.</p>
+	<p class="prose">The CSS property <code>view-transition-name</code> is how you tell the browser which elements should be individually tracked across the transition. An element with a transition name on the old page will morph into the element with the same name on the new page, creating a spatial animation that guides the user's eye. Names must be unique within each snapshot — duplicates cause the transition to break. For SvelteKit applications, applying a transition name to shared elements like page headings or hero images produces particularly compelling effects.</p>
+	<p class="prose">Because the View Transitions API is not yet supported in all browsers, feature detection is essential. The standard pattern checks <code>typeof document.startViewTransition === 'function'</code> and falls back to a normal instant navigation when the API is absent. This progressive enhancement approach means your application works everywhere, with enhanced visual polish in browsers that support it. As browser adoption increases, your transition code will automatically activate for more users without any changes.</p>
+	<p class="next">Next, you will learn about the four rendering modes SvelteKit offers and when to choose each one.</p>
 </section>
 
 <style>
@@ -203,20 +210,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

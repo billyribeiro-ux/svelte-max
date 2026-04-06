@@ -225,19 +225,26 @@ export const submitContact = form(ContactSchema, async ({ data }) => {
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the spread <code>{'{...submitContact}'}</code> from the form element.</strong> The form becomes a plain HTML form with no server wiring. Submitting it either does nothing or navigates to a non-existent action URL, proving that the spread is what connects the form to the remote function.</li>
+		<li><strong>Disable JavaScript in the browser and submit the form.</strong> It still works because <code>form()</code> provides progressive enhancement. The form submits as a standard POST request, the server validates and processes it, and the page reloads with the result.</li>
+		<li><strong>Send a field value that fails Valibot validation (e.g., a 1-character name).</strong> The server rejects the submission and returns field-level errors. The form does not process the handler body because validation happens before your async function runs.</li>
+		<li><strong>Add a field to the HTML form that is not in the Valibot schema.</strong> The extra field is silently stripped during validation. The server handler never sees it, preventing injection of unexpected data through form manipulation.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>form()</code> defines a server-side form handler in a <code>.remote.ts</code> file</li>
-		<li>Spreading onto <code>&lt;form&gt;</code> wires up action, method, and enhancement</li>
-		<li>Progressive enhancement works automatically — forms function without JavaScript</li>
-		<li>Valibot schemas validate input server-side with typed results</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>form()</code> function from <code>$app/server</code> defines a server-side form handler in a <code>.remote.ts</code> file. You pass it a Valibot schema and an async handler. Spreading the result onto a <code>&lt;form&gt;</code> element wires up the action URL, HTTP method, and progressive enhancement in one step.</p>
+	<p class="prose">Progressive enhancement is the standout feature. Without JavaScript, the form submits as a standard POST and the server returns a full page response. With JavaScript enabled, the submission happens via AJAX with no page reload, and validation errors appear inline without losing form state.</p>
+	<p class="prose">Valibot validation runs server-side before your handler executes, ensuring that the <code>data</code> parameter is always fully validated and typed. Unknown fields are stripped, required fields are enforced, and format constraints like email or minimum length are checked automatically.</p>
+	<p class="next">Next up: the form fields API for binding schema properties to input elements.</p>
 </section>
 
 <style>
@@ -245,8 +252,9 @@ export const submitContact = form(ContactSchema, async ({ data }) => {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; white-space: pre-wrap; }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.demo-form { display: flex; flex-direction: column; gap: var(--space-sm); }

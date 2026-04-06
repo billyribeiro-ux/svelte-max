@@ -132,19 +132,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment exposes an edge of the reactive page state API. Undo before proceeding.</p>
+	<ol class="experiments">
+		<li><strong>Try to assign to <code>page.url.pathname</code> directly (e.g., <code>page.url.pathname = '/foo'</code>).</strong> TypeScript flags this as read-only, and at runtime the assignment is silently ignored. The page object is a read-only reactive proxy — you navigate by calling <code>goto()</code>, not by mutating state. This enforces a unidirectional data flow between the router and your components.</li>
+		<li><strong>Read <code>page.url</code> inside a plain function called outside of a reactive context (e.g., in a <code>setTimeout</code> callback stored at module load).</strong> The value is stale — it captured the URL at the time the function was created, not at the time it runs. Reactivity only tracks reads that happen during component rendering or inside <code>$derived</code>/<code>$effect</code>.</li>
+		<li><strong>Import from the deprecated <code>$app/stores</code> instead of <code>$app/state</code> and use <code>$page.url.pathname</code>.</strong> It still works in Svelte 5, but the compiler emits a deprecation warning. Comparing the two side by side shows that the new <code>page</code> object from <code>$app/state</code> requires no <code>$</code> prefix and no store subscription — it is a plain reactive object.</li>
+		<li><strong>Access <code>page.url.searchParams</code> on the server (in a <code>+page.server.ts</code> load function) by importing from <code>$app/state</code>.</strong> The import fails because <code>$app/state</code> is a client-only module. On the server, you access URL information through the <code>event</code> object passed to your load function, not through the page state singleton.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$app/state</code> exposes a reactive <code>page</code> object — no store subscription needed.</li>
-		<li>Reading <code>page.url</code> in markup or in a <code>$derived</code> is automatically reactive.</li>
-		<li>It replaces the deprecated <code>$page</code> store from <code>$app/stores</code>.</li>
-		<li>Use it for pathname-aware nav highlights, query-string state, error pages, and more.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>page</code> object from <code>$app/state</code> is a reactive proxy that exposes the current URL, route parameters, load data, HTTP status, navigation state, and any error for the active page. Reading any of its properties inside a template expression or a <code>$derived</code> declaration automatically subscribes to changes, so the UI updates on every client-side navigation without manual event listeners or store subscriptions.</p>
+	<p class="prose">This reactive page object replaces the deprecated <code>$page</code> store from <code>$app/stores</code>. The key difference is ergonomic: <code>page.url.pathname</code> is a plain property access, not a store auto-subscription requiring the <code>$</code> prefix. Under the hood it uses Svelte 5's fine-grained reactivity, meaning only the specific properties you read are tracked as dependencies, leading to more precise re-renders.</p>
+	<p class="prose">Common patterns include highlighting the active link in a navigation bar by comparing <code>page.url.pathname</code> against each link's <code>href</code>, reading query parameters with <code>page.url.searchParams</code> for filter or search UIs, and displaying error information from <code>page.error</code> in custom error pages. Because the object is read-only, all mutations must go through SvelteKit's navigation functions like <code>goto()</code> or through <code>&lt;a&gt;</code> link clicks, preserving the unidirectional flow from router to UI.</p>
+	<p class="next">Next, you will learn about programmatic navigation and lifecycle hooks in <code>$app/navigation</code>.</p>
 </section>
 
 <style>
@@ -153,9 +160,10 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
 	.sub { margin-block-start: 0; font-size: var(--text-lg); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	pre code { background: transparent; padding: 0; font-size: inherit; }
 	.state { display: flex; flex-direction: column; gap: var(--space-xs); margin: 0; }

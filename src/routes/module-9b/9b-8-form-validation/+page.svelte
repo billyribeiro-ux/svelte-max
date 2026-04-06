@@ -375,19 +375,26 @@ export const signup = form(Schema, async ({ data }) => {
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>onblur</code> validation and rely only on submit-time validation.</strong> Users type entire forms before seeing any errors. The feedback loop is much slower, and users often have to fix multiple fields after submission instead of correcting each one as they go.</li>
+		<li><strong>Skip the preflight and send invalid data directly to the server.</strong> The server still rejects it because Valibot validation runs server-side regardless. But the user waited for a round trip to discover the error, adding unnecessary latency compared to instant client-side preflight.</li>
+		<li><strong>Return a plain string from the <code>form()</code> handler instead of using <code>invalid()</code>.</strong> The client cannot map the error to a specific field. Users see a generic error message instead of the targeted per-field feedback that <code>invalid()</code> provides.</li>
+		<li><strong>Remove the <code>enhance()</code> callback and let the form use default behavior.</strong> The form still works, but after submission the page does a full navigation instead of staying in place. Custom <code>enhance</code> logic is what enables SPA-like behavior with redirects and inline updates.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>validate()</code> checks form data without submitting</li>
-		<li>Preflight runs Valibot on the client for instant feedback before the server round trip</li>
-		<li><code>enhance()</code> gives full control over submission behavior (redirects, custom error handling)</li>
-		<li><code>invalid()</code> returns structured field errors from server-side validation logic</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The validation layer in remote forms has three tiers. First, <code>validate()</code> lets you check form data programmatically at any time without submitting. Second, preflight runs the same Valibot schema on the client before the form is sent to the server, giving users instant feedback. Third, the server always validates regardless, ensuring security even if the client is bypassed.</p>
+	<p class="prose">The <code>enhance()</code> callback gives you full control over what happens when a form is submitted. You can redirect to a dashboard on success, show a custom error toast on failure, or apply optimistic updates. Without <code>enhance</code>, forms fall back to default progressive enhancement behavior with full-page navigation.</p>
+	<p class="prose">When server-side validation catches errors that cannot be detected on the client (like a duplicate email), the <code>invalid()</code> helper returns structured field-level errors that the form fields API can display inline. This keeps the error handling consistent whether the issue is caught by preflight or by the server.</p>
+	<p class="next">Next up: server-side mutations with <code>command()</code>.</p>
 </section>
 
 <style>
@@ -395,8 +402,9 @@ export const signup = form(Schema, async ({ data }) => {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; white-space: pre-wrap; }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.demo-form { display: flex; flex-direction: column; gap: var(--space-sm); }

@@ -249,19 +249,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>.updates(getTodos)</code> from the submit chain.</strong> The mutation succeeds but the todo list does not refresh because the client never told the server which queries to re-run. You get stale data until you manually reload.</li>
+		<li><strong>Remove <code>.withOverride()</code> but keep <code>.updates()</code>.</strong> The list updates correctly after the server responds, but there is a visible delay. The user clicks Add and nothing happens for hundreds of milliseconds until the round trip completes.</li>
+		<li><strong>Make the optimistic override return a different shape than the real server data.</strong> When the server response arrives and replaces the override, the UI jumps because the shape mismatch causes a re-render with a different layout. Optimistic data must match the real data's structure.</li>
+		<li><strong>Force the server to reject the mutation and watch the rollback.</strong> The optimistic item appears briefly, then disappears when the server error triggers an automatic rollback. No manual error handling code is needed for the rollback itself.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>.updates(query)</code> tells the server which queries to refresh with the mutation</li>
-		<li><code>.withOverride()</code> provides optimistic updates for instant UI feedback</li>
-		<li>Rollback is automatic when the server request fails</li>
-		<li>Client-driven refresh gives the component control over which data is refreshed</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Client-driven single-flight mutations use <code>.updates(query)</code> to tell the server which queries to refresh alongside the mutation, and <code>.withOverride()</code> to show optimistic data immediately. The UI updates instantly with the override, then reconciles with the real server data when the response arrives.</p>
+	<p class="prose">If the server request fails, the optimistic override is automatically rolled back to the last known good state. There is no manual rollback code to write. This makes optimistic updates safe to use without worrying about leaving the UI in an inconsistent state after errors.</p>
+	<p class="prose">The difference from server-driven refresh is control. With client-driven refresh, the component decides which queries to refresh, not the server handler. This is more flexible because different components consuming the same command can request different query refreshes based on their local needs.</p>
+	<p class="next">Next up: async SSR with <code>await</code> directly in component bodies.</p>
 </section>
 
 <style>
@@ -269,8 +276,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; white-space: pre-wrap; }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.add-form { display: flex; gap: var(--space-sm); }

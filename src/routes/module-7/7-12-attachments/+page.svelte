@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   import gsap from 'gsap';
   import type { Action } from 'svelte/action';
 
@@ -34,6 +35,119 @@
       }
     };
   };
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import gsap from 'gsap';\n" +
+		"  import type { Action } from 'svelte/action';\n" +
+		"\n" +
+		"  const gsapPulse: Action\u003cHTMLElement\u003e = (node) =\u003e {\n" +
+		"    const tween = gsap.to(node, {\n" +
+		"      scale: 1.05,\n" +
+		"      duration: 0.8,\n" +
+		"      ease: 'sine.inOut',\n" +
+		"      yoyo: true,\n" +
+		"      repeat: -1\n" +
+		"    });\n" +
+		"\n" +
+		"    return {\n" +
+		"      destroy() {\n" +
+		"        tween.kill();\n" +
+		"      }\n" +
+		"    };\n" +
+		"  };\n" +
+		"\n" +
+		"  const gsapGlow: Action\u003cHTMLElement, { color?: string } | undefined\u003e = (node, params) =\u003e {\n" +
+		"    const color = params?.color ?? 'var(--color-brand)';\n" +
+		"    const tween = gsap.to(node, {\n" +
+		"      boxShadow: `0 0 20px ${color}`,\n" +
+		"      duration: 1,\n" +
+		"      ease: 'sine.inOut',\n" +
+		"      yoyo: true,\n" +
+		"      repeat: -1\n" +
+		"    });\n" +
+		"\n" +
+		"    return {\n" +
+		"      destroy() {\n" +
+		"        tween.kill();\n" +
+		"      }\n" +
+		"    };\n" +
+		"  };\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e7.12 — Attachments\u003c/h1\u003e\n" +
+		"  \u003caside class=\"disclaimer\"\u003e\u003cstrong\u003eExperimental:\u003c/strong\u003e \u003ccode\u003e{'{@attach}'}\u003c/code\u003e was introduced in Svelte 5.29 and may change. For production code today, use \u003ccode\u003euse:\u003c/code\u003e actions. This lesson teaches the concept so you're ready when it stabilizes.\u003c/aside\u003e\n" +
+		"\n" +
+		"  \u003cp class=\"concept\"\u003e\u003cstrong\u003eConcept.\u003c/strong\u003e Svelte 5.29 introduced the experimental \u003ccode\u003e{'{@attach}'}\u003c/code\u003e directive as a modern replacement for \u003ccode\u003euse:\u003c/code\u003e actions. While \u003ccode\u003e{'{@attach}'}\u003c/code\u003e provides a more declarative API with better TypeScript support, \u003ccode\u003euse:\u003c/code\u003e actions remain the stable, production-ready approach. Here we teach both.\u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    \u003ch2\u003eThe {'{@attach}'} Concept (Experimental)\u003c/h2\u003e\n" +
+		"    \u003cpre\u003e{`// {@attach} syntax (Svelte 5.29+, experimental)\n" +
+		"// Attachments are functions that return a cleanup function\n" +
+		"\n" +
+		"function gsapPulse(element: Element) \\{\n" +
+		"  const tween = gsap.to(element, \\{\n" +
+		"    scale: 1.05, yoyo: true, repeat: -1\n" +
+		"  \\});\n" +
+		"  return () =\u003e tween.kill();\n" +
+		"\\}\n" +
+		"\n" +
+		"// Usage in template:\n" +
+		"// \u003cdiv \\{@attach gsapPulse\\}\u003ePulsing\u003c/div\u003e\n" +
+		"\n" +
+		"// Key differences from use: actions:\n" +
+		"// 1. Returns cleanup directly (no destroy method)\n" +
+		"// 2. Receives Element, not HTMLElement\n" +
+		"// 3. Re-runs when dependencies change\n" +
+		"// 4. More composable — multiple attachments easy`}\u003c/pre\u003e\n" +
+		"\n" +
+		"    \u003ch2\u003eWorking Demo (use: action)\u003c/h2\u003e\n" +
+		"    \u003cp class=\"note\"\u003eThe demos below use the stable \u003ccode\u003euse:\u003c/code\u003e action API, which works identically in practice.\u003c/p\u003e\n" +
+		"\n" +
+		"    \u003cdiv class=\"demo-row\"\u003e\n" +
+		"      \u003cdiv class=\"demo-box\" use:gsapPulse\u003e\n" +
+		"        \u003cspan\u003ePulse\u003c/span\u003e\n" +
+		"        \u003ccode\u003euse:gsapPulse\u003c/code\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"demo-box glow-box\" use:gsapGlow={{ color: 'oklch(60% 0.20 320)' }}\u003e\n" +
+		"        \u003cspan\u003eGlow\u003c/span\u003e\n" +
+		"        \u003ccode\u003euse:gsapGlow\u003c/code\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"\n" +
+		"    \u003ch2\u003eComparing use: vs {'{@attach}'}\u003c/h2\u003e\n" +
+		"    \u003cdiv class=\"comparison\"\u003e\n" +
+		"      \u003cdiv class=\"compare-col\"\u003e\n" +
+		"        \u003ch4\u003e\u003ccode\u003euse:\u003c/code\u003e Action\u003c/h4\u003e\n" +
+		"        \u003cul class=\"compare-list\"\u003e\n" +
+		"          \u003cli\u003eStable, production-ready\u003c/li\u003e\n" +
+		"          \u003cli\u003eReturns \u003ccode\u003e{'{ destroy() {} }'}}\u003c/code\u003e object\u003c/li\u003e\n" +
+		"          \u003cli\u003eParams via second argument\u003c/li\u003e\n" +
+		"          \u003cli\u003eWell-supported tooling\u003c/li\u003e\n" +
+		"        \u003c/ul\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"compare-col\"\u003e\n" +
+		"        \u003ch4\u003e\u003ccode\u003e{'{@attach}'}\u003c/code\u003e Directive\u003c/h4\u003e\n" +
+		"        \u003cul class=\"compare-list\"\u003e\n" +
+		"          \u003cli\u003eExperimental (Svelte 5.29+)\u003c/li\u003e\n" +
+		"          \u003cli\u003eReturns cleanup function directly\u003c/li\u003e\n" +
+		"          \u003cli\u003eClosure captures reactive deps\u003c/li\u003e\n" +
+		"          \u003cli\u003eMore declarative composition\u003c/li\u003e\n" +
+		"        \u003c/ul\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003e\u003ccode\u003e{'{@attach}'}\u003c/code\u003e is an experimental Svelte 5.29+ directive for element-level side effects.\u003c/li\u003e\n" +
+		"    \u003cli\u003eIt returns a cleanup function directly, unlike \u003ccode\u003euse:\u003c/code\u003e which returns a \u003ccode\u003e{'{ destroy() {} }'}}\u003c/code\u003e object.\u003c/li\u003e\n" +
+		"    \u003cli\u003e\u003ccode\u003euse:\u003c/code\u003e actions remain the stable, recommended approach for production code.\u003c/li\u003e\n" +
+		"    \u003cli\u003eBoth patterns work well for wrapping GSAP animations as reusable element behaviors.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -100,6 +214,12 @@ function gsapPulse(element: Element) \{
     </div>
   </div>
 
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
   <h3>What you learned</h3>
   <ul>
     <li><code>{'{@attach}'}</code> is an experimental Svelte 5.29+ directive for element-level side effects.</li>
@@ -145,4 +265,41 @@ function gsapPulse(element: Element) \{
     margin-block-end: var(--space-md);
   }
   .disclaimer strong { color: var(--color-text); }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   import gsap from 'gsap';
   import { fly } from 'svelte/transition';
 
@@ -33,6 +34,106 @@
     }, containerEl);
     return () => ctx.revert();
   });
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import gsap from 'gsap';\n" +
+		"  import { fly } from 'svelte/transition';\n" +
+		"\n" +
+		"  let cssCard: HTMLDivElement | null = $state(null);\n" +
+		"  let gsapCard: HTMLDivElement | null = $state(null);\n" +
+		"  let containerEl: HTMLDivElement | null = $state(null);\n" +
+		"\n" +
+		"  let showSvelteCard = $state(false);\n" +
+		"  let played = $state(false);\n" +
+		"\n" +
+		"  function playCss() {\n" +
+		"    cssCard?.classList.remove('css-enter');\n" +
+		"    void cssCard?.offsetWidth;\n" +
+		"    cssCard?.classList.add('css-enter');\n" +
+		"  }\n" +
+		"\n" +
+		"  function playSvelte() {\n" +
+		"    showSvelteCard = false;\n" +
+		"    setTimeout(() =\u003e { showSvelteCard = true; }, 50);\n" +
+		"  }\n" +
+		"\n" +
+		"  function playGsap() {\n" +
+		"    if (!gsapCard) return;\n" +
+		"    gsap.fromTo(gsapCard, { opacity: 0, y: 40, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'back.out(1.7)' });\n" +
+		"  }\n" +
+		"\n" +
+		"  $effect(() =\u003e {\n" +
+		"    if (!containerEl || played) return;\n" +
+		"    played = true;\n" +
+		"    const ctx = gsap.context(() =\u003e {\n" +
+		"      gsap.fromTo('.layer-label', { opacity: 0, x: -20 }, { opacity: 1, x: 0, stagger: 0.15, duration: 0.5, delay: 0.3 });\n" +
+		"    }, containerEl);\n" +
+		"    return () =\u003e ctx.revert();\n" +
+		"  });\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e7.1 — What Is GSAP?\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\u003cstrong\u003eConcept.\u003c/strong\u003e The GreenSock Animation Platform (GSAP) is the industry-standard JavaScript animation library. It handles complex timelines, scroll-driven effects, and physics-based motion that go far beyond what CSS or Svelte transitions can do alone. Understanding when to use each layer is key.\u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\" bind:this={containerEl}\u003e\n" +
+		"    \u003ch2\u003eThe 4 Animation Layers\u003c/h2\u003e\n" +
+		"    \u003cdiv class=\"layers\"\u003e\n" +
+		"      \u003cdiv class=\"layer\"\u003e\n" +
+		"        \u003cspan class=\"layer-label\"\u003e1. CSS Transitions\u003c/span\u003e\n" +
+		"        \u003cp\u003eSimple hover/state changes. Zero JS needed.\u003c/p\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"layer\"\u003e\n" +
+		"        \u003cspan class=\"layer-label\"\u003e2. CSS @keyframes\u003c/span\u003e\n" +
+		"        \u003cp\u003eLooping or multi-step CSS-only animations.\u003c/p\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"layer\"\u003e\n" +
+		"        \u003cspan class=\"layer-label\"\u003e3. Svelte Transitions\u003c/span\u003e\n" +
+		"        \u003cp\u003eMount/unmount animations with \u003ccode\u003etransition:\u003c/code\u003e directives.\u003c/p\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"layer\"\u003e\n" +
+		"        \u003cspan class=\"layer-label\"\u003e4. GSAP\u003c/span\u003e\n" +
+		"        \u003cp\u003eComplex timelines, scroll-driven, stagger, physics.\u003c/p\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"\n" +
+		"    \u003ch2\u003eCompare: Same Card Entrance\u003c/h2\u003e\n" +
+		"    \u003cdiv class=\"demos\"\u003e\n" +
+		"      \u003cdiv class=\"demo-col\"\u003e\n" +
+		"        \u003ch4\u003eCSS Transition\u003c/h4\u003e\n" +
+		"        \u003cdiv class=\"card css-card\" bind:this={cssCard}\u003eHello CSS\u003c/div\u003e\n" +
+		"        \u003cbutton onclick={playCss}\u003eReplay\u003c/button\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"\n" +
+		"      \u003cdiv class=\"demo-col\"\u003e\n" +
+		"        \u003ch4\u003eSvelte Transition\u003c/h4\u003e\n" +
+		"        {#if showSvelteCard}\n" +
+		"          \u003cdiv class=\"card svelte-card\" in:fly={{ y: 40, duration: 400 }}\u003eHello Svelte\u003c/div\u003e\n" +
+		"        {:else}\n" +
+		"          \u003cdiv class=\"card-placeholder\"\u003e\u003c/div\u003e\n" +
+		"        {/if}\n" +
+		"        \u003cbutton onclick={playSvelte}\u003eReplay\u003c/button\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"\n" +
+		"      \u003cdiv class=\"demo-col\"\u003e\n" +
+		"        \u003ch4\u003eGSAP\u003c/h4\u003e\n" +
+		"        \u003cdiv class=\"card gsap-card\" bind:this={gsapCard}\u003eHello GSAP\u003c/div\u003e\n" +
+		"        \u003cbutton onclick={playGsap}\u003eReplay\u003c/button\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003eGSAP is a professional JavaScript animation library for complex motion.\u003c/li\u003e\n" +
+		"    \u003cli\u003eThere are 4 layers of web animation: CSS transitions, CSS keyframes, Svelte transitions, and GSAP.\u003c/li\u003e\n" +
+		"    \u003cli\u003eUse the simplest layer that gets the job done — reach for GSAP when you need timelines, scroll effects, or fine-grained control.\u003c/li\u003e\n" +
+		"    \u003cli\u003eGSAP and Svelte transitions complement each other rather than compete.\u003c/li\u003e\n" +
+		"    \u003cli\u003eAlways check \u003ccode\u003eprefersReducedMotion.current\u003c/code\u003e before running GSAP animations. Module 7 project demonstrates the full pattern. In production, wrap every GSAP animation in an \u003ccode\u003eif (!prefersReducedMotion.current)\u003c/code\u003e guard.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -86,6 +187,12 @@
     </div>
   </div>
 
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
   <h3>What you learned</h3>
   <ul>
     <li>GSAP is a professional JavaScript animation library for complex motion.</li>
@@ -125,4 +232,41 @@
 
   button { background: var(--color-brand); color: var(--color-surface); border: none; padding: var(--space-xs) var(--space-md); border-radius: var(--radius-sm); cursor: pointer; font-size: var(--text-sm); font-weight: 500; }
   button:hover { background: var(--color-brand-dim); }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

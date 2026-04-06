@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { fly, fade } from 'svelte/transition';
@@ -46,6 +47,136 @@
     }, containerEl);
     return () => ctx.revert();
   });
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import gsap from 'gsap';\n" +
+		"  import { ScrollTrigger } from 'gsap/ScrollTrigger';\n" +
+		"  import { fly, fade } from 'svelte/transition';\n" +
+		"\n" +
+		"  gsap.registerPlugin(ScrollTrigger);\n" +
+		"\n" +
+		"  let containerEl: HTMLElement | null = $state(null);\n" +
+		"  let showModal = $state(false);\n" +
+		"\n" +
+		"  function openModal() {\n" +
+		"    showModal = true;\n" +
+		"  }\n" +
+		"\n" +
+		"  function closeModal() {\n" +
+		"    showModal = false;\n" +
+		"  }\n" +
+		"\n" +
+		"  $effect(() =\u003e {\n" +
+		"    if (!containerEl) return;\n" +
+		"    const ctx = gsap.context(() =\u003e {\n" +
+		"      gsap.utils.toArray\u003cHTMLElement\u003e('.scroll-card').forEach((card) =\u003e {\n" +
+		"        gsap.from(card, {\n" +
+		"          opacity: 0,\n" +
+		"          y: 60,\n" +
+		"          duration: 0.8,\n" +
+		"          ease: 'power3.out',\n" +
+		"          scrollTrigger: {\n" +
+		"            trigger: card,\n" +
+		"            start: 'top 85%',\n" +
+		"            toggleActions: 'play none none reverse'\n" +
+		"          }\n" +
+		"        });\n" +
+		"      });\n" +
+		"\n" +
+		"      gsap.fromTo('.parallax-bg', { y: 0 }, {\n" +
+		"        y: -60,\n" +
+		"        ease: 'none',\n" +
+		"        scrollTrigger: {\n" +
+		"          trigger: '.parallax-section',\n" +
+		"          start: 'top bottom',\n" +
+		"          end: 'bottom top',\n" +
+		"          scrub: true\n" +
+		"        }\n" +
+		"      });\n" +
+		"    }, containerEl);\n" +
+		"    return () =\u003e ctx.revert();\n" +
+		"  });\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\" bind:this={containerEl}\u003e\n" +
+		"  \u003ch1\u003e7.14 — GSAP + Svelte Together\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\u003cstrong\u003eConcept.\u003c/strong\u003e GSAP and Svelte transitions are not competitors — they complement each other. Use Svelte transitions for mount/unmount animations (modals, toasts, conditional UI) and GSAP for scroll-driven effects, complex timelines, and choreographed sequences. They coexist cleanly on the same page.\u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    \u003ch2\u003eWhen to Use Each\u003c/h2\u003e\n" +
+		"    \u003cdiv class=\"guide-grid\"\u003e\n" +
+		"      \u003cdiv class=\"guide-card svelte-side\"\u003e\n" +
+		"        \u003ch4\u003eSvelte Transitions\u003c/h4\u003e\n" +
+		"        \u003cul class=\"guide-list\"\u003e\n" +
+		"          \u003cli\u003eModal open/close\u003c/li\u003e\n" +
+		"          \u003cli\u003eToast notifications\u003c/li\u003e\n" +
+		"          \u003cli\u003eConditional UI elements\u003c/li\u003e\n" +
+		"          \u003cli\u003eList item add/remove\u003c/li\u003e\n" +
+		"        \u003c/ul\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"guide-card gsap-side\"\u003e\n" +
+		"        \u003ch4\u003eGSAP\u003c/h4\u003e\n" +
+		"        \u003cul class=\"guide-list\"\u003e\n" +
+		"          \u003cli\u003eScroll-driven animations\u003c/li\u003e\n" +
+		"          \u003cli\u003eComplex timelines\u003c/li\u003e\n" +
+		"          \u003cli\u003eStaggered sequences\u003c/li\u003e\n" +
+		"          \u003cli\u003ePhysics & advanced easing\u003c/li\u003e\n" +
+		"        \u003c/ul\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"\n" +
+		"    \u003ch2\u003eTry It: Svelte Modal + GSAP Scroll\u003c/h2\u003e\n" +
+		"    \u003cbutton onclick={openModal}\u003eOpen Modal (Svelte transition)\u003c/button\u003e\n" +
+		"    \u003cp class=\"scroll-hint\"\u003eThen scroll down for GSAP scroll animations.\u003c/p\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  {#if showModal}\n" +
+		"    \u003cdiv class=\"overlay\" transition:fade={{ duration: 200 }}\u003e\n" +
+		"      \u003cdiv class=\"modal\" in:fly={{ y: 50, duration: 300 }}\u003e\n" +
+		"        \u003ch2\u003eSvelte-Powered Modal\u003c/h2\u003e\n" +
+		"        \u003cp\u003eThis modal uses \u003ccode\u003etransition:fade\u003c/code\u003e on the overlay and \u003ccode\u003ein:fly\u003c/code\u003e on the content. Svelte handles the mount/unmount animation naturally.\u003c/p\u003e\n" +
+		"        \u003cbutton onclick={closeModal}\u003eClose\u003c/button\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  {/if}\n" +
+		"\n" +
+		"  \u003cdiv class=\"spacer\"\u003e\u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"scroll-card\"\u003e\n" +
+		"    \u003ch4\u003eGSAP Scroll Card 1\u003c/h4\u003e\n" +
+		"    \u003cp\u003eThis card animates in with GSAP ScrollTrigger as you scroll down.\u003c/p\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"scroll-card\"\u003e\n" +
+		"    \u003ch4\u003eGSAP Scroll Card 2\u003c/h4\u003e\n" +
+		"    \u003cp\u003eEach card has its own ScrollTrigger instance for independent timing.\u003c/p\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"parallax-section\"\u003e\n" +
+		"    \u003cdiv class=\"parallax-bg\"\u003e\u003c/div\u003e\n" +
+		"    \u003cdiv class=\"parallax-content\"\u003e\n" +
+		"      \u003ch2\u003eParallax Section\u003c/h2\u003e\n" +
+		"      \u003cp\u003eThe background moves slower than the foreground using GSAP scrub.\u003c/p\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"scroll-card\"\u003e\n" +
+		"    \u003ch4\u003eGSAP Scroll Card 3\u003c/h4\u003e\n" +
+		"    \u003cp\u003eBoth animation systems coexist without conflict on the same page.\u003c/p\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"spacer-sm\"\u003e\u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003eSvelte transitions are best for mount/unmount animations (modals, toasts).\u003c/li\u003e\n" +
+		"    \u003cli\u003eGSAP excels at scroll-driven, timeline-based, and continuous animations.\u003c/li\u003e\n" +
+		"    \u003cli\u003eBoth systems coexist on the same page with zero conflict.\u003c/li\u003e\n" +
+		"    \u003cli\u003eChoosing the right tool for each job leads to cleaner, more maintainable code.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page" bind:this={containerEl}>
@@ -117,6 +248,12 @@
 
   <div class="spacer-sm"></div>
 
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
   <h3>What you learned</h3>
   <ul>
     <li>Svelte transitions are best for mount/unmount animations (modals, toasts).</li>
@@ -166,4 +303,41 @@
   .parallax-content { position: relative; z-index: 1; padding: var(--space-2xl) var(--space-xl); color: var(--color-surface); }
   .parallax-content h2 { margin: 0 0 var(--space-sm); }
   .parallax-content p { margin: 0; opacity: 0.9; }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

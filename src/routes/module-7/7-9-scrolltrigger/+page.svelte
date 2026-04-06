@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -36,6 +37,97 @@
     }, containerEl);
     return () => ctx.revert();
   });
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import gsap from 'gsap';\n" +
+		"  import { ScrollTrigger } from 'gsap/ScrollTrigger';\n" +
+		"\n" +
+		"  gsap.registerPlugin(ScrollTrigger);\n" +
+		"\n" +
+		"  let containerEl: HTMLDivElement | null = $state(null);\n" +
+		"\n" +
+		"  $effect(() =\u003e {\n" +
+		"    if (!containerEl) return;\n" +
+		"    const ctx = gsap.context(() =\u003e {\n" +
+		"      gsap.from('.reveal-box', {\n" +
+		"        opacity: 0,\n" +
+		"        y: 60,\n" +
+		"        duration: 1,\n" +
+		"        ease: 'power3.out',\n" +
+		"        scrollTrigger: {\n" +
+		"          trigger: '.reveal-box',\n" +
+		"          start: 'top 80%',\n" +
+		"          end: 'top 20%',\n" +
+		"          scrub: false,\n" +
+		"          toggleActions: 'play none none reverse'\n" +
+		"        }\n" +
+		"      });\n" +
+		"\n" +
+		"      gsap.fromTo('.scrub-bar', { scaleX: 0 }, {\n" +
+		"        scaleX: 1,\n" +
+		"        ease: 'none',\n" +
+		"        scrollTrigger: {\n" +
+		"          trigger: '.scrub-section',\n" +
+		"          start: 'top 80%',\n" +
+		"          end: 'bottom 20%',\n" +
+		"          scrub: true\n" +
+		"        }\n" +
+		"      });\n" +
+		"    }, containerEl);\n" +
+		"    return () =\u003e ctx.revert();\n" +
+		"  });\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e7.9 — ScrollTrigger\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\u003cstrong\u003eConcept.\u003c/strong\u003e ScrollTrigger is a GSAP plugin that triggers or scrubs animations based on scroll position. Import it from \u003ccode\u003egsap/ScrollTrigger\u003c/code\u003e and register it with \u003ccode\u003egsap.registerPlugin(ScrollTrigger)\u003c/code\u003e. The \u003ccode\u003estart\u003c/code\u003e and \u003ccode\u003eend\u003c/code\u003e properties define the scroll range.\u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\" bind:this={containerEl}\u003e\n" +
+		"    \u003cpre\u003e{`import \\{ ScrollTrigger \\} from 'gsap/ScrollTrigger';\n" +
+		"gsap.registerPlugin(ScrollTrigger);\n" +
+		"\n" +
+		"gsap.from('.box', \\{\n" +
+		"  opacity: 0, y: 60,\n" +
+		"  scrollTrigger: \\{\n" +
+		"    trigger: '.box',\n" +
+		"    start: 'top 80%',   // when top of box hits 80% viewport\n" +
+		"    end: 'top 20%',     // when top of box hits 20% viewport\n" +
+		"    scrub: true          // link progress to scroll position\n" +
+		"  \\}\n" +
+		"\\});`}\u003c/pre\u003e\n" +
+		"\n" +
+		"    \u003cp class=\"scroll-hint\"\u003eScroll down to see the animations trigger.\u003c/p\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"spacer\"\u003e\u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"reveal-box\"\u003e\n" +
+		"    \u003ch2\u003eRevealed on Scroll\u003c/h2\u003e\n" +
+		"    \u003cp\u003eThis box animates in when it enters the viewport. It uses \u003ccode\u003etoggleActions\u003c/code\u003e to play on enter and reverse on leave.\u003c/p\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"spacer-sm\"\u003e\u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"scrub-section\"\u003e\n" +
+		"    \u003ch2\u003eScrub Progress Bar\u003c/h2\u003e\n" +
+		"    \u003cp\u003eThis bar fills as you scroll through this section. \u003ccode\u003escrub: true\u003c/code\u003e links the animation directly to scroll position.\u003c/p\u003e\n" +
+		"    \u003cdiv class=\"bar-track\"\u003e\n" +
+		"      \u003cdiv class=\"scrub-bar\"\u003e\u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"spacer-sm\"\u003e\u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003eScrollTrigger connects GSAP animations to scroll position.\u003c/li\u003e\n" +
+		"    \u003cli\u003e\u003ccode\u003estart\u003c/code\u003e and \u003ccode\u003eend\u003c/code\u003e define the scroll range in viewport-relative terms.\u003c/li\u003e\n" +
+		"    \u003cli\u003e\u003ccode\u003escrub: true\u003c/code\u003e links animation progress directly to scroll position.\u003c/li\u003e\n" +
+		"    \u003cli\u003e\u003ccode\u003etoggleActions\u003c/code\u003e defines behavior for enter, leave, enterBack, and leaveBack.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -78,6 +170,12 @@ gsap.from('.box', \{
 
   <div class="spacer-sm"></div>
 
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
   <h3>What you learned</h3>
   <ul>
     <li>ScrollTrigger connects GSAP animations to scroll position.</li>
@@ -112,4 +210,41 @@ gsap.from('.box', \{
 
   .bar-track { background: var(--color-surface-2); border-radius: var(--radius-full); height: 12px; overflow: hidden; }
   .scrub-bar { height: 100%; background: var(--color-brand); border-radius: var(--radius-full); transform-origin: left; }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { fade } from 'svelte/transition';
@@ -103,6 +104,245 @@
 
     return () => ctx.revert();
   });
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import gsap from 'gsap';\n" +
+		"  import { ScrollTrigger } from 'gsap/ScrollTrigger';\n" +
+		"  import { fade } from 'svelte/transition';\n" +
+		"  import { prefersReducedMotion } from 'svelte/motion';\n" +
+		"  import type { Action } from 'svelte/action';\n" +
+		"\n" +
+		"  gsap.registerPlugin(ScrollTrigger);\n" +
+		"\n" +
+		"  let containerEl: HTMLElement | null = $state(null);\n" +
+		"  let heroEl: HTMLElement | null = $state(null);\n" +
+		"  let showNewsletter = $state(false);\n" +
+		"  let email = $state('');\n" +
+		"  let submitted = $state(false);\n" +
+		"\n" +
+		"  function openNewsletter() {\n" +
+		"    showNewsletter = true;\n" +
+		"  }\n" +
+		"\n" +
+		"  function closeNewsletter() {\n" +
+		"    showNewsletter = false;\n" +
+		"  }\n" +
+		"\n" +
+		"  function handleSubmit() {\n" +
+		"    if (email.trim()) {\n" +
+		"      submitted = true;\n" +
+		"      setTimeout(() =\u003e {\n" +
+		"        showNewsletter = false;\n" +
+		"        submitted = false;\n" +
+		"        email = '';\n" +
+		"      }, 2000);\n" +
+		"    }\n" +
+		"  }\n" +
+		"\n" +
+		"  const revealOnScroll: Action\u003cHTMLElement, { y?: number; delay?: number } | undefined\u003e = (node, params) =\u003e {\n" +
+		"    const opts = params ?? {};\n" +
+		"    const y = opts.y ?? 40;\n" +
+		"    const delay = opts.delay ?? 0;\n" +
+		"\n" +
+		"    if (prefersReducedMotion.current) {\n" +
+		"      return { destroy() {} };\n" +
+		"    }\n" +
+		"\n" +
+		"    gsap.set(node, { opacity: 0, y });\n" +
+		"    const observer = new IntersectionObserver(\n" +
+		"      (entries) =\u003e {\n" +
+		"        entries.forEach((entry) =\u003e {\n" +
+		"          if (entry.isIntersecting) {\n" +
+		"            gsap.to(node, { opacity: 1, y: 0, duration: 0.8, delay, ease: 'power3.out' });\n" +
+		"            observer.disconnect();\n" +
+		"          }\n" +
+		"        });\n" +
+		"      },\n" +
+		"      { threshold: 0.2 }\n" +
+		"    );\n" +
+		"    observer.observe(node);\n" +
+		"    return {\n" +
+		"      destroy() {\n" +
+		"        observer.disconnect();\n" +
+		"        gsap.killTweensOf(node);\n" +
+		"      }\n" +
+		"    };\n" +
+		"  };\n" +
+		"\n" +
+		"  $effect(() =\u003e {\n" +
+		"    if (!containerEl || !heroEl) return;\n" +
+		"    if (prefersReducedMotion.current) return;\n" +
+		"\n" +
+		"    const ctx = gsap.context(() =\u003e {\n" +
+		"      const heroTl = gsap.timeline({ delay: 0.3 });\n" +
+		"      heroTl\n" +
+		"        .from('.hero-title', { opacity: 0, y: 40, duration: 0.8, ease: 'power3.out' })\n" +
+		"        .from('.hero-subtitle', { opacity: 0, x: -40, duration: 0.6, ease: 'power2.out' }, '-=0.3')\n" +
+		"        .from('.hero-cta', { scale: 0, opacity: 0, duration: 0.5, ease: 'back.out(1.7)' }, '-=0.2')\n" +
+		"        .from('.hero-badge', { opacity: 0, y: 10, duration: 0.4 }, '-=0.1');\n" +
+		"\n" +
+		"      gsap.utils.toArray\u003cHTMLElement\u003e('.feature-card').forEach((card, i) =\u003e {\n" +
+		"        gsap.from(card, {\n" +
+		"          opacity: 0,\n" +
+		"          y: 60,\n" +
+		"          duration: 0.7,\n" +
+		"          ease: 'power2.out',\n" +
+		"          scrollTrigger: {\n" +
+		"            trigger: card,\n" +
+		"            start: 'top 85%',\n" +
+		"            toggleActions: 'play none none reverse'\n" +
+		"          },\n" +
+		"          delay: i * 0.1\n" +
+		"        });\n" +
+		"      });\n" +
+		"\n" +
+		"      gsap.fromTo('.testimonial-inner', { y: 30 }, {\n" +
+		"        y: -30,\n" +
+		"        ease: 'none',\n" +
+		"        scrollTrigger: {\n" +
+		"          trigger: '.testimonial-section',\n" +
+		"          start: 'top bottom',\n" +
+		"          end: 'bottom top',\n" +
+		"          scrub: true\n" +
+		"        }\n" +
+		"      });\n" +
+		"    }, containerEl);\n" +
+		"\n" +
+		"    return () =\u003e ctx.revert();\n" +
+		"  });\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page project-page\" bind:this={containerEl}\u003e\n" +
+		"  \u003ch1\u003eModule 7 Project — Marketing Page\u003c/h1\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"hero\" bind:this={heroEl}\u003e\n" +
+		"    \u003cdiv class=\"hero-glow\"\u003e\u003c/div\u003e\n" +
+		"    \u003cspan class=\"hero-badge\"\u003ePowered by GSAP + Svelte\u003c/span\u003e\n" +
+		"    \u003ch2 class=\"hero-title\"\u003eBuild stunning\u003cbr /\u003eweb experiences\u003c/h2\u003e\n" +
+		"    \u003cp class=\"hero-subtitle\"\u003eCombine the power of GSAP animations with Svelte's reactivity for production-grade motion design.\u003c/p\u003e\n" +
+		"    \u003cdiv class=\"hero-actions\"\u003e\n" +
+		"      \u003cbutton class=\"hero-cta\" onclick={openNewsletter}\u003eGet Early Access\u003c/button\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"features-section\"\u003e\n" +
+		"    \u003ch2 class=\"section-heading\" use:revealOnScroll\u003eFeatures\u003c/h2\u003e\n" +
+		"    \u003cdiv class=\"features-grid\"\u003e\n" +
+		"      \u003cdiv class=\"feature-card\"\u003e\n" +
+		"        \u003cdiv class=\"feature-icon\"\u003e&#9889;\u003c/div\u003e\n" +
+		"        \u003ch3 class=\"feature-title\"\u003eTimeline Sequencing\u003c/h3\u003e\n" +
+		"        \u003cp\u003eOrchestrate complex multi-step animations with precise timing using GSAP timelines.\u003c/p\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"feature-card\"\u003e\n" +
+		"        \u003cdiv class=\"feature-icon\"\u003e&#128640;\u003c/div\u003e\n" +
+		"        \u003ch3 class=\"feature-title\"\u003eScroll-Driven\u003c/h3\u003e\n" +
+		"        \u003cp\u003eScrollTrigger connects animations to scroll position for immersive scrollytelling.\u003c/p\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"feature-card\"\u003e\n" +
+		"        \u003cdiv class=\"feature-icon\"\u003e&#127912;\u003c/div\u003e\n" +
+		"        \u003ch3 class=\"feature-title\"\u003eStagger Effects\u003c/h3\u003e\n" +
+		"        \u003cp\u003eChoreograph arrays of elements with stagger for polished, coordinated entrances.\u003c/p\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"feature-card\"\u003e\n" +
+		"        \u003cdiv class=\"feature-icon\"\u003e&#9881;\u003c/div\u003e\n" +
+		"        \u003ch3 class=\"feature-title\"\u003eSvelte Actions\u003c/h3\u003e\n" +
+		"        \u003cp\u003eWrap GSAP animations in reusable \u003ccode\u003euse:\u003c/code\u003e actions for clean, composable code.\u003c/p\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"feature-card\"\u003e\n" +
+		"        \u003cdiv class=\"feature-icon\"\u003e&#128274;\u003c/div\u003e\n" +
+		"        \u003ch3 class=\"feature-title\"\u003eContext Cleanup\u003c/h3\u003e\n" +
+		"        \u003cp\u003e\u003ccode\u003egsap.context()\u003c/code\u003e ensures all animations are properly cleaned up on unmount.\u003c/p\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"feature-card\"\u003e\n" +
+		"        \u003cdiv class=\"feature-icon\"\u003e&#9851;\u003c/div\u003e\n" +
+		"        \u003ch3 class=\"feature-title\"\u003eReactive Bridge\u003c/h3\u003e\n" +
+		"        \u003cp\u003e\u003ccode\u003e$effect\u003c/code\u003e bridges Svelte state to GSAP timelines for state-driven motion.\u003c/p\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"testimonial-section\"\u003e\n" +
+		"    \u003cdiv class=\"testimonial-inner\"\u003e\n" +
+		"      \u003cblockquote class=\"testimonial\"\u003e\n" +
+		"        \u003cp\u003e\"The combination of GSAP's power and Svelte's simplicity made our landing page feel like a native app. Build time was cut in half.\"\u003c/p\u003e\n" +
+		"        \u003cfooter\u003e\n" +
+		"          \u003cstrong\u003eAlex Chen\u003c/strong\u003e\n" +
+		"          \u003cspan\u003eLead Developer, Acme Corp\u003c/span\u003e\n" +
+		"        \u003c/footer\u003e\n" +
+		"      \u003c/blockquote\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"stats-section\"\u003e\n" +
+		"    \u003ch2 class=\"section-heading\" use:revealOnScroll\u003eBy the Numbers\u003c/h2\u003e\n" +
+		"    \u003cdiv class=\"stats-grid\"\u003e\n" +
+		"      \u003cdiv class=\"stat\" use:revealOnScroll={{ delay: 0 }}\u003e\n" +
+		"        \u003cspan class=\"stat-number\"\u003e60fps\u003c/span\u003e\n" +
+		"        \u003cspan class=\"stat-label\"\u003eSmooth Animation\u003c/span\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"stat\" use:revealOnScroll={{ delay: 0.1 }}\u003e\n" +
+		"        \u003cspan class=\"stat-number\"\u003e14\u003c/span\u003e\n" +
+		"        \u003cspan class=\"stat-label\"\u003eLessons Covered\u003c/span\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"stat\" use:revealOnScroll={{ delay: 0.2 }}\u003e\n" +
+		"        \u003cspan class=\"stat-number\"\u003e0\u003c/span\u003e\n" +
+		"        \u003cspan class=\"stat-label\"\u003eMemory Leaks\u003c/span\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"      \u003cdiv class=\"stat\" use:revealOnScroll={{ delay: 0.3 }}\u003e\n" +
+		"        \u003cspan class=\"stat-number\"\u003eA11y\u003c/span\u003e\n" +
+		"        \u003cspan class=\"stat-label\"\u003eReduced Motion Safe\u003c/span\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  {#if showNewsletter}\n" +
+		"    \u003cdiv class=\"overlay\" transition:fade={{ duration: 200 }}\u003e\n" +
+		"      \u003cdiv class=\"modal\" role=\"dialog\" aria-label=\"Newsletter signup\"\u003e\n" +
+		"        {#if submitted}\n" +
+		"          \u003cdiv class=\"success-msg\"\u003e\n" +
+		"            \u003cspan class=\"check\"\u003e&#10003;\u003c/span\u003e\n" +
+		"            \u003ch3\u003eYou're in!\u003c/h3\u003e\n" +
+		"            \u003cp\u003eCheck your inbox for confirmation.\u003c/p\u003e\n" +
+		"          \u003c/div\u003e\n" +
+		"        {:else}\n" +
+		"          \u003ch2\u003eGet Early Access\u003c/h2\u003e\n" +
+		"          \u003cp\u003eJoin our newsletter for GSAP + Svelte tips and tutorials.\u003c/p\u003e\n" +
+		"          \u003cform onsubmit={(e) =\u003e { e.preventDefault(); handleSubmit(); }}\u003e\n" +
+		"            \u003cinput\n" +
+		"              type=\"email\"\n" +
+		"              placeholder=\"you@example.com\"\n" +
+		"              bind:value={email}\n" +
+		"              required\n" +
+		"            /\u003e\n" +
+		"            \u003cbutton type=\"submit\"\u003eSubscribe\u003c/button\u003e\n" +
+		"          \u003c/form\u003e\n" +
+		"          \u003cbutton class=\"close-btn\" onclick={closeNewsletter} aria-label=\"Close\"\u003e&times;\u003c/button\u003e\n" +
+		"        {/if}\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  {/if}\n" +
+		"\n" +
+		"  \u003cfooter class=\"project-footer\"\u003e\n" +
+		"    \u003ch3\u003eBuilt With\u003c/h3\u003e\n" +
+		"    \u003cdiv class=\"tech-tags\"\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003eGSAP Timelines\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003eScrollTrigger\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003eStagger\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003ebind:this\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003e$effect Bridge\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003egsap.context() Cleanup\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003euse: Actions\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003erevealOnScroll\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003eSvelte Transitions\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003eReduced Motion\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003eafterNavigate\u003c/span\u003e\n" +
+		"      \u003cspan class=\"tag\"\u003eIntersectionObserver\u003c/span\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"    \u003cp class=\"footer-note\"\u003eModule 7: GSAP Integration — all concepts applied.\u003c/p\u003e\n" +
+		"  \u003c/footer\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page project-page" bind:this={containerEl}>
@@ -233,6 +473,12 @@
     </div>
     <p class="footer-note">Module 7: GSAP Integration — all concepts applied.</p>
   </footer>
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 </section>
 
 <style>
@@ -307,4 +553,34 @@
   .tech-tags { display: flex; flex-wrap: wrap; gap: var(--space-xs); justify-content: center; margin-bottom: var(--space-md); }
   .tag { font-size: var(--text-xs); background: oklch(60% 0.20 320 / 0.1); color: oklch(60% 0.20 320); padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-full); border: 1px solid oklch(60% 0.20 320 / 0.2); font-weight: 500; }
   .footer-note { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   import gsap from 'gsap';
   import type { Action } from 'svelte/action';
 
@@ -42,6 +43,103 @@
     show = false;
     setTimeout(() => { show = true; }, 50);
   }
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import gsap from 'gsap';\n" +
+		"  import type { Action } from 'svelte/action';\n" +
+		"\n" +
+		"  const fadeIn: Action\u003cHTMLElement, { duration?: number; y?: number } | undefined\u003e = (node, params) =\u003e {\n" +
+		"    const opts = params ?? {};\n" +
+		"    const dur = opts.duration ?? 0.6;\n" +
+		"    const yOffset = opts.y ?? 20;\n" +
+		"\n" +
+		"    gsap.from(node, { opacity: 0, y: yOffset, duration: dur, ease: 'power2.out' });\n" +
+		"\n" +
+		"    return {\n" +
+		"      destroy() {\n" +
+		"        gsap.killTweensOf(node);\n" +
+		"      }\n" +
+		"    };\n" +
+		"  };\n" +
+		"\n" +
+		"  const scaleIn: Action\u003cHTMLElement\u003e = (node) =\u003e {\n" +
+		"    gsap.from(node, { scale: 0, opacity: 0, duration: 0.5, ease: 'back.out(1.7)' });\n" +
+		"\n" +
+		"    return {\n" +
+		"      destroy() {\n" +
+		"        gsap.killTweensOf(node);\n" +
+		"      }\n" +
+		"    };\n" +
+		"  };\n" +
+		"\n" +
+		"  const slideRight: Action\u003cHTMLElement\u003e = (node) =\u003e {\n" +
+		"    gsap.from(node, { x: -80, opacity: 0, duration: 0.7, ease: 'power3.out' });\n" +
+		"\n" +
+		"    return {\n" +
+		"      destroy() {\n" +
+		"        gsap.killTweensOf(node);\n" +
+		"      }\n" +
+		"    };\n" +
+		"  };\n" +
+		"\n" +
+		"  let show = $state(true);\n" +
+		"\n" +
+		"  function replay() {\n" +
+		"    show = false;\n" +
+		"    setTimeout(() =\u003e { show = true; }, 50);\n" +
+		"  }\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e7.11 — Svelte Actions with GSAP\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\u003cstrong\u003eConcept.\u003c/strong\u003e Svelte \u003ccode\u003euse:\u003c/code\u003e actions are functions that run when an element is mounted. They are the perfect place to encapsulate GSAP animations as reusable directives. Return a \u003ccode\u003edestroy\u003c/code\u003e method to clean up tweens when the element is removed.\u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    \u003cpre\u003e{`import type \\{ Action \\} from 'svelte/action';\n" +
+		"\n" +
+		"const fadeIn: Action\u003cHTMLElement\u003e = (node) =\u003e \\{\n" +
+		"  gsap.from(node, \\{\n" +
+		"    opacity: 0, y: 20, duration: 0.6\n" +
+		"  \\});\n" +
+		"  return \\{\n" +
+		"    destroy() \\{ gsap.killTweensOf(node); \\}\n" +
+		"  \\};\n" +
+		"\\};\n" +
+		"\n" +
+		"// Usage: \u003cdiv use:fadeIn\u003e...\u003c/div\u003e`}\u003c/pre\u003e\n" +
+		"\n" +
+		"    \u003cbutton onclick={replay}\u003eReplay All\u003c/button\u003e\n" +
+		"\n" +
+		"    {#if show}\n" +
+		"      \u003cdiv class=\"demo-cards\"\u003e\n" +
+		"        \u003cdiv class=\"demo-card\" use:fadeIn={{ duration: 0.6, y: 30 }}\u003e\n" +
+		"          \u003ch4\u003euse:fadeIn\u003c/h4\u003e\n" +
+		"          \u003cp\u003eFades in from below with opacity and y translation.\u003c/p\u003e\n" +
+		"        \u003c/div\u003e\n" +
+		"\n" +
+		"        \u003cdiv class=\"demo-card\" use:scaleIn\u003e\n" +
+		"          \u003ch4\u003euse:scaleIn\u003c/h4\u003e\n" +
+		"          \u003cp\u003eScales in from zero with a bouncy back ease.\u003c/p\u003e\n" +
+		"        \u003c/div\u003e\n" +
+		"\n" +
+		"        \u003cdiv class=\"demo-card\" use:slideRight\u003e\n" +
+		"          \u003ch4\u003euse:slideRight\u003c/h4\u003e\n" +
+		"          \u003cp\u003eSlides in from the left with power3 easing.\u003c/p\u003e\n" +
+		"        \u003c/div\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    {/if}\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003eSvelte \u003ccode\u003euse:\u003c/code\u003e actions run GSAP animations when an element mounts.\u003c/li\u003e\n" +
+		"    \u003cli\u003eReturning \u003ccode\u003edestroy()\u003c/code\u003e calls \u003ccode\u003egsap.killTweensOf(node)\u003c/code\u003e for cleanup.\u003c/li\u003e\n" +
+		"    \u003cli\u003eActions make GSAP animations reusable across any element with \u003ccode\u003euse:actionName\u003c/code\u003e.\u003c/li\u003e\n" +
+		"    \u003cli\u003eActions can accept parameters for configurable animations.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -84,6 +182,12 @@ const fadeIn: Action<HTMLElement> = (node) => \{
     {/if}
   </div>
 
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
   <h3>What you learned</h3>
   <ul>
     <li>Svelte <code>use:</code> actions run GSAP animations when an element mounts.</li>
@@ -112,4 +216,40 @@ const fadeIn: Action<HTMLElement> = (node) => \{
 
   button { background: var(--color-brand); color: var(--color-surface); border: none; padding: var(--space-xs) var(--space-md); border-radius: var(--radius-sm); cursor: pointer; font-size: var(--text-sm); font-weight: 500; align-self: flex-start; }
   button:hover { background: var(--color-brand-dim); }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

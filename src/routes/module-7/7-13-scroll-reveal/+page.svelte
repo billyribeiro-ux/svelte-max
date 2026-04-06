@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   import gsap from 'gsap';
   import type { Action } from 'svelte/action';
 
@@ -45,6 +46,143 @@
       }
     };
   };
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import gsap from 'gsap';\n" +
+		"  import type { Action } from 'svelte/action';\n" +
+		"\n" +
+		"  interface RevealOptions {\n" +
+		"    y?: number;\n" +
+		"    duration?: number;\n" +
+		"    threshold?: number;\n" +
+		"    delay?: number;\n" +
+		"  }\n" +
+		"\n" +
+		"  const revealOnScroll: Action\u003cHTMLElement, RevealOptions | undefined\u003e = (node, params) =\u003e {\n" +
+		"    const opts = params ?? {};\n" +
+		"    const y = opts.y ?? 40;\n" +
+		"    const duration = opts.duration ?? 0.8;\n" +
+		"    const threshold = opts.threshold ?? 0.2;\n" +
+		"    const delay = opts.delay ?? 0;\n" +
+		"\n" +
+		"    gsap.set(node, { opacity: 0, y });\n" +
+		"\n" +
+		"    const observer = new IntersectionObserver(\n" +
+		"      (entries) =\u003e {\n" +
+		"        entries.forEach((entry) =\u003e {\n" +
+		"          if (entry.isIntersecting) {\n" +
+		"            gsap.to(node, {\n" +
+		"              opacity: 1,\n" +
+		"              y: 0,\n" +
+		"              duration,\n" +
+		"              delay,\n" +
+		"              ease: 'power3.out'\n" +
+		"            });\n" +
+		"            observer.disconnect();\n" +
+		"          }\n" +
+		"        });\n" +
+		"      },\n" +
+		"      { threshold }\n" +
+		"    );\n" +
+		"\n" +
+		"    observer.observe(node);\n" +
+		"\n" +
+		"    return {\n" +
+		"      destroy() {\n" +
+		"        observer.disconnect();\n" +
+		"        gsap.killTweensOf(node);\n" +
+		"      }\n" +
+		"    };\n" +
+		"  };\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e7.13 — Scroll Reveal Action\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\u003cstrong\u003eConcept.\u003c/strong\u003e A production-grade \u003ccode\u003euse:revealOnScroll\u003c/code\u003e action combines IntersectionObserver with GSAP. The observer watches for the element to enter the viewport; once visible, it triggers a GSAP animation and disconnects. This is more performant than ScrollTrigger for simple reveal effects.\u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    \u003cpre\u003e{`const revealOnScroll: Action\u003cHTMLElement, Options\u003e = (node, params) =\u003e \\{\n" +
+		"  gsap.set(node, \\{ opacity: 0, y: 40 \\});\n" +
+		"\n" +
+		"  const observer = new IntersectionObserver(\n" +
+		"    (entries) =\u003e \\{\n" +
+		"      entries.forEach((entry) =\u003e \\{\n" +
+		"        if (entry.isIntersecting) \\{\n" +
+		"          gsap.to(node, \\{ opacity: 1, y: 0, duration: 0.8 \\});\n" +
+		"          observer.disconnect(); // one-shot\n" +
+		"        \\}\n" +
+		"      \\});\n" +
+		"    \\},\n" +
+		"    \\{ threshold: 0.2 \\}\n" +
+		"  );\n" +
+		"  observer.observe(node);\n" +
+		"\n" +
+		"  return \\{\n" +
+		"    destroy() \\{\n" +
+		"      observer.disconnect();\n" +
+		"      gsap.killTweensOf(node);\n" +
+		"    \\}\n" +
+		"  \\};\n" +
+		"\\};\n" +
+		"\n" +
+		"// Usage: \u003cdiv use:revealOnScroll\u003e...\u003c/div\u003e\n" +
+		"// With options: \u003cdiv use:revealOnScroll=\\{\\{ y: 60, delay: 0.2 \\}\\}\u003e...\u003c/div\u003e`}\u003c/pre\u003e\n" +
+		"\n" +
+		"    \u003cp class=\"scroll-hint\"\u003eScroll down to see the cards reveal one by one.\u003c/p\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"spacer\"\u003e\u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"reveal-grid\"\u003e\n" +
+		"    \u003cdiv class=\"reveal-card\" use:revealOnScroll\u003e\n" +
+		"      \u003cdiv class=\"icon\"\u003e&#9733;\u003c/div\u003e\n" +
+		"      \u003ch4\u003ePerformance\u003c/h4\u003e\n" +
+		"      \u003cp\u003eIntersectionObserver is more efficient than scroll event listeners. No layout thrashing.\u003c/p\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"\n" +
+		"    \u003cdiv class=\"reveal-card\" use:revealOnScroll={{ delay: 0.1 }}\u003e\n" +
+		"      \u003cdiv class=\"icon\"\u003e&#9881;\u003c/div\u003e\n" +
+		"      \u003ch4\u003eOne-Shot\u003c/h4\u003e\n" +
+		"      \u003cp\u003eObserver disconnects after triggering, so no ongoing overhead.\u003c/p\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"\n" +
+		"    \u003cdiv class=\"reveal-card\" use:revealOnScroll={{ delay: 0.2 }}\u003e\n" +
+		"      \u003cdiv class=\"icon\"\u003e&#9889;\u003c/div\u003e\n" +
+		"      \u003ch4\u003eReusable\u003c/h4\u003e\n" +
+		"      \u003cp\u003eApply \u003ccode\u003euse:revealOnScroll\u003c/code\u003e to any element — no component coupling.\u003c/p\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"\n" +
+		"    \u003cdiv class=\"reveal-card\" use:revealOnScroll={{ y: 60, delay: 0.1 }}\u003e\n" +
+		"      \u003cdiv class=\"icon\"\u003e&#128736;\u003c/div\u003e\n" +
+		"      \u003ch4\u003eConfigurable\u003c/h4\u003e\n" +
+		"      \u003cp\u003ePass custom \u003ccode\u003ey\u003c/code\u003e, \u003ccode\u003eduration\u003c/code\u003e, \u003ccode\u003ethreshold\u003c/code\u003e, and \u003ccode\u003edelay\u003c/code\u003e options.\u003c/p\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"\n" +
+		"    \u003cdiv class=\"reveal-card\" use:revealOnScroll={{ y: 60, delay: 0.2 }}\u003e\n" +
+		"      \u003cdiv class=\"icon\"\u003e&#9855;\u003c/div\u003e\n" +
+		"      \u003ch4\u003eClean Teardown\u003c/h4\u003e\n" +
+		"      \u003cp\u003eThe \u003ccode\u003edestroy\u003c/code\u003e method disconnects the observer and kills GSAP tweens.\u003c/p\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"\n" +
+		"    \u003cdiv class=\"reveal-card\" use:revealOnScroll={{ y: 60, delay: 0.3 }}\u003e\n" +
+		"      \u003cdiv class=\"icon\"\u003e&#127919;\u003c/div\u003e\n" +
+		"      \u003ch4\u003eProduction-Ready\u003c/h4\u003e\n" +
+		"      \u003cp\u003eThis pattern is used on real marketing pages and landing pages worldwide.\u003c/p\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"spacer-sm\"\u003e\u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003eIntersectionObserver detects when elements enter the viewport without scroll listeners.\u003c/li\u003e\n" +
+		"    \u003cli\u003eCombining IntersectionObserver with GSAP gives performant, one-shot reveal animations.\u003c/li\u003e\n" +
+		"    \u003cli\u003eDisconnecting the observer after the first intersection prevents unnecessary work.\u003c/li\u003e\n" +
+		"    \u003cli\u003eWrapping this pattern in a \u003ccode\u003euse:\u003c/code\u003e action makes it reusable across any element.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -124,6 +262,12 @@
 
   <div class="spacer-sm"></div>
 
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
   <h3>What you learned</h3>
   <ul>
     <li>IntersectionObserver detects when elements enter the viewport without scroll listeners.</li>
@@ -154,4 +298,40 @@
   .reveal-card .icon { font-size: var(--text-2xl); margin-bottom: var(--space-sm); }
   .reveal-card h4 { margin: 0 0 var(--space-xs); color: var(--color-text); }
   .reveal-card p { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); line-height: 1.5; }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

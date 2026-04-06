@@ -301,6 +301,8 @@ export function increment(): void { count++; }
 		'onclick='
 	];
 
+	const fullCode = fullTableCode;
+
 	const practiceHints: readonly string[] = [
 		'Replace "export let" with destructuring from $props().',
 		'Replace "$: greeting = ..." with "const greeting = $derived(...)".',
@@ -469,6 +471,15 @@ export function increment(): void { count++; }
 			<CodeCanvas filename="right.svelte" code={rightCode} />
 		</div>
 	</div>
+
+	<!-- HAVING ISSUES? COMPLETE CODE -->
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>
+			If your version is not working, compare it line-by-line with this reference.
+		</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<!-- 9. What you learned -->
 	<h3>What you learned</h3>
@@ -675,6 +686,29 @@ export function increment(): void { count++; }
 		}
 	}
 
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
 	/* ── Responsive ──────────────────────────────────────── */
 	@media (min-width: 768px) {
 		.comparison {
@@ -692,5 +726,21 @@ export function increment(): void { count++; }
 				flex: 1;                         /* equal width */
 			}
 		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+
+	@media (min-width: 480px) {
+		.analogy, .concept, .hint { max-inline-size: 65ch; }
+	}
+
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.analogy, .concept, .hint { max-inline-size: 72ch; }
+	}
+
+	@media (min-width: 1024px) {
+		.analogy, .concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

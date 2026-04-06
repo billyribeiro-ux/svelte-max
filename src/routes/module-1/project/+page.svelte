@@ -173,6 +173,8 @@ export interface Profile {
 	];
 
 	// ── Common mistakes code blocks ─────────────────────────────────────
+	const fullCode = solutionPageCode;
+
 	const mistakeNoInterface: string = `// WRONG — no interface, no type safety
 const me = {
   name: 'Billy',
@@ -302,6 +304,15 @@ const me = {
 		<li><strong>Animate the stats</strong> — use <code>$effect</code> to count up from 0 to the final value on mount.</li>
 		<li><strong>Extract reusable components</strong> — move the stat card and skill pill into separate <code>.svelte</code> files with typed props.</li>
 	</ul>
+
+	<!-- ── HAVING ISSUES? COMPLETE CODE ──────────────────── -->
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>
+			If your version is not working, compare it line-by-line with this reference.
+		</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<!-- ── Reference solution ─────────────────────────────── -->
 	<h2>Reference solution</h2>
@@ -540,6 +551,29 @@ const me = {
 		}
 	}
 
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
 	/* ── Responsive ──────────────────────────────────────── */
 	@media (min-width: 768px) {
 		.stats {
@@ -555,5 +589,21 @@ const me = {
 		.role {
 			font-size: var(--text-2xl);        /* larger role on desktop */
 		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

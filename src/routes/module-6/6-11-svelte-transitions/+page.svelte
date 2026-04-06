@@ -1,7 +1,10 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
-	import { fly } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
+
+	// Standalone out: demo — shows a banner that only animates on exit
+	let showBanner = $state(true);
 
 	interface Notification {
 		id: number;
@@ -122,6 +125,26 @@
 				</div>
 			{/each}
 		</div>
+	</div>
+
+	<h3>Standalone <code>out:</code> directive</h3>
+	<div class="build">
+		<p style="font-size:var(--text-sm); color:var(--color-text-muted); margin:0;">
+			Unlike <code>transition:</code> which is bidirectional, <code>out:</code> only animates on removal.
+			Use it when elements should appear instantly but fade/fly away on dismiss.
+		</p>
+		{#if showBanner}
+			<!-- out:fade — standalone exit-only transition; no enter animation -->
+			<div class="toast info" out:fade={{ duration: 300 }}>
+				<span>This banner has no enter animation. Click dismiss to see out:fade.</span>
+				<button type="button" class="close" onclick={() => showBanner = false}>✕</button>
+			</div>
+		{/if}
+		{#if !showBanner}
+			<button type="button" onclick={() => showBanner = true} style="align-self:flex-start; padding:var(--space-xs) var(--space-md); border:1px solid var(--color-border); border-radius:var(--radius-md); background:var(--color-surface-2); color:var(--color-text); cursor:pointer;">
+				Show banner again
+			</button>
+		{/if}
 	</div>
 
 	<details class="having-issues">

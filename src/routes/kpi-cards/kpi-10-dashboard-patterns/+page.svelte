@@ -2,6 +2,7 @@
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import KpiCard from '$lib/components/KpiCard.svelte';
 	import { dashboard } from '$lib/stores/dashboard.svelte';
+	import { slide } from 'svelte/transition';
 	import type { KpiMetric } from '$lib/types/kpi';
 
 	let demoLoading = $state(false);
@@ -131,7 +132,8 @@
 							<div class="skeleton-bar"></div>
 						</article>
 					{:else if demoError}
-						<article class="error-card" role="alert">
+						<!-- out:slide — standalone exit-only transition on dismissed error cards -->
+					<article class="error-card" role="alert" out:slide={{ duration: 250 }}>
 							<span class="error-label">{metric.label}</span>
 							<span class="error-icon">&#x26A0;</span>
 							<p class="error-text">Failed to load metric</p>

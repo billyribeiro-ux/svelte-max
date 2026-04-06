@@ -1,5 +1,7 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+	import { fade } from 'svelte/transition';
+
 	type ToastKind = 'info' | 'success' | 'error';
 
 	interface Toast {
@@ -168,7 +170,8 @@
 
 	<div class="stack" aria-live="polite" aria-atomic="false">
 		{#each toasts as t (t.id)}
-			<div class="toast" data-kind={t.kind} role="status">
+			<!-- out:fade — standalone exit-only transition on toast dismissal -->
+			<div class="toast" data-kind={t.kind} role="status" out:fade={{ duration: 200 }}>
 				<span class="dot" aria-hidden="true"></span>
 				<span class="text">{t.text}</span>
 				<button type="button" class="x" aria-label="Dismiss" onclick={() => dismiss(t.id)}>×</button>

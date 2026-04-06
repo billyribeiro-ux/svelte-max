@@ -84,19 +84,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments to understand how Svelte's prop system behaves at the edges.</p>
+	<ol class="experiments">
+		<li><strong>Access a prop that was never passed by the parent.</strong> The destructured variable will be <code>undefined</code> at runtime, with no error unless you have added a TypeScript type annotation. This shows that without types, Svelte does not enforce required props — it is the type system that makes them mandatory.</li>
+		<li><strong>Destructure <code>$props()</code> without curly braces — write <code>let props = $props()</code>.</strong> This is actually valid and gives you the entire props object, but you lose fine-grained reactivity and tree-shaking. The compiler cannot track which individual props are used, so every prop change triggers an update.</li>
+		<li><strong>Try to mutate a prop value from inside the child component.</strong> The mutation appears to work locally, but the parent's state does not change. This demonstrates one-way data flow: props flow down, and the child's local mutation is an isolated side effect that will be overwritten the next time the parent re-renders.</li>
+		<li><strong>Pass an extra prop that the component does not declare in its interface.</strong> TypeScript will warn that the property "does not exist on type Props." At runtime Svelte silently ignores it, but the type error protects you from typos and dead code.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$props()</code> replaces <code>export let</code> from Svelte 4.</li>
-		<li>Destructure only the props you need; unused ones are tree-shaken.</li>
-		<li>Props are passed at the call site as attributes, exactly like HTML.</li>
-		<li>Explicit destructuring is what enables type inference and reactive wiring.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">In Svelte 5 the <code>$props()</code> rune replaces the old <code>export let</code> pattern for receiving data from a parent component. You call <code>$props()</code> at the top of the script and destructure the values you need, which tells the compiler exactly which props the component consumes. This explicit destructuring is what enables tree-shaking of unused props and fine-grained reactive updates.</p>
+	<p class="prose">Props flow in one direction: from parent to child. The parent passes them as attributes on the component tag, exactly the way you set attributes on a native HTML element. The child reads them but does not own them — the parent is the single source of truth, and any change to the parent's data automatically propagates downward.</p>
+	<p class="prose">Because the destructuring happens at the top of the script, TypeScript can infer or check every prop's type without extra annotations. If you later rename a prop or change its type, every consumer that passes the wrong value lights up with a compile error, giving you confidence to refactor across files.</p>
+	<p class="next">Next lesson: <a href="/module-3/3-3-typed-props">3.3 — Typed props</a></p>
 </section>
 
 <style>
@@ -159,22 +166,6 @@
 		border-radius: var(--radius-xs);
 	}
 
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
-
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
@@ -214,6 +205,27 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

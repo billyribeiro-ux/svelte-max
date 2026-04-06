@@ -108,19 +108,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments clarify the subtle boundary between optional, defaulted, and absent props.</p>
+	<ol class="experiments">
+		<li><strong>Set a default value for a prop that is marked as required (no <code>?</code>) in the interface.</strong> The prop effectively becomes optional because it always has a value. TypeScript will no longer complain when the consumer omits it, which might be exactly what you want — or might hide a bug if the caller should have been forced to decide.</li>
+		<li><strong>Use <code>undefined</code> as a default value.</strong> This is the same as having no default at all — the prop is truly absent when not passed. It is useful when you need to distinguish "the caller chose not to pass this" from "the caller explicitly chose the default value."</li>
+		<li><strong>Destructure with <code>= 'default'</code> in the pattern, e.g. <code>let {'{ tone = "neutral" }'} = $props()</code>.</strong> This is the idiomatic Svelte 5 way to set defaults. The value lives right next to the variable name, making it visible at a glance, and TypeScript narrows the type to exclude <code>undefined</code>.</li>
+		<li><strong>Check <code>if (prop === undefined)</code> inside the component.</strong> This works for detecting "not passed." It lets you branch on whether the consumer explicitly provided a value, which is useful for components that need to differentiate between "use the default" and "the caller made a choice."</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>?</code> in an interface marks a prop as optional.</li>
-		<li>Defaults live at the destructuring site, not inside the interface.</li>
-		<li>Consumers can pass only what matters — the rest falls back automatically.</li>
-		<li>Sensible defaults let a component feel zero-config while still being configurable.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Optional props are declared with a <code>?</code> in the <code>interface Props</code>, signaling that consumers may omit them. The default value is set at the destructuring site — <code>let {'{ tone = "neutral" }'} = $props()</code> — not inside the interface itself. This keeps the type declaration focused on shape and the script focused on behavior.</p>
+	<p class="prose">When a consumer omits an optional prop, the destructured variable receives the default value you specified. When the consumer explicitly passes a value, it overrides the default. This two-tier system means components can feel zero-config for the common case while remaining fully configurable for edge cases.</p>
+	<p class="prose">Choosing sensible defaults is a design decision, not just a technical one. A badge that defaults to <code>"neutral"</code> tone is immediately useful without any configuration; the caller only needs to intervene when they want something specific. Good defaults reduce cognitive load for consumers and keep call sites clean.</p>
+	<p class="next">Next lesson: <a href="/module-3/3-5-bindable">3.5 — $bindable()</a></p>
 </section>
 
 <style>
@@ -184,22 +191,6 @@
 		border-radius: var(--radius-xs);
 	}
 
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
-
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
@@ -229,6 +220,27 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

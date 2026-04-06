@@ -96,19 +96,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments show how function bindings differ from plain bindings and where the edges are.</p>
+	<ol class="experiments">
+		<li><strong>Pass a function whose argument types do not match the expected signature.</strong> TypeScript catches the mismatch immediately. Function props are fully typed end-to-end, so the compiler verifies that the parent's handler matches the contract the child expects.</li>
+		<li><strong>Call a callback inside <code>$derived</code> instead of <code>$effect</code>.</strong> Derived values must be pure computations with no side effects. Invoking a callback (which typically mutates state or performs I/O) inside <code>$derived</code> violates this contract — use <code>$effect</code> for side-effectful reactions.</li>
+		<li><strong>Pass an async function as a callback prop.</strong> It works at runtime, but if the async function throws, the error is swallowed unless you wrap the call in a <code>try/catch</code>. Unhandled promise rejections are silent by default in most environments.</li>
+		<li><strong>Render <code>{'{onclick}'}</code> in markup instead of calling <code>{'{onclick()}'}</code>.</strong> Svelte will render the function's string representation — something like <code>function() {'{ ... }'}</code> — instead of its return value. This is a common mistake when switching between event handlers and inline expressions.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>bind:value={'{getter, setter}'}</code> lets you transform values as they cross the boundary.</li>
-		<li>The child sees formatted strings; the parent keeps a clean typed value.</li>
-		<li>No extra <code>$effect</code> is needed — the binding itself does the work.</li>
-		<li>Function bindings also unlock readonly props like <code>clientWidth</code>.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Function bindings let you intercept values as they cross the parent-child boundary. Instead of passing a plain variable to <code>bind:</code>, you pass a getter-setter tuple: the getter transforms the value on read (e.g. formatting a number as currency), and the setter transforms it on write (e.g. parsing the string back to a number). This eliminates the need for a separate <code>$effect</code> to keep formatted and raw values in sync.</p>
+	<p class="prose">The child component sees only the transformed value — in the currency example, it displays and edits a formatted string. Meanwhile, the parent retains a clean typed number that is ready for computation, validation, or persistence. The transformation logic lives at the binding site, not scattered across effects or derived values.</p>
+	<p class="prose">Function bindings also work for readonly scenarios. You can pass a <code>null</code> getter with a setter to capture values the child produces (like <code>clientWidth</code>) without feeding anything back down. This pattern replaces the old <code>bind:clientWidth</code> shorthand with a more explicit, more flexible mechanism.</p>
+	<p class="next">Next lesson: <a href="/module-3/3-7-snippets">3.7 — Snippets</a></p>
 </section>
 
 <style>
@@ -181,22 +188,6 @@
 		background: var(--color-surface-1);
 	}
 
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
-
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
@@ -226,6 +217,27 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

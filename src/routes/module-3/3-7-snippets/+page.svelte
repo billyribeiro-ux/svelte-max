@@ -98,19 +98,26 @@
     <p>The same <code>priceTag</code> snippet, reused inline: {@render priceTag(42)} and {@render priceTag(777)}.</p>
   </div>
 
+  <h2>Break it on purpose</h2>
+  <p class="prose">These experiments clarify how snippets work under the hood and where they differ from the old slot system.</p>
+  <ol class="experiments">
+    <li><strong>Use <code>&lt;slot&gt;</code> in a Svelte 5 component instead of a snippet.</strong> Svelte will emit a deprecation warning. Slots are the Svelte 4 mechanism — in Svelte 5, snippets replace them with a more flexible, fully typed alternative that supports parameters and conditional rendering.</li>
+    <li><strong>Define a snippet but never <code>{`{@render}`}</code> it.</strong> No error occurs — the snippet simply never appears in the DOM. This is harmless but wasteful; it is like declaring a function you never call. Svelte does not warn about unused snippets, so you must spot them yourself.</li>
+    <li><strong>Try to <code>{`{@render}`}</code> a snippet name that does not exist.</strong> You will get a runtime error because the variable is undefined. Unlike optional chaining with <code>{`{@render name?.()}`}</code>, a bare render call assumes the snippet is always defined.</li>
+    <li><strong>Define two snippets with the same name in the same scope.</strong> The second definition silently overwrites the first — last one wins. This is the same behavior as declaring two variables with the same name using <code>let</code> in JavaScript.</li>
+  </ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Define reusable markup with <code>{`{#snippet}`}</code> and invoke with <code>{`{@render}`}</code>.</li>
-    <li>Snippets accept typed parameters like a function.</li>
-    <li>Same snippet can be rendered any number of times with different arguments.</li>
-    <li>They live in the parent scope — promote to a component when they grow.</li>
-  </ul>
+  <h2>What you learned</h2>
+  <p class="prose">Snippets are Svelte 5's replacement for slots. You define a reusable fragment of markup with <code>{`{#snippet name(params)}`}</code> and render it with <code>{`{@render name(args)}`}</code>. Unlike slots, snippets are first-class values — they can accept typed parameters, be stored in variables, and be rendered conditionally or repeatedly.</p>
+  <p class="prose">Because snippets live in the parent's scope, they have access to all the parent's variables and reactive state. This makes them ideal for small, reusable pieces of markup that do not need their own file. When a snippet grows complex enough to need its own styles or its own props, you promote it to a standalone component.</p>
+  <p class="prose">The same snippet can be rendered multiple times with different arguments, just like calling a function. This is more flexible than named slots, which could only appear once per component. Snippets bring the composability of functions to your template layer, closing the gap between logic and markup.</p>
+  <p class="next">Next lesson: <a href="/module-3/3-8-snippet-props">3.8 — Snippets as props</a></p>
 </section>
 
 <style>
@@ -187,19 +194,6 @@
     border-radius: var(--radius-xs);
   }
 
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
-
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	/* ── Having issues section ── */
@@ -225,6 +219,27 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

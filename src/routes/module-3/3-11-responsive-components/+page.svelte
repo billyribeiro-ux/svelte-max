@@ -123,18 +123,26 @@
     </p>
   </div>
 
+  <h2>Break it on purpose</h2>
+  <p class="prose">These experiments clarify the difference between viewport-based and container-based responsive design.</p>
+  <ol class="experiments">
+    <li><strong>Use <code>@media</code> for component-level responsiveness.</strong> The component responds to the viewport width, not its own container. Resize the browser and notice that a narrow sidebar card switches layout at the same breakpoint as a full-width card — that is wrong because the sidebar card is always narrow regardless of viewport size.</li>
+    <li><strong>Switch to <code>@container</code> queries.</strong> Now the component responds to the width of its parent container, not the viewport. The sidebar card stays in its narrow layout even on a wide screen, while the full-width card switches to horizontal. This is true component-level responsiveness.</li>
+    <li><strong>Forget to set <code>container-type: inline-size</code> on the parent element.</strong> The <code>@container</code> query silently does nothing because there is no containment context to query against. This is the most common container query mistake — the rule requires an explicit opt-in on an ancestor.</li>
+    <li><strong>Nest containers by setting <code>container-type</code> on both a grandparent and a parent.</strong> The inner <code>@container</code> query measures the nearest ancestor with <code>container-type</code>. This is useful for compound layouts but can be confusing if you forget which ancestor is being measured.</li>
+  </ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Set <code>container-type: inline-size</code> on a parent to query its width.</li>
-    <li>Use <code>@container (min-width: ...)</code> inside the child's scoped styles.</li>
-    <li>The same component can render differently in different slots of the same page.</li>
-  </ul>
+  <h2>What you learned</h2>
+  <p class="prose">Responsive components use <code>@container</code> queries instead of <code>@media</code> queries. While media queries respond to the viewport — the browser window — container queries respond to the size of the nearest ancestor that has <code>container-type: inline-size</code>. This distinction is what makes components truly reusable: the same card can lay out vertically in a narrow sidebar and horizontally in a wide content area, on the same page, at the same viewport width.</p>
+  <p class="prose">To enable container queries, you must set <code>container-type: inline-size</code> on the parent element. Without this declaration, <code>@container</code> rules silently have no effect. Inside the child's scoped styles, you write <code>@container (min-width: 20rem)</code> to define breakpoints relative to the container's width rather than the screen's width.</p>
+  <p class="prose">Container queries complete the encapsulation story for Svelte components. Scoped styles keep CSS from leaking out, custom properties let parents theme from the outside, and container queries let the component adapt its own layout to wherever it is placed. Together, these three features make a component a truly portable, self-contained unit of UI.</p>
+  <p class="next">Next up: <a href="/module-3/project">Module 3 Project</a></p>
 </section>
 
 <style>
@@ -259,19 +267,6 @@
     border-radius: var(--radius-xs);
   }
 
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
-
   @media (min-width: 768px) {
     h1 { font-size: var(--text-2xl); }
     .demo {
@@ -305,6 +300,27 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

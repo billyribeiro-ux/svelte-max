@@ -71,18 +71,26 @@
     </div>
   </div>
 
+  <h2>Break it on purpose</h2>
+  <p class="prose">These experiments show how CSS custom properties cascade into components and where the mechanism has edges.</p>
+  <ol class="experiments">
+    <li><strong>Set <code>--card-bg</code> from the parent but do not use <code>var(--card-bg)</code> inside the child.</strong> Nothing happens — the property cascades into the child's DOM subtree, but if no rule references it, it has no visual effect. Custom properties are passive; they only matter when consumed.</li>
+    <li><strong>Set a custom property directly on a component tag: <code>&lt;Card --card-bg="red"&gt;</code>.</strong> Svelte wraps the component in a <code>&lt;div style="--card-bg: red"&gt;</code> so the property scopes to that instance. This is convenient syntax but adds an extra wrapper element to the DOM.</li>
+    <li><strong>Override a global design token at the component level.</strong> The local override wins because CSS custom properties follow the cascade — a value set closer to the element beats one set higher up. This is exactly how theming systems work: global tokens provide defaults, local overrides customize.</li>
+    <li><strong>Set a custom property to an invalid value for the property that consumes it.</strong> CSS silently falls back to the inherited or initial value. There is no error, no warning — the browser simply ignores the invalid value and uses whatever the next fallback in the <code>var()</code> chain provides.</li>
+  </ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Expose a component's theme via custom properties, not props.</li>
-    <li>Parents override using scoped CSS targeting descendant elements.</li>
-    <li>The component stays closed — internals never change.</li>
-  </ul>
+  <h2>What you learned</h2>
+  <p class="prose">CSS custom properties provide a theming bridge between parent and child without breaking encapsulation. The child component reads values like <code>var(--btn-bg, fallback)</code> in its scoped styles, and the parent overrides those properties from the outside using its own scoped CSS or inline styles. No new props are needed — the styling contract lives entirely in CSS.</p>
+  <p class="prose">Svelte offers a shorthand for per-instance overrides: writing <code>--prop="value"</code> directly on a component tag. Under the hood, Svelte creates a wrapper <code>&lt;div&gt;</code> with the custom property set as an inline style, scoping the override to that single instance. This is convenient for one-off tweaks without adding a wrapper class yourself.</p>
+  <p class="prose">Design tokens combined with custom properties form a complete theming system. Global tokens define the defaults — colors, spacing, radii — and any component or page can override individual tokens at any level of the tree. The cascade ensures that the most specific override wins, giving you fine-grained control without modifying the component's internals.</p>
+  <p class="next">Next lesson: <a href="/module-3/3-11-responsive-components">3.11 — Responsive components</a></p>
 </section>
 
 <style>
@@ -150,19 +158,6 @@
     border-radius: var(--radius-xs);
   }
 
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
-
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	/* ── Having issues section ── */
@@ -188,6 +183,27 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

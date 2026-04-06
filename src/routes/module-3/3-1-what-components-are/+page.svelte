@@ -108,19 +108,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Put two <code>&lt;style&gt;</code> blocks in one component.</strong> Svelte will throw a compile error because each component is allowed exactly one <code>&lt;style&gt;</code> block. This constraint exists so the compiler can statically scope every selector without ambiguity.</li>
+		<li><strong>Import a component but forget the <code>.svelte</code> extension.</strong> You will get a "module not found" error. Unlike JavaScript files that bundlers resolve automatically, <code>.svelte</code> files require the explicit extension so the compiler knows to process them as components rather than plain modules.</li>
+		<li><strong>Use a component tag without importing it first.</strong> Svelte will report that the name is not defined. Every component must be imported as a value before it can appear in markup, because the tag name is just a reference to the imported constructor.</li>
+		<li><strong>Create a circular import where component A imports B and B imports A.</strong> Svelte handles it without crashing, but the pattern is a code smell. Circular dependencies make the dependency graph harder to reason about and can cause subtle initialization-order bugs in larger projects.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>A component is a single <code>.svelte</code> file that bundles markup, logic, and styles.</li>
-		<li>One definition can render many instances with different typed data.</li>
-		<li>Scoped styles inside a component never leak to the rest of the page.</li>
-		<li>Extracting components is how a codebase scales past a single page.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Components are the fundamental building block of every Svelte application. Each component lives in a single <code>.svelte</code> file that bundles three concerns — script, markup, and style — into one self-contained unit. You import a component the same way you import any JavaScript module, and you instantiate it in markup as if it were a custom HTML tag.</p>
+	<p class="prose">Because each component file is a complete definition, you can render many instances of it on the same page, each fed different data through props. One definition, many instances — that is the core value proposition. The compiler treats each instance independently, so changing data in one never accidentally affects another.</p>
+	<p class="prose">Scoped styles are a critical part of this encapsulation. The <code>&lt;style&gt;</code> block inside a component applies only to that component's markup, never leaking to siblings or parents. This means you can name your classes freely — <code>.card</code>, <code>.title</code>, <code>.row</code> — without worrying about collisions across the rest of the application.</p>
+	<p class="next">Next lesson: <a href="/module-3/3-2-props">3.2 — $props()</a></p>
 </section>
 
 <style>
@@ -168,22 +175,6 @@
 		border-radius: var(--radius-xs);
 	}
 
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
-
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
@@ -217,6 +208,27 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

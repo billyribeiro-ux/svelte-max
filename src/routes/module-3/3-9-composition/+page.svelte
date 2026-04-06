@@ -171,18 +171,26 @@
     </ul>
   </div>
 
+  <h2>Break it on purpose</h2>
+  <p class="prose">These experiments illustrate the tradeoffs of composition strategies and where each approach shines.</p>
+  <ol class="experiments">
+    <li><strong>Nest five components deep and pass a prop through each level.</strong> This is "prop drilling" — every intermediate component must accept and forward the prop even if it does not use it. The pain of drilling is the signal that you need a different pattern, like context (covered in Module 7).</li>
+    <li><strong>Replace the drilled prop with Svelte's <code>setContext</code>/<code>getContext</code> (preview of Module 7).</strong> The intermediate components no longer need to know about the prop at all. Context lets a parent provide a value that any descendant can consume directly, cutting through the component tree.</li>
+    <li><strong>Compose with snippets to avoid wrapper-div nesting.</strong> Instead of wrapping each piece in its own component that adds a <code>&lt;div&gt;</code>, pass snippets into a layout component. The layout decides the structure; the caller decides the content — no extra DOM nodes.</li>
+    <li><strong>Create a component that renders different snippets based on state.</strong> Use <code>{`{#if}`}</code> to choose between two snippet props at render time. This is dynamic composition — the same component shell displays entirely different content depending on the data it receives.</li>
+  </ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Compose small primitives into rich UI instead of adding variants.</li>
-    <li>Typed data drives typed props — the compiler catches mismatches.</li>
-    <li>Derived values (like badge tone) are computed from the source data.</li>
-  </ul>
+  <h2>What you learned</h2>
+  <p class="prose">Composition is the practice of building complex interfaces from small, focused components rather than creating one monolithic component with dozens of props. Instead of adding a <code>variant</code> for every visual difference, you combine primitives like <code>Avatar</code>, <code>Badge</code>, and <code>Card</code> — each responsible for one thing — into richer arrangements.</p>
+  <p class="prose">Typed data drives the entire composition chain. Each component declares the exact props it needs via its interface, and the compiler catches mismatches at every boundary. Derived values like badge tone are computed from the source data using plain functions, keeping the template declarative and the logic testable.</p>
+  <p class="prose">Snippets take composition further by letting you inject arbitrary markup into a component's layout without creating new wrapper components. When combined with context (Module 7), this pattern scales to deeply nested trees without prop drilling. The result is a codebase where each component does one job well and the page assembles them like building blocks.</p>
+  <p class="next">Next lesson: <a href="/module-3/3-10-css-custom-props">3.10 — CSS custom properties</a></p>
 </section>
 
 <style>
@@ -256,19 +264,6 @@
     border-radius: var(--radius-xs);
   }
 
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-  ul:not(.feed) {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
-
   @media (min-width: 768px) {
     h1 { font-size: var(--text-2xl); }
     .feed { max-inline-size: 40rem; }
@@ -297,6 +292,27 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

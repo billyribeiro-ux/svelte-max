@@ -167,20 +167,26 @@ interface Props {
 {/snippet}`}</pre>
   </div>
 
+  <h2>Break it on purpose</h2>
+  <p class="prose">These experiments reveal how snippet props interact with the type system and component rendering.</p>
+  <ol class="experiments">
+    <li><strong>Pass a snippet with the wrong number of parameters.</strong> TypeScript catches the mismatch because snippet props are typed with <code>Snippet&lt;[...args]&gt;</code>. If the child expects <code>Snippet&lt;[string]&gt;</code> and you define a snippet with two parameters, the compiler flags it.</li>
+    <li><strong>Type a snippet prop as <code>Snippet&lt;[string]&gt;</code> but pass one typed as <code>Snippet&lt;[number]&gt;</code>.</strong> TypeScript produces a type error at the call site. Snippet type parameters are checked just like function signatures, ensuring that the data the child passes to <code>{`{@render}`}</code> matches what the parent's snippet expects to receive.</li>
+    <li><strong>Use optional chaining with <code>{`{@render footer?.()}`}</code> for a snippet that was not passed.</strong> Nothing renders — no error, no empty div, just absence. This is the idiomatic pattern for optional snippets and is safer than checking <code>if (footer)</code> separately.</li>
+    <li><strong>Place content directly between component tags without an explicit <code>{`{#snippet children()}`}</code>.</strong> Svelte treats it as the implicit <code>children</code> snippet. This is syntactic sugar — behind the scenes, the content is wrapped in a snippet named <code>children</code> and passed as a prop.</li>
+  </ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Declare snippet props with the <code>Snippet</code> type from <code>svelte</code>.</li>
-    <li><code>children</code> is the implicit default snippet.</li>
-    <li>Named snippets are passed inside the component tags.</li>
-    <li>Use <code>{`{@render name?.()}`}</code> for optional snippets.</li>
-    <li><code>Snippet&lt;[arg: T]&gt;</code> types snippet parameters for full type safety.</li>
-  </ul>
+  <h2>What you learned</h2>
+  <p class="prose">Snippets as props enable renderless and layout components. You import the <code>Snippet</code> type from <code>svelte</code> and declare snippet props on your <code>interface Props</code>, just like any other prop. The child component decides where and when to render each snippet, while the parent decides what the snippet contains. This inversion of control is what makes composition in Svelte so powerful.</p>
+  <p class="prose">The <code>children</code> snippet is special: any content placed directly between a component's opening and closing tags is automatically treated as the <code>children</code> snippet. Named snippets like <code>header</code> and <code>footer</code> are passed explicitly inside the component tags using <code>{`{#snippet name()}`}</code>. Optional snippets are rendered with <code>{`{@render name?.()}`}</code>, which gracefully does nothing when the snippet is not provided.</p>
+  <p class="prose">Parameterized snippets use <code>Snippet&lt;[arg: T]&gt;</code> to pass data from child to parent at render time. This is the Svelte 5 equivalent of slot props — the child calls <code>{`{@render footer(42)}`}</code> and the parent's snippet receives <code>42</code> as a typed argument. The type system ensures the data contract is honored on both sides.</p>
+  <p class="next">Next lesson: <a href="/module-3/3-9-composition">3.9 — Composition</a></p>
 </section>
 
 <style>
@@ -213,18 +219,6 @@ interface Props {
     border-radius: var(--radius-xs);
   }
 
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-  ul {
-    list-style: disc;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-inline-start: var(--space-lg);
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
 
   .sub-heading {
     margin-block-start: var(--space-lg);
@@ -286,6 +280,27 @@ interface Props {
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

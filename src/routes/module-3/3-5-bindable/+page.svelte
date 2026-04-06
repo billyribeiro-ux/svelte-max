@@ -144,19 +144,26 @@
 		</table>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments reveal the boundary between one-way and two-way data flow in Svelte 5.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>bind:value</code> on a prop that is NOT marked <code>$bindable()</code>.</strong> Svelte will emit a warning telling you the prop cannot be bound. The <code>$bindable()</code> marker is an explicit opt-in — without it, the component author signals that two-way binding is not intended.</li>
+		<li><strong>Mark a prop as <code>$bindable()</code> but do not use <code>bind:</code> at the call site.</strong> It works perfectly as a normal one-way prop. The <code>$bindable()</code> declaration is permissive, not prescriptive — it says "binding is allowed here" without requiring it.</li>
+		<li><strong>Bind the same <code>$state</code> variable to two different components via <code>bind:value</code>.</strong> Both components stay in sync because they share the same reactive source through the parent. Typing in one immediately updates the other, demonstrating that the parent is the single source of truth.</li>
+		<li><strong>Try to bind to a <code>$derived</code> value.</strong> You will get an error because derived values are read-only. Binding requires a writable source, and <code>$derived</code> is computed from other state — it cannot accept writes from a child.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$bindable()</code> lets a child write back to a parent-owned piece of state.</li>
-		<li>The parent opts in with <code>bind:value={'{state}'}</code> at the call site.</li>
-		<li>No dispatchers, no <code>on:change</code> + setter pairs — it just flows.</li>
-		<li>Prefer one-way props when the child is purely presentational.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>$bindable()</code> rune creates a two-way binding channel between parent and child. When the child marks a prop as bindable, it signals that mutations to that prop should propagate back to the parent. The parent then opts in by writing <code>bind:value={'{state}'}</code> at the call site, linking the child's internal changes to the parent's reactive state.</p>
+	<p class="prose">This replaces the old Svelte 4 pattern of dispatching events and writing manual setter handlers. Instead of <code>on:change</code> plus a callback that updates state, the binding does the wiring for you — one declaration in the child, one <code>bind:</code> in the parent, and data flows both ways automatically.</p>
+	<p class="prose">Two-way binding is best reserved for components that are editors of a value — text fields, sliders, selects, and similar form controls where the child inherently owns the UI for editing. For purely presentational components, one-way props remain the better choice because they keep the data flow simple and predictable.</p>
+	<p class="next">Next lesson: <a href="/module-3/3-6-function-bindings">3.6 — Function bindings</a></p>
 </section>
 
 <style>
@@ -210,22 +217,6 @@
 		background: var(--color-surface-2);
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
-	}
-
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
 	}
 
 	.comparison {
@@ -299,6 +290,27 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

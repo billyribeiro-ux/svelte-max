@@ -4,6 +4,7 @@
 	// @ts-ignore — Threlte types not fully compatible with strict mode
 	import { OrbitControls } from '@threlte/extras';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let mounted = $state(false);
 	let prefersReducedMotion = $state(false);
 	let rotationY = $state(0);
@@ -50,6 +51,124 @@
     <img src="/scene-preview.jpg" alt="3D scene preview" />
   </div>
 {/if}`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"// @ts-ignore — Threlte types not fully compatible with strict mode\n" +
+		"	import { Canvas, T } from '@threlte/core';\n" +
+		"	// @ts-ignore — Threlte types not fully compatible with strict mode\n" +
+		"	import { OrbitControls } from '@threlte/extras';\n" +
+		"\n" +
+		"	let mounted = $state(false);\n" +
+		"	let prefersReducedMotion = $state(false);\n" +
+		"	let rotationY = $state(0);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		mounted = true;\n" +
+		"		const mq = window.matchMedia('(prefers-reduced-motion: reduce)');\n" +
+		"		prefersReducedMotion = mq.matches;\n" +
+		"		const handler = (e: MediaQueryListEvent) =\u003e { prefersReducedMotion = e.matches; };\n" +
+		"		mq.addEventListener('change', handler);\n" +
+		"		return () =\u003e mq.removeEventListener('change', handler);\n" +
+		"	});\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		if (!mounted || prefersReducedMotion) return;\n" +
+		"		const interval = setInterval(() =\u003e {\n" +
+		"			rotationY += 0.008;\n" +
+		"		}, 16);\n" +
+		"		return () =\u003e clearInterval(interval);\n" +
+		"	});\n" +
+		"\n" +
+		"	const implementationExample = `\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  let mounted = $state(false);\n" +
+		"  let prefersReducedMotion = $state(false);\n" +
+		"\n" +
+		"  $effect(() =\u003e {\n" +
+		"    mounted = true;\n" +
+		"    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');\n" +
+		"    prefersReducedMotion = mq.matches;\n" +
+		"    const handler = (e: MediaQueryListEvent) =\u003e {\n" +
+		"      prefersReducedMotion = e.matches;\n" +
+		"    };\n" +
+		"    mq.addEventListener('change', handler);\n" +
+		"    return () =\u003e mq.removeEventListener('change', handler);\n" +
+		"  });\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"{#if mounted}\n" +
+		"  \u003cCanvas\u003e\n" +
+		"    \u003c!-- 3D content with conditional animation --\u003e\n" +
+		"  \u003c/Canvas\u003e\n" +
+		"{:else}\n" +
+		"  \u003cdiv class=\"fallback\"\u003e\n" +
+		"    \u003cimg src=\"/scene-preview.jpg\" alt=\"3D scene preview\" /\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"{/if}`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e15.5 — 3D Performance\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		3D scenes are expensive. Every frame involves geometry processing, material shading, and\n" +
+		"		rasterization. Good performance means \u003cstrong\u003efewer draw calls\u003c/strong\u003e,\n" +
+		"		\u003cstrong\u003elazy loading\u003c/strong\u003e, \u003cstrong\u003eSSR fallbacks\u003c/strong\u003e, and respecting\n" +
+		"		\u003cstrong\u003ereduced motion\u003c/strong\u003e preferences.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003ePerformance Strategies\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eReduce draw calls\u003c/strong\u003e — merge geometries, use instanced meshes for repeated objects\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eLevel of Detail (LOD)\u003c/strong\u003e — switch to simpler geometry at distance\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eLazy loading\u003c/strong\u003e — load heavy assets (textures, GLTF) only when visible\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eDispose resources\u003c/strong\u003e — Three.js does not garbage-collect GPU memory; call \u003ccode\u003e.dispose()\u003c/code\u003e\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eLimit pixel ratio\u003c/strong\u003e — cap \u003ccode\u003erenderer.setPixelRatio()\u003c/code\u003e at 2 on high-DPI screens\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eFrustum culling\u003c/strong\u003e — enabled by default; objects outside camera view are skipped\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eSSR: 3D Must Be Client-Only\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		WebGL requires a browser context — it cannot run on the server. All Threlte scenes\n" +
+		"		\u003cstrong\u003emust\u003c/strong\u003e be guarded with an \u003ccode\u003e{\"{\"} #if mounted {\"}\"}\u003c/code\u003e block or the route must\n" +
+		"		set \u003ccode\u003eexport const ssr = false\u003c/code\u003e. During SSR, show a static fallback (placeholder\n" +
+		"		image, skeleton, or descriptive text) so the page is still meaningful before JavaScript loads.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eReduced Motion\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Users with \u003ccode\u003eprefers-reduced-motion: reduce\u003c/code\u003e may experience discomfort from\n" +
+		"		continuous 3D animations. Check the media query and disable auto-rotation, particle effects,\n" +
+		"		and camera transitions. The scene can still be interactive — just not animated.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eMini-Build: Progressive Enhancement\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			This scene demonstrates progressive enhancement: a static placeholder is shown during SSR\n" +
+		"			and before mount. Once hydrated, the 3D scene replaces it. Animation respects\n" +
+		"			\u003ccode\u003eprefers-reduced-motion\u003c/code\u003e.\n" +
+		"		\u003c/p\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"status-bar\"\u003e\n" +
+		"			\u003cspan class=\"status-item\"\u003e\n" +
+		"				Mounted: \u003cstrong\u003e{mounted ? 'Yes' : 'No'}\u003c/strong\u003e\n" +
+		"			\u003c/span\u003e\n" +
+		"			\u003cspan class=\"status-item\"\u003e\n" +
+		"				Reduced motion: \u003cstrong\u003e{prefersReducedMotion ? 'Yes' : 'No'}\u003c/strong\u003e\n" +
+		"			\u003c/span\u003e\n" +
+		"			\u003cspan class=\"status-item\"\u003e\n" +
+		"				Animation: \u003cstrong\u003e{mounted && !prefersReducedMotion ? 'Running' : 'Paused'}\u003c/strong\u003e\n" +
+		"			\u003c/span\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"canvas-container\"\u003e\n" +
+		"			{#if mounted}\n" +
+		"				\u003cCanvas\u003e\n" +
+		"					\u003cT.PerspectiveCamera\n" +
+		"						makeDefault\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -160,6 +279,13 @@
 		<li>Test on low-end devices — cap pixel ratio and polygon count</li>
 	</ul>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Reduce draw calls by merging geometries and using instanced meshes for repeated objects.</li>
@@ -223,5 +349,42 @@
 	@media (min-width: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.canvas-container { height: 450px; }
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

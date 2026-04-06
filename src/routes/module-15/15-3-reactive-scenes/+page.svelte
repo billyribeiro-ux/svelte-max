@@ -4,6 +4,7 @@
 	// @ts-ignore — Threlte types not fully compatible with strict mode
 	import { OrbitControls } from '@threlte/extras';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let mounted = $state(false);
 
 	let hue = $state(270);
@@ -47,6 +48,121 @@
 <T.Mesh rotation.y={rotationRad}>
   <T.MeshStandardMaterial color={meshColor} />
 </T.Mesh>`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"// @ts-ignore — Threlte types not fully compatible with strict mode\n" +
+		"	import { Canvas, T } from '@threlte/core';\n" +
+		"	// @ts-ignore — Threlte types not fully compatible with strict mode\n" +
+		"	import { OrbitControls } from '@threlte/extras';\n" +
+		"\n" +
+		"	let mounted = $state(false);\n" +
+		"\n" +
+		"	let hue = $state(270);\n" +
+		"	let scale = $state(1);\n" +
+		"	let rotationDeg = $state(0);\n" +
+		"\n" +
+		"	let meshColor = $derived(hueToHex(hue));\n" +
+		"	let rotationRad = $derived((rotationDeg * Math.PI) / 180);\n" +
+		"\n" +
+		"	function hueToHex(h: number): string {\n" +
+		"		const s = 0.7;\n" +
+		"		const l = 0.55;\n" +
+		"		const c = (1 - Math.abs(2 * l - 1)) * s;\n" +
+		"		const x = c * (1 - Math.abs(((h / 60) % 2) - 1));\n" +
+		"		const m = l - c / 2;\n" +
+		"		let r = 0, g = 0, b = 0;\n" +
+		"\n" +
+		"		if (h \u003c 60) { r = c; g = x; }\n" +
+		"		else if (h \u003c 120) { r = x; g = c; }\n" +
+		"		else if (h \u003c 180) { g = c; b = x; }\n" +
+		"		else if (h \u003c 240) { g = x; b = c; }\n" +
+		"		else if (h \u003c 300) { r = x; b = c; }\n" +
+		"		else { r = c; b = x; }\n" +
+		"\n" +
+		"		const toHex = (v: number) =\u003e Math.round((v + m) * 255).toString(16).padStart(2, '0');\n" +
+		"		return `#${toHex(r)}${toHex(g)}${toHex(b)}`;\n" +
+		"	}\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		mounted = true;\n" +
+		"	});\n" +
+		"\n" +
+		"	const derivedPatternExample = `\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  let hue = $state(270);\n" +
+		"  let meshColor = $derived(hueToHex(hue));\n" +
+		"\n" +
+		"  let rotationDeg = $state(0);\n" +
+		"  let rotationRad = $derived((rotationDeg * Math.PI) / 180);\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"\u003cT.Mesh rotation.y={rotationRad}\u003e\n" +
+		"  \u003cT.MeshStandardMaterial color={meshColor} /\u003e\n" +
+		"\u003c/T.Mesh\u003e`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e15.3 — Reactive 3D Scenes\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Threlte's power comes from \u003cstrong\u003eSvelte's reactivity\u003c/strong\u003e driving 3D object properties.\n" +
+		"		Use \u003ccode\u003e$state\u003c/code\u003e for values that change and \u003ccode\u003e$derived\u003c/code\u003e for computed\n" +
+		"		properties. When state updates, Threlte automatically updates the corresponding Three.js\n" +
+		"		objects — no manual re-rendering needed.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eReactivity Flow\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003e$state\u003c/code\u003e variables bind to UI controls (sliders, inputs)\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003e$derived\u003c/code\u003e computes values from state (e.g. degrees to radians, hue to hex)\u003c/li\u003e\n" +
+		"		\u003cli\u003eThrelte props receive reactive values and update the Three.js scene graph\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe render loop automatically picks up changes — no explicit invalidation\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eMini-Build: 3D Product Configurator\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"controls\"\u003e\n" +
+		"			\u003clabel class=\"slider-label\"\u003e\n" +
+		"				Color Hue: {hue}\n" +
+		"				\u003cinput type=\"range\" min=\"0\" max=\"360\" step=\"1\" bind:value={hue} /\u003e\n" +
+		"				\u003cdiv class=\"color-preview\" style=\"background: {meshColor}\"\u003e\u003c/div\u003e\n" +
+		"			\u003c/label\u003e\n" +
+		"			\u003clabel class=\"slider-label\"\u003e\n" +
+		"				Scale: {scale.toFixed(1)}x\n" +
+		"				\u003cinput type=\"range\" min=\"0.3\" max=\"3\" step=\"0.1\" bind:value={scale} /\u003e\n" +
+		"			\u003c/label\u003e\n" +
+		"			\u003clabel class=\"slider-label\"\u003e\n" +
+		"				Rotation: {rotationDeg}deg\n" +
+		"				\u003cinput type=\"range\" min=\"0\" max=\"360\" step=\"1\" bind:value={rotationDeg} /\u003e\n" +
+		"			\u003c/label\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"canvas-container\"\u003e\n" +
+		"			{#if mounted}\n" +
+		"				\u003cCanvas\u003e\n" +
+		"					\u003cT.PerspectiveCamera\n" +
+		"						makeDefault\n" +
+		"						position={[3, 2, 5]}\n" +
+		"						fov={50}\n" +
+		"					\u003e\n" +
+		"						\u003cOrbitControls enableDamping /\u003e\n" +
+		"					\u003c/T.PerspectiveCamera\u003e\n" +
+		"\n" +
+		"					\u003cT.DirectionalLight position={[5, 5, 5]} intensity={1.5} /\u003e\n" +
+		"					\u003cT.AmbientLight intensity={0.4} /\u003e\n" +
+		"\n" +
+		"					\u003cT.Mesh\n" +
+		"						rotation.y={rotationRad}\n" +
+		"						scale={[scale, scale, scale]}\n" +
+		"					\u003e\n" +
+		"						\u003cT.BoxGeometry args={[1.2, 1.2, 1.2]} /\u003e\n" +
+		"						\u003cT.MeshStandardMaterial\n" +
+		"							color={meshColor}\n" +
+		"							metalness={0.3}\n" +
+		"							roughness={0.4}\n" +
+		"						/\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -133,6 +249,13 @@
 	<h3>Pattern: Derived 3D Properties</h3>
 	<pre><code>{derivedPatternExample}</code></pre>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>$state</code> variables bind to UI controls and drive 3D object properties reactively.</li>
@@ -199,5 +322,42 @@
 		.canvas-container { height: 450px; }
 		.controls { flex-direction: row; }
 		.slider-label { flex: 1; }
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

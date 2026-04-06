@@ -2,6 +2,7 @@
 	import { Canvas, T } from '@threlte/core';
 	import { OrbitControls } from '@threlte/extras';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let mounted = $state(false);
 	let directionalIntensity = $state(1.5);
 	let ambientIntensity = $state(0.3);
@@ -9,6 +10,83 @@
 	$effect(() => {
 		mounted = true;
 	});
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { Canvas, T } from '@threlte/core';\n" +
+		"	import { OrbitControls } from '@threlte/extras';\n" +
+		"\n" +
+		"	let mounted = $state(false);\n" +
+		"	let directionalIntensity = $state(1.5);\n" +
+		"	let ambientIntensity = $state(0.3);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		mounted = true;\n" +
+		"	});\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e15.2 — Canvas, Camera, and Lights\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Every Threlte scene starts with three fundamentals: a \u003cstrong\u003eCanvas\u003c/strong\u003e (the renderer),\n" +
+		"		a \u003cstrong\u003eCamera\u003c/strong\u003e (the viewpoint), and \u003cstrong\u003eLights\u003c/strong\u003e (illumination).\n" +
+		"		\u003ccode\u003eOrbitControls\u003c/code\u003e from \u003ccode\u003e@threlte/extras\u003c/code\u003e adds mouse/touch-driven camera\n" +
+		"		rotation for interactive exploration.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eCamera Types\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003ePerspectiveCamera\u003c/strong\u003e — mimics human vision with foreshortening; use for most 3D scenes\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eOrthographicCamera\u003c/strong\u003e — no perspective distortion; use for 2D-style or technical views\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003emakeDefault\u003c/code\u003e prop — tells Threlte to use this camera for rendering\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003eposition\u003c/code\u003e — \u003ccode\u003e[x, y, z]\u003c/code\u003e array placing the camera in world space\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eLight Types\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eAmbientLight\u003c/strong\u003e — uniform illumination from all directions (no shadows)\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eDirectionalLight\u003c/strong\u003e — parallel rays like the sun (casts shadows)\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003ePointLight\u003c/strong\u003e — emits from a point in all directions (like a bulb)\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eSpotLight\u003c/strong\u003e — cone-shaped beam (like a flashlight)\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eMini-Build: Interactive Scene\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"controls\"\u003e\n" +
+		"			\u003clabel class=\"slider-label\"\u003e\n" +
+		"				Directional Light: {directionalIntensity.toFixed(1)}\n" +
+		"				\u003cinput\n" +
+		"					type=\"range\"\n" +
+		"					min=\"0\"\n" +
+		"					max=\"5\"\n" +
+		"					step=\"0.1\"\n" +
+		"					bind:value={directionalIntensity}\n" +
+		"				/\u003e\n" +
+		"			\u003c/label\u003e\n" +
+		"			\u003clabel class=\"slider-label\"\u003e\n" +
+		"				Ambient Light: {ambientIntensity.toFixed(1)}\n" +
+		"				\u003cinput\n" +
+		"					type=\"range\"\n" +
+		"					min=\"0\"\n" +
+		"					max=\"2\"\n" +
+		"					step=\"0.1\"\n" +
+		"					bind:value={ambientIntensity}\n" +
+		"				/\u003e\n" +
+		"			\u003c/label\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"canvas-container\"\u003e\n" +
+		"			{#if mounted}\n" +
+		"				\u003cCanvas\u003e\n" +
+		"					\u003cT.PerspectiveCamera\n" +
+		"						makeDefault\n" +
+		"						position={[4, 3, 6]}\n" +
+		"						fov={45}\n" +
+		"					\u003e\n" +
+		"						\u003cOrbitControls\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -126,6 +204,13 @@
 		<li>Touch-friendly — pinch to zoom, drag to orbit on mobile</li>
 	</ul>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Every Threlte scene needs a <code>Canvas</code>, a <code>Camera</code>, and at least one <code>Light</code>.</li>
@@ -183,5 +268,42 @@
 		.canvas-container { height: 450px; }
 		.controls { flex-direction: row; }
 		.slider-label { flex: 1; }
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -2,6 +2,7 @@
 	import { Canvas, T } from '@threlte/core';
 	import { OrbitControls } from '@threlte/extras';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let mounted = $state(false);
 	let prefersReducedMotion = $state(false);
 	let rotationY = $state(0);
@@ -33,6 +34,107 @@
 	let section1Visible = $derived(scrollY > 200);
 	let section2Visible = $derived(scrollY > 600);
 	let section3Visible = $derived(scrollY > 1000);
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { Canvas, T } from '@threlte/core';\n" +
+		"	import { OrbitControls } from '@threlte/extras';\n" +
+		"\n" +
+		"	let mounted = $state(false);\n" +
+		"	let prefersReducedMotion = $state(false);\n" +
+		"	let rotationY = $state(0);\n" +
+		"	let rotationX = $state(0);\n" +
+		"	let scrollY = $state(0);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		mounted = true;\n" +
+		"		const mq = window.matchMedia('(prefers-reduced-motion: reduce)');\n" +
+		"		prefersReducedMotion = mq.matches;\n" +
+		"		const handler = (e: MediaQueryListEvent) =\u003e { prefersReducedMotion = e.matches; };\n" +
+		"		mq.addEventListener('change', handler);\n" +
+		"		return () =\u003e mq.removeEventListener('change', handler);\n" +
+		"	});\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		if (!mounted || prefersReducedMotion) return;\n" +
+		"		const interval = setInterval(() =\u003e {\n" +
+		"			rotationY += 0.006;\n" +
+		"			rotationX += 0.003;\n" +
+		"		}, 16);\n" +
+		"		return () =\u003e clearInterval(interval);\n" +
+		"	});\n" +
+		"\n" +
+		"	function handleScroll() {\n" +
+		"		scrollY = window.scrollY;\n" +
+		"	}\n" +
+		"\n" +
+		"	let section1Visible = $derived(scrollY \u003e 200);\n" +
+		"	let section2Visible = $derived(scrollY \u003e 600);\n" +
+		"	let section3Visible = $derived(scrollY \u003e 1000);\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csvelte:window onscroll={handleScroll} /\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page project-page\"\u003e\n" +
+		"	\u003c!-- Hero with 3D scene --\u003e\n" +
+		"	\u003cdiv class=\"hero\"\u003e\n" +
+		"		\u003cdiv class=\"hero-canvas\"\u003e\n" +
+		"			{#if mounted}\n" +
+		"				\u003cCanvas\u003e\n" +
+		"					\u003cT.PerspectiveCamera\n" +
+		"						makeDefault\n" +
+		"						position={[0, 0, 5]}\n" +
+		"						fov={50}\n" +
+		"					\u003e\n" +
+		"						\u003cOrbitControls\n" +
+		"							enableDamping\n" +
+		"							enableZoom={false}\n" +
+		"							autoRotate={!prefersReducedMotion}\n" +
+		"							autoRotateSpeed={0.5}\n" +
+		"						/\u003e\n" +
+		"					\u003c/T.PerspectiveCamera\u003e\n" +
+		"\n" +
+		"					\u003cT.DirectionalLight position={[5, 5, 5]} intensity={1.5} /\u003e\n" +
+		"					\u003cT.DirectionalLight position={[-3, 2, -4]} intensity={0.5} color=\"#5c3cd4\" /\u003e\n" +
+		"					\u003cT.AmbientLight intensity={0.3} /\u003e\n" +
+		"\n" +
+		"					\u003c!-- Icosahedron (geometric shape) --\u003e\n" +
+		"					\u003cT.Mesh rotation.y={rotationY} rotation.x={rotationX}\u003e\n" +
+		"						\u003cT.IcosahedronGeometry args={[1.5, 1]} /\u003e\n" +
+		"						\u003cT.MeshStandardMaterial\n" +
+		"							color=\"#6b3fa0\"\n" +
+		"							metalness={0.6}\n" +
+		"							roughness={0.2}\n" +
+		"							wireframe={false}\n" +
+		"						/\u003e\n" +
+		"					\u003c/T.Mesh\u003e\n" +
+		"\n" +
+		"					\u003c!-- Wireframe overlay --\u003e\n" +
+		"					\u003cT.Mesh rotation.y={rotationY * 1.1} rotation.x={rotationX * 0.9}\u003e\n" +
+		"						\u003cT.IcosahedronGeometry args={[1.7, 1]} /\u003e\n" +
+		"						\u003cT.MeshStandardMaterial\n" +
+		"							color=\"#9d6eff\"\n" +
+		"							wireframe\n" +
+		"							transparent\n" +
+		"							opacity={0.3}\n" +
+		"						/\u003e\n" +
+		"					\u003c/T.Mesh\u003e\n" +
+		"\n" +
+		"					\u003c!-- Orbiting small spheres --\u003e\n" +
+		"					\u003cT.Mesh\n" +
+		"						position.x={Math.cos(rotationY * 2) * 2.5}\n" +
+		"						position.z={Math.sin(rotationY * 2) * 2.5}\n" +
+		"						position.y={Math.sin(rotationY * 3) * 0.5}\n" +
+		"					\u003e\n" +
+		"						\u003cT.SphereGeometry args={[0.12, 16, 16]} /\u003e\n" +
+		"						\u003cT.MeshStandardMaterial color=\"#ff6b9d\" emissive=\"#ff6b9d\" emissiveIntensity={0.5} /\u003e\n" +
+		"					\u003c/T.Mesh\u003e\n" +
+		"\n" +
+		"					\u003cT.Mesh\n" +
+		"						position.x={Math.cos(rotationY * 2 + Math.PI) * 2.5}\n" +
+		"						position.z={Math.sin(rotationY * 2 + Math.PI) * 2.5}\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <svelte:window onscroll={handleScroll} />
@@ -209,6 +311,14 @@
 	<footer class="project-footer">
 		Built with Threlte, Three.js, and Svelte 5 runes.
 	</footer>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 </section>
 
 <style>
@@ -399,5 +509,43 @@
 		.feature-grid { grid-template-columns: repeat(3, 1fr); }
 		.scroll-section { padding: var(--space-xl); }
 		.section-content h2 { font-size: var(--text-2xl); }
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

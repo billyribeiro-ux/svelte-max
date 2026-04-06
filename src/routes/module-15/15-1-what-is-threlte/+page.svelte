@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Canvas, T } from '@threlte/core';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let mounted = $state(false);
 	let rotationY = $state(0);
 	let rotationX = $state(0);
@@ -17,6 +18,109 @@
 		}, 16);
 		return () => clearInterval(interval);
 	});
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { Canvas, T } from '@threlte/core';\n" +
+		"\n" +
+		"	let mounted = $state(false);\n" +
+		"	let rotationY = $state(0);\n" +
+		"	let rotationX = $state(0);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		mounted = true;\n" +
+		"	});\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		if (!mounted) return;\n" +
+		"		const interval = setInterval(() =\u003e {\n" +
+		"			rotationY += 0.01;\n" +
+		"			rotationX += 0.005;\n" +
+		"		}, 16);\n" +
+		"		return () =\u003e clearInterval(interval);\n" +
+		"	});\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e15.1 — What Is Threlte\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eThrelte\u003c/strong\u003e is a declarative 3D framework for Svelte, built on top of\n" +
+		"		\u003cstrong\u003eThree.js\u003c/strong\u003e. Instead of imperative WebGL calls, you describe 3D scenes using\n" +
+		"		Svelte components: \u003ccode\u003e&lt;Canvas&gt;\u003c/code\u003e, \u003ccode\u003e&lt;T.Mesh&gt;\u003c/code\u003e,\n" +
+		"		\u003ccode\u003e&lt;T.BoxGeometry&gt;\u003c/code\u003e, and \u003ccode\u003e&lt;T.MeshStandardMaterial&gt;\u003c/code\u003e.\n" +
+		"		Threlte bridges Svelte's reactivity system with Three.js's rendering pipeline.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eThe Three.js Rendering Pipeline\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eScene\u003c/strong\u003e — the container for all 3D objects, lights, and cameras\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eCamera\u003c/strong\u003e — defines the viewpoint (perspective or orthographic)\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eRenderer\u003c/strong\u003e — converts the scene into pixels via WebGL\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eMesh = Geometry + Material\u003c/strong\u003e — shapes with surface appearance\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eAnimation loop\u003c/strong\u003e — \u003ccode\u003erequestAnimationFrame\u003c/code\u003e drives continuous updates\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhy Threlte\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Raw Three.js requires imperative setup: create a scene, add objects, manage the render loop,\n" +
+		"		handle disposal. Threlte wraps all of this into \u003cstrong\u003ereactive components\u003c/strong\u003e.\n" +
+		"		Props drive object properties. Svelte's lifecycle handles creation and cleanup. The\n" +
+		"		\u003ccode\u003euseTask\u003c/code\u003e hook replaces manual animation loops.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eMini-Build: Rotating Cube\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"canvas-container\"\u003e\n" +
+		"			{#if mounted}\n" +
+		"				\u003cCanvas\u003e\n" +
+		"					\u003cT.PerspectiveCamera\n" +
+		"						makeDefault\n" +
+		"						position={[3, 2, 5]}\n" +
+		"						fov={50}\n" +
+		"					/\u003e\n" +
+		"					\u003cT.DirectionalLight\n" +
+		"						position={[5, 5, 5]}\n" +
+		"						intensity={1.5}\n" +
+		"					/\u003e\n" +
+		"					\u003cT.AmbientLight intensity={0.4} /\u003e\n" +
+		"					\u003cT.Mesh\n" +
+		"						rotation.y={rotationY}\n" +
+		"						rotation.x={rotationX}\n" +
+		"					\u003e\n" +
+		"						\u003cT.BoxGeometry args={[1.5, 1.5, 1.5]} /\u003e\n" +
+		"						\u003cT.MeshStandardMaterial color=\"#7c5cfc\" /\u003e\n" +
+		"					\u003c/T.Mesh\u003e\n" +
+		"				\u003c/Canvas\u003e\n" +
+		"			{:else}\n" +
+		"				\u003cdiv class=\"fallback\"\u003eLoading 3D scene...\u003c/div\u003e\n" +
+		"			{/if}\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			A rotating cube rendered with Threlte. The purple color (\u003ccode\u003e#7c5cfc\u003c/code\u003e) is an\n" +
+		"			approximate hex conversion of \u003ccode\u003eoklch(65% 0.22 270)\u003c/code\u003e. Three.js materials\n" +
+		"			require hex or RGB values — OKLCH is not supported in the WebGL pipeline.\n" +
+		"		\u003c/p\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eKey Concepts\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003e&lt;Canvas&gt;\u003c/code\u003e creates the WebGL renderer and scene\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003e&lt;T.*&gt;\u003c/code\u003e components map to Three.js classes (Mesh, Light, Camera, etc.)\u003c/li\u003e\n" +
+		"		\u003cli\u003eProps like \u003ccode\u003eposition\u003c/code\u003e, \u003ccode\u003erotation\u003c/code\u003e, \u003ccode\u003ecolor\u003c/code\u003e are reactive\u003c/li\u003e\n" +
+		"		\u003cli\u003eSSR guard required — wrap \u003ccode\u003e&lt;Canvas&gt;\u003c/code\u003e in \u003ccode\u003e{\"{\"} #if mounted {\"}\"}\u003c/code\u003e\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eThrelte is a declarative 3D framework for Svelte built on Three.js.\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003e&lt;Canvas&gt;\u003c/code\u003e creates the WebGL renderer, and \u003ccode\u003e&lt;T.*&gt;\u003c/code\u003e components map to Three.js classes.\u003c/li\u003e\n" +
+		"		\u003cli\u003eProps like \u003ccode\u003eposition\u003c/code\u003e, \u003ccode\u003erotation\u003c/code\u003e, and \u003ccode\u003ecolor\u003c/code\u003e are reactive and update the scene automatically.\u003c/li\u003e\n" +
+		"		\u003cli\u003eThrelte scenes must be client-only — guard with \u003ccode\u003e{\"{\"} #if mounted {\"}\"}\u003c/code\u003e to avoid SSR errors.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -90,6 +194,13 @@
 		<li>SSR guard required — wrap <code>&lt;Canvas&gt;</code> in <code>{"{"} #if mounted {"}"}</code></li>
 	</ul>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Threlte is a declarative 3D framework for Svelte built on Three.js.</li>
@@ -126,5 +237,42 @@
 	@media (min-width: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.canvas-container { height: 400px; }
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

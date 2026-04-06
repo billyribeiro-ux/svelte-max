@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   const texts: string[] = ['--text-xs', '--text-sm', '--text-base', '--text-lg', '--text-xl', '--text-2xl', '--text-hero'];
   const spaces: string[] = ['--space-xs', '--space-sm', '--space-md', '--space-lg', '--space-xl', '--space-2xl'];
   const colors: string[] = [
@@ -9,6 +10,119 @@
   const durs: string[] = ['--dur-instant', '--dur-fast', '--dur-base', '--dur-slow', '--dur-slower'];
   const eases: string[] = ['--ease-out', '--ease-in', '--ease-in-out', '--ease-expressive', '--ease-spring'];
   const radii: string[] = ['--radius-xs', '--radius-sm', '--radius-md', '--radius-lg', '--radius-xl', '--radius-full'];
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"const texts: string[] = ['--text-xs', '--text-sm', '--text-base', '--text-lg', '--text-xl', '--text-2xl', '--text-hero'];\n" +
+		"  const spaces: string[] = ['--space-xs', '--space-sm', '--space-md', '--space-lg', '--space-xl', '--space-2xl'];\n" +
+		"  const colors: string[] = [\n" +
+		"    '--color-brand', '--color-brand-dim', '--color-surface', '--color-surface-1',\n" +
+		"    '--color-surface-2', '--color-text', '--color-text-muted', '--color-border',\n" +
+		"    '--color-error', '--color-success', '--color-warning'\n" +
+		"  ];\n" +
+		"  const durs: string[] = ['--dur-instant', '--dur-fast', '--dur-base', '--dur-slow', '--dur-slower'];\n" +
+		"  const eases: string[] = ['--ease-out', '--ease-in', '--ease-in-out', '--ease-expressive', '--ease-spring'];\n" +
+		"  const radii: string[] = ['--radius-xs', '--radius-sm', '--radius-md', '--radius-lg', '--radius-xl', '--radius-full'];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e6.3 — Full token system\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\n" +
+		"    \u003cstrong\u003eConcept.\u003c/strong\u003e The PE7 token system composes every category: breakpoints, fluid\n" +
+		"    typography via \u003ccode\u003eclamp()\u003c/code\u003e, fluid spacing, OKLCH colors, motion (durations + easings),\n" +
+		"    radii, and shadows. Each token is a promise — you use the name, not the value. When the value\n" +
+		"    changes, every consumer updates automatically. Tokens are the contract between design and code.\n" +
+		"  \u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    \u003cdetails open\u003e\n" +
+		"      \u003csummary\u003eTypography\u003c/summary\u003e\n" +
+		"      \u003cdiv class=\"stack\"\u003e\n" +
+		"        {#each texts as t (t)}\n" +
+		"          \u003cdiv class=\"row\"\u003e\n" +
+		"            \u003ccode\u003e{t}\u003c/code\u003e\n" +
+		"            \u003cspan style:font-size={`var(${t})`}\u003eThe quick brown fox\u003c/span\u003e\n" +
+		"          \u003c/div\u003e\n" +
+		"        {/each}\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/details\u003e\n" +
+		"\n" +
+		"    \u003cdetails open\u003e\n" +
+		"      \u003csummary\u003eSpacing\u003c/summary\u003e\n" +
+		"      \u003cdiv class=\"stack\"\u003e\n" +
+		"        {#each spaces as s (s)}\n" +
+		"          \u003cdiv class=\"row\"\u003e\n" +
+		"            \u003ccode\u003e{s}\u003c/code\u003e\n" +
+		"            \u003cdiv class=\"bar\" style:inline-size={`var(${s})`}\u003e\u003c/div\u003e\n" +
+		"          \u003c/div\u003e\n" +
+		"        {/each}\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/details\u003e\n" +
+		"\n" +
+		"    \u003cdetails open\u003e\n" +
+		"      \u003csummary\u003eColors\u003c/summary\u003e\n" +
+		"      \u003cdiv class=\"swatches\"\u003e\n" +
+		"        {#each colors as c (c)}\n" +
+		"          \u003cdiv class=\"swatch\"\u003e\n" +
+		"            \u003cdiv class=\"chip\" style:background={`var(${c})`}\u003e\u003c/div\u003e\n" +
+		"            \u003ccode\u003e{c}\u003c/code\u003e\n" +
+		"          \u003c/div\u003e\n" +
+		"        {/each}\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/details\u003e\n" +
+		"\n" +
+		"    \u003cdetails open\u003e\n" +
+		"      \u003csummary\u003eDurations (hover)\u003c/summary\u003e\n" +
+		"      \u003cdiv class=\"motion-row\"\u003e\n" +
+		"        {#each durs as d (d)}\n" +
+		"          \u003cdiv class=\"dur-box\" style:transition-duration={`var(${d})`}\u003e\n" +
+		"            \u003ccode\u003e{d}\u003c/code\u003e\n" +
+		"          \u003c/div\u003e\n" +
+		"        {/each}\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/details\u003e\n" +
+		"\n" +
+		"    \u003cdetails open\u003e\n" +
+		"      \u003csummary\u003eEasings (hover)\u003c/summary\u003e\n" +
+		"      \u003cdiv class=\"motion-row\"\u003e\n" +
+		"        {#each eases as e (e)}\n" +
+		"          \u003cdiv class=\"ease-box\" style:transition-timing-function={`var(${e})`}\u003e\n" +
+		"            \u003ccode\u003e{e}\u003c/code\u003e\n" +
+		"          \u003c/div\u003e\n" +
+		"        {/each}\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/details\u003e\n" +
+		"\n" +
+		"    \u003cdetails open\u003e\n" +
+		"      \u003csummary\u003eRadii\u003c/summary\u003e\n" +
+		"      \u003cdiv class=\"swatches\"\u003e\n" +
+		"        {#each radii as r (r)}\n" +
+		"          \u003cdiv class=\"swatch\"\u003e\n" +
+		"            \u003cdiv class=\"radius-box\" style:border-radius={`var(${r})`}\u003e\u003c/div\u003e\n" +
+		"            \u003ccode\u003e{r}\u003c/code\u003e\n" +
+		"          \u003c/div\u003e\n" +
+		"        {/each}\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/details\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003cp class=\"concept\"\u003e\n" +
+		"    \u003cstrong\u003eWhere tokens live.\u003c/strong\u003e These tokens are CSS custom properties defined in\n" +
+		"    \u003ccode\u003esrc/app.css\u003c/code\u003e inside \u003ccode\u003e@layer tokens {'{'} :root {'{'} ... {'}'} {'}'}\u003c/code\u003e. The\n" +
+		"    \u003ccode\u003eclamp(min, preferred, max)\u003c/code\u003e function makes them fluid:\n" +
+		"    \u003ccode\u003e--text-lg: clamp(1.125rem, 3vw, 1.5rem)\u003c/code\u003e means the font size grows with the viewport\n" +
+		"    but never drops below 1.125rem or exceeds 1.5rem.\n" +
+		"  \u003c/p\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003eTokens are the contract — consumers never reference raw values.\u003c/li\u003e\n" +
+		"    \u003cli\u003eFluid tokens use \u003ccode\u003eclamp()\u003c/code\u003e so the ramp scales with the viewport.\u003c/li\u003e\n" +
+		"    \u003cli\u003eMotion tokens (durations + easings) are just as important as color tokens.\u003c/li\u003e\n" +
+		"    \u003cli\u003eOne token change propagates across every component that reads it.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -99,6 +213,12 @@
     <code>--text-lg: clamp(1.125rem, 3vw, 1.5rem)</code> means the font size grows with the viewport
     but never drops below 1.125rem or exceeds 1.5rem.
   </p>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
   <h3>What you learned</h3>
   <ul>
@@ -241,4 +361,40 @@
     h1 { font-size: var(--text-2xl); }
     .swatches { grid-template-columns: repeat(4, 1fr); }
   }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	const css = `.btn {
   transition:
     background var(--dur-fast) var(--ease-expressive),
@@ -7,6 +8,49 @@
     box-shadow var(--dur-fast) var(--ease-expressive),
     transform var(--dur-fast) var(--ease-expressive);
 }`;
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"const css = `.btn {\n" +
+		"  transition:\n" +
+		"    background var(--dur-fast) var(--ease-expressive),\n" +
+		"    color var(--dur-fast) var(--ease-expressive),\n" +
+		"    border-color var(--dur-fast) var(--ease-expressive),\n" +
+		"    box-shadow var(--dur-fast) var(--ease-expressive),\n" +
+		"    transform var(--dur-fast) var(--ease-expressive);\n" +
+		"}`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e6.10 — CSS transitions with motion tokens\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e\n" +
+		"\t\t\u003ccode\u003etransition: property var(--dur-base) var(--ease-out)\u003c/code\u003e is the canonical pattern. Always\n" +
+		"\t\tuse motion tokens for durations and easings so animations feel consistent across the app. You can\n" +
+		"\t\ttransition multiple properties simultaneously by comma-separating. \u003ccode\u003etransition-delay\u003c/code\u003e\n" +
+		"\t\tstaggers effects. \u003ccode\u003eprefers-reduced-motion\u003c/code\u003e must be respected — the course's\n" +
+		"\t\t\u003ccode\u003eapp.css\u003c/code\u003e already zeroes out animations globally via a\n" +
+		"\t\t\u003ccode\u003e@media (prefers-reduced-motion: reduce)\u003c/code\u003e rule.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cbutton class=\"btn\" type=\"button\"\u003eHover, focus, click me\u003c/button\u003e\n" +
+		"\t\t\u003cbutton class=\"btn\" type=\"button\" disabled\u003eDisabled state\u003c/button\u003e\n" +
+		"\t\t\u003cpre\u003e{css}\u003c/pre\u003e\n" +
+		"\t\t\u003cp class=\"note\"\u003e\n" +
+		"\t\t\tReduced motion is handled globally in \u003ccode\u003eapp.css\u003c/code\u003e — no per-component work needed.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eUse motion tokens (\u003ccode\u003e--dur-*\u003c/code\u003e, \u003ccode\u003e--ease-*\u003c/code\u003e) for every transition.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eComma-separate to transition multiple properties at once.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003etransition-delay\u003c/code\u003e staggers parts of an animation.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eRespect \u003ccode\u003eprefers-reduced-motion\u003c/code\u003e globally in \u003ccode\u003eapp.css\u003c/code\u003e.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -29,6 +73,12 @@
 			Reduced motion is handled globally in <code>app.css</code> — no per-component work needed.
 		</p>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -148,5 +198,41 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

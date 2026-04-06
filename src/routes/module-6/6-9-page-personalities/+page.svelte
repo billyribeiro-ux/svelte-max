@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   type Theme = { id: 'teal' | 'rose' | 'amber'; name: string; description: string };
 
   const themes: Theme[] = [
@@ -6,6 +7,55 @@
     { id: 'rose', name: 'Rose', description: 'Warm, human, editorial.' },
     { id: 'amber', name: 'Amber', description: 'Energetic, premium, sunny.' }
   ];
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"type Theme = { id: 'teal' | 'rose' | 'amber'; name: string; description: string };\n" +
+		"\n" +
+		"  const themes: Theme[] = [\n" +
+		"    { id: 'teal', name: 'Teal', description: 'Calm, trustworthy, technical.' },\n" +
+		"    { id: 'rose', name: 'Rose', description: 'Warm, human, editorial.' },\n" +
+		"    { id: 'amber', name: 'Amber', description: 'Energetic, premium, sunny.' }\n" +
+		"  ];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e6.9 — Per-page color personalities\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\n" +
+		"    \u003cstrong\u003eConcept.\u003c/strong\u003e A course or product-listing site often wants distinct visual identity\n" +
+		"    per section while sharing components. The trick: override semantic color tokens\n" +
+		"    (\u003ccode\u003e--color-brand\u003c/code\u003e, \u003ccode\u003e--color-brand-dim\u003c/code\u003e) on a page-level class in a scoped\n" +
+		"    \u003ccode\u003e&lt;style&gt;\u003c/code\u003e block. Every component that reads those tokens automatically gets\n" +
+		"    the new palette, with no component changes. You saw this pattern in Modules 1–4 — this lesson\n" +
+		"    formalizes it.\n" +
+		"  \u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    {#each themes as theme (theme.id)}\n" +
+		"      \u003csection class=\"mini theme-{theme.id}\"\u003e\n" +
+		"        \u003ch4\u003e{theme.name} personality\u003c/h4\u003e\n" +
+		"        \u003cp\u003e{theme.description}\u003c/p\u003e\n" +
+		"        \u003cdiv class=\"row\"\u003e\n" +
+		"          \u003cbutton class=\"btn\"\u003ePrimary action\u003c/button\u003e\n" +
+		"          \u003ca class=\"link\" href=\"#learn\"\u003eLearn more\u003c/a\u003e\n" +
+		"        \u003c/div\u003e\n" +
+		"        \u003carticle class=\"card\"\u003e\n" +
+		"          \u003ch5\u003eFeature card\u003c/h5\u003e\n" +
+		"          \u003cp\u003eSame markup, different brand tokens. Zero component edits.\u003c/p\u003e\n" +
+		"        \u003c/article\u003e\n" +
+		"      \u003c/section\u003e\n" +
+		"    {/each}\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003eOverride \u003ccode\u003e--color-brand\u003c/code\u003e at a page-level class, not the component.\u003c/li\u003e\n" +
+		"    \u003cli\u003eEvery consumer re-reads the custom property — instant retheming.\u003c/li\u003e\n" +
+		"    \u003cli\u003eOKLCH makes it trivial to derive \u003ccode\u003ebrand-dim\u003c/code\u003e from \u003ccode\u003ebrand\u003c/code\u003e.\u003c/li\u003e\n" +
+		"    \u003cli\u003eKeep components token-consuming, not color-hardcoding.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -35,6 +85,12 @@
       </section>
     {/each}
   </div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
   <h3>What you learned</h3>
   <ul>
@@ -161,4 +217,40 @@
   @media (min-width: 768px) {
     h1 { font-size: var(--text-2xl); }
   }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

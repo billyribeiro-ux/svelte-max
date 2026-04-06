@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   type NavItem = { id: string; label: string };
 
   const items: NavItem[] = [
@@ -44,6 +45,92 @@
     }
   }
 }`;
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"type NavItem = { id: string; label: string };\n" +
+		"\n" +
+		"  const items: NavItem[] = [\n" +
+		"    { id: 'home', label: 'Home' },\n" +
+		"    { id: 'docs', label: 'Docs' },\n" +
+		"    { id: 'blog', label: 'Blog' },\n" +
+		"    { id: 'pricing', label: 'Pricing' },\n" +
+		"    { id: 'about', label: 'About' }\n" +
+		"  ];\n" +
+		"\n" +
+		"  let current = $state\u003cstring\u003e('home');\n" +
+		"\n" +
+		"  const select = (id: string): void =\u003e {\n" +
+		"    current = id;\n" +
+		"  };\n" +
+		"\n" +
+		"  const cssSource: string = `.nav {\n" +
+		"  display: flex;\n" +
+		"  gap: var(--space-xs);\n" +
+		"\n" +
+		"  & a {\n" +
+		"    color: var(--color-text-muted);\n" +
+		"    padding: var(--space-sm) var(--space-md);\n" +
+		"    border-radius: var(--radius-md);\n" +
+		"    transition: all var(--dur-fast) var(--ease-out);\n" +
+		"\n" +
+		"    &:hover {\n" +
+		"      background: var(--color-surface-2);\n" +
+		"      color: var(--color-text);\n" +
+		"    }\n" +
+		"\n" +
+		"    &:focus-visible {\n" +
+		"      outline: 2px solid var(--color-brand);\n" +
+		"    }\n" +
+		"\n" +
+		"    &.current {\n" +
+		"      background: var(--color-brand);\n" +
+		"      color: var(--color-surface-1);\n" +
+		"    }\n" +
+		"\n" +
+		"    &:active {\n" +
+		"      transform: translateY(1px);\n" +
+		"    }\n" +
+		"  }\n" +
+		"}`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e6.4 — Native CSS nesting in Svelte\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\n" +
+		"    \u003cstrong\u003eConcept.\u003c/strong\u003e CSS nesting is a native browser feature (2023+). The \u003ccode\u003e&amp;\u003c/code\u003e\n" +
+		"    selector refers to the parent rule. You can nest selectors, pseudo-classes, media queries, and\n" +
+		"    state selectors inside one block — no preprocessor needed. Svelte's scoped styles and native\n" +
+		"    nesting compose perfectly. Keep nesting shallow (2–3 levels) to stay readable.\n" +
+		"  \u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    \u003cnav class=\"nav\" aria-label=\"Primary\"\u003e\n" +
+		"      {#each items as item (item.id)}\n" +
+		"        \u003ca\n" +
+		"          href=\"#{item.id}\"\n" +
+		"          class:current={current === item.id}\n" +
+		"          onclick={(e) =\u003e { e.preventDefault(); select(item.id); }}\n" +
+		"        \u003e\n" +
+		"          {item.label}\n" +
+		"        \u003c/a\u003e\n" +
+		"      {/each}\n" +
+		"    \u003c/nav\u003e\n" +
+		"\n" +
+		"    \u003cp class=\"hint\"\u003eHover, focus with Tab, click — all states live in one nested block.\u003c/p\u003e\n" +
+		"\n" +
+		"    \u003cpre\u003e\u003ccode\u003e{cssSource}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003e\u003ccode\u003e&amp;\u003c/code\u003e is the parent reference — required for pseudo-class nesting.\u003c/li\u003e\n" +
+		"    \u003cli\u003eYou can nest state, media, and descendant rules in one block.\u003c/li\u003e\n" +
+		"    \u003cli\u003eShallow nesting (2–3 levels) is still best practice for readability.\u003c/li\u003e\n" +
+		"    \u003cli\u003eSvelte's scoped styles wrap nested CSS without any extra config.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -72,6 +159,12 @@
 
     <pre><code>{cssSource}</code></pre>
   </div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
   <h3>What you learned</h3>
   <ul>
@@ -184,4 +277,40 @@
   @media (min-width: 768px) {
     h1 { font-size: var(--text-2xl); }
   }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept, .hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept, .hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept, .hint { max-inline-size: 80ch; }
+	}
 </style>

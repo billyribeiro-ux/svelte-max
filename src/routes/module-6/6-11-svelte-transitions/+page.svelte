@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import { fly } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 
@@ -22,6 +23,74 @@
 	function dismiss(id: number): void {
 		notifications = notifications.filter((n) => n.id !== id);
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import { fly } from 'svelte/transition';\n" +
+		"\timport { cubicOut } from 'svelte/easing';\n" +
+		"\n" +
+		"\tinterface Notification {\n" +
+		"\t\tid: number;\n" +
+		"\t\tkind: 'info' | 'success';\n" +
+		"\t\ttext: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tlet notifications = $state\u003cNotification[]\u003e([]);\n" +
+		"\n" +
+		"\tfunction add(kind: 'info' | 'success'): void {\n" +
+		"\t\tconst id = Date.now() + Math.random();\n" +
+		"\t\tconst text = kind === 'info' ? 'Heads up: something happened.' : 'Success! All good.';\n" +
+		"\t\tnotifications.push({ id, kind, text });\n" +
+		"\t\tsetTimeout(() =\u003e {\n" +
+		"\t\t\tnotifications = notifications.filter((n) =\u003e n.id !== id);\n" +
+		"\t\t}, 3000);\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction dismiss(id: number): void {\n" +
+		"\t\tnotifications = notifications.filter((n) =\u003e n.id !== id);\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e6.11 — Svelte transition directive\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e Svelte ships built-in transition functions: \u003ccode\u003efade\u003c/code\u003e,\n" +
+		"\t\t\u003ccode\u003efly\u003c/code\u003e, \u003ccode\u003eslide\u003c/code\u003e, \u003ccode\u003escale\u003c/code\u003e, \u003ccode\u003eblur\u003c/code\u003e, \u003ccode\u003edraw\u003c/code\u003e.\n" +
+		"\t\tThey plug into the \u003ccode\u003etransition:\u003c/code\u003e directive on any element toggled via\n" +
+		"\t\t\u003ccode\u003e&lbrace;#if&rbrace;\u003c/code\u003e or keyed \u003ccode\u003e&lbrace;#each&rbrace;\u003c/code\u003e. A\n" +
+		"\t\t\u003ccode\u003etransition:\u003c/code\u003e is bidirectional — the same animation enters and exits. Parameters:\n" +
+		"\t\t\u003ccode\u003e&lbrace; duration, delay, easing &rbrace;\u003c/code\u003e. Easings come from\n" +
+		"\t\t\u003ccode\u003esvelte/easing\u003c/code\u003e.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cdiv class=\"controls\"\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" onclick={() =\u003e add('info')}\u003eAdd info\u003c/button\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" onclick={() =\u003e add('success')}\u003eAdd success\u003c/button\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"stack\"\u003e\n" +
+		"\t\t\t{#each notifications as n (n.id)}\n" +
+		"\t\t\t\t\u003cdiv\n" +
+		"\t\t\t\t\tclass=\"toast {n.kind}\"\n" +
+		"\t\t\t\t\ttransition:fly={{ y: 20, duration: 300, easing: cubicOut }}\n" +
+		"\t\t\t\t\u003e\n" +
+		"\t\t\t\t\t\u003cspan\u003e{n.text}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\u003cbutton type=\"button\" class=\"close\" onclick={() =\u003e dismiss(n.id)}\u003e✕\u003c/button\u003e\n" +
+		"\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t{/each}\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eImport transitions from \u003ccode\u003esvelte/transition\u003c/code\u003e.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003etransition:\u003c/code\u003e runs the same animation in and out.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eKeyed each blocks are required for per-item enter/exit.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eParameters tune duration, delay, and easing.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -54,6 +123,12 @@
 			{/each}
 		</div>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -164,5 +239,41 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

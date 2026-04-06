@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
   type Widget = { icon: string; title: string; body: string };
 
   const widget: Widget = {
@@ -6,6 +7,67 @@
     title: 'Weather Widget',
     body: 'Adapts to its container, not the viewport.'
   };
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"type Widget = { icon: string; title: string; body: string };\n" +
+		"\n" +
+		"  const widget: Widget = {\n" +
+		"    icon: 'W',\n" +
+		"    title: 'Weather Widget',\n" +
+		"    body: 'Adapts to its container, not the viewport.'\n" +
+		"  };\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"  \u003ch1\u003e6.8 — Container queries\u003c/h1\u003e\n" +
+		"  \u003cp class=\"concept\"\u003e\n" +
+		"    \u003cstrong\u003eConcept.\u003c/strong\u003e Media queries target the viewport — but a \"card\" component doesn't\n" +
+		"    know whether it lives in a narrow sidebar or a wide main column. Container queries target the\n" +
+		"    component's \u003cem\u003eown\u003c/em\u003e container. You set \u003ccode\u003econtainer-type: inline-size\u003c/code\u003e on a parent\n" +
+		"    and the child uses \u003ccode\u003e@container (min-width: 30rem)\u003c/code\u003e in its scoped styles. The same\n" +
+		"    component now adapts to its container, not the viewport — true reusability.\n" +
+		"  \u003c/p\u003e\n" +
+		"\n" +
+		"  \u003cdiv class=\"build\"\u003e\n" +
+		"    \u003cdiv class=\"demo\"\u003e\n" +
+		"      \u003cdiv class=\"narrow\"\u003e\n" +
+		"        \u003cp class=\"caption\"\u003eInside a 240px column\u003c/p\u003e\n" +
+		"        \u003cdiv class=\"container\"\u003e\n" +
+		"          \u003carticle class=\"widget\"\u003e\n" +
+		"            \u003cdiv class=\"icon\"\u003e{widget.icon}\u003c/div\u003e\n" +
+		"            \u003cdiv class=\"content\"\u003e\n" +
+		"              \u003ch4\u003e{widget.title}\u003c/h4\u003e\n" +
+		"              \u003cp\u003e{widget.body}\u003c/p\u003e\n" +
+		"            \u003c/div\u003e\n" +
+		"          \u003c/article\u003e\n" +
+		"        \u003c/div\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"\n" +
+		"      \u003cdiv class=\"wide\"\u003e\n" +
+		"        \u003cp class=\"caption\"\u003eInside a full-width row\u003c/p\u003e\n" +
+		"        \u003cdiv class=\"container\"\u003e\n" +
+		"          \u003carticle class=\"widget\"\u003e\n" +
+		"            \u003cdiv class=\"icon\"\u003e{widget.icon}\u003c/div\u003e\n" +
+		"            \u003cdiv class=\"content\"\u003e\n" +
+		"              \u003ch4\u003e{widget.title}\u003c/h4\u003e\n" +
+		"              \u003cp\u003e{widget.body}\u003c/p\u003e\n" +
+		"            \u003c/div\u003e\n" +
+		"          \u003c/article\u003e\n" +
+		"        \u003c/div\u003e\n" +
+		"      \u003c/div\u003e\n" +
+		"    \u003c/div\u003e\n" +
+		"  \u003c/div\u003e\n" +
+		"\n" +
+		"  \u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"  \u003cul\u003e\n" +
+		"    \u003cli\u003e\u003ccode\u003econtainer-type: inline-size\u003c/code\u003e turns a parent into a query target.\u003c/li\u003e\n" +
+		"    \u003cli\u003e\u003ccode\u003e@container (min-width: ...)\u003c/code\u003e reacts to the parent, not the viewport.\u003c/li\u003e\n" +
+		"    \u003cli\u003eSame component markup, different layout per container — true reuse.\u003c/li\u003e\n" +
+		"    \u003cli\u003eName containers with \u003ccode\u003econtainer-name\u003c/code\u003e to disambiguate ancestors.\u003c/li\u003e\n" +
+		"  \u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -47,6 +109,12 @@
       </div>
     </div>
   </div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
   <h3>What you learned</h3>
   <ul>
@@ -165,4 +233,40 @@
   @media (min-width: 768px) {
     h1 { font-size: var(--text-2xl); }
   }
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

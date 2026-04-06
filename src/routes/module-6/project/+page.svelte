@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import { fly, fade, scale } from 'svelte/transition';
 	import { cubicOut, quintOut, backOut } from 'svelte/easing';
 	import { Spring, prefersReducedMotion } from 'svelte/motion';
@@ -115,6 +116,272 @@
 	}
 
 	const reduced = $derived(prefersReducedMotion.current);
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import { fly, fade, scale } from 'svelte/transition';\n" +
+		"\timport { cubicOut, quintOut, backOut } from 'svelte/easing';\n" +
+		"\timport { Spring, prefersReducedMotion } from 'svelte/motion';\n" +
+		"\n" +
+		"\tinterface Feature {\n" +
+		"\t\tid: number;\n" +
+		"\t\ttitle: string;\n" +
+		"\t\tdescription: string;\n" +
+		"\t\ticon: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tinterface Testimonial {\n" +
+		"\t\tid: number;\n" +
+		"\t\tquote: string;\n" +
+		"\t\tauthor: string;\n" +
+		"\t\trole: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst features: Feature[] = [\n" +
+		"\t\t{\n" +
+		"\t\t\tid: 1,\n" +
+		"\t\t\ttitle: 'Lightning Fast',\n" +
+		"\t\t\tdescription: 'Ship polished UIs with zero-config dev tooling and instant HMR.',\n" +
+		"\t\t\ticon: 'bolt'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tid: 2,\n" +
+		"\t\t\ttitle: 'Fully Typed',\n" +
+		"\t\t\tdescription: 'TypeScript-first API with strict types across every surface.',\n" +
+		"\t\t\ticon: 'type'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tid: 3,\n" +
+		"\t\t\ttitle: 'Reactive Runes',\n" +
+		"\t\t\tdescription: 'State, derivations, and effects in a single unified model.',\n" +
+		"\t\t\ticon: 'rune'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tid: 4,\n" +
+		"\t\t\ttitle: 'Tiny Bundles',\n" +
+		"\t\t\tdescription: 'Compile-time optimizations keep production payloads lean.',\n" +
+		"\t\t\ticon: 'box'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tid: 5,\n" +
+		"\t\t\ttitle: 'Accessible',\n" +
+		"\t\t\tdescription: 'A11y warnings baked into the compiler — not an afterthought.',\n" +
+		"\t\t\ticon: 'eye'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tid: 6,\n" +
+		"\t\t\ttitle: 'Animated',\n" +
+		"\t\t\tdescription: 'Transitions, easings, and springs included in the framework.',\n" +
+		"\t\t\ticon: 'spark'\n" +
+		"\t\t}\n" +
+		"\t];\n" +
+		"\n" +
+		"\tconst testimonials: Testimonial[] = [\n" +
+		"\t\t{\n" +
+		"\t\t\tid: 1,\n" +
+		"\t\t\tquote: 'We shipped our rewrite in half the time. The runes model just clicks.',\n" +
+		"\t\t\tauthor: 'Jordan Kim',\n" +
+		"\t\t\trole: 'Staff Engineer, Northwind'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tid: 2,\n" +
+		"\t\t\tquote: 'Transitions and Spring made our app feel premium with almost no extra code.',\n" +
+		"\t\t\tauthor: 'Priya Desai',\n" +
+		"\t\t\trole: 'Design Engineer, Lumen'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tid: 3,\n" +
+		"\t\t\tquote: 'The best DX I have had in a decade of web work. Types, motion, state — all solved.',\n" +
+		"\t\t\tauthor: 'Marco Reyes',\n" +
+		"\t\t\trole: 'CTO, Shelf'\n" +
+		"\t\t}\n" +
+		"\t];\n" +
+		"\n" +
+		"\tlet currentIndex = $state(0);\n" +
+		"\tlet paused = $state(false);\n" +
+		"\tconst current = $derived(testimonials[currentIndex]);\n" +
+		"\n" +
+		"\t$effect(() =\u003e {\n" +
+		"\t\tif (paused) return;\n" +
+		"\t\tconst id = setInterval(() =\u003e {\n" +
+		"\t\t\tcurrentIndex = (currentIndex + 1) % testimonials.length;\n" +
+		"\t\t}, 4000);\n" +
+		"\t\treturn () =\u003e clearInterval(id);\n" +
+		"\t});\n" +
+		"\n" +
+		"\t// Module 6.9: per-page OKLCH brand personality\n" +
+		"\t// CTA parallax via Spring (Module 6.15)\n" +
+		"\tconst px = new Spring(0, { stiffness: 0.08, damping: 0.5 });\n" +
+		"\tconst py = new Spring(0, { stiffness: 0.08, damping: 0.5 });\n" +
+		"\n" +
+		"\tfunction handleCtaMove(e: PointerEvent) {\n" +
+		"\t\tconst rect = (e.currentTarget as HTMLElement).getBoundingClientRect();\n" +
+		"\t\tconst cx = rect.left + rect.width / 2;\n" +
+		"\t\tconst cy = rect.top + rect.height / 2;\n" +
+		"\t\tconst nx = (e.clientX - cx) / rect.width;\n" +
+		"\t\tconst ny = (e.clientY - cy) / rect.height;\n" +
+		"\t\tif (prefersReducedMotion.current) {\n" +
+		"\t\t\tpx.set(0, { instant: true });\n" +
+		"\t\t\tpy.set(0, { instant: true });\n" +
+		"\t\t} else {\n" +
+		"\t\t\tpx.target = nx * 16;\n" +
+		"\t\t\tpy.target = ny * 16;\n" +
+		"\t\t}\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction handleCtaLeave() {\n" +
+		"\t\tpx.target = 0;\n" +
+		"\t\tpy.target = 0;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst reduced = $derived(prefersReducedMotion.current);\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003cdiv class=\"landing\"\u003e\n" +
+		"\t\u003ch1 class=\"sr-only\"\u003eModule 6 Project — Animated Landing Page\u003c/h1\u003e\n" +
+		"\n" +
+		"\t\u003c!-- HERO --\u003e\n" +
+		"\t\u003csection class=\"hero\"\u003e\n" +
+		"\t\t{#if reduced}\n" +
+		"\t\t\t\u003cdiv class=\"hero-inner\" in:fade={{ duration: 200 }}\u003e\n" +
+		"\t\t\t\t\u003cp class=\"eyebrow\"\u003eIntroducing\u003c/p\u003e\n" +
+		"\t\t\t\t\u003ch2 class=\"title\"\u003eKinetik\u003c/h2\u003e\n" +
+		"\t\t\t\t\u003cp class=\"subtitle\"\u003e\n" +
+		"\t\t\t\t\tThe animation-first component toolkit for teams who ship premium interfaces.\n" +
+		"\t\t\t\t\u003c/p\u003e\n" +
+		"\t\t\t\t\u003cdiv class=\"cta-row\"\u003e\n" +
+		"\t\t\t\t\t\u003cbutton type=\"button\" class=\"btn primary\"\u003eGet started\u003c/button\u003e\n" +
+		"\t\t\t\t\t\u003cbutton type=\"button\" class=\"btn ghost\"\u003eView docs\u003c/button\u003e\n" +
+		"\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t{:else}\n" +
+		"\t\t\t\u003cdiv class=\"hero-inner\" in:fly={{ y: 30, duration: 700, easing: quintOut }}\u003e\n" +
+		"\t\t\t\t\u003cp class=\"eyebrow\" in:fade={{ delay: 150, duration: 400 }}\u003eIntroducing\u003c/p\u003e\n" +
+		"\t\t\t\t\u003ch2 class=\"title\" in:fly={{ y: 20, delay: 200, duration: 700, easing: quintOut }}\u003e\n" +
+		"\t\t\t\t\tKinetik\n" +
+		"\t\t\t\t\u003c/h2\u003e\n" +
+		"\t\t\t\t\u003cp class=\"subtitle\" in:fly={{ y: 20, delay: 350, duration: 700, easing: quintOut }}\u003e\n" +
+		"\t\t\t\t\tThe animation-first component toolkit for teams who ship premium interfaces.\n" +
+		"\t\t\t\t\u003c/p\u003e\n" +
+		"\t\t\t\t\u003cdiv class=\"cta-row\" in:fade={{ delay: 600, duration: 400 }}\u003e\n" +
+		"\t\t\t\t\t\u003cbutton type=\"button\" class=\"btn primary\"\u003eGet started\u003c/button\u003e\n" +
+		"\t\t\t\t\t\u003cbutton type=\"button\" class=\"btn ghost\"\u003eView docs\u003c/button\u003e\n" +
+		"\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t{/if}\n" +
+		"\t\u003c/section\u003e\n" +
+		"\n" +
+		"\t\u003c!-- FEATURES --\u003e\n" +
+		"\t\u003csection class=\"features\"\u003e\n" +
+		"\t\t\u003cheader class=\"section-header\"\u003e\n" +
+		"\t\t\t\u003ch2\u003eEverything you need\u003c/h2\u003e\n" +
+		"\t\t\t\u003cp\u003eSix primitives that compose into any interface you can dream up.\u003c/p\u003e\n" +
+		"\t\t\u003c/header\u003e\n" +
+		"\t\t\u003cdiv class=\"feature-grid\"\u003e\n" +
+		"\t\t\t{#each features as feature, i (feature.id)}\n" +
+		"\t\t\t\t{#if reduced}\n" +
+		"\t\t\t\t\t\u003carticle class=\"feature\" in:fade={{ duration: 150 }}\u003e\n" +
+		"\t\t\t\t\t\t\u003cdiv class=\"icon\" aria-hidden=\"true\"\u003e{feature.icon[0].toUpperCase()}\u003c/div\u003e\n" +
+		"\t\t\t\t\t\t\u003ch3\u003e{feature.title}\u003c/h3\u003e\n" +
+		"\t\t\t\t\t\t\u003cp\u003e{feature.description}\u003c/p\u003e\n" +
+		"\t\t\t\t\t\u003c/article\u003e\n" +
+		"\t\t\t\t{:else}\n" +
+		"\t\t\t\t\t\u003carticle\n" +
+		"\t\t\t\t\t\tclass=\"feature\"\n" +
+		"\t\t\t\t\t\tin:fly={{ y: 24, delay: i * 90, duration: 600, easing: cubicOut }}\n" +
+		"\t\t\t\t\t\u003e\n" +
+		"\t\t\t\t\t\t\u003cdiv class=\"icon\" aria-hidden=\"true\"\u003e{feature.icon[0].toUpperCase()}\u003c/div\u003e\n" +
+		"\t\t\t\t\t\t\u003ch3\u003e{feature.title}\u003c/h3\u003e\n" +
+		"\t\t\t\t\t\t\u003cp\u003e{feature.description}\u003c/p\u003e\n" +
+		"\t\t\t\t\t\u003c/article\u003e\n" +
+		"\t\t\t\t{/if}\n" +
+		"\t\t\t{/each}\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/section\u003e\n" +
+		"\n" +
+		"\t\u003c!-- TESTIMONIALS --\u003e\n" +
+		"\t\u003csection class=\"testimonials\"\u003e\n" +
+		"\t\t\u003cheader class=\"section-header\"\u003e\n" +
+		"\t\t\t\u003ch2\u003eLoved by builders\u003c/h2\u003e\n" +
+		"\t\t\t\u003cp\u003eTeams shipping real products with Kinetik.\u003c/p\u003e\n" +
+		"\t\t\u003c/header\u003e\n" +
+		"\t\t\u003cdiv class=\"testimonial-stage\"\u003e\n" +
+		"\t\t\t{#key currentIndex}\n" +
+		"\t\t\t\t{#if reduced}\n" +
+		"\t\t\t\t\t\u003cfigure class=\"testimonial\" in:fade={{ duration: 200 }}\u003e\n" +
+		"\t\t\t\t\t\t\u003cblockquote\u003e&ldquo;{current.quote}&rdquo;\u003c/blockquote\u003e\n" +
+		"\t\t\t\t\t\t\u003cfigcaption\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cstrong\u003e{current.author}\u003c/strong\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cspan\u003e{current.role}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003c/figcaption\u003e\n" +
+		"\t\t\t\t\t\u003c/figure\u003e\n" +
+		"\t\t\t\t{:else}\n" +
+		"\t\t\t\t\t\u003cfigure\n" +
+		"\t\t\t\t\t\tclass=\"testimonial\"\n" +
+		"\t\t\t\t\t\tin:scale={{ start: 0.95, duration: 500, easing: backOut }}\n" +
+		"\t\t\t\t\t\tout:fade={{ duration: 200 }}\n" +
+		"\t\t\t\t\t\u003e\n" +
+		"\t\t\t\t\t\t\u003cblockquote\u003e&ldquo;{current.quote}&rdquo;\u003c/blockquote\u003e\n" +
+		"\t\t\t\t\t\t\u003cfigcaption\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cstrong\u003e{current.author}\u003c/strong\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cspan\u003e{current.role}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003c/figcaption\u003e\n" +
+		"\t\t\t\t\t\u003c/figure\u003e\n" +
+		"\t\t\t\t{/if}\n" +
+		"\t\t\t{/key}\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\t\u003cdiv class=\"testimonial-controls\"\u003e\n" +
+		"\t\t\t\u003cdiv class=\"dots\" role=\"tablist\" aria-label=\"Testimonials\"\u003e\n" +
+		"\t\t\t\t{#each testimonials as t, i (t.id)}\n" +
+		"\t\t\t\t\t\u003cbutton\n" +
+		"\t\t\t\t\t\ttype=\"button\"\n" +
+		"\t\t\t\t\t\tclass=\"dot\"\n" +
+		"\t\t\t\t\t\tclass:active={i === currentIndex}\n" +
+		"\t\t\t\t\t\taria-label=\"Show testimonial {i + 1}\"\n" +
+		"\t\t\t\t\t\taria-selected={i === currentIndex}\n" +
+		"\t\t\t\t\t\trole=\"tab\"\n" +
+		"\t\t\t\t\t\tonclick={() =\u003e (currentIndex = i)}\n" +
+		"\t\t\t\t\t\u003e\u003c/button\u003e\n" +
+		"\t\t\t\t{/each}\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"btn tiny\" onclick={() =\u003e (paused = !paused)}\u003e\n" +
+		"\t\t\t\t{paused ? 'Resume' : 'Pause'}\n" +
+		"\t\t\t\u003c/button\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/section\u003e\n" +
+		"\n" +
+		"\t\u003c!-- CTA --\u003e\n" +
+		"\t\u003csection class=\"cta\"\u003e\n" +
+		"\t\t\u003cdiv\n" +
+		"\t\t\tclass=\"cta-card\"\n" +
+		"\t\t\tonpointermove={handleCtaMove}\n" +
+		"\t\t\tonpointerleave={handleCtaLeave}\n" +
+		"\t\t\trole=\"presentation\"\n" +
+		"\t\t\tstyle:transform=\"translate({px.current}px, {py.current}px)\"\n" +
+		"\t\t\u003e\n" +
+		"\t\t\t\u003ch2\u003eReady to ship something beautiful?\u003c/h2\u003e\n" +
+		"\t\t\t\u003cp\u003eInstall Kinetik in under a minute and start building.\u003c/p\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"btn primary large\"\u003eStart free trial\u003c/button\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/section\u003e\n" +
+		"\n" +
+		"\t\u003c!-- FOOTER --\u003e\n" +
+		"\t\u003cfooter class=\"footer\"\u003e\n" +
+		"\t\t\u003cnav class=\"footer-links\" aria-label=\"Footer\"\u003e\n" +
+		"\t\t\t\u003ca href=\"#docs\"\u003eDocs\u003c/a\u003e\n" +
+		"\t\t\t\u003ca href=\"#pricing\"\u003ePricing\u003c/a\u003e\n" +
+		"\t\t\t\u003ca href=\"#blog\"\u003eBlog\u003c/a\u003e\n" +
+		"\t\t\t\u003ca href=\"#github\"\u003eGitHub\u003c/a\u003e\n" +
+		"\t\t\t\u003ca href=\"#contact\"\u003eContact\u003c/a\u003e\n" +
+		"\t\t\u003c/nav\u003e\n" +
+		"\t\t\u003cp class=\"built-with\"\u003e\n" +
+		"\t\t\tBuilt with: transitions, stagger, Spring, {'{#key}'}, CSS transitions, prefers-reduced-motion,\n" +
+		"\t\t\tper-page OKLCH personality.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\t\u003cp class=\"copyright\"\u003e&copy; 2026 Kinetik. A Module 6 capstone.\u003c/p\u003e\n" +
+		"\t\u003c/footer\u003e\n" +
+		"\u003c/div\u003e";
 </script>
 
 <div class="landing">
@@ -243,6 +510,12 @@
 			<p>Install Kinetik in under a minute and start building.</p>
 			<button type="button" class="btn primary large">Start free trial</button>
 		</div>
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	</section>
 
 	<!-- FOOTER -->
@@ -618,5 +891,35 @@
 		.feature-grid {
 			grid-template-columns: repeat(3, 1fr);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
 	}
 </style>

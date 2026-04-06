@@ -308,6 +308,41 @@
 		the page. Only reach for it in the three cases above.
 	</p>
 
+	<!-- Break it on purpose -->
+	<h2>Break it on purpose</h2>
+
+	<p class="concept">
+		Scoping is invisible until you break it. Try these experiments to see the boundaries.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Use the same class name in two components.</strong> Create a
+			<code>.highlight</code> class in two different Svelte files with different colors.
+			Both render on the same page. Inspect each in DevTools — they have different hash
+			suffixes. Neither leaks into the other. This is the proof that scoping works.
+		</li>
+		<li>
+			<strong>Add <code>:global(.highlight)</code> to one of them.</strong> Now that
+			rule affects EVERY <code>.highlight</code> on the page, including the other
+			component's. The hash is gone. This is why <code>:global()</code> is dangerous —
+			it removes the safety boundary.
+		</li>
+		<li>
+			<strong>Nest <code>:global()</code> inside a scoped parent.</strong> Change to
+			<code>.wrapper :global(.highlight)</code>. Now the global rule only applies to
+			<code>.highlight</code> elements that are descendants of <code>.wrapper</code> in
+			THIS component. The blast radius is contained. This is the safe pattern.
+		</li>
+		<li>
+			<strong>Write CSS outside the <code>&lt;style&gt;</code> block.</strong> Put a
+			<code>&lt;link rel="stylesheet"&gt;</code> in your markup pointing to an external
+			CSS file. Those styles are NOT scoped — they affect the entire page. Svelte only
+			scopes what is inside <code>&lt;style&gt;</code>. External stylesheets bypass
+			scoping entirely.
+		</li>
+	</ol>
+
 	<!-- HAVING ISSUES? COMPLETE CODE -->
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
@@ -318,14 +353,33 @@
 	</details>
 
 	<!-- 9. What you learned -->
-	<h3>What you learned</h3>
-	<ul class="learned">
-		<li>Svelte hashes every class in a component's <code>&lt;style&gt;</code> block at compile time.</li>
-		<li>Identical class names in different components cannot collide.</li>
-		<li>DevTools shows the hash suffix on the element — go look.</li>
-		<li><code>:global()</code> is an escape hatch for three specific cases: <code>{'{@html}'}</code>, SVG internals, and third-party library DOM.</li>
-		<li>Always wrap <code>:global()</code> inside a scoped parent selector (e.g., <code>.wrapper :global(.target)</code>) to prevent leaking.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="concept">
+		Svelte scopes every CSS selector in a component's <code>&lt;style&gt;</code> block by
+		appending a unique hash at compile time. This means <code>.button</code> in
+		<code>Header.svelte</code> and <code>.button</code> in <code>Footer.svelte</code> are
+		completely independent — they cannot collide, even though the class names are identical.
+		You never need BEM naming conventions, CSS Modules, or utility classes to avoid conflicts.
+		The compiler handles isolation for you.
+	</p>
+
+	<p class="concept">
+		The hash is visible in DevTools: inspect any styled element and you will see something like
+		<code>class="button svelte-a1b2c3"</code>. The corresponding CSS rule is
+		<code>.button.svelte-a1b2c3</code>. This is how Svelte ensures the rule only matches
+		elements in THIS component.
+	</p>
+
+	<p class="concept">
+		<code>:global()</code> is the escape hatch — it removes the hash from a selector, making
+		it apply globally. This is correct in exactly three situations: styling content injected
+		via <code>{'{@html}'}</code> (which Svelte cannot scope because it is raw HTML), styling
+		SVG internals that Svelte does not traverse, and styling DOM created by third-party
+		libraries (like a date picker or rich text editor). In all other cases,
+		<code>:global()</code> is a code smell. If you find yourself reaching for it, you
+		probably need a component boundary instead.
+	</p>
 
 	<!-- 10. Next steps -->
 	<p class="next">
@@ -501,16 +555,6 @@
 		margin-block: 0.5rem;                /* spacing */
 	}
 
-	/* ── Learned list ────────────────────────────────────── */
-	.learned {
-		padding-inline-start: 1.25rem;       /* indent */
-		color: var(--color-text-muted);      /* secondary */
-
-		& li {
-			margin-block: 0.25rem;             /* gap between items */
-		}
-	}
-
 	/* ── Next link ───────────────────────────────────────── */
 	.next {
 		font-size: var(--text-base);         /* body size */
@@ -566,6 +610,27 @@
 			& > div {
 				flex: 1;                         /* equal width */
 			}
+		}
+	}
+
+	/* ── Break-it experiments ── */
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+
+		& strong { color: var(--color-text); }
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
 		}
 	}
 

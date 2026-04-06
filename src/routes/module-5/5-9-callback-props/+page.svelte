@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	type ToastKind = 'info' | 'success' | 'error';
 
 	interface Toast {
@@ -39,6 +40,103 @@
 	// Imagined child component API (kept inline here for demonstration):
 	//   interface Props { onselect?: (item: Item) => void }
 	// Parents pass typed callback props instead of using createEventDispatcher.
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"type ToastKind = 'info' | 'success' | 'error';\n" +
+		"\n" +
+		"\tinterface Toast {\n" +
+		"\t\tid: number;\n" +
+		"\t\tkind: ToastKind;\n" +
+		"\t\ttext: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tlet toasts = $state\u003cToast[]\u003e([]);\n" +
+		"\tlet nextId = 0;\n" +
+		"\n" +
+		"\tfunction addToast(kind: ToastKind, text: string): void {\n" +
+		"\t\tconst id = ++nextId;\n" +
+		"\t\ttoasts = [...toasts, { id, kind, text }];\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction dismiss(id: number): void {\n" +
+		"\t\ttoasts = toasts.filter((t) =\u003e t.id !== id);\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction clearAll(): void {\n" +
+		"\t\ttoasts = [];\n" +
+		"\t}\n" +
+		"\n" +
+		"\t// Auto-dismiss after 3s. Track timers per toast id so cleanup works when toasts change.\n" +
+		"\t$effect(() =\u003e {\n" +
+		"\t\tconst current = toasts;\n" +
+		"\t\tconst timers = current.map((t) =\u003e\n" +
+		"\t\t\tsetTimeout(() =\u003e {\n" +
+		"\t\t\t\ttoasts = toasts.filter((x) =\u003e x.id !== t.id);\n" +
+		"\t\t\t}, 3000)\n" +
+		"\t\t);\n" +
+		"\t\treturn () =\u003e {\n" +
+		"\t\t\tfor (const h of timers) clearTimeout(h);\n" +
+		"\t\t};\n" +
+		"\t});\n" +
+		"\n" +
+		"\t// Imagined child component API (kept inline here for demonstration):\n" +
+		"\t//   interface Props { onselect?: (item: Item) =\u003e void }\n" +
+		"\t// Parents pass typed callback props instead of using createEventDispatcher.\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e5.9 — Callback prop pattern\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e Svelte 5 has no \u003ccode\u003ecreateEventDispatcher\u003c/code\u003e. Components accept typed\n" +
+		"\t\tcallback props like \u003ccode\u003eonselect?: (item: Item) =&gt; void\u003c/code\u003e and call them directly. Parents\n" +
+		"\t\tpass a handler: \u003ccode\u003e&lt;Picker onselect={'{(i) =\u003e ...}'} /&gt;\u003c/code\u003e. Type-safe, discoverable, no\n" +
+		"\t\tstring event names.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cp class=\"hint\"\u003eClick a trigger — each calls a typed handler that pushes a toast. Toasts auto-dismiss in 3s.\u003c/p\u003e\n" +
+		"\t\t\u003cdiv class=\"triggers\"\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"btn info\" onclick={() =\u003e addToast('info', 'Saved your preferences.')}\u003e\n" +
+		"\t\t\t\tInfo\n" +
+		"\t\t\t\u003c/button\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"btn success\" onclick={() =\u003e addToast('success', 'Profile updated!')}\u003e\n" +
+		"\t\t\t\tSuccess\n" +
+		"\t\t\t\u003c/button\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"btn error\" onclick={() =\u003e addToast('error', 'Something went wrong.')}\u003e\n" +
+		"\t\t\t\tError\n" +
+		"\t\t\t\u003c/button\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"btn ghost\" onclick={clearAll}\u003eClear all\u003c/button\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cp class=\"count\"\u003eActive toasts: \u003cstrong\u003e{toasts.length}\u003c/strong\u003e\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"stack\" aria-live=\"polite\" aria-atomic=\"false\"\u003e\n" +
+		"\t\t{#each toasts as t (t.id)}\n" +
+		"\t\t\t\u003cdiv class=\"toast\" data-kind={t.kind} role=\"status\"\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"dot\" aria-hidden=\"true\"\u003e\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"text\"\u003e{t.text}\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cbutton type=\"button\" class=\"x\" aria-label=\"Dismiss\" onclick={() =\u003e dismiss(t.id)}\u003e×\u003c/button\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t{/each}\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eComponent interface.\u003c/strong\u003e When you extract this pattern to a real component file, the\n" +
+		"\t\tinterface looks like: \u003ccode\u003einterface Props {'{'} onselect?: (item: Item) =&gt; void; children: Snippet {'}'}\u003c/code\u003e.\n" +
+		"\t\tThe \u003ccode\u003e?\u003c/code\u003e makes the callback optional — the component checks \u003ccode\u003eonselect?.(selected)\u003c/code\u003e\n" +
+		"\t\tbefore calling.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eComponents declare callback props with typed signatures.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eParents pass arrow handlers — no event name strings to typo.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eReturn cleanups from \u003ccode\u003e$effect\u003c/code\u003e to clear pending timers.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -84,6 +182,12 @@
 		The <code>?</code> makes the callback optional — the component checks <code>onselect?.(selected)</code>
 		before calling.
 	</p>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -250,5 +354,41 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept, .hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept, .hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	type Shortcut = {
 		key: string;
 		ctrl: boolean;
@@ -17,6 +18,65 @@
 			meta: e.metaKey
 		};
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"type Shortcut = {\n" +
+		"\t\tkey: string;\n" +
+		"\t\tctrl: boolean;\n" +
+		"\t\tshift: boolean;\n" +
+		"\t\tmeta: boolean;\n" +
+		"\t};\n" +
+		"\n" +
+		"\tlet lastKey = $state\u003cShortcut | null\u003e(null);\n" +
+		"\n" +
+		"\tfunction handleKey(e: KeyboardEvent): void {\n" +
+		"\t\te.preventDefault();\n" +
+		"\t\tlastKey = {\n" +
+		"\t\t\tkey: e.key === ' ' ? 'Space' : e.key,\n" +
+		"\t\t\tctrl: e.ctrlKey,\n" +
+		"\t\t\tshift: e.shiftKey,\n" +
+		"\t\t\tmeta: e.metaKey\n" +
+		"\t\t};\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e5.3 — Typed DOM events\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e TypeScript gives you \u003ccode\u003eMouseEvent\u003c/code\u003e,\n" +
+		"\t\t\u003ccode\u003eKeyboardEvent\u003c/code\u003e, \u003ccode\u003eInputEvent\u003c/code\u003e, \u003ccode\u003eFocusEvent\u003c/code\u003e,\n" +
+		"\t\t\u003ccode\u003eSubmitEvent\u003c/code\u003e. Since \u003ccode\u003ee.target\u003c/code\u003e is\n" +
+		"\t\t\u003ccode\u003eEventTarget | null\u003c/code\u003e, narrow with\n" +
+		"\t\t\u003ccode\u003einstanceof HTMLInputElement\u003c/code\u003e before reading \u003ccode\u003e.value\u003c/code\u003e — the compiler\n" +
+		"\t\tcatches typos.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cdiv class=\"capture\" tabindex=\"0\" onkeydown={handleKey} role=\"textbox\" aria-label=\"Shortcut capture zone\"\u003e\n" +
+		"\t\t\tClick here to focus, then press any key combination.\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t{#if lastKey}\n" +
+		"\t\t\t\u003cdiv class=\"pills\" aria-live=\"polite\"\u003e\n" +
+		"\t\t\t\t{#if lastKey.ctrl}\u003ckbd\u003eCtrl\u003c/kbd\u003e{/if}\n" +
+		"\t\t\t\t{#if lastKey.meta}\u003ckbd\u003eMeta\u003c/kbd\u003e{/if}\n" +
+		"\t\t\t\t{#if lastKey.shift}\u003ckbd\u003eShift\u003c/kbd\u003e{/if}\n" +
+		"\t\t\t\t\u003ckbd class=\"key\"\u003e{lastKey.key}\u003c/kbd\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t{:else}\n" +
+		"\t\t\t\u003cp class=\"hint\"\u003eNo key captured yet.\u003c/p\u003e\n" +
+		"\t\t{/if}\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eType handler params with concrete event types like \u003ccode\u003eKeyboardEvent\u003c/code\u003e.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eRead modifier flags: \u003ccode\u003ee.ctrlKey\u003c/code\u003e, \u003ccode\u003ee.shiftKey\u003c/code\u003e, \u003ccode\u003ee.metaKey\u003c/code\u003e.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eDivs need \u003ccode\u003etabindex=\"0\"\u003c/code\u003e to receive keyboard focus and events.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -46,6 +106,12 @@
 			<p class="hint">No key captured yet.</p>
 		{/if}
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -150,5 +216,41 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept, .hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept, .hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	// 1) bind:group
 	let prefs = $state<string[]>([]);
 
@@ -13,6 +14,82 @@
 	function toggleDetails(): void {
 		detailsOpen = !detailsOpen;
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"// 1) bind:group\n" +
+		"\tlet prefs = $state\u003cstring[]\u003e([]);\n" +
+		"\n" +
+		"\t// 2) dimension bindings on a resizable textarea\n" +
+		"\tlet taWidth = $state(0);\n" +
+		"\tlet taHeight = $state(0);\n" +
+		"\tlet sample = $state('Resize me from the corner ↘');\n" +
+		"\n" +
+		"\t// 3) \u003cdetails bind:open\u003e\n" +
+		"\tlet detailsOpen = $state(false);\n" +
+		"\n" +
+		"\tfunction toggleDetails(): void {\n" +
+		"\t\tdetailsOpen = !detailsOpen;\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e5.10 — Bindings deep dive\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e \u003ccode\u003ebind:value\u003c/code\u003e is the start. \u003ccode\u003ebind:group\u003c/code\u003e binds radios or\n" +
+		"\t\tcheckboxes to an array. Media bindings: \u003ccode\u003ebind:currentTime\u003c/code\u003e, \u003ccode\u003ebind:paused\u003c/code\u003e,\n" +
+		"\t\t\u003ccode\u003ebind:duration\u003c/code\u003e. Dimension bindings (\u003ccode\u003ebind:clientWidth\u003c/code\u003e,\n" +
+		"\t\t\u003ccode\u003ebind:clientHeight\u003c/code\u003e) are readonly and measured via ResizeObserver.\n" +
+		"\t\t\u003ccode\u003ebind:this\u003c/code\u003e grabs the DOM element. \u003ccode\u003e&lt;details bind:open&gt;\u003c/code\u003e syncs open state.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003csection class=\"part\"\u003e\n" +
+		"\t\t\t\u003ch4\u003e1. \u003ccode\u003ebind:group\u003c/code\u003e on checkboxes\u003c/h4\u003e\n" +
+		"\t\t\t\u003cdiv class=\"checks\"\u003e\n" +
+		"\t\t\t\t\u003clabel\u003e\u003cinput type=\"checkbox\" bind:group={prefs} value=\"email\" /\u003e Email\u003c/label\u003e\n" +
+		"\t\t\t\t\u003clabel\u003e\u003cinput type=\"checkbox\" bind:group={prefs} value=\"sms\" /\u003e SMS\u003c/label\u003e\n" +
+		"\t\t\t\t\u003clabel\u003e\u003cinput type=\"checkbox\" bind:group={prefs} value=\"push\" /\u003e Push\u003c/label\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cp class=\"state\"\u003eprefs = \u003ccode\u003e[{prefs.map((p) =\u003e `\"${p}\"`).join(', ')}]\u003c/code\u003e\u003c/p\u003e\n" +
+		"\t\t\u003c/section\u003e\n" +
+		"\n" +
+		"\t\t\u003csection class=\"part\"\u003e\n" +
+		"\t\t\t\u003ch4\u003e2. Dimension bindings on a resizable \u003ccode\u003e&lt;textarea&gt;\u003c/code\u003e\u003c/h4\u003e\n" +
+		"\t\t\t\u003ctextarea\n" +
+		"\t\t\t\tclass=\"resizable\"\n" +
+		"\t\t\t\tbind:value={sample}\n" +
+		"\t\t\t\tbind:clientWidth={taWidth}\n" +
+		"\t\t\t\tbind:clientHeight={taHeight}\n" +
+		"\t\t\t\u003e\u003c/textarea\u003e\n" +
+		"\t\t\t\u003cp class=\"state\"\u003e\n" +
+		"\t\t\t\tclientWidth = \u003ccode\u003e{taWidth}px\u003c/code\u003e · clientHeight = \u003ccode\u003e{taHeight}px\u003c/code\u003e\n" +
+		"\t\t\t\u003c/p\u003e\n" +
+		"\t\t\u003c/section\u003e\n" +
+		"\n" +
+		"\t\t\u003csection class=\"part\"\u003e\n" +
+		"\t\t\t\u003ch4\u003e3. \u003ccode\u003e&lt;details bind:open&gt;\u003c/code\u003e two-way\u003c/h4\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"btn\" onclick={toggleDetails}\u003e\n" +
+		"\t\t\t\t{detailsOpen ? 'Close from outside' : 'Open from outside'}\n" +
+		"\t\t\t\u003c/button\u003e\n" +
+		"\t\t\t\u003cdetails bind:open={detailsOpen}\u003e\n" +
+		"\t\t\t\t\u003csummary\u003eClick me (native) or use the button above\u003c/summary\u003e\n" +
+		"\t\t\t\t\u003cp class=\"inside\"\u003e\n" +
+		"\t\t\t\t\tBoth the summary click and the external button flip the same \u003ccode\u003edetailsOpen\u003c/code\u003e state.\n" +
+		"\t\t\t\t\u003c/p\u003e\n" +
+		"\t\t\t\u003c/details\u003e\n" +
+		"\t\t\t\u003cp class=\"state\"\u003edetailsOpen = \u003ccode\u003e{detailsOpen}\u003c/code\u003e\u003c/p\u003e\n" +
+		"\t\t\u003c/section\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003ebind:group\u003c/code\u003e collects multiple inputs into an array.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eDimension bindings are readonly — set by the browser via ResizeObserver.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003ebind:open\u003c/code\u003e on \u003ccode\u003e&lt;details&gt;\u003c/code\u003e is two-way: both sides stay in sync.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -63,6 +140,12 @@
 			<p class="state">detailsOpen = <code>{detailsOpen}</code></p>
 		</section>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -195,5 +278,41 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

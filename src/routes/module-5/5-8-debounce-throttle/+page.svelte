@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let query = $state('');
 	let committed = $state('');
 	let pending = $state(false);
@@ -64,6 +65,158 @@
 		rawClicks = 0;
 		throttledClicks = 0;
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"let query = $state('');\n" +
+		"\tlet committed = $state('');\n" +
+		"\tlet pending = $state(false);\n" +
+		"\tlet commitCount = $state(0);\n" +
+		"\n" +
+		"\tconst DEBOUNCE_MS = 300;\n" +
+		"\n" +
+		"\t$effect(() =\u003e {\n" +
+		"\t\t// Read query so the effect re-runs on every keystroke.\n" +
+		"\t\tconst current = query;\n" +
+		"\t\tif (current === committed) {\n" +
+		"\t\t\tpending = false;\n" +
+		"\t\t\treturn;\n" +
+		"\t\t}\n" +
+		"\t\tpending = true;\n" +
+		"\t\tconst handle = setTimeout(() =\u003e {\n" +
+		"\t\t\tcommitted = current;\n" +
+		"\t\t\tpending = false;\n" +
+		"\t\t\tcommitCount += 1;\n" +
+		"\t\t}, DEBOUNCE_MS);\n" +
+		"\t\treturn () =\u003e clearTimeout(handle);\n" +
+		"\t});\n" +
+		"\n" +
+		"\tfunction clear(): void {\n" +
+		"\t\tquery = '';\n" +
+		"\t}\n" +
+		"\n" +
+		"\t// --- Throttle ---\n" +
+		"\tfunction throttle\u003cT extends (...args: any[]) =\u003e void\u003e(fn: T, ms: number): T {\n" +
+		"\t\tlet lastCall = 0;\n" +
+		"\t\tlet timer: ReturnType\u003ctypeof setTimeout\u003e | null = null;\n" +
+		"\t\treturn ((...args: any[]) =\u003e {\n" +
+		"\t\t\tconst now = Date.now();\n" +
+		"\t\t\tconst remaining = ms - (now - lastCall);\n" +
+		"\t\t\tif (remaining \u003c= 0) {\n" +
+		"\t\t\t\tif (timer) { clearTimeout(timer); timer = null; }\n" +
+		"\t\t\t\tlastCall = now;\n" +
+		"\t\t\t\tfn(...args);\n" +
+		"\t\t\t} else if (!timer) {\n" +
+		"\t\t\t\ttimer = setTimeout(() =\u003e {\n" +
+		"\t\t\t\t\tlastCall = Date.now();\n" +
+		"\t\t\t\t\ttimer = null;\n" +
+		"\t\t\t\t\tfn(...args);\n" +
+		"\t\t\t\t}, remaining);\n" +
+		"\t\t\t}\n" +
+		"\t\t}) as T;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tlet rawClicks = $state(0);\n" +
+		"\tlet throttledClicks = $state(0);\n" +
+		"\tconst THROTTLE_MS = 500;\n" +
+		"\n" +
+		"\tconst handleThrottledClick = throttle(() =\u003e {\n" +
+		"\t\tthrottledClicks += 1;\n" +
+		"\t}, THROTTLE_MS);\n" +
+		"\n" +
+		"\tfunction onRapidClick(): void {\n" +
+		"\t\trawClicks += 1;\n" +
+		"\t\thandleThrottledClick();\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction resetThrottle(): void {\n" +
+		"\t\trawClicks = 0;\n" +
+		"\t\tthrottledClicks = 0;\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e5.8 — Debounce and throttle\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e Firing a handler on every keystroke is expensive if it hits the network or\n" +
+		"\t\tdoes heavy work. \u003ccode\u003eDebounce\u003c/code\u003e waits until the user stops typing for N ms, then fires once.\n" +
+		"\t\t\u003ccode\u003eThrottle\u003c/code\u003e fires at most every N ms regardless. Both use \u003ccode\u003esetTimeout\u003c/code\u003e under the\n" +
+		"\t\thood. Debounce suits search-as-you-type; throttle suits scroll or resize listeners.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003clabel class=\"field\"\u003e\n" +
+		"\t\t\t\u003cspan class=\"label\"\u003eSearch (debounced 300ms)\u003c/span\u003e\n" +
+		"\t\t\t\u003cinput type=\"text\" bind:value={query} placeholder=\"Type to search…\" /\u003e\n" +
+		"\t\t\u003c/label\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\u003cdiv class=\"stat\"\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"k\"\u003eLive query\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"v\"\u003e{query || '—'}\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cdiv class=\"stat\"\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"k\"\u003eCommitted\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"v brand\"\u003e{committed || '—'}\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cdiv class=\"stat\"\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"k\"\u003eCommits\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"v brand\"\u003e{commitCount}\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"status\"\u003e\n" +
+		"\t\t\t{#if pending}\n" +
+		"\t\t\t\t\u003cspan class=\"pill pending\"\u003esearching…\u003c/span\u003e\n" +
+		"\t\t\t{:else if committed}\n" +
+		"\t\t\t\t\u003cspan class=\"pill idle\"\u003eidle\u003c/span\u003e\n" +
+		"\t\t\t{/if}\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"clear\" onclick={clear}\u003eClear\u003c/button\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eThrottle Demo\u003c/h3\u003e\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cp class=\"build-desc\"\u003e\n" +
+		"\t\t\tClick the button as fast as you can. The \u003cstrong\u003ethrottled handler\u003c/strong\u003e fires at most\n" +
+		"\t\t\tonce every {THROTTLE_MS}ms, no matter how many raw clicks happen.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\t\u003cbutton type=\"button\" class=\"rapid-btn\" onclick={onRapidClick}\u003e\n" +
+		"\t\t\tClick rapidly!\n" +
+		"\t\t\u003c/button\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\u003cdiv class=\"stat\"\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"k\"\u003eRaw clicks\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"v\"\u003e{rawClicks}\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cdiv class=\"stat\"\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"k\"\u003eThrottled fires\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"v brand\"\u003e{throttledClicks}\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cdiv class=\"stat\"\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"k\"\u003eThrottle window\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"v\"\u003e{THROTTLE_MS}ms\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"status\"\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"clear\" onclick={resetThrottle}\u003eReset\u003c/button\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eUse \u003ccode\u003e$effect\u003c/code\u003e + \u003ccode\u003esetTimeout\u003c/code\u003e + a cleanup for debounce.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eReturn \u003ccode\u003e() =&gt; clearTimeout(handle)\u003c/code\u003e so stale timers never fire.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eDebounce for typing; throttle for continuous streams like scroll.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003cstrong\u003eDebounce\u003c/strong\u003e waits until input is idle for N ms, then fires once.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003cstrong\u003eThrottle\u003c/strong\u003e fires at most once every N ms, regardless of input frequency.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eThrottle is ideal for scroll, resize, or rapid-click handlers where you need periodic updates, not just the final value.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -136,6 +289,12 @@
 			<button type="button" class="clear" onclick={resetThrottle}>Reset</button>
 		</div>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -314,5 +473,41 @@
 		.row {
 			grid-template-columns: repeat(3, 1fr);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

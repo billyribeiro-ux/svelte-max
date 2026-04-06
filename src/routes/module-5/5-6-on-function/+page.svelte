@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import { on } from 'svelte/events';
 
 	let listening = $state(false);
@@ -15,6 +16,58 @@
 		});
 		return cleanup;
 	});
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import { on } from 'svelte/events';\n" +
+		"\n" +
+		"\tlet listening = $state(false);\n" +
+		"\tlet pressCount = $state(0);\n" +
+		"\n" +
+		"\tfunction toggle(): void {\n" +
+		"\t\tlistening = !listening;\n" +
+		"\t}\n" +
+		"\n" +
+		"\t$effect(() =\u003e {\n" +
+		"\t\tif (!listening) return;\n" +
+		"\t\tconst cleanup = on(window, 'keydown', () =\u003e {\n" +
+		"\t\t\tpressCount += 1;\n" +
+		"\t\t});\n" +
+		"\t\treturn cleanup;\n" +
+		"\t});\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e5.6 — on() from svelte/events\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e Sometimes you need to attach a listener dynamically — only when some\n" +
+		"\t\tstate is true, or to \u003ccode\u003ewindow\u003c/code\u003e/\u003ccode\u003edocument\u003c/code\u003e. For conditional/dynamic cases\n" +
+		"\t\tuse \u003ccode\u003eon(target, event, handler)\u003c/code\u003e from \u003ccode\u003esvelte/events\u003c/code\u003e: it returns a\n" +
+		"\t\tcleanup function and preserves correct event ordering with declarative handlers.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cbutton type=\"button\" class=\"toggle\" class:on={listening} onclick={toggle}\u003e\n" +
+		"\t\t\t{listening ? 'Stop listening' : 'Start listening'}\n" +
+		"\t\t\u003c/button\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"status\"\u003e\n" +
+		"\t\t\t\u003cp class=\"status-line\"\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"dot\" class:active={listening} aria-hidden=\"true\"\u003e\u003c/span\u003e\n" +
+		"\t\t\t\t{listening ? 'Listening (press any key)' : 'Not listening'}\n" +
+		"\t\t\t\u003c/p\u003e\n" +
+		"\t\t\t\u003cp class=\"count\"\u003eKey presses: \u003cstrong\u003e{pressCount}\u003c/strong\u003e\u003c/p\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eImport \u003ccode\u003eon\u003c/code\u003e from \u003ccode\u003esvelte/events\u003c/code\u003e for dynamic listeners.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003eon()\u003c/code\u003e returns a cleanup — return it from \u003ccode\u003e$effect\u003c/code\u003e.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eIdeal for \u003ccode\u003ewindow\u003c/code\u003e/\u003ccode\u003edocument\u003c/code\u003e targets conditional on state.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -39,6 +92,12 @@
 			<p class="count">Key presses: <strong>{pressCount}</strong></p>
 		</div>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -153,5 +212,41 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

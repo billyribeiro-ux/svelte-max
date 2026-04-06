@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface Item {
 		id: number;
 		title: string;
@@ -25,6 +26,80 @@
 	function isOpen(id: number): boolean {
 		return openIds.includes(id);
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"interface Item {\n" +
+		"\t\tid: number;\n" +
+		"\t\ttitle: string;\n" +
+		"\t\tbody: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst items: Item[] = [\n" +
+		"\t\t{ id: 1, title: 'What is a closure?', body: 'A function bundled with the variables from its enclosing scope.' },\n" +
+		"\t\t{ id: 2, title: 'Why does each row work independently?', body: 'Each iteration of {#each} creates a fresh scope, so the arrow handler captures that row\\'s own item.id.' },\n" +
+		"\t\t{ id: 3, title: 'Any stale-closure bugs?', body: 'Not in Svelte. Runes are reactive by reference, so closures always read the current value of $state.' },\n" +
+		"\t\t{ id: 4, title: 'When should I worry?', body: 'Almost never here. The trap lives in React hooks land where closures capture stale props.' }\n" +
+		"\t];\n" +
+		"\n" +
+		"\tlet openIds = $state\u003cnumber[]\u003e([]);\n" +
+		"\n" +
+		"\tfunction toggle(id: number): void {\n" +
+		"\t\tif (openIds.includes(id)) {\n" +
+		"\t\t\topenIds = openIds.filter((x) =\u003e x !== id);\n" +
+		"\t\t} else {\n" +
+		"\t\t\topenIds = [...openIds, id];\n" +
+		"\t\t}\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction isOpen(id: number): boolean {\n" +
+		"\t\treturn openIds.includes(id);\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e5.7 — Closures in handlers\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e A closure is a function that captures variables from its surrounding scope. When\n" +
+		"\t\tyou define an arrow handler inside \u003ccode\u003e{'{#each}'}\u003c/code\u003e, each iteration gets its own closure over the\n" +
+		"\t\tcurrent item — so clicking one row never affects another. In Svelte this just works: no stale-closure\n" +
+		"\t\tbugs from the React world. Why no stale closures in Svelte? Because \u003ccode\u003e$state\u003c/code\u003e returns a\n" +
+		"\t\treactive proxy, not a plain value. When you close over \u003ccode\u003eitems\u003c/code\u003e inside an\n" +
+		"\t\t\u003ccode\u003e{'{#each}'}\u003c/code\u003e handler, you're closing over the proxy — which always reflects the current\n" +
+		"\t\tstate. React closures capture a snapshot; Svelte closures capture a live reference.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cp class=\"hint\"\u003eEach button below is a separate closure over its own \u003ccode\u003eitem.id\u003c/code\u003e.\u003c/p\u003e\n" +
+		"\t\t\u003cul class=\"accordion\"\u003e\n" +
+		"\t\t\t{#each items as item (item.id)}\n" +
+		"\t\t\t\t\u003cli class=\"row\" class:open={isOpen(item.id)}\u003e\n" +
+		"\t\t\t\t\t\u003cbutton\n" +
+		"\t\t\t\t\t\ttype=\"button\"\n" +
+		"\t\t\t\t\t\tclass=\"head\"\n" +
+		"\t\t\t\t\t\taria-expanded={isOpen(item.id)}\n" +
+		"\t\t\t\t\t\tonclick={() =\u003e toggle(item.id)}\n" +
+		"\t\t\t\t\t\u003e\n" +
+		"\t\t\t\t\t\t\u003cspan class=\"title\"\u003e{item.title}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003cspan class=\"chev\" aria-hidden=\"true\"\u003e{isOpen(item.id) ? '−' : '+'}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\u003c/button\u003e\n" +
+		"\t\t\t\t\t{#if isOpen(item.id)}\n" +
+		"\t\t\t\t\t\t\u003cdiv class=\"body\"\u003e{item.body}\u003c/div\u003e\n" +
+		"\t\t\t\t\t{/if}\n" +
+		"\t\t\t\t\u003c/li\u003e\n" +
+		"\t\t\t{/each}\n" +
+		"\t\t\u003c/ul\u003e\n" +
+		"\t\t\u003cp class=\"state\"\u003eOpen ids: \u003ccode\u003e[{openIds.join(', ')}]\u003c/code\u003e\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eEach arrow function inside \u003ccode\u003e{'{#each}'}\u003c/code\u003e closes over its iteration's item.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eTracking open state as an id array avoids nested \u003ccode\u003e$state\u003c/code\u003e inside loops.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eSvelte reactivity reads the current value — no stale closure surprises.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -61,6 +136,12 @@
 		</ul>
 		<p class="state">Open ids: <code>[{openIds.join(', ')}]</code></p>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -178,5 +259,41 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept, .hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept, .hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

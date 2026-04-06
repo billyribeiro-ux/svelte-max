@@ -170,19 +170,26 @@ gsap.from('.box', \{
 
   <div class="spacer-sm"></div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments reveal how ScrollTrigger's configuration properties interact with scroll position and animation playback.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>gsap.registerPlugin(ScrollTrigger)</code> line.</strong> GSAP silently ignores the <code>scrollTrigger</code> property on tweens because the plugin is not registered. The animation plays immediately on page load instead of waiting for scroll, which is a common and confusing mistake.</li>
+		<li><strong>Change <code>start: 'top 80%'</code> to <code>start: 'top 120%'</code>.</strong> The trigger fires when the element's top is 120% down the viewport -- which means it fires before the element is even visible. This demonstrates that ScrollTrigger does not validate whether your start position is actually on-screen.</li>
+		<li><strong>Set <code>scrub: true</code> on the reveal box instead of <code>scrub: false</code>.</strong> The animation now tracks scroll position frame-by-frame instead of playing once. Scrolling backward reverses the animation, and the element can freeze mid-fade if you stop scrolling halfway through the trigger zone.</li>
+		<li><strong>Change <code>toggleActions</code> from <code>'play none none reverse'</code> to <code>'play complete reverse reset'</code>.</strong> Now scrolling past the end completes the animation instantly, scrolling back reverses it, and scrolling back past the start resets the element to its initial state. Each of the four values controls a different scroll direction crossing.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>ScrollTrigger connects GSAP animations to scroll position.</li>
-    <li><code>start</code> and <code>end</code> define the scroll range in viewport-relative terms.</li>
-    <li><code>scrub: true</code> links animation progress directly to scroll position.</li>
-    <li><code>toggleActions</code> defines behavior for enter, leave, enterBack, and leaveBack.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">ScrollTrigger is a GSAP plugin that binds animation playback to scroll position. After importing from <code>gsap/ScrollTrigger</code> and registering with <code>gsap.registerPlugin(ScrollTrigger)</code>, you add a <code>scrollTrigger</code> object to any tween. The <code>trigger</code> property identifies which element's position determines when the animation fires. The <code>start</code> and <code>end</code> properties use a two-value syntax: the first value references the trigger element ("top", "center", "bottom", or a percentage), the second references the viewport.</p>
+	<p class="prose">The <code>scrub</code> property fundamentally changes how the animation plays. When <code>false</code> (the default), the animation plays at normal speed when the trigger fires. When <code>true</code>, the animation's progress is locked to the scroll position -- scrolling 50% through the trigger zone means the animation is 50% complete. You can also pass a number to <code>scrub</code> to add smoothing, which prevents jittery frame-by-frame updates.</p>
+	<p class="prose">The <code>toggleActions</code> string controls behavior at four scroll boundaries: <code>onEnter</code>, <code>onLeave</code>, <code>onEnterBack</code>, and <code>onLeaveBack</code>. Each accepts values like <code>play</code>, <code>pause</code>, <code>resume</code>, <code>reverse</code>, <code>restart</code>, <code>reset</code>, <code>complete</code>, or <code>none</code>. The most common pattern for reveal animations is <code>'play none none reverse'</code>, which plays the animation when scrolling down into view and reverses it when scrolling back up past it.</p>
+	<p class="next">Next, you will integrate ScrollTrigger with SvelteKit's client-side navigation.</p>
 </section>
 
 <style>
@@ -190,8 +197,9 @@ gsap.from('.box', \{
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

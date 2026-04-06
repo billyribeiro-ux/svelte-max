@@ -103,20 +103,26 @@ $effect(() => \{
     <p class="note">The box moves 200px to the right over 1 second using <code>power2.out</code> easing.</p>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments expose the assumptions GSAP makes about targets, timing, and the server-side rendering boundary.</p>
+	<ol class="experiments">
+		<li><strong>Change <code>gsap.to(boxEl, ...)</code> to target a CSS selector like <code>'.box'</code> without a scoping container.</strong> GSAP queries the entire document, so if another page section has a <code>.box</code> class it gets animated too -- demonstrating why <code>gsap.context(fn, scope)</code> exists.</li>
+		<li><strong>Set <code>duration</code> to <code>0</code>.</strong> GSAP teleports the element to its end state instantly with no interpolation, which proves that a tween with zero duration is equivalent to <code>gsap.set()</code>.</li>
+		<li><strong>Remove the <code>$effect</code> wrapper and call <code>gsap.to</code> at the top-level script.</strong> During server-side rendering the DOM does not exist, so <code>boxEl</code> is <code>null</code> and the tween silently does nothing -- or crashes if you remove the null guard.</li>
+		<li><strong>Pass a non-existent CSS property like <code>gsap.to(boxEl, {'{'} color: 'red', fish: 100 {'}'})</code>.</strong> GSAP ignores unknown properties without error, which means typos in property names (e.g. <code>opacty</code>) will silently fail to animate.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>GSAP is installed with <code>pnpm add gsap</code> — it ships as a standard npm package.</li>
-    <li><code>gsap.to(target, vars)</code> is the fundamental tween method.</li>
-    <li>All GSAP calls must be inside <code>$effect</code> for SSR safety.</li>
-    <li>Properties like <code>x</code>, <code>y</code>, <code>scale</code>, <code>rotation</code>, and <code>opacity</code> are GSAP shorthand for CSS transforms.</li>
-    <li>Always check <code>prefersReducedMotion.current</code> before running GSAP animations. Module 7 project demonstrates the full pattern. In production, wrap every GSAP animation in an <code>if (!prefersReducedMotion.current)</code> guard.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">GSAP is distributed as a standard npm package and installed with <code>pnpm add gsap</code>. The library's core primitive is <code>gsap.to(target, vars)</code>, which accepts either a DOM element reference or a CSS selector string and interpolates the specified properties over the given duration. GSAP provides shorthand aliases -- <code>x</code>, <code>y</code>, <code>scale</code>, <code>rotation</code>, <code>opacity</code> -- that map to their underlying CSS transform and opacity properties, saving you from writing verbose <code>transform</code> strings.</p>
+	<p class="prose">Because SvelteKit renders components on the server before hydrating in the browser, all GSAP calls must be placed inside an <code>$effect</code> block. This guarantees the code only executes in the browser where the DOM exists and element references are populated. Attempting to call GSAP at the module level will either target <code>null</code> or throw, depending on how your guards are written.</p>
+	<p class="prose">The <code>ease</code> parameter controls the interpolation curve. GSAP ships with a rich library of easing functions -- <code>power1</code> through <code>power4</code>, <code>back</code>, <code>bounce</code>, <code>elastic</code>, and more -- each with <code>.in</code>, <code>.out</code>, and <code>.inOut</code> variants. Choosing the right ease is what separates mechanical motion from natural-feeling animation.</p>
+	<p class="next">Next, you will learn the three core tween methods: <code>to</code>, <code>from</code>, and <code>fromTo</code>.</p>
 </section>
 
 <style>
@@ -124,8 +130,9 @@ $effect(() => \{
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

@@ -161,20 +161,26 @@ gsap.fromTo(el,
 );`}</pre>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments reveal how each tween method handles starting state, replays, and conflicting animations.</p>
+	<ol class="experiments">
+		<li><strong>Click "Play .from()" twice in rapid succession.</strong> The second call interrupts the first mid-tween because <code>gsap.from()</code> always starts from the specified values. Notice how the element jumps back to its <code>from</code> state before animating again, which can cause a visual flash.</li>
+		<li><strong>Replace <code>gsap.fromTo()</code> with <code>gsap.to()</code> but keep both the start and end objects.</strong> <code>gsap.to()</code> only accepts one vars object, so passing two objects causes the second to be silently ignored -- the animation does not behave as intended.</li>
+		<li><strong>Change the <code>bounce.out</code> ease on the <code>from()</code> tween to <code>bounce.in</code>.</strong> The element now decelerates harshly into its final position instead of bouncing naturally. This demonstrates how <code>.in</code> vs <code>.out</code> inverts the feel of an ease curve.</li>
+		<li><strong>Remove the <code>gsap.set(toBox, {'{'} x: 0 {'}'})</code> reset inside <code>playTo()</code>.</strong> Clicking "Play .to()" after the first run does nothing because the element is already at <code>x: 200</code>. GSAP animates from the current state, so without a reset the tween has nowhere to go.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>gsap.to()</code> tweens from the element's current state to the target values.</li>
-    <li><code>gsap.from()</code> tweens from the specified values back to the current state — great for entrance animations.</li>
-    <li><code>gsap.fromTo()</code> gives full control over both the start and end states.</li>
-    <li>GSAP ships with many easing functions: <code>power3.out</code>, <code>bounce.out</code>, <code>elastic.out</code>, and more.</li>
-    <li>Always check <code>prefersReducedMotion.current</code> before running GSAP animations. Module 7 project demonstrates the full pattern. In production, wrap every GSAP animation in an <code>if (!prefersReducedMotion.current)</code> guard.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">GSAP exposes three tween methods that differ in how they define the animation's start and end states. <code>gsap.to()</code> uses the element's current computed style as the start and your vars object as the end. <code>gsap.from()</code> inverts this -- your vars object defines the start, and the element's existing state becomes the end. <code>gsap.fromTo()</code> removes all ambiguity by accepting two explicit objects, making it the most predictable method for animations that must be replayed reliably.</p>
+	<p class="prose">Easing functions shape how interpolated values change over time. An <code>.out</code> ease starts fast and decelerates, which feels natural for entrance animations. An <code>.in</code> ease does the opposite, accelerating into the final state, which works well for exits. GSAP includes parametric eases like <code>elastic.out(amplitude, period)</code> and <code>back.out(overshoot)</code> that let you fine-tune the feel of motion without writing custom math.</p>
+	<p class="prose">Understanding which method to reach for is a matter of knowing your starting conditions. If the element is already styled in CSS and you just want to animate it somewhere, use <code>to()</code>. If you want an element to appear to enter from an off-screen position, <code>from()</code> is concise. If the animation must be perfectly repeatable regardless of current state, <code>fromTo()</code> is the safest choice.</p>
+	<p class="next">Next, you will sequence multiple tweens together using GSAP timelines.</p>
 </section>
 
 <style>
@@ -182,8 +188,9 @@ gsap.fromTo(el,
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

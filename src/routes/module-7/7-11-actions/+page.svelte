@@ -182,19 +182,26 @@ const fadeIn: Action<HTMLElement> = (node) => \{
     {/if}
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments reveal the lifecycle, parameter handling, and cleanup responsibilities of Svelte actions.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>destroy()</code> return object from the <code>fadeIn</code> action.</strong> Toggle the elements off and on repeatedly. Without <code>gsap.killTweensOf(node)</code>, orphaned tweens from previous mounts stack up. If the element is removed mid-animation, the tween continues targeting a detached DOM node.</li>
+		<li><strong>Pass a parameter object to <code>use:scaleIn</code> which does not accept parameters.</strong> Svelte silently passes the parameter as the second argument, but since <code>scaleIn</code> ignores it, nothing happens. TypeScript with the <code>Action&lt;HTMLElement&gt;</code> type (no second generic) will flag this as an error.</li>
+		<li><strong>Change <code>fadeIn</code> to return an <code>update()</code> method and log when it fires.</strong> The <code>update</code> method runs whenever the action's parameter changes reactively. If you bind the parameter to a reactive variable, you can dynamically adjust the animation at runtime without remounting.</li>
+		<li><strong>Apply two actions to the same element: <code>use:fadeIn use:scaleIn</code>.</strong> Both animations run simultaneously because each action receives the same DOM node independently. The resulting motion is a combination of both -- fade + scale at once -- demonstrating that actions compose by default.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Svelte <code>use:</code> actions run GSAP animations when an element mounts.</li>
-    <li>Returning <code>destroy()</code> calls <code>gsap.killTweensOf(node)</code> for cleanup.</li>
-    <li>Actions make GSAP animations reusable across any element with <code>use:actionName</code>.</li>
-    <li>Actions can accept parameters for configurable animations.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">Svelte's <code>use:</code> action is a function that receives a DOM node when it mounts and optionally returns an object with <code>update</code> and <code>destroy</code> methods. This lifecycle maps perfectly onto GSAP: the action body initializes the animation, and <code>destroy</code> calls <code>gsap.killTweensOf(node)</code> to prevent orphaned tweens. The <code>Action&lt;Element, Params&gt;</code> type from <code>svelte/action</code> provides full TypeScript safety for both the node type and the parameter shape.</p>
+	<p class="prose">Actions are the idiomatic way to encapsulate imperative DOM behavior in Svelte. Unlike placing GSAP calls in an <code>$effect</code> block (which is tied to a specific component), an action can be shared across any component via import. This makes actions the natural unit of reuse for GSAP animations: define <code>fadeIn</code>, <code>scaleIn</code>, or <code>slideRight</code> once, then apply them to any element with <code>use:fadeIn</code>.</p>
+	<p class="prose">Parameters make actions configurable without sacrificing encapsulation. The second argument to the action function receives the value passed in the template -- <code>use:fadeIn={'={{' } duration: 0.6, y: 30 {'}}' }</code> -- allowing callers to customize behavior without modifying the action's implementation. If the parameter is a reactive expression, the <code>update</code> method fires whenever it changes, enabling dynamic reconfiguration at runtime.</p>
+	<p class="next">Next, you will explore Svelte 5's experimental <code>{'{@attach}'}</code> directive as an alternative to actions.</p>
 </section>
 
 <style>
@@ -202,8 +209,9 @@ const fadeIn: Action<HTMLElement> = (node) => \{
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

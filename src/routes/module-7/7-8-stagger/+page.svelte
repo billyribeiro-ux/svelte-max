@@ -210,19 +210,26 @@
 // 'edges', 'random', or a number (index)`}</pre>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments expose how stagger timing, origin points, and element ordering affect the visual result.</p>
+	<ol class="experiments">
+		<li><strong>Set <code>stagger.each</code> to <code>2</code> (two seconds).</strong> The total animation now takes over 16 seconds for 8 elements. This reveals that total stagger duration equals <code>each * (count - 1)</code>, so large <code>each</code> values on many elements create uncomfortably long sequences.</li>
+		<li><strong>Change <code>stagger.from</code> to a numeric index like <code>3</code>.</strong> The animation radiates outward from the fourth element (zero-indexed). Elements closer to index 3 animate first, those further away animate later -- proving that <code>from</code> accepts any index, not just named keywords.</li>
+		<li><strong>Pass <code>stagger</code> as a plain number instead of an object: <code>stagger: 0.08</code>.</strong> The animation still works because GSAP interprets a bare number as shorthand for <code>{'{'} each: 0.08, from: 'start' {'}'}</code>. The object form is only needed when you want to customize <code>from</code>, <code>grid</code>, or <code>axis</code>.</li>
+		<li><strong>Add <code>grid: [2, 4]</code> to the stagger object alongside <code>from: 'center'</code>.</strong> GSAP now treats the 8 elements as a 2-row, 4-column grid and calculates stagger delays based on 2D distance from the center. Elements in the corners animate last, creating a radial ripple effect.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>stagger</code> offsets animation start times across multiple elements.</li>
-    <li><code>stagger.each</code> sets the delay between consecutive elements.</li>
-    <li><code>stagger.from</code> controls the origin point: <code>'center'</code>, <code>'edges'</code>, <code>'random'</code>, etc.</li>
-    <li>Stagger turns simple animations into coordinated choreography.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>stagger</code> property transforms a single tween targeting multiple elements into a choreographed sequence. Instead of all elements animating simultaneously, each one starts with a calculated delay offset. The <code>each</code> sub-property defines the gap between consecutive elements, while <code>amount</code> (an alternative) distributes a fixed total duration evenly across all elements regardless of count.</p>
+	<p class="prose">The <code>from</code> sub-property controls which element animates first. <code>'start'</code> begins at the first DOM element, <code>'end'</code> begins at the last, <code>'center'</code> begins at the middle and radiates outward, <code>'edges'</code> begins at both ends and converges inward, and <code>'random'</code> shuffles the order. You can also pass a numeric index to use any specific element as the origin. For grid layouts, adding a <code>grid</code> property enables 2D distance-based stagger calculations.</p>
+	<p class="prose">Stagger is what separates amateur animations from professional ones. A grid of cards that all fade in simultaneously feels flat and lifeless. The same cards with a 60-millisecond center-out stagger feel intentional and polished. The key is restraint: stagger delays under 100ms per element create a sense of flow without making the user wait. Anything over 200ms per element starts to feel sluggish.</p>
+	<p class="next">Next, you will connect animations to scroll position using GSAP's ScrollTrigger plugin.</p>
 </section>
 
 <style>
@@ -230,8 +237,9 @@
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

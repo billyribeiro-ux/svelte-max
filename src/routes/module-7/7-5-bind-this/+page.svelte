@@ -110,19 +110,26 @@ $effect(() => \{
     <button onclick={replay}>Replay</button>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments expose the timing and type-safety constraints of DOM references in Svelte 5.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>if (!cardEl) return;</code> guard inside <code>$effect</code>.</strong> The non-null assertion <code>cardEl!</code> passes TypeScript, but on the very first effect run the ref is still <code>null</code> because the DOM has not mounted yet. GSAP receives <code>null</code> and silently does nothing -- or throws if you call a method on it.</li>
+		<li><strong>Change the type from <code>HTMLDivElement</code> to <code>HTMLSpanElement</code>.</strong> TypeScript now reports a type error on the <code>bind:this</code> because the element in the template is a <code>&lt;div&gt;</code>, not a <code>&lt;span&gt;</code>. This proves that typing refs accurately catches template/script mismatches at compile time.</li>
+		<li><strong>Replace <code>bind:this={'={'}cardEl{'}'}</code> with a <code>document.querySelector('.card')</code> call inside <code>$effect</code>.</strong> The animation still works, but now it is fragile: if any other component on the page also has a <code>.card</code> class, you will animate the wrong element. This is the exact problem <code>bind:this</code> solves.</li>
+		<li><strong>Move the <code>gsap.from</code> call into an <code>onclick</code> handler instead of <code>$effect</code>.</strong> The animation fires on click, but now there is no automatic cleanup on unmount. If you navigate away mid-tween, GSAP holds a dangling reference to a removed DOM node.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>bind:this</code> captures a DOM element reference into a Svelte variable.</li>
-    <li>Type the ref as <code>HTMLDivElement | null = $state(null)</code> for TypeScript safety.</li>
-    <li>Always null-check the ref inside <code>$effect</code> before passing it to GSAP.</li>
-    <li>Using element refs instead of CSS selectors avoids class name collisions.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">Svelte's <code>bind:this</code> directive captures a live reference to a DOM element and stores it in a reactive <code>$state</code> variable. The variable is <code>null</code> during server-side rendering and before mount, then populated with the real DOM node once the component hydrates. This lifecycle means any code that depends on the ref must be guarded with a null check -- typically <code>if (!el) return;</code> at the top of an <code>$effect</code> block.</p>
+	<p class="prose">Typing the ref precisely -- <code>HTMLDivElement | null</code> rather than a generic <code>Element | null</code> -- unlocks TypeScript's ability to verify that the ref matches the element it is bound to. If you bind a <code>&lt;button&gt;</code> to a variable typed as <code>HTMLDivElement</code>, TypeScript will flag the mismatch. This level of type safety eliminates an entire class of runtime errors where code assumes properties or methods that do not exist on the actual element.</p>
+	<p class="prose">Using element refs instead of CSS selectors is a deliberate architectural choice. Selectors are global and fragile -- any component on the page with the same class name becomes a target. Refs are scoped to the component instance, making them immune to naming collisions. When combined with <code>gsap.context(fn, scope)</code>, refs give you surgical precision over which elements GSAP touches.</p>
+	<p class="next">Next, you will bridge Svelte's reactive state to GSAP timelines using <code>$effect</code>.</p>
 </section>
 
 <style>
@@ -130,8 +137,9 @@ $effect(() => \{
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

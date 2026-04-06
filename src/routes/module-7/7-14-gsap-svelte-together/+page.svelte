@@ -248,19 +248,26 @@
 
   <div class="spacer-sm"></div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments clarify the boundary between Svelte transitions and GSAP, and what happens when you cross it.</p>
+	<ol class="experiments">
+		<li><strong>Replace the Svelte <code>transition:fade</code> on the overlay with a GSAP <code>gsap.from()</code> call.</strong> The overlay appears instantly because GSAP does not block the mount -- the element is in the DOM immediately and then animates. Svelte transitions, by contrast, delay the element's visual appearance until the transition completes, creating a smoother mount experience.</li>
+		<li><strong>Add a Svelte <code>out:fly</code> transition to a scroll card that also has a GSAP ScrollTrigger.</strong> The Svelte transition and GSAP both try to control the element's opacity and transform simultaneously. They fight, producing jittery or incomplete animations -- proving that you should not mix both systems on the same element for the same properties.</li>
+		<li><strong>Remove <code>return () =&gt; ctx.revert()</code> from the <code>$effect</code> and open/close the modal several times.</strong> Each modal open triggers <code>ScrollTrigger.refresh()</code> internally (because the DOM layout changes), but the orphaned ScrollTrigger instances from previous mounts are still alive, leading to duplicated or mis-timed scroll animations.</li>
+		<li><strong>Move the parallax GSAP animation into a Svelte <code>use:</code> action instead of <code>$effect</code>.</strong> The animation still works, but now cleanup is handled per-element via <code>destroy()</code> rather than per-component via <code>ctx.revert()</code>. For a single parallax section this is fine, but for many elements the <code>gsap.context()</code> approach is more ergonomic.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Svelte transitions are best for mount/unmount animations (modals, toasts).</li>
-    <li>GSAP excels at scroll-driven, timeline-based, and continuous animations.</li>
-    <li>Both systems coexist on the same page with zero conflict.</li>
-    <li>Choosing the right tool for each job leads to cleaner, more maintainable code.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">GSAP and Svelte transitions solve different problems and should be used accordingly. Svelte's <code>transition:</code>, <code>in:</code>, and <code>out:</code> directives are tightly integrated with the component lifecycle -- they animate elements during mount and unmount, blocking DOM removal until the out-transition completes. This makes them ideal for modals, toasts, conditional UI, and any element controlled by <code>{'{#if}'}</code> or <code>{'{#each}'}</code> blocks. GSAP, by contrast, is a runtime animation engine that operates on elements already in the DOM, making it the right choice for scroll-driven effects, complex timelines, staggered sequences, and continuous animations.</p>
+	<p class="prose">The critical rule is to avoid mixing both systems on the same element for the same CSS properties. If a Svelte transition is animating <code>opacity</code> and <code>transform</code> during mount, a simultaneous GSAP tween targeting those same properties will create conflicts. The solution is architectural: use Svelte transitions for lifecycle-bound animations and GSAP for everything else, keeping each system's scope clearly defined.</p>
+	<p class="prose">This lesson completes the GSAP module. You now have the vocabulary to choose the right animation layer for any requirement: CSS for simple states, Svelte transitions for mount/unmount, and GSAP for timeline choreography, scroll-driven motion, stagger sequences, and physics-based easing. The module project will bring all of these patterns together into a single, polished, production-quality page.</p>
+	<p class="next">Next, apply everything you have learned in the Module 7 project.</p>
 </section>
 
 <style>
@@ -268,8 +275,9 @@
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
   .guide-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-md); }

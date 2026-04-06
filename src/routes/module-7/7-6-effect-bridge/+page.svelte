@@ -160,19 +160,26 @@ $effect(() => \{
 \});`}</pre>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments expose how <code>$effect</code> dependency tracking interacts with GSAP's imperative timeline API.</p>
+	<ol class="experiments">
+		<li><strong>Merge both <code>$effect</code> blocks into a single one that builds the timeline and calls <code>tl.play()</code>/<code>tl.reverse()</code>.</strong> Every time <code>active</code> changes, the entire effect re-runs -- destroying and rebuilding the timeline from scratch. The animation flickers because <code>ctx.revert()</code> resets all inline styles before the new timeline has a chance to play.</li>
+		<li><strong>Remove the <code>paused: true</code> option from the timeline constructor.</strong> The timeline plays immediately on creation, so the panel opens as soon as the page loads regardless of the <code>active</code> state. This shows why separating construction (paused) from playback (state-driven) is essential.</li>
+		<li><strong>Replace <code>tl.reverse()</code> with <code>tl.progress(0)</code>.</strong> Instead of smoothly reversing, the panel snaps instantly to its collapsed state because <code>progress(0)</code> jumps the playhead without animating. The difference between seeking and reversing is that reversing plays backward through every intermediate frame.</li>
+		<li><strong>Toggle rapidly (5+ times per second).</strong> GSAP handles mid-flight direction changes gracefully -- the playhead simply reverses from its current position. This proves that GSAP timelines are truly bidirectional and do not need to finish before changing direction.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>$effect</code> automatically tracks reactive dependencies like <code>active</code>.</li>
-    <li>Build the GSAP timeline once (paused), then play/reverse it based on state changes.</li>
-    <li>Separating timeline creation from state-driven playback keeps code clean.</li>
-    <li>This pattern works for any state-driven animation: toggles, tabs, accordions, etc.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>$effect</code> rune is the bridge between Svelte's reactive system and GSAP's imperative API. By splitting the work into two effects -- one that constructs the timeline (tracking DOM refs) and one that controls playback (tracking reactive state) -- you avoid the costly mistake of rebuilding the timeline every time state changes. The construction effect runs once after mount; the playback effect re-runs whenever <code>active</code> toggles.</p>
+	<p class="prose">Creating the timeline with <code>paused: true</code> is a deliberate design choice. It separates the "what" (the animation definition) from the "when" (the trigger condition). This separation means you can define arbitrarily complex animation sequences without worrying about premature execution. The playback effect then becomes a simple one-liner: <code>active ? tl.play() : tl.reverse()</code>.</p>
+	<p class="prose">This pattern generalizes to any UI interaction driven by boolean or enumerated state: accordion panels, tab transitions, hamburger menus, tooltip reveals, and modal backdrops. The reactive variable acts as a declarative intent ("this should be open"), and the effect translates that intent into imperative GSAP commands. The result is code that is easy to read, easy to test, and immune to the race conditions that plague raw event-listener-based animation code.</p>
+	<p class="next">Next, you will learn why <code>gsap.context()</code> and <code>ctx.revert()</code> are essential for cleanup.</p>
 </section>
 
 <style>
@@ -180,8 +187,9 @@ $effect(() => \{
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

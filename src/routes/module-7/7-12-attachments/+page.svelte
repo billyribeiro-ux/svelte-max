@@ -214,19 +214,26 @@ function gsapPulse(element: Element) \{
     </div>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments highlight the differences between actions and attachments, and the edge cases of the experimental API.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>destroy()</code> method from the <code>gsapPulse</code> action and let the component unmount.</strong> The infinite <code>yoyo</code> tween keeps running in GSAP's internal ticker, targeting a node that no longer exists in the DOM. This wastes CPU cycles and can cause errors if GSAP tries to read computed styles on the detached node.</li>
+		<li><strong>Change the <code>gsapGlow</code> action to return a cleanup function directly (attachment style) instead of <code>{'{'} destroy() {'{'}{'}'}  {'}'}</code>.</strong> Svelte's <code>use:</code> directive expects the action to return an object with optional <code>update</code> and <code>destroy</code> methods. A bare function return is silently ignored, so cleanup never runs.</li>
+		<li><strong>Pass a reactive <code>$state</code> variable as the <code>color</code> parameter to <code>use:gsapGlow</code> and change it after mount.</strong> Without an <code>update()</code> method on the action, the new color is ignored. The attachment API would handle this automatically because it re-runs when dependencies change.</li>
+		<li><strong>Apply both <code>use:gsapPulse</code> and <code>use:gsapGlow</code> to the same element.</strong> Both tweens run simultaneously, and since they animate different properties (<code>scale</code> vs <code>boxShadow</code>), they compose without conflict. If they targeted the same property, the last one to start would overwrite the other.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>{'{@attach}'}</code> is an experimental Svelte 5.29+ directive for element-level side effects.</li>
-    <li>It returns a cleanup function directly, unlike <code>use:</code> which returns a <code>{'{ destroy() {} }'}}</code> object.</li>
-    <li><code>use:</code> actions remain the stable, recommended approach for production code.</li>
-    <li>Both patterns work well for wrapping GSAP animations as reusable element behaviors.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">Svelte 5.29 introduced the experimental <code>{'{@attach}'}</code> directive as an alternative to <code>use:</code> actions. While both achieve the same goal -- running imperative code when an element mounts -- they differ in API shape. An attachment is a function that receives the element and returns a cleanup function directly. An action returns an object with optional <code>update</code> and <code>destroy</code> methods. The attachment pattern is simpler for one-shot effects, while actions provide the <code>update</code> hook for reacting to parameter changes.</p>
+	<p class="prose">The key architectural difference is reactivity. Attachments automatically re-run when any reactive dependency captured in their closure changes, tearing down and rebuilding the effect. Actions require an explicit <code>update()</code> method to handle parameter changes incrementally. For GSAP animations that need to respond to runtime parameter changes (e.g., a user-selected color), the attachment model is more ergonomic. For stable, one-shot animations, both approaches are equivalent.</p>
+	<p class="prose">In production code today, <code>use:</code> actions remain the stable, well-tested choice. The attachment API may change before stabilization. However, understanding both patterns prepares you to adopt whichever becomes standard. The core lesson is the same for both: always clean up GSAP tweens when the element is removed, whether via <code>destroy()</code> on an action or the cleanup return value of an attachment.</p>
+	<p class="next">Next, you will build a production-grade scroll reveal action combining IntersectionObserver with GSAP.</p>
 </section>
 
 <style>
@@ -234,8 +241,9 @@ function gsapPulse(element: Element) \{
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

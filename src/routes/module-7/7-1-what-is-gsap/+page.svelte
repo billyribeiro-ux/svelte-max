@@ -187,20 +187,26 @@
     </div>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments will deepen your understanding of the animation layer model by forcing failures and edge cases you would not encounter in normal usage.</p>
+	<ol class="experiments">
+		<li><strong>Remove the GSAP import and call <code>gsap.fromTo()</code> anyway.</strong> The browser throws a <code>ReferenceError</code> at runtime, confirming that GSAP is not built into browsers and must be installed as an explicit dependency.</li>
+		<li><strong>Replace the <code>back.out(1.7)</code> ease with a non-existent string like <code>'wobbly'</code>.</strong> GSAP silently falls back to its default ease (<code>power1.out</code>) instead of throwing, which makes typos in ease names easy to miss during development.</li>
+		<li><strong>Move the <code>gsap.fromTo</code> call outside of <code>$effect</code> into the top-level script.</strong> During SSR the <code>gsapCard</code> ref is <code>null</code> and the DOM does not exist, so the animation either crashes or silently does nothing depending on your guard clause.</li>
+		<li><strong>Delete the <code>fly</code> import and keep the <code>in:fly</code> directive on the Svelte card.</strong> The compiler emits an error because Svelte transitions are compile-time features that require an explicit import, unlike GSAP which is purely runtime.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>GSAP is a professional JavaScript animation library for complex motion.</li>
-    <li>There are 4 layers of web animation: CSS transitions, CSS keyframes, Svelte transitions, and GSAP.</li>
-    <li>Use the simplest layer that gets the job done — reach for GSAP when you need timelines, scroll effects, or fine-grained control.</li>
-    <li>GSAP and Svelte transitions complement each other rather than compete.</li>
-    <li>Always check <code>prefersReducedMotion.current</code> before running GSAP animations. Module 7 project demonstrates the full pattern. In production, wrap every GSAP animation in an <code>if (!prefersReducedMotion.current)</code> guard.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">Web animation exists on a spectrum of complexity. CSS transitions and <code>@keyframes</code> handle simple, declarative state changes with zero JavaScript overhead. Svelte's <code>transition:</code> directives add mount and unmount animations that are tightly coupled to the component lifecycle. GSAP sits above both, providing a fully imperative animation engine that can orchestrate timelines, physics-based easing, scroll-driven motion, and fine-grained property control that neither CSS nor Svelte transitions can express alone.</p>
+	<p class="prose">Choosing the right layer is an engineering decision, not a style preference. Reaching for GSAP when a hover effect would suffice adds bundle weight and runtime complexity for no gain. Conversely, trying to express a staggered, scroll-scrubbed entrance sequence in pure CSS leads to brittle, unmaintainable code. The principle is to use the simplest layer that fully satisfies the requirement, and escalate only when the simpler layer cannot express the desired behavior.</p>
+	<p class="prose">GSAP and Svelte are complementary by design. Svelte owns reactivity and the DOM lifecycle; GSAP owns the animation timeline. Bridging them correctly -- initializing GSAP inside <code>$effect</code>, scoping with <code>gsap.context()</code>, and cleaning up on unmount -- is the pattern that every subsequent lesson in this module will reinforce.</p>
+	<p class="next">Next, you will install GSAP into a SvelteKit project and write your first tween.</p>
 </section>
 
 <style>
@@ -208,8 +214,9 @@
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
   .layers { display: flex; flex-direction: column; gap: var(--space-sm); }

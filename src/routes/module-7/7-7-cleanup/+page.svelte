@@ -158,19 +158,26 @@
     </div>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments demonstrate exactly what goes wrong when GSAP animations are not properly cleaned up.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>return () =&gt; ctx.revert();</code> cleanup line and navigate away, then back.</strong> Each visit creates a new set of tweens on top of the old ones. After several navigations, the stagger animation becomes visibly glitchy as multiple overlapping tweens fight for control of the same elements.</li>
+		<li><strong>Replace <code>gsap.context(() =&gt; {'{'} ... {'}'}, containerEl)</code> with just calling <code>gsap.from</code> directly without a context.</strong> The animation works, but now there is no way to kill all scoped tweens at once. You would need to manually track every tween instance and call <code>.kill()</code> on each one individually.</li>
+		<li><strong>Add items rapidly while the stagger animation is still playing.</strong> New items get added to the DOM but the existing GSAP tween does not know about them. Only elements present at the time <code>gsap.from('.anim-item', ...)</code> was called are animated -- proving that GSAP captures a snapshot of matching elements, not a live reference.</li>
+		<li><strong>Call <code>ctx.revert()</code> manually from a button click while the animation is mid-flight.</strong> All animated elements snap back to their pre-animation state instantly because <code>revert()</code> kills active tweens and restores the original inline styles GSAP set during the animation.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>gsap.context(fn, scope)</code> scopes all animations created inside the callback.</li>
-    <li>Returning <code>ctx.revert()</code> from <code>$effect</code> ensures cleanup on unmount or re-run.</li>
-    <li>Without cleanup, GSAP holds references to removed DOM nodes, causing memory leaks.</li>
-    <li>Always pair <code>gsap.context()</code> with <code>ctx.revert()</code> in every <code>$effect</code>.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>gsap.context(callback, scope)</code> creates a scoped container for every animation, ScrollTrigger, and event listener registered inside the callback. The <code>scope</code> parameter limits CSS selector queries to descendants of the given element, preventing accidental targeting of elements in other components. When you call <code>ctx.revert()</code>, GSAP kills every tween and ScrollTrigger registered in that context and restores the elements to their pre-animation state.</p>
+	<p class="prose">In Svelte 5, the return value of an <code>$effect</code> callback is a cleanup function that runs when the effect is invalidated or the component unmounts. Returning <code>() =&gt; ctx.revert()</code> from your effect ensures that GSAP releases all references to DOM nodes that are about to be removed. Without this cleanup, orphaned tweens hold strong references to detached DOM nodes, creating memory leaks that grow with each navigation in a single-page application.</p>
+	<p class="prose">The <code>context + revert</code> pattern is not optional -- it is the standard way to integrate any imperative library into a reactive component framework. Every GSAP effect you write in Svelte should follow this three-step template: create a context, register animations inside it, and return the revert call as cleanup. This discipline becomes second nature and eliminates the most common class of GSAP-related bugs in SvelteKit applications.</p>
+	<p class="next">Next, you will use the <code>stagger</code> property to choreograph animations across multiple elements.</p>
 </section>
 
 <style>
@@ -178,8 +185,9 @@
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

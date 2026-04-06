@@ -142,19 +142,26 @@ tl.from(title, \{
     </div>
   </div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments reveal how the position parameter, ordering, and timeline lifecycle affect choreography.</p>
+	<ol class="experiments">
+		<li><strong>Change <code>'-=0.2'</code> to <code>'-=5'</code> on the subtitle tween.</strong> A negative overlap larger than the previous tween's duration pushes the child before the timeline's zero point, causing both tweens to start simultaneously -- demonstrating that GSAP clamps to zero rather than going negative.</li>
+		<li><strong>Replace all position parameters with <code>'&lt;'</code>.</strong> Every tween now starts at the same time as the previous one, collapsing the sequence into a simultaneous burst. This shows that <code>'&lt;'</code> means "at the start of the previous tween," not "before it."</li>
+		<li><strong>Call <code>tl.reverse()</code> immediately after <code>tl.play()</code>.</strong> The timeline plays forward for a single tick then reverses, demonstrating that timelines are fully controllable objects with a playhead that can be redirected at any moment.</li>
+		<li><strong>Remove the <code>gsap.set([titleEl, subtitleEl, ctaEl], {'{'} clearProps: 'all' {'}'})</code> line in <code>playTimeline</code>.</strong> On replay, the <code>.from()</code> tweens animate from the same values they already have (since the previous run left them at their natural state), so the animation appears to do nothing -- proving that <code>clearProps</code> is essential for repeatable <code>.from()</code> sequences.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>gsap.timeline()</code> creates a sequence of tweens that play one after another.</li>
-    <li>The position parameter controls timing overlaps between tweens.</li>
-    <li>Timelines can be paused, reversed, and controlled programmatically.</li>
-    <li>Chaining <code>.from()</code>, <code>.to()</code>, and <code>.fromTo()</code> on a timeline keeps animations organized.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">A GSAP timeline is a container that sequences multiple tweens along a shared playhead. By default each tween starts after the previous one ends, but the position parameter overrides this. Relative offsets like <code>'-=0.2'</code> create overlap, <code>'+=0.5'</code> inserts a gap, <code>'&lt;'</code> aligns to the start of the previous tween, and absolute numbers place a tween at a fixed point on the timeline. This position system is what makes GSAP timelines far more expressive than chaining <code>setTimeout</code> calls.</p>
+	<p class="prose">Timelines are first-class objects with their own API. You can <code>pause()</code>, <code>resume()</code>, <code>reverse()</code>, <code>seek()</code>, and <code>timeScale()</code> them at any point. This makes them ideal for interactive animations where user input controls playback direction -- a pattern you will use in the next lesson when bridging reactive state to GSAP via <code>$effect</code>.</p>
+	<p class="prose">When replaying a timeline that uses <code>.from()</code> tweens, you must reset the animated elements to their original state first. The <code>clearProps: 'all'</code> option on <code>gsap.set()</code> strips inline styles GSAP applied, restoring the element to its stylesheet-defined appearance. Without this reset, <code>.from()</code> has no distance to travel because the element is already at the "to" values from the previous run.</p>
+	<p class="next">Next, you will use <code>bind:this</code> to capture DOM references for GSAP targeting.</p>
 </section>
 
 <style>
@@ -162,8 +169,9 @@ tl.from(title, \{
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

@@ -192,19 +192,26 @@ $effect(() => \{
 
   <div class="spacer-sm"></div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments expose the interaction between ScrollTrigger's position cache and SvelteKit's client-side routing.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>afterNavigate</code> callback entirely.</strong> Navigate away from this page and back. The scroll-triggered animations fire at incorrect positions (or not at all) because ScrollTrigger is still using cached element positions from the previous page load. The DOM has changed but ScrollTrigger does not know.</li>
+		<li><strong>Move <code>ScrollTrigger.refresh()</code> into the <code>$effect</code> instead of <code>afterNavigate</code>.</strong> It works on the first visit, but on subsequent navigations the refresh may fire before the new DOM layout is complete. <code>afterNavigate</code> is the correct hook because it fires after SvelteKit has fully updated the DOM.</li>
+		<li><strong>Remove <code>return () =&gt; ctx.revert()</code> from the <code>$effect</code> and navigate back and forth 5 times.</strong> Each navigation creates new ScrollTrigger instances without destroying the old ones. Open your browser devtools console and run <code>ScrollTrigger.getAll().length</code> to see the count growing -- this is a ScrollTrigger leak.</li>
+		<li><strong>Replace <code>gsap.utils.toArray('.nav-card')</code> with <code>document.querySelectorAll('.nav-card')</code>.</strong> The animation still works, but you lose GSAP's type-safe array conversion. <code>querySelectorAll</code> returns a <code>NodeList</code>, not an array, so methods like <code>.map()</code> and <code>.filter()</code> are unavailable unless you spread it.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>ScrollTrigger caches DOM positions — call <code>ScrollTrigger.refresh()</code> after navigation.</li>
-    <li><code>afterNavigate</code> fires after every SvelteKit client-side navigation.</li>
-    <li>Combine <code>afterNavigate</code> + <code>gsap.context()</code> for leak-free scroll animations.</li>
-    <li>Without cleanup, old ScrollTriggers accumulate and cause erratic behavior.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit performs client-side navigation by default, swapping page content without a full browser reload. ScrollTrigger calculates and caches element positions on first setup, and those cached positions become stale when the DOM changes after navigation. Calling <code>ScrollTrigger.refresh()</code> forces a recalculation of all trigger positions against the current layout, ensuring animations fire at the correct scroll points.</p>
+	<p class="prose">The <code>afterNavigate</code> lifecycle hook from <code>$app/navigation</code> fires after SvelteKit has completed a client-side navigation and the new page DOM is fully rendered. This is the correct timing for <code>ScrollTrigger.refresh()</code> because the new elements are in the DOM and their layout positions are finalized. Calling refresh too early -- inside <code>$effect</code> or <code>beforeNavigate</code> -- can produce incorrect position calculations.</p>
+	<p class="prose">The complete pattern for scroll animations in SvelteKit is: register the plugin at the module level, refresh positions in <code>afterNavigate</code>, create animations inside <code>$effect</code> wrapped in <code>gsap.context()</code>, and return <code>ctx.revert()</code> as cleanup. This four-step pattern ensures that scroll-driven animations work correctly across navigations and do not leak memory or create ghost triggers.</p>
+	<p class="next">Next, you will encapsulate GSAP animations as reusable Svelte <code>use:</code> actions.</p>
 </section>
 
 <style>
@@ -212,8 +219,9 @@ $effect(() => \{
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

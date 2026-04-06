@@ -262,19 +262,26 @@
 
   <div class="spacer-sm"></div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">These experiments expose the interaction between IntersectionObserver configuration, GSAP timing, and action cleanup.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>observer.disconnect()</code> call inside the intersection callback.</strong> The observer keeps firing every time the element enters and exits the viewport. Combined with <code>gsap.to()</code>, this means the animation replays on every scroll-up and scroll-down, turning a one-shot reveal into an infinite loop.</li>
+		<li><strong>Set <code>threshold</code> to <code>1.0</code> instead of <code>0.2</code>.</strong> The animation only fires when 100% of the element is visible in the viewport. For tall elements that exceed the viewport height, this condition is impossible to satisfy, so the reveal never triggers.</li>
+		<li><strong>Remove the <code>gsap.set(node, {'{'} opacity: 0, y {'}'})</code> initial state.</strong> The element is fully visible on page load, then when the observer fires, <code>gsap.to()</code> animates from the current state (already visible) to <code>opacity: 1, y: 0</code> -- which is a no-op. The initial <code>gsap.set()</code> is essential to create the "from" state that gives the reveal something to animate toward.</li>
+		<li><strong>Remove <code>gsap.killTweensOf(node)</code> from the <code>destroy()</code> method and unmount the component mid-animation.</strong> The tween continues to completion, writing inline styles to a DOM node that no longer exists in the document. While GSAP handles detached nodes gracefully, the wasted work is measurable in performance profiles.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>IntersectionObserver detects when elements enter the viewport without scroll listeners.</li>
-    <li>Combining IntersectionObserver with GSAP gives performant, one-shot reveal animations.</li>
-    <li>Disconnecting the observer after the first intersection prevents unnecessary work.</li>
-    <li>Wrapping this pattern in a <code>use:</code> action makes it reusable across any element.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>revealOnScroll</code> action combines two APIs: the browser's native <code>IntersectionObserver</code> for efficient viewport detection, and GSAP for smooth, configurable animation. The observer watches the element with a configurable <code>threshold</code> (the fraction of the element that must be visible) and fires a callback when the condition is met. Inside the callback, a GSAP tween animates the element to its final state, and the observer immediately disconnects to prevent repeated triggers.</p>
+	<p class="prose">This pattern is more performant than ScrollTrigger for simple one-shot reveals because IntersectionObserver uses the browser's internal compositor thread to detect visibility changes, avoiding layout thrashing. ScrollTrigger, by contrast, recalculates positions on every scroll frame. For a page with dozens of reveal elements, the IntersectionObserver approach has measurably lower overhead.</p>
+	<p class="prose">The action's <code>destroy()</code> method performs two cleanup tasks: disconnecting the observer (which stops viewport monitoring) and calling <code>gsap.killTweensOf(node)</code> (which stops any in-progress animation). Both are necessary because the observer and the tween are independent resources. Wrapping this dual cleanup in a <code>use:</code> action makes it a drop-in directive: <code>use:revealOnScroll</code> on any element, with optional parameters for <code>y</code>, <code>duration</code>, <code>threshold</code>, and <code>delay</code>.</p>
+	<p class="next">Next, you will see how GSAP and Svelte transitions coexist on the same page.</p>
 </section>
 
 <style>
@@ -282,8 +289,9 @@
   .concept strong { color: var(--color-text); }
   .build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

@@ -148,6 +148,15 @@
 			project: 'SEO-Optimized Content Site',
 			status: 'ready',
 			href: '/module-13/13-1-what-is-seo'
+		},
+		{
+			id: 16,
+			title: 'Capstone — PE7 Flagship',
+			summary:
+				'The most advanced PE7 SvelteKit application possible — every module concept composed into one production-grade project.',
+			project: 'PE7 Flagship Project',
+			status: 'ready',
+			href: '/capstone'
 		}
 	] as const;
 

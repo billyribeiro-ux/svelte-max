@@ -278,6 +278,12 @@
 			]
 		},
 		{
+			id: 16,
+			title: 'Capstone — PE7 Flagship',
+			hasProject: true,
+			lessons: []
+		},
+		{
 			id: 13,
 			title: 'Module 13 — SEO',
 			hasProject: true,

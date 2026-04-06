@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface RouteEntry {
 		path: string;
 		url: string;
@@ -26,6 +27,77 @@
 		{ name: '+server.ts', role: 'HTTP endpoint. Export GET/POST/PUT/PATCH/DELETE functions.' },
 		{ name: '+error.svelte', role: 'Error boundary for this subtree. Receives page.error.' }
 	];
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"interface RouteEntry {\n" +
+		"\t\tpath: string;\n" +
+		"\t\turl: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tinterface SpecialFile {\n" +
+		"\t\tname: string;\n" +
+		"\t\trole: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst routes: RouteEntry[] = [\n" +
+		"\t\t{ path: 'src/routes/+page.svelte', url: '/' },\n" +
+		"\t\t{ path: 'src/routes/module-1/+page.svelte', url: '/module-1' },\n" +
+		"\t\t{ path: 'src/routes/module-8/8-1-what-sveltekit-adds/+page.svelte', url: '/module-8/8-1-what-sveltekit-adds' },\n" +
+		"\t\t{ path: 'src/routes/module-8/8-4-file-routing/+page.svelte', url: '/module-8/8-4-file-routing' }\n" +
+		"\t];\n" +
+		"\n" +
+		"\tconst specials: SpecialFile[] = [\n" +
+		"\t\t{ name: '+page.svelte', role: 'The page component for this route.' },\n" +
+		"\t\t{ name: '+page.ts', role: 'Universal load function — runs on server then client.' },\n" +
+		"\t\t{ name: '+page.server.ts', role: 'Server-only load and form actions. Safe for secrets.' },\n" +
+		"\t\t{ name: '+layout.svelte', role: 'Layout that wraps this folder and all descendants.' },\n" +
+		"\t\t{ name: '+layout.ts', role: 'Universal layout load. Data flows down to child pages.' },\n" +
+		"\t\t{ name: '+layout.server.ts', role: 'Server-only layout load. Runs once for the whole subtree on nav.' },\n" +
+		"\t\t{ name: '+server.ts', role: 'HTTP endpoint. Export GET/POST/PUT/PATCH/DELETE functions.' },\n" +
+		"\t\t{ name: '+error.svelte', role: 'Error boundary for this subtree. Receives page.error.' }\n" +
+		"\t];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e8.4 — File-based routing\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e Every folder under \u003ccode\u003esrc/routes/\u003c/code\u003e maps to a URL.\n" +
+		"\t\t\u003ccode\u003e+page.svelte\u003c/code\u003e is the page itself. \u003ccode\u003e+layout.svelte\u003c/code\u003e wraps every child.\n" +
+		"\t\t\u003ccode\u003e+error.svelte\u003c/code\u003e handles errors in that subtree. You don't write a route table — the\n" +
+		"\t\tfile system IS the route table.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003ch3 class=\"sub\"\u003eRoute inventory (sampled)\u003c/h3\u003e\n" +
+		"\t\t\u003cdl class=\"routes\"\u003e\n" +
+		"\t\t\t{#each routes as route (route.path)}\n" +
+		"\t\t\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\t\t\u003cdt\u003e\u003ccode\u003e{route.path}\u003c/code\u003e\u003c/dt\u003e\n" +
+		"\t\t\t\t\t\u003cdd\u003e\u003ccode\u003e{route.url}\u003c/code\u003e\u003c/dd\u003e\n" +
+		"\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t{/each}\n" +
+		"\t\t\u003c/dl\u003e\n" +
+		"\n" +
+		"\t\t\u003ch3 class=\"sub\"\u003eSpecial file names\u003c/h3\u003e\n" +
+		"\t\t\u003cdl class=\"routes\"\u003e\n" +
+		"\t\t\t{#each specials as s (s.name)}\n" +
+		"\t\t\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\t\t\u003cdt\u003e\u003ccode\u003e{s.name}\u003c/code\u003e\u003c/dt\u003e\n" +
+		"\t\t\t\t\t\u003cdd\u003e{s.role}\u003c/dd\u003e\n" +
+		"\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t{/each}\n" +
+		"\t\t\u003c/dl\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eThe filesystem under \u003ccode\u003esrc/routes/\u003c/code\u003e defines every URL.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eFiles starting with \u003ccode\u003e+\u003c/code\u003e are SvelteKit-reserved; other files are just colocated modules.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eEvery route can have its own page, layout, load, server load, endpoint, and error boundary.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -59,6 +131,12 @@
 		</dl>
 	</div>
 
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>The filesystem under <code>src/routes/</code> defines every URL.</li>
@@ -83,5 +161,41 @@
 	@media (min-width: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.row { display: grid; grid-template-columns: 18rem 1fr; gap: var(--space-md); align-items: start; }
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

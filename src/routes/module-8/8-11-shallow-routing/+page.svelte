@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import { pushState } from '$app/navigation';
 	import { page } from '$app/state';
 
@@ -31,6 +32,106 @@
 			close();
 		}
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import { pushState } from '$app/navigation';\n" +
+		"\timport { page } from '$app/state';\n" +
+		"\n" +
+		"\tinterface Photo {\n" +
+		"\t\tid: number;\n" +
+		"\t\ttitle: string;\n" +
+		"\t\tcolor: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst photos: readonly Photo[] = [\n" +
+		"\t\t{ id: 1, title: 'Dawn ridge', color: 'oklch(72% 0.14 40)' },\n" +
+		"\t\t{ id: 2, title: 'Deep harbor', color: 'oklch(55% 0.12 240)' },\n" +
+		"\t\t{ id: 3, title: 'Moss grove', color: 'oklch(68% 0.13 150)' },\n" +
+		"\t\t{ id: 4, title: 'Dust road', color: 'oklch(60% 0.10 70)' }\n" +
+		"\t];\n" +
+		"\n" +
+		"\tconst activeId = $derived((page.state as { photoId?: number } | undefined)?.photoId);\n" +
+		"\tconst activePhoto = $derived(photos.find((p) =\u003e p.id === activeId));\n" +
+		"\n" +
+		"\tfunction open(photo: Photo) {\n" +
+		"\t\tpushState('', { photoId: photo.id });\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction close() {\n" +
+		"\t\thistory.back();\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction onKey(e: KeyboardEvent) {\n" +
+		"\t\tif (e.key === 'Escape' && activeId !== undefined) {\n" +
+		"\t\t\tclose();\n" +
+		"\t\t}\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csvelte:window onkeydown={onKey} /\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e8.11 — Shallow routing\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e\n" +
+		"\t\t\u003ccode\u003e{\"pushState('', state)\"}\u003c/code\u003e and \u003ccode\u003ereplaceState()\u003c/code\u003e from\n" +
+		"\t\t\u003ccode\u003e$app/navigation\u003c/code\u003e update \u003ccode\u003epage.state\u003c/code\u003e without navigating to a new URL.\n" +
+		"\t\tThe browser records the history entry, so back/forward still work. This is ideal for modals,\n" +
+		"\t\tside panels, and drawers — the URL stays stable while transient UI state participates in\n" +
+		"\t\thistory.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cdiv class=\"gallery\"\u003e\n" +
+		"\t\t\t{#each photos as photo (photo.id)}\n" +
+		"\t\t\t\t\u003cbutton\n" +
+		"\t\t\t\t\ttype=\"button\"\n" +
+		"\t\t\t\t\tclass=\"thumb\"\n" +
+		"\t\t\t\t\tstyle=\"background: {photo.color}\"\n" +
+		"\t\t\t\t\tonclick={() =\u003e open(photo)}\n" +
+		"\t\t\t\t\u003e\n" +
+		"\t\t\t\t\t\u003cspan\u003e{photo.title}\u003c/span\u003e\n" +
+		"\t\t\t\t\u003c/button\u003e\n" +
+		"\t\t\t{/each}\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cp class=\"hint\"\u003e\n" +
+		"\t\t\tClick a thumbnail to open. Press \u003ccode\u003eEsc\u003c/code\u003e or use browser back to close.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t{#if activePhoto}\n" +
+		"\t\t\u003cdiv\n" +
+		"\t\t\tclass=\"modal\"\n" +
+		"\t\t\trole=\"dialog\"\n" +
+		"\t\t\taria-modal=\"true\"\n" +
+		"\t\t\taria-label={activePhoto.title}\n" +
+		"\t\t\u003e\n" +
+		"\t\t\t\u003cdiv class=\"modal-card\" style=\"background: {activePhoto.color}\"\u003e\n" +
+		"\t\t\t\t\u003ch2\u003e{activePhoto.title}\u003c/h2\u003e\n" +
+		"\t\t\t\t\u003cp\u003ePhoto #{activePhoto.id}\u003c/p\u003e\n" +
+		"\t\t\t\t\u003cbutton type=\"button\" onclick={close}\u003eClose\u003c/button\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t{/if}\n" +
+		"\n" +
+		"\t\u003ch3\u003eNote on types\u003c/h3\u003e\n" +
+		"\t\u003cp class=\"note\"\u003e\n" +
+		"\t\tFor full TypeScript support, declare \u003ccode\u003einterface PageState\u003c/code\u003e in\n" +
+		"\t\t\u003ccode\u003esrc/app.d.ts\u003c/code\u003e. In this lesson we narrow inline with\n" +
+		"\t\t\u003ccode\u003e{'(page.state as { photoId?: number } | undefined)?.photoId'}\u003c/code\u003e.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003epushState\u003c/code\u003e updates history without navigating.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003epage.state\u003c/code\u003e is reactive — derive UI from it.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eBack / forward work for free because it's a real history entry.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eDeclare \u003ccode\u003ePageState\u003c/code\u003e in \u003ccode\u003eapp.d.ts\u003c/code\u003e for type safety.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <svelte:window onkeydown={onKey} />
@@ -86,6 +187,12 @@
 		<code>src/app.d.ts</code>. In this lesson we narrow inline with
 		<code>{'(page.state as { photoId?: number } | undefined)?.photoId'}</code>.
 	</p>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -218,5 +325,42 @@
 		.gallery {
 			grid-template-columns: repeat(4, 1fr);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept, .hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept, .hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

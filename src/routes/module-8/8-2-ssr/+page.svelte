@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	// Computed at module load. On first request, this runs on the server.
 	// On client navigation, it runs in the browser (this time in the module's client eval).
 	const serverTime: string = new Date().toISOString();
@@ -8,6 +9,59 @@
 	$effect(() => {
 		browserTime = new Date().toISOString();
 	});
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"// Computed at module load. On first request, this runs on the server.\n" +
+		"\t// On client navigation, it runs in the browser (this time in the module's client eval).\n" +
+		"\tconst serverTime: string = new Date().toISOString();\n" +
+		"\n" +
+		"\tlet browserTime: string = $state('(waiting for hydration...)');\n" +
+		"\n" +
+		"\t$effect(() =\u003e {\n" +
+		"\t\tbrowserTime = new Date().toISOString();\n" +
+		"\t});\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e8.2 — What SSR actually is\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e Server-Side Rendering means the server receives a request,\n" +
+		"\t\truns the component to produce HTML, and sends the fully-rendered page. The browser sees real\n" +
+		"\t\tcontent on first paint — not a blank \u003ccode\u003e&lt;div id=\"app\"&gt;\u003c/code\u003e. SSR is SvelteKit's default.\n" +
+		"\t\tYou can disable per-route with \u003ccode\u003eexport const ssr = false\u003c/code\u003e or prerender at build time with\n" +
+		"\t\t\u003ccode\u003eexport const prerender = true\u003c/code\u003e.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003ch3 class=\"sub\"\u003eSSR inspector\u003c/h3\u003e\n" +
+		"\t\t\u003cdl class=\"times\"\u003e\n" +
+		"\t\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\t\u003cdt\u003eModule-load time (server during SSR)\u003c/dt\u003e\n" +
+		"\t\t\t\t\u003cdd\u003e\u003ccode\u003e{serverTime}\u003c/code\u003e\u003c/dd\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\t\u003cdt\u003eHydration time (browser)\u003c/dt\u003e\n" +
+		"\t\t\t\t\u003cdd\u003e\u003ccode\u003e{browserTime}\u003c/code\u003e\u003c/dd\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\u003c/dl\u003e\n" +
+		"\t\t\u003cp class=\"hint\"\u003e\n" +
+		"\t\t\tOpen DevTools → Network tab, filter to \u003ccode\u003eDoc\u003c/code\u003e, click the page response, and view\n" +
+		"\t\t\tthe Response body — you'll see the full rendered HTML, not a shell. If SSR is working, the\n" +
+		"\t\t\tserver time is older than the browser time by exactly the round-trip delay.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eSSR produces real HTML on first paint — good for SEO, perceived speed, and no-JS fallback.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eSvelteKit does SSR by default for every route.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003eexport const ssr = false\u003c/code\u003e turns a route into an SPA page.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003eexport const prerender = true\u003c/code\u003e renders the route at build time to static HTML.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eModule-level code runs on the server for SSR and again on the client during hydration.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -39,6 +93,12 @@
 		</p>
 	</div>
 
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>SSR produces real HTML on first paint — good for SEO, perceived speed, and no-JS fallback.</li>
@@ -65,5 +125,41 @@
 	.hint { margin: 0; color: var(--color-text-muted); font-size: var(--text-sm); line-height: 1.6; }
 	@media (min-width: 768px) {
 		h1 { font-size: var(--text-2xl); }
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept, .hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept, .hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

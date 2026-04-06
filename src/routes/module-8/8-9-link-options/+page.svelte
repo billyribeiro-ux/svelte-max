@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface LinkOption {
 		attr: string;
 		value: string;
@@ -51,6 +52,118 @@
 			label: 'Keep focus 8.14'
 		}
 	];
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"interface LinkOption {\n" +
+		"\t\tattr: string;\n" +
+		"\t\tvalue: string;\n" +
+		"\t\tpurpose: string;\n" +
+		"\t\thref: string;\n" +
+		"\t\tlabel: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst options: readonly LinkOption[] = [\n" +
+		"\t\t{\n" +
+		"\t\t\tattr: 'data-sveltekit-preload-data',\n" +
+		"\t\t\tvalue: '\"hover\"',\n" +
+		"\t\t\tpurpose: 'Runs the load function on pointer enter so data is ready on click.',\n" +
+		"\t\t\thref: '/module-8/8-8-app-navigation',\n" +
+		"\t\t\tlabel: 'Hover to preload 8.8'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tattr: 'data-sveltekit-preload-code',\n" +
+		"\t\t\tvalue: '\"viewport\"',\n" +
+		"\t\t\tpurpose: 'Imports the route JS chunk when the link scrolls into view.',\n" +
+		"\t\t\thref: '/module-8/8-10-hooks',\n" +
+		"\t\t\tlabel: 'Viewport preload 8.10'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tattr: 'data-sveltekit-reload',\n" +
+		"\t\t\tvalue: '\"\"',\n" +
+		"\t\t\tpurpose: 'Forces a full page reload — bypasses client-side routing entirely.',\n" +
+		"\t\t\thref: '/module-8/8-11-shallow-routing',\n" +
+		"\t\t\tlabel: 'Full reload 8.11'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tattr: 'data-sveltekit-replacestate',\n" +
+		"\t\t\tvalue: '\"\"',\n" +
+		"\t\t\tpurpose: 'Replaces the current history entry instead of pushing a new one.',\n" +
+		"\t\t\thref: '/module-8/8-12-snapshots',\n" +
+		"\t\t\tlabel: 'Replace state 8.12'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tattr: 'data-sveltekit-noscroll',\n" +
+		"\t\t\tvalue: '\"\"',\n" +
+		"\t\t\tpurpose: 'Prevents the automatic scroll-to-top after navigation.',\n" +
+		"\t\t\thref: '/module-8/8-13-page-transitions',\n" +
+		"\t\t\tlabel: 'No scroll 8.13'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tattr: 'data-sveltekit-keepfocus',\n" +
+		"\t\t\tvalue: '\"\"',\n" +
+		"\t\t\tpurpose: 'Preserves the currently focused element across the navigation.',\n" +
+		"\t\t\thref: '/module-8/8-14-rendering-modes',\n" +
+		"\t\t\tlabel: 'Keep focus 8.14'\n" +
+		"\t\t}\n" +
+		"\t];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e8.9 — Link options\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e\n" +
+		"\t\tSvelteKit ships a set of \u003ccode\u003edata-sveltekit-*\u003c/code\u003e attributes that configure preloading\n" +
+		"\t\tand navigation behavior per link. You can opt routes into hover-preload, viewport-preload,\n" +
+		"\t\tfull reloads, history replacement, focus retention, and scroll suppression — all without\n" +
+		"\t\tcustom JavaScript.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003ctable\u003e\n" +
+		"\t\t\t\u003cthead\u003e\n" +
+		"\t\t\t\t\u003ctr\u003e\n" +
+		"\t\t\t\t\t\u003cth\u003eAttribute\u003c/th\u003e\n" +
+		"\t\t\t\t\t\u003cth\u003eValue\u003c/th\u003e\n" +
+		"\t\t\t\t\t\u003cth\u003ePurpose\u003c/th\u003e\n" +
+		"\t\t\t\t\t\u003cth\u003eExample\u003c/th\u003e\n" +
+		"\t\t\t\t\u003c/tr\u003e\n" +
+		"\t\t\t\u003c/thead\u003e\n" +
+		"\t\t\t\u003ctbody\u003e\n" +
+		"\t\t\t\t{#each options as o (o.attr)}\n" +
+		"\t\t\t\t\t\u003ctr\u003e\n" +
+		"\t\t\t\t\t\t\u003ctd\u003e\u003ccode\u003e{o.attr}\u003c/code\u003e\u003c/td\u003e\n" +
+		"\t\t\t\t\t\t\u003ctd\u003e\u003ccode\u003e{o.value}\u003c/code\u003e\u003c/td\u003e\n" +
+		"\t\t\t\t\t\t\u003ctd\u003e{o.purpose}\u003c/td\u003e\n" +
+		"\t\t\t\t\t\t\u003ctd\u003e\n" +
+		"\t\t\t\t\t\t\t{#if o.attr === 'data-sveltekit-preload-data'}\n" +
+		"\t\t\t\t\t\t\t\t\u003ca href={o.href} data-sveltekit-preload-data=\"hover\"\u003e{o.label}\u003c/a\u003e\n" +
+		"\t\t\t\t\t\t\t{:else if o.attr === 'data-sveltekit-preload-code'}\n" +
+		"\t\t\t\t\t\t\t\t\u003ca href={o.href} data-sveltekit-preload-code=\"viewport\"\u003e{o.label}\u003c/a\u003e\n" +
+		"\t\t\t\t\t\t\t{:else if o.attr === 'data-sveltekit-reload'}\n" +
+		"\t\t\t\t\t\t\t\t\u003ca href={o.href} data-sveltekit-reload\u003e{o.label}\u003c/a\u003e\n" +
+		"\t\t\t\t\t\t\t{:else if o.attr === 'data-sveltekit-replacestate'}\n" +
+		"\t\t\t\t\t\t\t\t\u003ca href={o.href} data-sveltekit-replacestate\u003e{o.label}\u003c/a\u003e\n" +
+		"\t\t\t\t\t\t\t{:else if o.attr === 'data-sveltekit-noscroll'}\n" +
+		"\t\t\t\t\t\t\t\t\u003ca href={o.href} data-sveltekit-noscroll\u003e{o.label}\u003c/a\u003e\n" +
+		"\t\t\t\t\t\t\t{:else}\n" +
+		"\t\t\t\t\t\t\t\t\u003ca href={o.href} data-sveltekit-keepfocus\u003e{o.label}\u003c/a\u003e\n" +
+		"\t\t\t\t\t\t\t{/if}\n" +
+		"\t\t\t\t\t\t\u003c/td\u003e\n" +
+		"\t\t\t\t\t\u003c/tr\u003e\n" +
+		"\t\t\t\t{/each}\n" +
+		"\t\t\t\u003c/tbody\u003e\n" +
+		"\t\t\u003c/table\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eLink options are declarative — no hooks, no JS, just attributes on \u003ccode\u003e&lt;a&gt;\u003c/code\u003e.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eThey can also be set on a parent element to cascade to all descendant links.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eUse \u003ccode\u003e\"off\"\u003c/code\u003e as the value to opt a link out of an inherited setting.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -99,6 +212,12 @@
 			</tbody>
 		</table>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -192,5 +311,41 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

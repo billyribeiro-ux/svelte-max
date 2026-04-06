@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import { goto, preloadData, beforeNavigate, afterNavigate } from '$app/navigation';
 
 	let log = $state<string[]>([]);
@@ -27,6 +28,84 @@
 		preloadData('/');
 		push('preloadData("/") triggered');
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import { goto, preloadData, beforeNavigate, afterNavigate } from '$app/navigation';\n" +
+		"\n" +
+		"\tlet log = $state\u003cstring[]\u003e([]);\n" +
+		"\n" +
+		"\tfunction push(entry: string) {\n" +
+		"\t\tlog = [...log, `${new Date().toLocaleTimeString()} · ${entry}`].slice(-6);\n" +
+		"\t}\n" +
+		"\n" +
+		"\tbeforeNavigate((nav) =\u003e {\n" +
+		"\t\tpush(`beforeNavigate → ${nav.to?.url.pathname ?? '(unknown)'}`);\n" +
+		"\t});\n" +
+		"\n" +
+		"\tafterNavigate((nav) =\u003e {\n" +
+		"\t\tpush(`afterNavigate ← ${nav.from?.url.pathname ?? '(none)'} → ${nav.to?.url.pathname ?? '(unknown)'}`);\n" +
+		"\t});\n" +
+		"\n" +
+		"\tfunction goHome() {\n" +
+		"\t\tgoto('/');\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction goPrev() {\n" +
+		"\t\tgoto('/module-8/8-7-app-state');\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction warmHome() {\n" +
+		"\t\tpreloadData('/');\n" +
+		"\t\tpush('preloadData(\"/\") triggered');\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e8.8 — $app/navigation\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e\n" +
+		"\t\t\u003ccode\u003e{'goto(url)'}\u003c/code\u003e navigates programmatically.\n" +
+		"\t\t\u003ccode\u003einvalidate(key)\u003c/code\u003e re-runs loads that depend on a key.\n" +
+		"\t\t\u003ccode\u003einvalidateAll()\u003c/code\u003e re-runs every active load.\n" +
+		"\t\t\u003ccode\u003e{'preloadData(url)'}\u003c/code\u003e warms a route's data without navigating.\n" +
+		"\t\t\u003ccode\u003ebeforeNavigate\u003c/code\u003e, \u003ccode\u003eafterNavigate\u003c/code\u003e, and \u003ccode\u003eonNavigate\u003c/code\u003e are\n" +
+		"\t\tlifecycle hooks that fire around every client-side navigation — this is SvelteKit's\n" +
+		"\t\treplacement for imperative router APIs.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" onclick={goHome}\u003eGo home\u003c/button\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" onclick={goPrev}\u003eGo to 8.7\u003c/button\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" onpointerenter={warmHome} onclick={warmHome}\u003e\n" +
+		"\t\t\t\tPreload home on hover\n" +
+		"\t\t\t\u003c/button\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"log\"\u003e\n" +
+		"\t\t\t\u003cstrong\u003eNavigation lifecycle log\u003c/strong\u003e\n" +
+		"\t\t\t{#if log.length === 0}\n" +
+		"\t\t\t\t\u003cp class=\"empty\"\u003eNo navigations yet. Click a button above, then come back.\u003c/p\u003e\n" +
+		"\t\t\t{:else}\n" +
+		"\t\t\t\t\u003cul class=\"log-list\"\u003e\n" +
+		"\t\t\t\t\t{#each log as entry (entry)}\n" +
+		"\t\t\t\t\t\t\u003cli\u003e{entry}\u003c/li\u003e\n" +
+		"\t\t\t\t\t{/each}\n" +
+		"\t\t\t\t\u003c/ul\u003e\n" +
+		"\t\t\t{/if}\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003e{'goto(url)'}\u003c/code\u003e is the programmatic equivalent of clicking a link.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003e{'preloadData(url)'}\u003c/code\u003e warms a route's data before the user commits.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003ebeforeNavigate\u003c/code\u003e / \u003ccode\u003eafterNavigate\u003c/code\u003e are your lifecycle hooks.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003einvalidate\u003c/code\u003e and \u003ccode\u003einvalidateAll\u003c/code\u003e re-run active \u003ccode\u003eload\u003c/code\u003e functions.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -64,6 +143,12 @@
 			{/if}
 		</div>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -175,5 +260,41 @@
 			flex-direction: row;
 			flex-wrap: wrap;
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

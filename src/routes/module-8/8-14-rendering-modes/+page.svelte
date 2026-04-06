@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	// This lesson page uses SvelteKit defaults:
 	// SSR on (server renders HTML per request), prerender off (not built ahead of time).
 	// Good default because the page is interactive and not user-specific.
@@ -43,6 +44,105 @@
 			examples: 'SaaS with marketing + app + admin'
 		}
 	];
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"// This lesson page uses SvelteKit defaults:\n" +
+		"\t// SSR on (server renders HTML per request), prerender off (not built ahead of time).\n" +
+		"\t// Good default because the page is interactive and not user-specific.\n" +
+		"\texport const ssr = true;\n" +
+		"\texport const prerender = false;\n" +
+		"\n" +
+		"\tinterface ModeRow {\n" +
+		"\t\tmode: string;\n" +
+		"\t\tconfig: string;\n" +
+		"\t\tuse: string;\n" +
+		"\t\tavoid: string;\n" +
+		"\t\texamples: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst rows: readonly ModeRow[] = [\n" +
+		"\t\t{\n" +
+		"\t\t\tmode: 'SSR',\n" +
+		"\t\t\tconfig: 'ssr = true (default)',\n" +
+		"\t\t\tuse: 'Fresh data, SEO, per-user pages',\n" +
+		"\t\t\tavoid: 'Pure static content you can cache at build',\n" +
+		"\t\t\texamples: 'Product pages, feeds, search results'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tmode: 'SSG',\n" +
+		"\t\t\tconfig: 'prerender = true',\n" +
+		"\t\t\tuse: 'Content that rarely changes, marketing, docs',\n" +
+		"\t\t\tavoid: 'Per-user data, realtime content',\n" +
+		"\t\t\texamples: 'Blog, docs site, marketing pages'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tmode: 'CSR',\n" +
+		"\t\t\tconfig: 'ssr = false',\n" +
+		"\t\t\tuse: 'Auth-gated dashboards, editor UIs',\n" +
+		"\t\t\tavoid: 'SEO-critical pages, first-paint-sensitive routes',\n" +
+		"\t\t\texamples: 'Admin panels, authoring tools'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\tmode: 'Hybrid',\n" +
+		"\t\t\tconfig: 'Mix per-route',\n" +
+		"\t\t\tuse: 'Most real apps — prerender marketing, SSR app, CSR admin',\n" +
+		"\t\t\tavoid: 'Not a pitfall — this is the norm',\n" +
+		"\t\t\texamples: 'SaaS with marketing + app + admin'\n" +
+		"\t\t}\n" +
+		"\t];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e8.14 — Rendering modes\u003c/h1\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\t\u003cstrong\u003eConcept.\u003c/strong\u003e\n" +
+		"\t\tSvelteKit supports four rendering modes per route: \u003cstrong\u003eSSR\u003c/strong\u003e (default — server\n" +
+		"\t\trenders HTML per request), \u003cstrong\u003eSSG\u003c/strong\u003e (\u003ccode\u003eprerender = true\u003c/code\u003e — built once\n" +
+		"\t\tat build time), \u003cstrong\u003eCSR\u003c/strong\u003e (\u003ccode\u003essr = false\u003c/code\u003e — skeleton HTML, browser\n" +
+		"\t\trenders), and \u003cstrong\u003eHybrid\u003c/strong\u003e (mix per route). Pick based on data freshness, auth,\n" +
+		"\t\tinteractivity, and build-time cost.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003ctable\u003e\n" +
+		"\t\t\t\u003cthead\u003e\n" +
+		"\t\t\t\t\u003ctr\u003e\n" +
+		"\t\t\t\t\t\u003cth\u003eMode\u003c/th\u003e\n" +
+		"\t\t\t\t\t\u003cth\u003eConfig\u003c/th\u003e\n" +
+		"\t\t\t\t\t\u003cth\u003eWhen to use\u003c/th\u003e\n" +
+		"\t\t\t\t\t\u003cth\u003eWhen NOT to use\u003c/th\u003e\n" +
+		"\t\t\t\t\t\u003cth\u003eExamples\u003c/th\u003e\n" +
+		"\t\t\t\t\u003c/tr\u003e\n" +
+		"\t\t\t\u003c/thead\u003e\n" +
+		"\t\t\t\u003ctbody\u003e\n" +
+		"\t\t\t\t{#each rows as r (r.mode)}\n" +
+		"\t\t\t\t\t\u003ctr\u003e\n" +
+		"\t\t\t\t\t\t\u003ctd\u003e\u003cstrong\u003e{r.mode}\u003c/strong\u003e\u003c/td\u003e\n" +
+		"\t\t\t\t\t\t\u003ctd\u003e\u003ccode\u003e{r.config}\u003c/code\u003e\u003c/td\u003e\n" +
+		"\t\t\t\t\t\t\u003ctd\u003e{r.use}\u003c/td\u003e\n" +
+		"\t\t\t\t\t\t\u003ctd\u003e{r.avoid}\u003c/td\u003e\n" +
+		"\t\t\t\t\t\t\u003ctd\u003e{r.examples}\u003c/td\u003e\n" +
+		"\t\t\t\t\t\u003c/tr\u003e\n" +
+		"\t\t\t\t{/each}\n" +
+		"\t\t\t\u003c/tbody\u003e\n" +
+		"\t\t\u003c/table\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"current\"\u003e\n" +
+		"\t\t\t\u003cspan\u003eThis page:\u003c/span\u003e\n" +
+		"\t\t\t\u003cspan class=\"pill\"\u003eSSR\u003c/span\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eSSR is the right default — fresh data plus fast first paint.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eSSG (\u003ccode\u003eprerender = true\u003c/code\u003e) is perfect for docs and marketing.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eCSR (\u003ccode\u003essr = false\u003c/code\u003e) is fine for auth-gated internal tools.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eHybrid routing is the norm for real apps — pick per route.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -85,6 +185,12 @@
 			<span class="pill">SSR</span>
 		</div>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -187,5 +293,41 @@
 		h1 {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

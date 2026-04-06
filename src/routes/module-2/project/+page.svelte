@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import { SvelteMap, MediaQuery } from 'svelte/reactivity';
 
 	interface Metric {
@@ -144,6 +145,262 @@
 	function percent(m: Metric): number {
 		return Math.min(100, Math.round((m.value / m.target) * 100));
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import { SvelteMap, MediaQuery } from 'svelte/reactivity';\n" +
+		"\n" +
+		"\tinterface Metric {\n" +
+		"\t\tid: string;\n" +
+		"\t\tlabel: string;\n" +
+		"\t\tvalue: number;\n" +
+		"\t\ttarget: number;\n" +
+		"\t\tunit: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tinterface Activity {\n" +
+		"\t\tid: number;\n" +
+		"\t\ttext: string;\n" +
+		"\t\tat: Date;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst STORAGE_KEY = 'svelte-max:module-2:dashboard';\n" +
+		"\n" +
+		"\tconst initialMetrics: Metric[] = [\n" +
+		"\t\t{ id: 'req', label: 'Requests served', value: 18420, target: 20000, unit: 'req' },\n" +
+		"\t\t{ id: 'users', label: 'Active users', value: 642, target: 800, unit: 'users' },\n" +
+		"\t\t{ id: 'errors', label: 'Error rate', value: 17, target: 25, unit: 'err/min' },\n" +
+		"\t\t{ id: 'latency', label: 'P95 latency', value: 142, target: 200, unit: 'ms' }\n" +
+		"\t];\n" +
+		"\n" +
+		"\tconst initialActivities: Activity[] = [\n" +
+		"\t\t{ id: 1, text: 'Deployment v2.4.0 shipped to production', at: new Date(Date.now() - 60_000) },\n" +
+		"\t\t{\n" +
+		"\t\t\tid: 2,\n" +
+		"\t\t\ttext: 'New signup from hello@studio.example',\n" +
+		"\t\t\tat: new Date(Date.now() - 120_000)\n" +
+		"\t\t},\n" +
+		"\t\t{ id: 3, text: 'Cache hit ratio climbed to 94%', at: new Date(Date.now() - 240_000) },\n" +
+		"\t\t{ id: 4, text: 'Scheduled backup completed', at: new Date(Date.now() - 360_000) },\n" +
+		"\t\t{ id: 5, text: 'Feature flag \"onboarding-v3\" enabled for 10%', at: new Date(Date.now() - 480_000) }\n" +
+		"\t];\n" +
+		"\n" +
+		"\tconst activityMessages: string[] = [\n" +
+		"\t\t'New user signed up from the marketing site',\n" +
+		"\t\t'Edge cache warmed in eu-west',\n" +
+		"\t\t'Background job finished in 820ms',\n" +
+		"\t\t'Webhook delivered to integration partner',\n" +
+		"\t\t'Rate limiter released a throttled client',\n" +
+		"\t\t'Health check passed on all regions',\n" +
+		"\t\t'A/B test bucket rebalanced',\n" +
+		"\t\t'Daily email digest queued',\n" +
+		"\t\t'Analytics batch flushed to warehouse',\n" +
+		"\t\t'New comment posted on thread #481'\n" +
+		"\t];\n" +
+		"\n" +
+		"\tlet metrics = $state\u003cMetric[]\u003e(initialMetrics.map((m) =\u003e ({ ...m })));\n" +
+		"\n" +
+		"\t// SvelteMap: reactive Map. Mutations trigger re-renders of readers.\n" +
+		"\tconst activities = new SvelteMap\u003cnumber, Activity\u003e();\n" +
+		"\tfor (const a of initialActivities) activities.set(a.id, a);\n" +
+		"\n" +
+		"\tlet query = $state('');\n" +
+		"\tlet paused = $state(false);\n" +
+		"\n" +
+		"\t// MediaQuery is SSR-safe — returns a fallback during SSR, real value in browser.\n" +
+		"\tconst isWide = new MediaQuery('(min-width: 768px)');\n" +
+		"\n" +
+		"\t// $derived.by for multi-field computations.\n" +
+		"\tconst totals = $derived.by(() =\u003e {\n" +
+		"\t\tconst totalProgress = metrics.reduce((sum, m) =\u003e sum + m.value / m.target, 0);\n" +
+		"\t\tconst avgProgress = metrics.length \u003e 0 ? (totalProgress / metrics.length) * 100 : 0;\n" +
+		"\t\tconst overTarget = metrics.filter((m) =\u003e m.value \u003e= m.target).length;\n" +
+		"\t\treturn {\n" +
+		"\t\t\tavgProgress: Math.round(avgProgress),\n" +
+		"\t\t\toverTarget,\n" +
+		"\t\t\tcount: metrics.length\n" +
+		"\t\t};\n" +
+		"\t});\n" +
+		"\n" +
+		"\t// Reactive search over the live Map. Newest first.\n" +
+		"\tconst filteredActivities = $derived(\n" +
+		"\t\t[...activities.values()]\n" +
+		"\t\t\t.filter((a) =\u003e a.text.toLowerCase().includes(query.toLowerCase()))\n" +
+		"\t\t\t.sort((a, b) =\u003e b.at.getTime() - a.at.getTime())\n" +
+		"\t);\n" +
+		"\n" +
+		"\t// Restore saved snapshot on mount. $effect only runs in the browser, so\n" +
+		"\t// `localStorage` access is inherently safe here.\n" +
+		"\t$effect(() =\u003e {\n" +
+		"\t\ttry {\n" +
+		"\t\t\tconst raw = localStorage.getItem(STORAGE_KEY);\n" +
+		"\t\t\tif (!raw) return;\n" +
+		"\t\t\tconst parsed = JSON.parse(raw) as { metrics?: Metric[] };\n" +
+		"\t\t\tif (Array.isArray(parsed.metrics)) {\n" +
+		"\t\t\t\tmetrics = parsed.metrics;\n" +
+		"\t\t\t}\n" +
+		"\t\t} catch {\n" +
+		"\t\t\t// Corrupt storage — leave defaults in place.\n" +
+		"\t\t}\n" +
+		"\t});\n" +
+		"\n" +
+		"\t// Persist metrics to localStorage whenever they change. $state.snapshot\n" +
+		"\t// converts the proxy into a plain cloneable value for JSON.stringify.\n" +
+		"\t$effect(() =\u003e {\n" +
+		"\t\tconst snapshot = $state.snapshot({ metrics });\n" +
+		"\t\tlocalStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));\n" +
+		"\t});\n" +
+		"\n" +
+		"\t// Interval that streams new activities in — with cleanup. Respects the\n" +
+		"\t// pause toggle by early-returning inside the tick callback.\n" +
+		"\t$effect(() =\u003e {\n" +
+		"\t\tconst id = window.setInterval(() =\u003e {\n" +
+		"\t\t\tif (paused) return;\n" +
+		"\t\t\tconst now = Date.now();\n" +
+		"\t\t\tconst text = activityMessages[Math.floor(Math.random() * activityMessages.length)];\n" +
+		"\t\t\tactivities.set(now, { id: now, text, at: new Date(now) });\n" +
+		"\t\t\t// Cap the map so it doesn't grow forever.\n" +
+		"\t\t\tif (activities.size \u003e 40) {\n" +
+		"\t\t\t\tconst oldest = [...activities.keys()].sort((a, b) =\u003e a - b)[0];\n" +
+		"\t\t\t\tactivities.delete(oldest);\n" +
+		"\t\t\t}\n" +
+		"\t\t}, 5000);\n" +
+		"\n" +
+		"\t\treturn () =\u003e window.clearInterval(id);\n" +
+		"\t});\n" +
+		"\n" +
+		"\tfunction bumpMetric(id: string, delta: number): void {\n" +
+		"\t\tmetrics = metrics.map((m) =\u003e (m.id === id ? { ...m, value: Math.max(0, m.value + delta) } : m));\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction clearActivities(): void {\n" +
+		"\t\tactivities.clear();\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction resetAll(): void {\n" +
+		"\t\tmetrics = initialMetrics.map((m) =\u003e ({ ...m }));\n" +
+		"\t\tactivities.clear();\n" +
+		"\t\tfor (const a of initialActivities) activities.set(a.id, a);\n" +
+		"\t\tquery = '';\n" +
+		"\t\tpaused = false;\n" +
+		"\t\tlocalStorage.removeItem(STORAGE_KEY);\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction formatTime(d: Date): string {\n" +
+		"\t\treturn d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction percent(m: Metric): number {\n" +
+		"\t\treturn Math.min(100, Math.round((m.value / m.target) * 100));\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003c!--\n" +
+		"\t\tPer-page color personality. Overriding --color-brand on a root class\n" +
+		"\t\tscoped to this component gives the dashboard an amber identity without\n" +
+		"\t\taffecting any other page. This foreshadows Module 6.9 where we use the\n" +
+		"\t\tsame pattern at route-group scale.\n" +
+		"\t--\u003e\n" +
+		"\t\u003cdiv class=\"dashboard\"\u003e\n" +
+		"\t\t\u003ch1\u003eModule 2 Project — Interactive Dashboard\u003c/h1\u003e\n" +
+		"\n" +
+		"\t\t\u003cheader class=\"topbar\"\u003e\n" +
+		"\t\t\t\u003cdiv class=\"summary\"\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"summary-label\"\u003eAverage progress\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"summary-value\"\u003e{totals.avgProgress}%\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"summary-sub\"\u003e\n" +
+		"\t\t\t\t\t{totals.overTarget} / {totals.count} metrics at or above target\n" +
+		"\t\t\t\t\u003c/span\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"ghost\" onclick={resetAll}\u003eReset dashboard\u003c/button\u003e\n" +
+		"\t\t\u003c/header\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class={['layout', { wide: isWide.current }]}\u003e\n" +
+		"\t\t\t\u003csection class=\"metrics\" aria-label=\"Metrics\"\u003e\n" +
+		"\t\t\t\t\u003ch2\u003eMetrics\u003c/h2\u003e\n" +
+		"\t\t\t\t\u003cdiv class=\"metric-grid\"\u003e\n" +
+		"\t\t\t\t\t{#each metrics as m (m.id)}\n" +
+		"\t\t\t\t\t\t\u003carticle class=\"metric\"\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cheader class=\"metric-head\"\u003e\n" +
+		"\t\t\t\t\t\t\t\t\u003cspan class=\"metric-label\"\u003e{m.label}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\t\t\u003cspan class=\"metric-pct\" class:over={m.value \u003e= m.target}\u003e\n" +
+		"\t\t\t\t\t\t\t\t\t{percent(m)}%\n" +
+		"\t\t\t\t\t\t\t\t\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\t\u003c/header\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cdiv class=\"metric-value\"\u003e\n" +
+		"\t\t\t\t\t\t\t\t{m.value.toLocaleString()}\n" +
+		"\t\t\t\t\t\t\t\t\u003cspan class=\"metric-unit\"\u003e{m.unit}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cdiv class=\"metric-target\"\u003etarget {m.target.toLocaleString()} {m.unit}\u003c/div\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cdiv class=\"bar\" aria-hidden=\"true\"\u003e\n" +
+		"\t\t\t\t\t\t\t\t\u003cdiv class=\"fill\" style:width=\"{percent(m)}%\"\u003e\u003c/div\u003e\n" +
+		"\t\t\t\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cdiv class=\"metric-actions\"\u003e\n" +
+		"\t\t\t\t\t\t\t\t\u003cbutton\n" +
+		"\t\t\t\t\t\t\t\t\ttype=\"button\"\n" +
+		"\t\t\t\t\t\t\t\t\taria-label=\"Decrease {m.label} by 10\"\n" +
+		"\t\t\t\t\t\t\t\t\tonclick={() =\u003e bumpMetric(m.id, -10)}\u003e−10\u003c/button\n" +
+		"\t\t\t\t\t\t\t\t\u003e\n" +
+		"\t\t\t\t\t\t\t\t\u003cbutton\n" +
+		"\t\t\t\t\t\t\t\t\ttype=\"button\"\n" +
+		"\t\t\t\t\t\t\t\t\taria-label=\"Increase {m.label} by 10\"\n" +
+		"\t\t\t\t\t\t\t\t\tonclick={() =\u003e bumpMetric(m.id, 10)}\u003e+10\u003c/button\n" +
+		"\t\t\t\t\t\t\t\t\u003e\n" +
+		"\t\t\t\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\t\t\t\u003c/article\u003e\n" +
+		"\t\t\t\t\t{/each}\n" +
+		"\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\u003c/section\u003e\n" +
+		"\n" +
+		"\t\t\t\u003csection class=\"feed\" aria-label=\"Activity feed\"\u003e\n" +
+		"\t\t\t\t\u003cdiv class=\"feed-head\"\u003e\n" +
+		"\t\t\t\t\t\u003ch2\u003eActivity\u003c/h2\u003e\n" +
+		"\t\t\t\t\t\u003cdiv class=\"feed-controls\"\u003e\n" +
+		"\t\t\t\t\t\t\u003clabel class=\"toggle\"\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cinput type=\"checkbox\" bind:checked={paused} /\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cspan\u003e{paused ? 'Feed paused' : 'Pause feed'}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003c/label\u003e\n" +
+		"\t\t\t\t\t\t\u003cbutton type=\"button\" class=\"ghost small\" onclick={clearActivities}\u003eClear\u003c/button\u003e\n" +
+		"\t\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t\t\u003cinput\n" +
+		"\t\t\t\t\ttype=\"search\"\n" +
+		"\t\t\t\t\tclass=\"search\"\n" +
+		"\t\t\t\t\tplaceholder=\"Filter activities…\"\n" +
+		"\t\t\t\t\tbind:value={query}\n" +
+		"\t\t\t\t/\u003e\n" +
+		"\t\t\t\t\u003cul class=\"feed-list\"\u003e\n" +
+		"\t\t\t\t\t{#each filteredActivities as a (a.id)}\n" +
+		"\t\t\t\t\t\t\u003cli class=\"feed-item\"\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cspan class=\"time\"\u003e{formatTime(a.at)}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\t\u003cspan class=\"text\"\u003e{a.text}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\t\u003c/li\u003e\n" +
+		"\t\t\t\t\t{:else}\n" +
+		"\t\t\t\t\t\t\u003cli class=\"empty\"\u003eNo activities match your filter.\u003c/li\u003e\n" +
+		"\t\t\t\t\t{/each}\n" +
+		"\t\t\t\t\u003c/ul\u003e\n" +
+		"\t\t\t\u003c/section\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cfooter class=\"built\"\u003e\n" +
+		"\t\t\t\u003ch3\u003eBuilt with\u003c/h3\u003e\n" +
+		"\t\t\t\u003cul\u003e\n" +
+		"\t\t\t\t\u003cli\u003e\u003ccode\u003e$state\u003c/code\u003e for typed reactive metrics and UI toggles\u003c/li\u003e\n" +
+		"\t\t\t\t\u003cli\u003e\u003ccode\u003e$derived.by\u003c/code\u003e for multi-field totals computation\u003c/li\u003e\n" +
+		"\t\t\t\t\u003cli\u003e\u003ccode\u003e$derived\u003c/code\u003e for the filtered, sorted activity list\u003c/li\u003e\n" +
+		"\t\t\t\t\u003cli\u003e\u003ccode\u003e$effect\u003c/code\u003e with cleanup — streaming activity interval\u003c/li\u003e\n" +
+		"\t\t\t\t\u003cli\u003e\u003ccode\u003e$effect\u003c/code\u003e syncing metrics to \u003ccode\u003elocalStorage\u003c/code\u003e\u003c/li\u003e\n" +
+		"\t\t\t\t\u003cli\u003e\u003ccode\u003e$state.snapshot\u003c/code\u003e for cloneable persistence payloads\u003c/li\u003e\n" +
+		"\t\t\t\t\u003cli\u003e\u003ccode\u003eSvelteMap\u003c/code\u003e as the reactive activity store\u003c/li\u003e\n" +
+		"\t\t\t\t\u003cli\u003e\u003ccode\u003eMediaQuery\u003c/code\u003e from \u003ccode\u003esvelte/reactivity\u003c/code\u003e for layout switching\u003c/li\u003e\n" +
+		"\t\t\t\t\u003cli\u003eClass object binding \u003ccode\u003e{'{ wide: isWide.current }'}\u003c/code\u003e\u003c/li\u003e\n" +
+		"\t\t\t\t\u003cli\u003ePer-page OKLCH color personality on the \u003ccode\u003e.dashboard\u003c/code\u003e root\u003c/li\u003e\n" +
+		"\t\t\t\u003c/ul\u003e\n" +
+		"\t\t\u003c/footer\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -250,6 +507,12 @@
 			</ul>
 		</footer>
 	</div>
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 </section>
 
 <style>
@@ -598,5 +861,35 @@
 	.built code {
 		font-family: var(--font-mono);
 		color: var(--color-brand);
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
 	}
 </style>

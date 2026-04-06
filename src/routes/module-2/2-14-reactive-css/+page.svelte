@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	// Three reactive numbers that feed an OKLCH color string.
 	let l = $state(65);
 	let c = $state(0.22);
@@ -12,6 +13,107 @@
 		c = 0.22;
 		h = 270;
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"// Three reactive numbers that feed an OKLCH color string.\n" +
+		"\tlet l = $state(65);\n" +
+		"\tlet c = $state(0.22);\n" +
+		"\tlet h = $state(270);\n" +
+		"\n" +
+		"\t// $derived infers `string` from the expression — no annotation needed.\n" +
+		"\tconst colorString = $derived(`oklch(${l}% ${c} ${h})`);\n" +
+		"\n" +
+		"\tfunction reset(): void {\n" +
+		"\t\tl = 65;\n" +
+		"\t\tc = 0.22;\n" +
+		"\t\th = 270;\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e2.14 — Reactive CSS\u003c/h1\u003e\n" +
+		"\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\tSvelte 5.16 added clsx-style class bindings:\n" +
+		"\t\t\u003ccode\u003e{'class={{ active: isActive, muted: !enabled }}'}\u003c/code\u003e for objects and\n" +
+		"\t\t\u003ccode\u003e{\"class={[faded && 'fade', scale && 'scale']}\"}\u003c/code\u003e for arrays. These compose cleanly\n" +
+		"\t\twith the legacy \u003ccode\u003eclass:name={'{condition}'}\u003c/code\u003e directive. The\n" +
+		"\t\t\u003ccode\u003estyle:property={'{value}'}\u003c/code\u003e directive binds any reactive expression to a CSS\n" +
+		"\t\tproperty — including CSS custom properties like \u003ccode\u003estyle:--brand-hue={'{hue}'}\u003c/code\u003e.\n" +
+		"\t\tCombined with scoped CSS reading \u003ccode\u003evar(--brand-hue)\u003c/code\u003e, you get reactive styling\n" +
+		"\t\twithout touching the DOM or stringifying inline \u003ccode\u003estyle\u003c/code\u003e attributes.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build stack\"\u003e\n" +
+		"\t\t\u003ch2\u003eOKLCH color mixer\u003c/h2\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"controls\"\u003e\n" +
+		"\t\t\t\u003clabel\u003e\n" +
+		"\t\t\t\t\u003cspan\u003elightness \u003coutput\u003e{l}%\u003c/output\u003e\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cinput type=\"range\" min=\"0\" max=\"100\" step=\"1\" bind:value={l} /\u003e\n" +
+		"\t\t\t\u003c/label\u003e\n" +
+		"\t\t\t\u003clabel\u003e\n" +
+		"\t\t\t\t\u003cspan\u003echroma \u003coutput\u003e{c.toFixed(2)}\u003c/output\u003e\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cinput type=\"range\" min=\"0\" max=\"0.4\" step=\"0.01\" bind:value={c} /\u003e\n" +
+		"\t\t\t\u003c/label\u003e\n" +
+		"\t\t\t\u003clabel\u003e\n" +
+		"\t\t\t\t\u003cspan\u003ehue \u003coutput\u003e{h}°\u003c/output\u003e\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cinput type=\"range\" min=\"0\" max=\"360\" step=\"1\" bind:value={h} /\u003e\n" +
+		"\t\t\t\u003c/label\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"preview\" style:background=\"oklch({l}% {c} {h})\"\u003e\n" +
+		"\t\t\t\u003cspan class=\"preview-text\"\u003epreview\u003c/span\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003c!--\n" +
+		"\t\t\tclsx-style object binding: exactly one of `dark` or `light` is true at any\n" +
+		"\t\t\tmoment. The scoped CSS defines both classes with different OKLCH text colors.\n" +
+		"\t\t--\u003e\n" +
+		"\t\t\u003cdiv class={['label-card', { dark: l \u003e 60, light: l \u003c= 60 }]}\u003e\n" +
+		"\t\t\t\u003cspan\u003eAdaptive label — readable at any lightness\u003c/span\u003e\n" +
+		"\t\t\t\u003ccode\u003e{colorString}\u003c/code\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cbutton type=\"button\" class=\"reset\" onclick={reset}\u003eReset to defaults\u003c/button\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build stack\"\u003e\n" +
+		"\t\t\u003ch2\u003eCustom property bridge: \u003ccode\u003estyle:--custom\u003c/code\u003e\u003c/h2\u003e\n" +
+		"\t\t\u003cp class=\"hint\"\u003e\n" +
+		"\t\t\tThe \u003ccode\u003estyle:--card-accent\u003c/code\u003e directive passes a reactive OKLCH string into scoped CSS.\n" +
+		"\t\t\tThe card reads it with \u003ccode\u003evar(--card-accent)\u003c/code\u003e — no inline style stringification needed.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\t\u003cdiv\n" +
+		"\t\t\tclass=\"accent-card\"\n" +
+		"\t\t\tstyle:--card-accent=\"oklch({l}% {c} {h})\"\n" +
+		"\t\t\u003e\n" +
+		"\t\t\t\u003cspan class=\"accent-title\"\u003eAccent card\u003c/span\u003e\n" +
+		"\t\t\t\u003ccode\u003estyle:--card-accent=\"oklch({l}% {c} {h})\"\u003c/code\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tObject class bindings (\u003ccode\u003e{'class={{ dark: l \u003e 60 }}'}\u003c/code\u003e) toggle classes\n" +
+		"\t\t\tdeclaratively — no \u003ccode\u003eclassList\u003c/code\u003e calls.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tArray class bindings let you mix static strings and conditional classes in one expression.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\t\u003ccode\u003estyle:property={'{value}'}\u003c/code\u003e binds reactive values to CSS properties, including\n" +
+		"\t\t\tcustom properties like \u003ccode\u003e--brand-hue\u003c/code\u003e.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tCombining scoped CSS with reactive custom properties gives you skinnable components with zero\n" +
+		"\t\t\timperative DOM work.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -76,6 +178,12 @@
 			<code>style:--card-accent="oklch({l}% {c} {h})"</code>
 		</div>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -259,5 +367,42 @@
 	.accent-card code {
 		font-size: var(--text-sm);
 		opacity: 0.8;
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept, .hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept, .hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

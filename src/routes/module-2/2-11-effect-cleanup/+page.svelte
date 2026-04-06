@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let seconds = $state(10);
 	let running = $state(false);
 
@@ -27,6 +28,105 @@
 	const progress = $derived(seconds / 10);
 	const circumference = 2 * Math.PI * 52;
 	const dashOffset = $derived(circumference * (1 - progress));
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"let seconds = $state(10);\n" +
+		"\tlet running = $state(false);\n" +
+		"\n" +
+		"\t$effect(() =\u003e {\n" +
+		"\t\tif (!running) return;\n" +
+		"\t\tif (seconds === 0) {\n" +
+		"\t\t\trunning = false;\n" +
+		"\t\t\treturn;\n" +
+		"\t\t}\n" +
+		"\t\tconst id = setInterval(() =\u003e {\n" +
+		"\t\t\tseconds -= 1;\n" +
+		"\t\t}, 1000);\n" +
+		"\t\treturn () =\u003e clearInterval(id);\n" +
+		"\t});\n" +
+		"\n" +
+		"\tfunction toggle() {\n" +
+		"\t\tif (seconds === 0) seconds = 10;\n" +
+		"\t\trunning = !running;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction reset() {\n" +
+		"\t\trunning = false;\n" +
+		"\t\tseconds = 10;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst progress = $derived(seconds / 10);\n" +
+		"\tconst circumference = 2 * Math.PI * 52;\n" +
+		"\tconst dashOffset = $derived(circumference * (1 - progress));\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e2.11 — Effect cleanup\u003c/h1\u003e\n" +
+		"\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\tLong-lived side effects — timers, subscriptions, event listeners, WebSocket connections — must\n" +
+		"\t\tclean themselves up when the component unmounts, and also when the effect re-runs due to a\n" +
+		"\t\tdependency change. \u003ccode\u003e$effect\u003c/code\u003e supports this by letting you return a cleanup function:\n" +
+		"\t\t\u003ccode\u003e$effect(() =&gt; &#123; const id = setInterval(...); return () =&gt; clearInterval(id); &#125;)\u003c/code\u003e.\n" +
+		"\t\tSvelte calls that cleanup before the effect re-runs and once more when the component is destroyed.\n" +
+		"\t\tIf you forget it, you leak: the interval keeps firing, the listener keeps handling, the socket\n" +
+		"\t\tkeeps consuming battery. You can prove leaks exist by opening DevTools Performance → Memory and\n" +
+		"\t\twatching heap growth or CPU activity climb after navigating away.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"demo\"\u003e\n" +
+		"\t\t\u003cdiv class=\"timer\"\u003e\n" +
+		"\t\t\t\u003csvg viewBox=\"0 0 120 120\" aria-hidden=\"true\"\u003e\n" +
+		"\t\t\t\t\u003ccircle cx=\"60\" cy=\"60\" r=\"52\" class=\"track\" /\u003e\n" +
+		"\t\t\t\t\u003ccircle\n" +
+		"\t\t\t\t\tcx=\"60\"\n" +
+		"\t\t\t\t\tcy=\"60\"\n" +
+		"\t\t\t\t\tr=\"52\"\n" +
+		"\t\t\t\t\tclass=\"progress\"\n" +
+		"\t\t\t\t\tstroke-dasharray={circumference}\n" +
+		"\t\t\t\t\tstroke-dashoffset={dashOffset}\n" +
+		"\t\t\t\t/\u003e\n" +
+		"\t\t\t\u003c/svg\u003e\n" +
+		"\t\t\t\u003cspan class=\"digits\"\u003e{seconds}\u003c/span\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"controls\"\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" onclick={toggle}\u003e\n" +
+		"\t\t\t\t{running ? 'Pause' : seconds === 0 ? 'Restart' : 'Start'}\n" +
+		"\t\t\t\u003c/button\u003e\n" +
+		"\t\t\t\u003cbutton type=\"button\" class=\"secondary\" onclick={reset}\u003eReset\u003c/button\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cp class=\"hint\"\u003e\n" +
+		"\t\t\tThe effect creates the interval when \u003ccode\u003erunning\u003c/code\u003e flips true and returns a cleanup\n" +
+		"\t\t\tthat clears it. Pausing, resetting, or unmounting all trigger cleanup — no leaks.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eProve it\u003c/h3\u003e\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\tTo see a leak: comment out the cleanup \u003ccode\u003ereturn () =&gt; clearInterval(id)\u003c/code\u003e, start the\n" +
+		"\t\ttimer, navigate to another page, then check DevTools &rarr; Performance &rarr; Memory. The timer\n" +
+		"\t\tkeeps running — CPU never drops. Uncomment the cleanup and repeat — CPU returns to idle immediately.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003eReturn a function from \u003ccode\u003e$effect\u003c/code\u003e to register cleanup logic.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eCleanup runs before the effect re-runs \u003cem\u003eand\u003c/em\u003e when the component is destroyed.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tAny long-lived resource — \u003ccode\u003esetInterval\u003c/code\u003e, \u003ccode\u003eaddEventListener\u003c/code\u003e, sockets,\n" +
+		"\t\t\tobservers — needs cleanup.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tIf you forget the cleanup, switching to another page leaves the interval running — you can\n" +
+		"\t\t\tverify this by doing it and watching the tab's CPU.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eDevTools Performance and Memory panels will surface leaks caused by missing cleanups.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -78,6 +178,12 @@
 		timer, navigate to another page, then check DevTools &rarr; Performance &rarr; Memory. The timer
 		keeps running — CPU never drops. Uncomment the cleanup and repeat — CPU returns to idle immediately.
 	</p>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -239,5 +345,41 @@
 			inline-size: 14rem;
 			block-size: 14rem;
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept, .hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept, .hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

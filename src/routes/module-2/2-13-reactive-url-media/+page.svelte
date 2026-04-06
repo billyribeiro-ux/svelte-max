@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import { MediaQuery, SvelteURL } from 'svelte/reactivity';
 
 	// MediaQuery wraps window.matchMedia in a reactive class. `.current` is
@@ -38,6 +39,130 @@
 		url.searchParams.set('category', category);
 		url.searchParams.set('page', page);
 	});
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import { MediaQuery, SvelteURL } from 'svelte/reactivity';\n" +
+		"\n" +
+		"\t// MediaQuery wraps window.matchMedia in a reactive class. `.current` is\n" +
+		"\t// a reactive boolean — reading it in a template/derived/effect subscribes\n" +
+		"\t// the render to the media query. No event listeners to manage.\n" +
+		"\tconst mqSm = new MediaQuery('(min-width: 480px)');\n" +
+		"\tconst mqMd = new MediaQuery('(min-width: 768px)');\n" +
+		"\tconst mqLg = new MediaQuery('(min-width: 1024px)');\n" +
+		"\tconst mqXl = new MediaQuery('(min-width: 1280px)');\n" +
+		"\n" +
+		"\tinterface Breakpoint {\n" +
+		"\t\tlabel: string;\n" +
+		"\t\tmin: string;\n" +
+		"\t\tmq: MediaQuery;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tconst breakpoints: Breakpoint[] = [\n" +
+		"\t\t{ label: 'sm', min: '480px', mq: mqSm },\n" +
+		"\t\t{ label: 'md', min: '768px', mq: mqMd },\n" +
+		"\t\t{ label: 'lg', min: '1024px', mq: mqLg },\n" +
+		"\t\t{ label: 'xl', min: '1280px', mq: mqXl }\n" +
+		"\t];\n" +
+		"\n" +
+		"\t// SvelteURL is a reactive wrapper around the built-in URL class. Mutating\n" +
+		"\t// `.pathname`, `.searchParams`, or any setter triggers reactivity on the\n" +
+		"\t// `.href` / `.search` / `.toString()` reads below.\n" +
+		"\tconst url = new SvelteURL('https://svelte-max.dev/search');\n" +
+		"\n" +
+		"\tlet q = $state('svelte runes');\n" +
+		"\tlet category = $state('tutorials');\n" +
+		"\tlet page = $state('1');\n" +
+		"\n" +
+		"\t// Keep the SvelteURL in sync with the three inputs. Because `url` is\n" +
+		"\t// reactive, reading `url.href` in the template re-renders on every edit.\n" +
+		"\t$effect(() =\u003e {\n" +
+		"\t\turl.searchParams.set('q', q);\n" +
+		"\t\turl.searchParams.set('category', category);\n" +
+		"\t\turl.searchParams.set('page', page);\n" +
+		"\t});\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e2.13 — Reactive URL and MediaQuery\u003c/h1\u003e\n" +
+		"\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\tSvelte 5 ships reactive wrappers around DOM APIs that are traditionally event-based. Import\n" +
+		"\t\t\u003ccode\u003eMediaQuery\u003c/code\u003e from \u003ccode\u003esvelte/reactivity\u003c/code\u003e and construct it with a media-query\n" +
+		"\t\tstring — reading \u003ccode\u003e.current\u003c/code\u003e inside a template, \u003ccode\u003e$derived\u003c/code\u003e, or\n" +
+		"\t\t\u003ccode\u003e$effect\u003c/code\u003e subscribes automatically. \u003ccode\u003eSvelteURL\u003c/code\u003e and\n" +
+		"\t\t\u003ccode\u003eSvelteURLSearchParams\u003c/code\u003e do the same for the URL API: mutate\n" +
+		"\t\t\u003ccode\u003eurl.pathname\u003c/code\u003e or \u003ccode\u003eurl.searchParams\u003c/code\u003e and anything reading\n" +
+		"\t\t\u003ccode\u003eurl.href\u003c/code\u003e updates on the spot. These replace hand-rolled\n" +
+		"\t\t\u003ccode\u003ewindow.addEventListener('resize', ...)\u003c/code\u003e and manual URL-string wrangling with a\n" +
+		"\t\tsingle declarative subscription.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build stack\"\u003e\n" +
+		"\t\t\u003ch2\u003eLayout inspector\u003c/h2\u003e\n" +
+		"\n" +
+		"\t\t\u003cp class=\"hint\"\u003eResize the window and watch each badge light up as its breakpoint activates.\u003c/p\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"badges\"\u003e\n" +
+		"\t\t\t{#each breakpoints as bp (bp.label)}\n" +
+		"\t\t\t\t\u003cdiv class={['badge', bp.mq.current && 'on']}\u003e\n" +
+		"\t\t\t\t\t\u003cspan class=\"mark\"\u003e{bp.mq.current ? '✓' : '·'}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\u003cspan class=\"label\"\u003e{bp.label}\u003c/span\u003e\n" +
+		"\t\t\t\t\t\u003cspan class=\"min\"\u003e≥ {bp.min}\u003c/span\u003e\n" +
+		"\t\t\t\t\u003c/div\u003e\n" +
+		"\t\t\t{/each}\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003ch2\u003eReactive URL builder\u003c/h2\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"form\"\u003e\n" +
+		"\t\t\t\u003clabel\u003e\n" +
+		"\t\t\t\t\u003cspan\u003eq\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cinput type=\"text\" bind:value={q} placeholder=\"search query\" /\u003e\n" +
+		"\t\t\t\u003c/label\u003e\n" +
+		"\t\t\t\u003clabel\u003e\n" +
+		"\t\t\t\t\u003cspan\u003ecategory\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cinput type=\"text\" bind:value={category} placeholder=\"category\" /\u003e\n" +
+		"\t\t\t\u003c/label\u003e\n" +
+		"\t\t\t\u003clabel\u003e\n" +
+		"\t\t\t\t\u003cspan\u003epage\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cinput type=\"text\" bind:value={page} inputmode=\"numeric\" placeholder=\"1\" /\u003e\n" +
+		"\t\t\t\u003c/label\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"preview\"\u003e\n" +
+		"\t\t\t\u003cspan class=\"preview-label\"\u003eLive URL\u003c/span\u003e\n" +
+		"\t\t\t\u003ccode\u003e{url.href}\u003c/code\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cp class=\"hint\"\u003e\n" +
+		"\t\t\tEvery keystroke mutates \u003ccode\u003eurl.searchParams\u003c/code\u003e via an \u003ccode\u003e$effect\u003c/code\u003e. The\n" +
+		"\t\t\t\u003ccode\u003eurl.href\u003c/code\u003e read in the \u003ccode\u003e&lt;code&gt;\u003c/code\u003e block re-runs automatically —\n" +
+		"\t\t\tproof that \u003ccode\u003eSvelteURL\u003c/code\u003e is reactive. No subscriptions, no listeners, no stores.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\t\u003ccode\u003eMediaQuery\u003c/code\u003e from \u003ccode\u003esvelte/reactivity\u003c/code\u003e turns\n" +
+		"\t\t\t\u003ccode\u003ewindow.matchMedia\u003c/code\u003e into a reactive value via \u003ccode\u003e.current\u003c/code\u003e.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tIt is SSR-safe — during server rendering \u003ccode\u003e.current\u003c/code\u003e returns a sensible fallback\n" +
+		"\t\t\tinstead of throwing.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\t\u003ccode\u003eSvelteURL\u003c/code\u003e and \u003ccode\u003eSvelteURLSearchParams\u003c/code\u003e make the URL API reactive;\n" +
+		"\t\t\tmutations trigger re-renders of any reader.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tThese classes replace ad-hoc \u003ccode\u003eaddEventListener('resize', ...)\u003c/code\u003e and\n" +
+		"\t\t\t\u003ccode\u003epopstate\u003c/code\u003e boilerplate with declarative state.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -98,6 +223,12 @@
 			proof that <code>SvelteURL</code> is reactive. No subscriptions, no listeners, no stores.
 		</p>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -274,5 +405,42 @@
 
 	h3 {
 		margin-block-start: var(--space-xl);
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept, .hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept, .hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

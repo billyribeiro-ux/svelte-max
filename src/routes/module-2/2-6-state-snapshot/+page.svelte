@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface Contact {
 		name: string;
 		email: string;
@@ -32,6 +33,118 @@
 			submitted = false;
 		}, 2000);
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"interface Contact {\n" +
+		"\t\tname: string;\n" +
+		"\t\temail: string;\n" +
+		"\t\ttopic: 'bug' | 'feature' | 'help';\n" +
+		"\t\tmessage: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tlet form = $state\u003cContact\u003e({\n" +
+		"\t\tname: '',\n" +
+		"\t\temail: '',\n" +
+		"\t\ttopic: 'help',\n" +
+		"\t\tmessage: ''\n" +
+		"\t});\n" +
+		"\n" +
+		"\tlet snapshot = $state\u003cContact | null\u003e(null);\n" +
+		"\tlet submitted = $state\u003cboolean\u003e(false);\n" +
+		"\tlet timer: ReturnType\u003ctypeof setTimeout\u003e | null = null;\n" +
+		"\n" +
+		"\tfunction preview(): void {\n" +
+		"\t\tconst payload = $state.snapshot(form);\n" +
+		"\t\tconsole.log('payload:', payload);\n" +
+		"\t\tsnapshot = payload;\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction submit(): void {\n" +
+		"\t\tconst payload = $state.snapshot(form);\n" +
+		"\t\tconsole.log('submit:', payload);\n" +
+		"\t\tsubmitted = true;\n" +
+		"\t\tif (timer) clearTimeout(timer);\n" +
+		"\t\ttimer = setTimeout(() =\u003e {\n" +
+		"\t\t\tsubmitted = false;\n" +
+		"\t\t}, 2000);\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e2.6 — $state.snapshot\u003c/h1\u003e\n" +
+		"\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\tReactive state in Svelte 5 is backed by a Proxy so every read and write can be tracked. That\n" +
+		"\t\tProxy is an implementation detail most code never sees — but the moment you try to\n" +
+		"\t\t\u003ccode\u003eJSON.stringify\u003c/code\u003e state, hand it to a fetch body, structurally clone it, or compare it\n" +
+		"\t\tagainst a previous value, the wrapper can confuse downstream code. \u003ccode\u003e$state.snapshot(value)\u003c/code\u003e\n" +
+		"\t\treturns a deep plain-object copy with every Proxy stripped away. You usually don't need it, but\n" +
+		"\t\tyou'll reach for it in three specific situations: logging for debugging, submitting to an API,\n" +
+		"\t\tand diffing against a previous value.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build\"\u003e\n" +
+		"\t\t\u003cform class=\"form\" onsubmit={(e) =\u003e e.preventDefault()}\u003e\n" +
+		"\t\t\t\u003clabel class=\"field\"\u003e\n" +
+		"\t\t\t\t\u003cspan\u003eName\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cinput type=\"text\" bind:value={form.name} placeholder=\"Ada Lovelace\" /\u003e\n" +
+		"\t\t\t\u003c/label\u003e\n" +
+		"\n" +
+		"\t\t\t\u003clabel class=\"field\"\u003e\n" +
+		"\t\t\t\t\u003cspan\u003eEmail\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cinput type=\"email\" bind:value={form.email} placeholder=\"ada@example.com\" /\u003e\n" +
+		"\t\t\t\u003c/label\u003e\n" +
+		"\n" +
+		"\t\t\t\u003cfieldset class=\"field radios\"\u003e\n" +
+		"\t\t\t\t\u003clegend\u003eTopic\u003c/legend\u003e\n" +
+		"\t\t\t\t\u003clabel\u003e\n" +
+		"\t\t\t\t\t\u003cinput type=\"radio\" bind:group={form.topic} value=\"bug\" /\u003e\n" +
+		"\t\t\t\t\t\u003cspan\u003eBug\u003c/span\u003e\n" +
+		"\t\t\t\t\u003c/label\u003e\n" +
+		"\t\t\t\t\u003clabel\u003e\n" +
+		"\t\t\t\t\t\u003cinput type=\"radio\" bind:group={form.topic} value=\"feature\" /\u003e\n" +
+		"\t\t\t\t\t\u003cspan\u003eFeature\u003c/span\u003e\n" +
+		"\t\t\t\t\u003c/label\u003e\n" +
+		"\t\t\t\t\u003clabel\u003e\n" +
+		"\t\t\t\t\t\u003cinput type=\"radio\" bind:group={form.topic} value=\"help\" /\u003e\n" +
+		"\t\t\t\t\t\u003cspan\u003eHelp\u003c/span\u003e\n" +
+		"\t\t\t\t\u003c/label\u003e\n" +
+		"\t\t\t\u003c/fieldset\u003e\n" +
+		"\n" +
+		"\t\t\t\u003clabel class=\"field\"\u003e\n" +
+		"\t\t\t\t\u003cspan\u003eMessage\u003c/span\u003e\n" +
+		"\t\t\t\t\u003ctextarea rows=\"4\" bind:value={form.message} placeholder=\"Tell us what's on your mind...\"\u003e\u003c/textarea\u003e\n" +
+		"\t\t\t\u003c/label\u003e\n" +
+		"\n" +
+		"\t\t\t\u003cdiv class=\"actions\"\u003e\n" +
+		"\t\t\t\t\u003cbutton type=\"button\" class=\"ghost\" onclick={preview}\u003ePreview payload\u003c/button\u003e\n" +
+		"\t\t\t\t\u003cbutton type=\"button\" class=\"primary\" onclick={submit}\u003eSubmit (pretend)\u003c/button\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\t{#if submitted}\n" +
+		"\t\t\t\t\u003cp class=\"success\" role=\"status\"\u003eThanks — we received your message.\u003c/p\u003e\n" +
+		"\t\t\t{/if}\n" +
+		"\t\t\u003c/form\u003e\n" +
+		"\n" +
+		"\t\t{#if snapshot}\n" +
+		"\t\t\t\u003cdiv class=\"snapshot\"\u003e\n" +
+		"\t\t\t\t\u003ch4\u003eSnapshot payload\u003c/h4\u003e\n" +
+		"\t\t\t\t\u003cpre\u003e{JSON.stringify(snapshot, null, 2)}\u003c/pre\u003e\n" +
+		"\t\t\t\t\u003cp class=\"note\"\u003eNotice: plain object. No \u003ccode\u003eProxy(...)\u003c/code\u003e wrapper anywhere.\u003c/p\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t{/if}\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003e$state.snapshot\u003c/code\u003e returns a deep, plain-object clone of reactive state.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eUse it before serializing, logging, or sending state across a network boundary.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eThe snapshot is a one-shot copy — it does not stay in sync with the source.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eMost application code never needs it; reach for it at integration boundaries.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -98,6 +211,12 @@
 			</div>
 		{/if}
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -314,5 +433,41 @@
 		.build {
 			grid-template-columns: 1fr 1fr;
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

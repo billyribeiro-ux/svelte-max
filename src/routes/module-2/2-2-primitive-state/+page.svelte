@@ -1,9 +1,81 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let enabled = $state<boolean>(false);
 
 	function toggle(): void {
 		enabled = !enabled;
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"let enabled = $state\u003cboolean\u003e(false);\n" +
+		"\n" +
+		"\tfunction toggle(): void {\n" +
+		"\t\tenabled = !enabled;\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e2.2 — Primitive $state\u003c/h1\u003e\n" +
+		"\n" +
+		"\t\u003cp class=\"lede\"\u003e\n" +
+		"\t\tStrings, numbers, and booleans are the atoms of application state. Most of what a UI\n" +
+		"\t\tcares about — counts, flags, single text fields, selected IDs — lives in a primitive.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cp\u003e\n" +
+		"\t\tWhen you wrap a primitive with \u003ccode\u003e$state\u003c/code\u003e, Svelte gives you back a reactive\n" +
+		"\t\tslot. Reading it registers a dependency; writing to it triggers updates. That's why\n" +
+		"\t\t\u003ccode\u003ecount++\u003c/code\u003e \u003cem\u003ejust works\u003c/em\u003e: even though \u003ccode\u003ecount\u003c/code\u003e looks like a\n" +
+		"\t\tplain number, the compiler has rewritten it into a read–modify–write that flows through\n" +
+		"\t\tthe reactive system.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cp\u003e\n" +
+		"\t\tTypeScript infers the type from the initial value — \u003ccode\u003e$state(0)\u003c/code\u003e is\n" +
+		"\t\t\u003ccode\u003enumber\u003c/code\u003e, \u003ccode\u003e$state('')\u003c/code\u003e is \u003ccode\u003estring\u003c/code\u003e. When the initial\n" +
+		"\t\tvalue doesn't tell the whole story (for example, a string that will later hold only\n" +
+		"\t\tspecific literal values), be explicit: \u003ccode\u003e$state&lt;'idle' | 'loading'&gt;('idle')\u003c/code\u003e.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cp\u003e\n" +
+		"\t\tFinally, primitives must be declared with \u003ccode\u003elet\u003c/code\u003e, never \u003ccode\u003econst\u003c/code\u003e.\n" +
+		"\t\tYou \u003cem\u003ewill\u003c/em\u003e assign new values to them, and \u003ccode\u003econst\u003c/code\u003e would block that at\n" +
+		"\t\tthe language level before the proxy ever got a chance.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"demo\"\u003e\n" +
+		"\t\t\u003cdiv class=\"row\"\u003e\n" +
+		"\t\t\t\u003cbutton\n" +
+		"\t\t\t\ttype=\"button\"\n" +
+		"\t\t\t\tclass=\"switch\"\n" +
+		"\t\t\t\taria-pressed={enabled}\n" +
+		"\t\t\t\taria-label=\"Toggle notifications\"\n" +
+		"\t\t\t\tonclick={toggle}\n" +
+		"\t\t\t\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"knob\"\u003e\u003c/span\u003e\n" +
+		"\t\t\t\u003c/button\u003e\n" +
+		"\t\t\t\u003cspan class=\"status\"\u003e\n" +
+		"\t\t\t\t{enabled ? 'Notifications on' : 'Notifications off'}\n" +
+		"\t\t\t\u003c/span\u003e\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\t\t\u003cp class=\"hint\"\u003e\n" +
+		"\t\t\tA single \u003ccode\u003eboolean\u003c/code\u003e in \u003ccode\u003e$state\u003c/code\u003e drives the colour, the knob\n" +
+		"\t\t\tposition, the \u003ccode\u003earia-pressed\u003c/code\u003e value, and the label — all from one\n" +
+		"\t\t\tassignment.\n" +
+		"\t\t\u003c/p\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003ePrimitives (string, number, boolean) are the most common kind of state.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\u003ccode\u003ecount++\u003c/code\u003e and similar mutations work because \u003ccode\u003e$state\u003c/code\u003e is proxy-backed.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eTypeScript infers a primitive type from the initial value; override with a generic when needed.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eUse \u003ccode\u003elet\u003c/code\u003e for primitive state — you need to reassign it.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eA single boolean can drive an entire piece of UI through CSS and bindings.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -56,6 +128,12 @@
 			assignment.
 		</p>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -179,5 +257,41 @@
 		.demo {
 			padding: var(--space-lg);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.hint { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.hint { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.hint { max-inline-size: 80ch; }
 	}
 </style>

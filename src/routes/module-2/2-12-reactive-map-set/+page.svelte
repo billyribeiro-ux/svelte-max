@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 
 	type Cell = 'x' | 'o';
@@ -52,6 +53,133 @@
 		board.clear();
 		turn = 'x';
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"import { SvelteMap, SvelteSet } from 'svelte/reactivity';\n" +
+		"\n" +
+		"\ttype Cell = 'x' | 'o';\n" +
+		"\n" +
+		"\tconst board = new SvelteMap\u003cnumber, Cell\u003e();\n" +
+		"\tlet turn = $state\u003cCell\u003e('x');\n" +
+		"\n" +
+		"\tconst winningLines: readonly (readonly number[])[] = [\n" +
+		"\t\t[0, 1, 2],\n" +
+		"\t\t[3, 4, 5],\n" +
+		"\t\t[6, 7, 8],\n" +
+		"\t\t[0, 3, 6],\n" +
+		"\t\t[1, 4, 7],\n" +
+		"\t\t[2, 5, 8],\n" +
+		"\t\t[0, 4, 8],\n" +
+		"\t\t[2, 4, 6]\n" +
+		"\t];\n" +
+		"\n" +
+		"\tconst winningCells = $derived.by(() =\u003e {\n" +
+		"\t\tconst set = new SvelteSet\u003cnumber\u003e();\n" +
+		"\t\tfor (const line of winningLines) {\n" +
+		"\t\t\tconst [a, b, c] = line;\n" +
+		"\t\t\tif (board.has(a) && board.get(a) === board.get(b) && board.get(a) === board.get(c)) {\n" +
+		"\t\t\t\tset.add(a);\n" +
+		"\t\t\t\tset.add(b);\n" +
+		"\t\t\t\tset.add(c);\n" +
+		"\t\t\t}\n" +
+		"\t\t}\n" +
+		"\t\treturn set;\n" +
+		"\t});\n" +
+		"\n" +
+		"\tconst winner = $derived.by\u003cCell | null\u003e(() =\u003e {\n" +
+		"\t\tfor (const line of winningLines) {\n" +
+		"\t\t\tconst [a, b, c] = line;\n" +
+		"\t\t\tif (board.has(a) && board.get(a) === board.get(b) && board.get(a) === board.get(c)) {\n" +
+		"\t\t\t\treturn board.get(a) ?? null;\n" +
+		"\t\t\t}\n" +
+		"\t\t}\n" +
+		"\t\treturn null;\n" +
+		"\t});\n" +
+		"\n" +
+		"\tconst isDraw = $derived(!winner && board.size === 9);\n" +
+		"\n" +
+		"\tfunction play(index: number) {\n" +
+		"\t\tif (winner || board.has(index)) return;\n" +
+		"\t\tboard.set(index, turn);\n" +
+		"\t\tturn = turn === 'x' ? 'o' : 'x';\n" +
+		"\t}\n" +
+		"\n" +
+		"\tfunction reset() {\n" +
+		"\t\tboard.clear();\n" +
+		"\t\tturn = 'x';\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e2.12 — SvelteMap and SvelteSet\u003c/h1\u003e\n" +
+		"\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\tA plain \u003ccode\u003eMap\u003c/code\u003e or \u003ccode\u003eSet\u003c/code\u003e placed in \u003ccode\u003e$state\u003c/code\u003e is \u003cem\u003enot\u003c/em\u003e\n" +
+		"\t\treactive — Svelte's proxy can't intercept \u003ccode\u003e.set()\u003c/code\u003e, \u003ccode\u003e.has()\u003c/code\u003e, or\n" +
+		"\t\t\u003ccode\u003e.size\u003c/code\u003e on native collections, so components won't update when they change. The\n" +
+		"\t\t\u003ccode\u003esvelte/reactivity\u003c/code\u003e module ships \u003ccode\u003eSvelteMap\u003c/code\u003e and \u003ccode\u003eSvelteSet\u003c/code\u003e as\n" +
+		"\t\tdrop-in replacements: same API, but every read (\u003ccode\u003e.get\u003c/code\u003e, \u003ccode\u003e.has\u003c/code\u003e,\n" +
+		"\t\t\u003ccode\u003e.size\u003c/code\u003e, iteration) is tracked and every write triggers updates. Key insight: values\n" +
+		"\t\tstored \u003cem\u003einside\u003c/em\u003e a \u003ccode\u003eSvelteMap\u003c/code\u003e are not deeply reactive on their own — if you\n" +
+		"\t\tstore an object, mutating its fields won't notify anyone unless the object itself is reactive.\n" +
+		"\t\tReach for these when you need O(1) key-based lookups or guaranteed unique collections.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"demo\"\u003e\n" +
+		"\t\t\u003cdiv class=\"status\" aria-live=\"polite\"\u003e\n" +
+		"\t\t\t{#if winner}\n" +
+		"\t\t\t\t\u003cspan class=\"winner\"\u003ePlayer \u003cstrong\u003e{winner.toUpperCase()}\u003c/strong\u003e wins\u003c/span\u003e\n" +
+		"\t\t\t{:else if isDraw}\n" +
+		"\t\t\t\t\u003cspan\u003eDraw\u003c/span\u003e\n" +
+		"\t\t\t{:else}\n" +
+		"\t\t\t\t\u003cspan\u003eTurn: \u003cstrong\u003e{turn.toUpperCase()}\u003c/strong\u003e\u003c/span\u003e\n" +
+		"\t\t\t{/if}\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cdiv class=\"grid\" role=\"grid\" aria-label=\"Tic tac toe board\"\u003e\n" +
+		"\t\t\t{#each Array.from({ length: 9 }, (_, i) =\u003e i) as i (i)}\n" +
+		"\t\t\t\t{@const value = board.get(i)}\n" +
+		"\t\t\t\t{@const isWinning = winningCells.has(i)}\n" +
+		"\t\t\t\t\u003cbutton\n" +
+		"\t\t\t\t\ttype=\"button\"\n" +
+		"\t\t\t\t\tclass=\"cell\"\n" +
+		"\t\t\t\t\tclass:winning={isWinning}\n" +
+		"\t\t\t\t\tclass:filled={value !== undefined}\n" +
+		"\t\t\t\t\tdisabled={!!winner || value !== undefined}\n" +
+		"\t\t\t\t\tonclick={() =\u003e play(i)}\n" +
+		"\t\t\t\t\taria-label={`Cell ${i + 1}${value ? `, ${value}` : ''}`}\n" +
+		"\t\t\t\t\u003e\n" +
+		"\t\t\t\t\t{value ? value.toUpperCase() : ''}\n" +
+		"\t\t\t\t\u003c/button\u003e\n" +
+		"\t\t\t{/each}\n" +
+		"\t\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\t\u003cbutton type=\"button\" class=\"reset\" onclick={reset}\u003eReset\u003c/button\u003e\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tNative \u003ccode\u003eMap\u003c/code\u003e and \u003ccode\u003eSet\u003c/code\u003e inside \u003ccode\u003e$state\u003c/code\u003e don't notify — their\n" +
+		"\t\t\tmutation methods bypass the proxy.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\t\u003ccode\u003eSvelteMap\u003c/code\u003e and \u003ccode\u003eSvelteSet\u003c/code\u003e from \u003ccode\u003esvelte/reactivity\u003c/code\u003e expose\n" +
+		"\t\t\tthe same API and plug into the reactive graph.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tEvery read (\u003ccode\u003e.get\u003c/code\u003e, \u003ccode\u003e.has\u003c/code\u003e, \u003ccode\u003e.size\u003c/code\u003e, iteration) registers a\n" +
+		"\t\t\tdependency.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tValues stored inside aren't deeply reactive — wrap them in \u003ccode\u003e$state\u003c/code\u003e if you need\n" +
+		"\t\t\tfield-level updates.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eGreat fit for keyed lookups, caches, and sets of unique IDs.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -100,6 +228,12 @@
 
 		<button type="button" class="reset" onclick={reset}>Reset</button>
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -263,5 +397,41 @@
 		.cell {
 			font-size: var(--text-hero);
 		}
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

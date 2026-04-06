@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	// Explicit union type — the whole component's shape hangs off this.
 	type Status = 'idle' | 'loading' | 'success' | 'error';
 
@@ -44,6 +45,120 @@
 			status = 'error';
 		}
 	}
+
+	/* ── Complete code for CodeCanvas ── */
+	const fullCode =
+		"\u003cscript lang=\"ts\"\u003e\n" +
+		"// Explicit union type — the whole component's shape hangs off this.\n" +
+		"\ttype Status = 'idle' | 'loading' | 'success' | 'error';\n" +
+		"\n" +
+		"\tinterface Result {\n" +
+		"\t\ttitle: string;\n" +
+		"\t\tdescription: string;\n" +
+		"\t}\n" +
+		"\n" +
+		"\t// When the initial value is narrower than the intended type (null here),\n" +
+		"\t// we annotate $state explicitly so later assignments of Result are allowed.\n" +
+		"\tlet status = $state\u003cStatus\u003e('idle');\n" +
+		"\tlet result = $state\u003cResult | null\u003e(null);\n" +
+		"\tlet error = $state\u003cstring | null\u003e(null);\n" +
+		"\n" +
+		"\tconst samplePayloads: Result[] = [\n" +
+		"\t\t{\n" +
+		"\t\t\ttitle: 'Weekly digest ready',\n" +
+		"\t\t\tdescription: 'Seven new articles, three new videos, and two community highlights.'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\ttitle: 'Deployment succeeded',\n" +
+		"\t\t\tdescription: 'Release v2.3.1 is live in production with zero failing health checks.'\n" +
+		"\t\t},\n" +
+		"\t\t{\n" +
+		"\t\t\ttitle: 'Profile synchronized',\n" +
+		"\t\t\tdescription: 'Your preferences are now available on all connected devices.'\n" +
+		"\t\t}\n" +
+		"\t];\n" +
+		"\n" +
+		"\tasync function fetchIt(): Promise\u003cvoid\u003e {\n" +
+		"\t\tstatus = 'loading';\n" +
+		"\t\tresult = null;\n" +
+		"\t\terror = null;\n" +
+		"\n" +
+		"\t\tawait new Promise((res) =\u003e setTimeout(res, 1200));\n" +
+		"\n" +
+		"\t\t// 70% success / 30% error — enough variety to exercise both branches.\n" +
+		"\t\tif (Math.random() \u003c 0.7) {\n" +
+		"\t\t\tresult = samplePayloads[Math.floor(Math.random() * samplePayloads.length)];\n" +
+		"\t\t\tstatus = 'success';\n" +
+		"\t\t} else {\n" +
+		"\t\t\terror = 'Network request failed — please retry.';\n" +
+		"\t\t\tstatus = 'error';\n" +
+		"\t\t}\n" +
+		"\t}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"\t\u003ch1\u003e2.15 — Typed reactive state\u003c/h1\u003e\n" +
+		"\n" +
+		"\t\u003cp class=\"concept\"\u003e\n" +
+		"\t\tStrict TypeScript types for runes keep refactors safe. When the initial value of\n" +
+		"\t\t\u003ccode\u003e$state\u003c/code\u003e doesn't describe the full shape — e.g., starting with \u003ccode\u003enull\u003c/code\u003e and\n" +
+		"\t\tpopulating later — annotate explicitly with \u003ccode\u003e$state&lt;User | null&gt;(null)\u003c/code\u003e.\n" +
+		"\t\t\u003ccode\u003e$derived\u003c/code\u003e infers from its expression, so it rarely needs a manual type. Union types\n" +
+		"\t\tmodel state machines cleanly: \u003ccode\u003etype Status = 'idle' | 'loading' | 'success' | 'error'\u003c/code\u003e.\n" +
+		"\t\tTypeScript narrows unions inside template \u003ccode\u003e{`{#if}`}\u003c/code\u003e blocks, so branches see the\n" +
+		"\t\tcorrect non-null types automatically.\n" +
+		"\t\u003c/p\u003e\n" +
+		"\n" +
+		"\t\u003cdiv class=\"build stack\"\u003e\n" +
+		"\t\t\u003ch2\u003eTyped async fetch machine\u003c/h2\u003e\n" +
+		"\n" +
+		"\t\t{#if status === 'idle'}\n" +
+		"\t\t\t\u003cdiv class=\"card idle\"\u003e\n" +
+		"\t\t\t\t\u003cp\u003ePress the button to simulate an async request.\u003c/p\u003e\n" +
+		"\t\t\t\t\u003cbutton type=\"button\" class=\"primary\" onclick={fetchIt}\u003eFetch\u003c/button\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t{:else if status === 'loading'}\n" +
+		"\t\t\t\u003cdiv class=\"card loading\" aria-live=\"polite\"\u003e\n" +
+		"\t\t\t\t\u003cspan class=\"dot\" aria-hidden=\"true\"\u003e\u003c/span\u003e\n" +
+		"\t\t\t\t\u003cp\u003eLoading…\u003c/p\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t{:else if status === 'success' && result}\n" +
+		"\t\t\t\u003c!--\n" +
+		"\t\t\t\tNarrowing: the `&& result` guard tells TypeScript that `result` is\n" +
+		"\t\t\t\t`Result`, not `Result | null`, inside this branch. No `!` needed.\n" +
+		"\t\t\t--\u003e\n" +
+		"\t\t\t\u003cdiv class=\"card success\"\u003e\n" +
+		"\t\t\t\t\u003ch3\u003e{result.title}\u003c/h3\u003e\n" +
+		"\t\t\t\t\u003cp\u003e{result.description}\u003c/p\u003e\n" +
+		"\t\t\t\t\u003cbutton type=\"button\" class=\"secondary\" onclick={fetchIt}\u003eFetch another\u003c/button\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t{:else if status === 'error' && error}\n" +
+		"\t\t\t\u003c!-- Same trick — `error` is narrowed to `string` here. --\u003e\n" +
+		"\t\t\t\u003cdiv class=\"card error\" role=\"alert\"\u003e\n" +
+		"\t\t\t\t\u003ch3\u003eSomething went wrong\u003c/h3\u003e\n" +
+		"\t\t\t\t\u003cp\u003e{error}\u003c/p\u003e\n" +
+		"\t\t\t\t\u003cbutton type=\"button\" class=\"primary\" onclick={fetchIt}\u003eRetry\u003c/button\u003e\n" +
+		"\t\t\t\u003c/div\u003e\n" +
+		"\t\t{/if}\n" +
+		"\t\u003c/div\u003e\n" +
+		"\n" +
+		"\t\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"\t\u003cul\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tUse \u003ccode\u003e$state&lt;T&gt;(initial)\u003c/code\u003e when the initial value is narrower than the desired\n" +
+		"\t\t\ttype (e.g., \u003ccode\u003enull\u003c/code\u003e).\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\t\u003ccode\u003e$derived\u003c/code\u003e infers from its expression — no annotation needed in most cases.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eUnion types model finite state machines exactly and exhaustively.\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003e\n" +
+		"\t\t\tTemplate \u003ccode\u003e{`{#if}`}\u003c/code\u003e conditions narrow types inside their branches, eliminating\n" +
+		"\t\t\tnon-null assertions.\n" +
+		"\t\t\u003c/li\u003e\n" +
+		"\t\t\u003cli\u003eZero \u003ccode\u003eany\u003c/code\u003e. Every assignment is type-checked.\u003c/li\u003e\n" +
+		"\t\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -91,6 +206,12 @@
 			</div>
 		{/if}
 	</div>
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -245,5 +366,42 @@
 
 	.build h3 {
 		margin-block-start: 0;
+	}
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

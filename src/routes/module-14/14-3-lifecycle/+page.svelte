@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let showShadowNone = $state(false);
 
 	const formUsageExample = `<!-- Usage in a form -->
@@ -17,6 +18,91 @@
     });
   }
 \u003c/script\u003e`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"let showShadowNone = $state(false);\n" +
+		"\n" +
+		"	const formUsageExample = `\u003c!-- Usage in a form --\u003e\n" +
+		"\u003cform\u003e\n" +
+		"  \u003cmy-input value=\"hello\" required\u003e\u003c/my-input\u003e\n" +
+		"  \u003cbutton type=\"submit\"\u003eSubmit\u003c/button\u003e\n" +
+		"\u003c/form\u003e\n" +
+		"\n" +
+		"\\u003cscript\\u003e\n" +
+		"  const form = document.querySelector('form');\n" +
+		"  if (form) {\n" +
+		"    form.addEventListener('submit', (e) =\u003e {\n" +
+		"      e.preventDefault();\n" +
+		"      const data = new FormData(e.target instanceof HTMLFormElement ? e.target : undefined);\n" +
+		"      console.log('Form value:', data.get('my-input'));\n" +
+		"    });\n" +
+		"  }\n" +
+		"\\u003c/script\\u003e`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e14.3 — Lifecycle and Options\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		When Svelte compiles a custom element, it creates a thin wrapper around \u003ccode\u003eHTMLElement\u003c/code\u003e.\n" +
+		"		Understanding the \u003cstrong\u003elifecycle\u003c/strong\u003e and the \u003cstrong\u003eoptions object\u003c/strong\u003e gives you\n" +
+		"		fine-grained control over shadow DOM mode, attribute reflection, type coercion, and form\n" +
+		"		participation via \u003ccode\u003eElementInternals\u003c/code\u003e.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eThe Wrapper Approach\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eThe custom element class calls \u003ccode\u003eattachShadow()\u003c/code\u003e in the constructor\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe inner Svelte component is mounted on the \u003cstrong\u003enext tick\u003c/strong\u003e after \u003ccode\u003econnectedCallback\u003c/code\u003e\u003c/li\u003e\n" +
+		"		\u003cli\u003eThis ensures the element is in the DOM before Svelte measures or binds anything\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003edisconnectedCallback\u003c/code\u003e destroys the Svelte component and cleans up effects\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003eattributeChangedCallback\u003c/code\u003e updates props reactively\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eThe Options Object\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Instead of passing a simple string to \u003ccode\u003ecustomElement\u003c/code\u003e, you can pass a full\n" +
+		"		configuration object with \u003ccode\u003etag\u003c/code\u003e, \u003ccode\u003eshadow\u003c/code\u003e, \u003ccode\u003eprops\u003c/code\u003e, and\n" +
+		"		\u003ccode\u003eextend\u003c/code\u003e.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cpre\u003e{`\u003csvelte:options\n" +
+		"  customElement={{\n" +
+		"    tag: \"my-input\",\n" +
+		"    shadow: \"none\",\n" +
+		"    props: {\n" +
+		"      value: {\n" +
+		"        reflect: true,\n" +
+		"        type: \"String\",\n" +
+		"        attribute: \"value\"\n" +
+		"      },\n" +
+		"      required: {\n" +
+		"        reflect: true,\n" +
+		"        type: \"Boolean\",\n" +
+		"        attribute: \"required\"\n" +
+		"      },\n" +
+		"      count: {\n" +
+		"        reflect: false,\n" +
+		"        type: \"Number\",\n" +
+		"        attribute: \"count\"\n" +
+		"      }\n" +
+		"    },\n" +
+		"    extend: (customElementConstructor) =\u003e {\n" +
+		"      return class extends customElementConstructor {\n" +
+		"        static formAssociated = true;\n" +
+		"        #internals = this.attachInternals();\n" +
+		"\n" +
+		"        connectedCallback() {\n" +
+		"          super.connectedCallback();\n" +
+		"          this.#internals.setFormValue(this.value);\n" +
+		"        }\n" +
+		"      };\n" +
+		"    }\n" +
+		"  }}\n" +
+		"/\u003e`}\u003c/pre\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -142,6 +228,13 @@
 
 	<pre><code>{formUsageExample}</code></pre>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>The options object configures <code>tag</code>, <code>shadow</code>, <code>props</code>, and <code>extend</code> for fine-grained control.</li>
@@ -182,4 +275,41 @@
 	.toggle-btn:hover { background: var(--color-primary); color: var(--color-text); }
 
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

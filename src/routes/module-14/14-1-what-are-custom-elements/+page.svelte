@@ -1,5 +1,74 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let activeTab = $state<'svelte' | 'custom'>('svelte');
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"let activeTab = $state\u003c'svelte' | 'custom'\u003e('svelte');\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e14.1 — What Are Custom Elements\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eCustom Elements\u003c/strong\u003e are part of the Web Components standard — a set of browser-native\n" +
+		"		APIs that let you define your own HTML tags. Combined with \u003cstrong\u003eShadow DOM\u003c/strong\u003e for style\n" +
+		"		encapsulation and \u003cstrong\u003eHTML Templates\u003c/strong\u003e for markup, they allow framework-agnostic,\n" +
+		"		reusable UI components that work anywhere HTML works.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eThe Web Components Standard\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eCustom Elements API\u003c/strong\u003e — register new tags via \u003ccode\u003ecustomElements.define()\u003c/code\u003e\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eShadow DOM\u003c/strong\u003e — scoped styles and encapsulated DOM trees\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eHTML Templates\u003c/strong\u003e — inert markup via \u003ccode\u003e&lt;template&gt;\u003c/code\u003e and \u003ccode\u003e&lt;slot&gt;\u003c/code\u003e\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eES Modules\u003c/strong\u003e — standard import/export for distribution\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhen Svelte Custom Elements Make Sense\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Svelte can compile components directly into custom elements. This is ideal when you need to\n" +
+		"		\u003cstrong\u003eembed widgets\u003c/strong\u003e in non-Svelte environments: CMS platforms (WordPress, Drupal),\n" +
+		"		static sites, legacy apps, or any context where you cannot control the build pipeline. The\n" +
+		"		compiled output is a self-contained class extending \u003ccode\u003eHTMLElement\u003c/code\u003e.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eTrade-offs: Regular vs Custom Element\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"tab-bar\"\u003e\n" +
+		"			\u003cbutton\n" +
+		"				class=\"tab\"\n" +
+		"				class:active={activeTab === 'svelte'}\n" +
+		"				onclick={() =\u003e activeTab = 'svelte'}\n" +
+		"			\u003eRegular Svelte\u003c/button\u003e\n" +
+		"			\u003cbutton\n" +
+		"				class=\"tab\"\n" +
+		"				class:active={activeTab === 'custom'}\n" +
+		"				onclick={() =\u003e activeTab = 'custom'}\n" +
+		"			\u003eCustom Element\u003c/button\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003ctable class=\"comparison\"\u003e\n" +
+		"			\u003cthead\u003e\n" +
+		"				\u003ctr\u003e\n" +
+		"					\u003cth\u003eFeature\u003c/th\u003e\n" +
+		"					\u003cth\u003eRegular Svelte\u003c/th\u003e\n" +
+		"					\u003cth\u003eCustom Element\u003c/th\u003e\n" +
+		"				\u003c/tr\u003e\n" +
+		"			\u003c/thead\u003e\n" +
+		"			\u003ctbody\u003e\n" +
+		"				\u003ctr\u003e\n" +
+		"					\u003ctd\u003eSSR Support\u003c/td\u003e\n" +
+		"					\u003ctd class=\"yes\"\u003eFull SSR / SSG\u003c/td\u003e\n" +
+		"					\u003ctd class=\"no\"\u003eClient-only\u003c/td\u003e\n" +
+		"				\u003c/tr\u003e\n" +
+		"				\u003ctr\u003e\n" +
+		"					\u003ctd\u003eStyle Encapsulation\u003c/td\u003e\n" +
+		"					\u003ctd\u003eScoped via compiler\u003c/td\u003e\n" +
+		"					\u003ctd\u003eShadow DOM (native)\u003c/td\u003e\n" +
+		"				\u003c/tr\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -104,6 +173,13 @@
 		stays the same.
 	</p>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Custom elements are browser-native reusable tags built on Shadow DOM, HTML Templates, and the Custom Elements API.</li>
@@ -157,4 +233,41 @@
 	.comparison .no { color: var(--color-error); }
 
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

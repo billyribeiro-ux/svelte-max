@@ -6,6 +6,7 @@
 	import TextField from '$lib/components/TextField.svelte';
 	import Avatar from '$lib/components/Avatar.svelte';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let showModal = $state(false);
 	let textValue = $state('');
 	let activeSection = $state<string | null>(null);
@@ -137,6 +138,211 @@
 \u003cscript type="module" src="./sm-badge.js"\u003e\u003c/script\u003e
 <sm-badge variant="success">Active</sm-badge>
 -->`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import Button from '$lib/components/Button.svelte';\n" +
+		"	import Badge from '$lib/components/Badge.svelte';\n" +
+		"	import Card from '$lib/components/Card.svelte';\n" +
+		"	import Modal from '$lib/components/Modal.svelte';\n" +
+		"	import TextField from '$lib/components/TextField.svelte';\n" +
+		"	import Avatar from '$lib/components/Avatar.svelte';\n" +
+		"\n" +
+		"	let showModal = $state(false);\n" +
+		"	let textValue = $state('');\n" +
+		"	let activeSection = $state\u003cstring | null\u003e(null);\n" +
+		"\n" +
+		"	interface ComponentDoc {\n" +
+		"		name: string;\n" +
+		"		description: string;\n" +
+		"		props: Array\u003c{ name: string; type: string; default: string; description: string }\u003e;\n" +
+		"		exportPath: string;\n" +
+		"	}\n" +
+		"\n" +
+		"	const components: ComponentDoc[] = [\n" +
+		"		{\n" +
+		"			name: 'Button',\n" +
+		"			description: 'A versatile button component with variants and sizes.',\n" +
+		"			props: [\n" +
+		"				{ name: 'variant', type: '\"primary\" | \"secondary\" | \"ghost\"', default: '\"primary\"', description: 'Visual style variant' },\n" +
+		"				{ name: 'size', type: '\"sm\" | \"md\" | \"lg\"', default: '\"md\"', description: 'Button size' },\n" +
+		"				{ name: 'disabled', type: 'boolean', default: 'false', description: 'Disabled state' },\n" +
+		"			],\n" +
+		"			exportPath: './Button.svelte',\n" +
+		"		},\n" +
+		"		{\n" +
+		"			name: 'Badge',\n" +
+		"			description: 'A small label for status or categorization.',\n" +
+		"			props: [\n" +
+		"				{ name: 'variant', type: '\"default\" | \"success\" | \"warning\" | \"error\"', default: '\"default\"', description: 'Color variant' },\n" +
+		"			],\n" +
+		"			exportPath: './Badge.svelte',\n" +
+		"		},\n" +
+		"		{\n" +
+		"			name: 'Card',\n" +
+		"			description: 'A content container with optional header and footer.',\n" +
+		"			props: [\n" +
+		"				{ name: 'title', type: 'string', default: '\"\"', description: 'Card heading' },\n" +
+		"			],\n" +
+		"			exportPath: './Card.svelte',\n" +
+		"		},\n" +
+		"		{\n" +
+		"			name: 'Modal',\n" +
+		"			description: 'An overlay dialog for focused interactions.',\n" +
+		"			props: [\n" +
+		"				{ name: 'open', type: 'boolean', default: 'false', description: 'Controls visibility' },\n" +
+		"				{ name: 'title', type: 'string', default: '\"\"', description: 'Modal heading' },\n" +
+		"			],\n" +
+		"			exportPath: './Modal.svelte',\n" +
+		"		},\n" +
+		"		{\n" +
+		"			name: 'TextField',\n" +
+		"			description: 'A text input with label and validation.',\n" +
+		"			props: [\n" +
+		"				{ name: 'label', type: 'string', default: '\"\"', description: 'Input label' },\n" +
+		"				{ name: 'value', type: 'string', default: '\"\"', description: 'Current value' },\n" +
+		"				{ name: 'placeholder', type: 'string', default: '\"\"', description: 'Placeholder text' },\n" +
+		"			],\n" +
+		"			exportPath: './TextField.svelte',\n" +
+		"		},\n" +
+		"		{\n" +
+		"			name: 'Avatar',\n" +
+		"			description: 'A circular avatar for user display.',\n" +
+		"			props: [\n" +
+		"				{ name: 'src', type: 'string', default: '\"\"', description: 'Image URL' },\n" +
+		"				{ name: 'alt', type: 'string', default: '\"\"', description: 'Alt text' },\n" +
+		"				{ name: 'size', type: '\"sm\" | \"md\" | \"lg\"', default: '\"md\"', description: 'Avatar size' },\n" +
+		"			],\n" +
+		"			exportPath: './Avatar.svelte',\n" +
+		"		},\n" +
+		"	];\n" +
+		"\n" +
+		"	function toggleSection(name: string) {\n" +
+		"		activeSection = activeSection === name ? null : name;\n" +
+		"	}\n" +
+		"\n" +
+		"	const buttonAdapterExample = `\u003c!-- ButtonElement.svelte — Custom Element adapter for Button --\u003e\n" +
+		"\\u003csvelte:options\n" +
+		"  customElement={{\n" +
+		"    tag: \"sm-button\",\n" +
+		"    shadow: \"open\",\n" +
+		"    props: {\n" +
+		"      variant: { reflect: true, type: \"String\", attribute: \"variant\" },\n" +
+		"      size: { reflect: true, type: \"String\", attribute: \"size\" },\n" +
+		"      disabled: { reflect: true, type: \"Boolean\", attribute: \"disabled\" }\n" +
+		"    }\n" +
+		"  }}\n" +
+		"/\\u003e\n" +
+		"\n" +
+		"\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  import Button from './Button.svelte';\n" +
+		"\n" +
+		"  interface Props {\n" +
+		"    variant?: 'primary' | 'secondary' | 'ghost';\n" +
+		"    size?: 'sm' | 'md' | 'lg';\n" +
+		"    disabled?: boolean;\n" +
+		"  }\n" +
+		"\n" +
+		"  let { variant = 'primary', size = 'md', disabled = false }: Props = $props();\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"\u003cButton {variant} {size} {disabled}\u003e\n" +
+		"  \u003cslot /\u003e\n" +
+		"\u003c/Button\u003e`;\n" +
+		"\n" +
+		"	const badgeAdapterExample = `\u003c!-- BadgeElement.svelte — Custom Element adapter for Badge --\u003e\n" +
+		"\\u003csvelte:options\n" +
+		"  customElement={{\n" +
+		"    tag: \"sm-badge\",\n" +
+		"    shadow: \"open\",\n" +
+		"    props: {\n" +
+		"      variant: { reflect: true, type: \"String\", attribute: \"variant\" }\n" +
+		"    }\n" +
+		"  }}\n" +
+		"/\\u003e\n" +
+		"\n" +
+		"\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  import Badge from './Badge.svelte';\n" +
+		"\n" +
+		"  interface Props {\n" +
+		"    variant?: 'default' | 'success' | 'warning' | 'error';\n" +
+		"  }\n" +
+		"\n" +
+		"  let { variant = 'default' }: Props = $props();\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"\u003cBadge {variant}\u003e\n" +
+		"  \u003cslot /\u003e\n" +
+		"\u003c/Badge\u003e\n" +
+		"\n" +
+		"\u003c!-- Usage in any HTML page:\n" +
+		"\\u003cscript type=\"module\" src=\"./sm-badge.js\"\\u003e\\u003c/script\\u003e\n" +
+		"\u003csm-badge variant=\"success\"\u003eActive\u003c/sm-badge\u003e\n" +
+		"--\u003e`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eModule 14 Project — Component Library Showcase\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		This gallery showcases the \u003ccode\u003e$lib/components/\u003c/code\u003e library, documents each component's\n" +
+		"		props, and demonstrates how they could be packaged as custom elements for framework-agnostic\n" +
+		"		distribution.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eLive Component Gallery\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"gallery\"\u003e\n" +
+		"		\u003cdiv class=\"gallery-item\"\u003e\n" +
+		"			\u003ch4\u003eButton\u003c/h4\u003e\n" +
+		"			\u003cdiv class=\"demo-row\"\u003e\n" +
+		"				\u003cButton\u003ePrimary\u003c/Button\u003e\n" +
+		"				\u003cButton variant=\"secondary\"\u003eSecondary\u003c/Button\u003e\n" +
+		"				\u003cButton variant=\"ghost\"\u003eGhost\u003c/Button\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"gallery-item\"\u003e\n" +
+		"			\u003ch4\u003eBadge\u003c/h4\u003e\n" +
+		"			\u003cdiv class=\"demo-row\"\u003e\n" +
+		"				\u003cBadge\u003eDefault\u003c/Badge\u003e\n" +
+		"				\u003cBadge tone=\"success\"\u003eSuccess\u003c/Badge\u003e\n" +
+		"				\u003cBadge tone=\"warning\"\u003eWarning\u003c/Badge\u003e\n" +
+		"				\u003cBadge tone=\"error\"\u003eError\u003c/Badge\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"gallery-item\"\u003e\n" +
+		"			\u003ch4\u003eAvatar\u003c/h4\u003e\n" +
+		"			\u003cdiv class=\"demo-row\"\u003e\n" +
+		"				\u003cAvatar src={null} name=\"User\" size=\"sm\" /\u003e\n" +
+		"				\u003cAvatar src={null} name=\"User\" size=\"md\" /\u003e\n" +
+		"				\u003cAvatar src={null} name=\"User\" size=\"lg\" /\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"gallery-item\"\u003e\n" +
+		"			\u003ch4\u003eTextField\u003c/h4\u003e\n" +
+		"			\u003cTextField label=\"Sample Input\" bind:value={textValue} placeholder=\"Type here...\" /\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"gallery-item\"\u003e\n" +
+		"			\u003ch4\u003eCard\u003c/h4\u003e\n" +
+		"			\u003cCard\u003e\n" +
+		"				{#snippet header()}\u003ch4\u003eExample Card\u003c/h4\u003e{/snippet}\n" +
+		"				\u003cp\u003eThis is card content rendered via a snippet.\u003c/p\u003e\n" +
+		"			\u003c/Card\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"gallery-item\"\u003e\n" +
+		"			\u003ch4\u003eModal\u003c/h4\u003e\n" +
+		"			\u003cButton onclick={() =\u003e showModal = true}\u003eOpen Modal\u003c/Button\u003e\n" +
+		"			\u003cModal bind:open={showModal} title=\"Example Modal\"\u003e\n" +
+		"				\u003cp\u003eModal content goes here.\u003c/p\u003e\n" +
+		"			\u003c/Modal\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -283,6 +489,14 @@
 	<footer class="project-footer">
 		Built with <code>$lib/components</code> and Module 14 custom element patterns.
 	</footer>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 </section>
 
 <style>
@@ -374,5 +588,42 @@
 	@media (min-width: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.gallery { grid-template-columns: repeat(2, 1fr); }
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

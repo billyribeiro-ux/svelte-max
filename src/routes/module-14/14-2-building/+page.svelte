@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let showCompiled = $state(false);
 
 	const counterExample = `<!-- MyCounter.svelte -->
@@ -65,6 +66,151 @@
   \u003c/script\u003e
 </body>
 </html>`;
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"let showCompiled = $state(false);\n" +
+		"\n" +
+		"	const counterExample = `\u003c!-- MyCounter.svelte --\u003e\n" +
+		"\\u003csvelte:options customElement=\"my-counter\" /\\u003e\n" +
+		"\n" +
+		"\\u003cscript lang=\"ts\"\\u003e\n" +
+		"  interface Props {\n" +
+		"    initial?: number;\n" +
+		"    label?: string;\n" +
+		"  }\n" +
+		"\n" +
+		"  let { initial = 0, label = 'Count' }: Props = $props();\n" +
+		"  let count = $state(initial);\n" +
+		"\n" +
+		"  function increment() {\n" +
+		"    count += 1;\n" +
+		"  }\n" +
+		"\n" +
+		"  function decrement() {\n" +
+		"    count -= 1;\n" +
+		"  }\n" +
+		"\\u003c/script\\u003e\n" +
+		"\n" +
+		"\u003cdiv class=\"counter\"\u003e\n" +
+		"  \u003cspan class=\"label\"\u003e{label}\u003c/span\u003e\n" +
+		"  \u003cbutton onclick={decrement}\u003e-\u003c/button\u003e\n" +
+		"  \u003cspan class=\"value\"\u003e{count}\u003c/span\u003e\n" +
+		"  \u003cbutton onclick={increment}\u003e+\u003c/button\u003e\n" +
+		"\u003c/div\u003e\n" +
+		"\n" +
+		"\\u003cstyle\\u003e\n" +
+		"  .counter {\n" +
+		"    display: inline-flex;\n" +
+		"    align-items: center;\n" +
+		"    gap: 0.5rem;\n" +
+		"    font-family: system-ui;\n" +
+		"  }\n" +
+		"  .label { font-weight: 600; }\n" +
+		"  .value {\n" +
+		"    min-width: 2rem;\n" +
+		"    text-align: center;\n" +
+		"    font-variant-numeric: tabular-nums;\n" +
+		"  }\n" +
+		"  button {\n" +
+		"    width: 2rem; height: 2rem;\n" +
+		"    border-radius: 50%;\n" +
+		"    border: 1px solid #ccc;\n" +
+		"    cursor: pointer;\n" +
+		"  }\n" +
+		"\\u003c/style\\u003e`;\n" +
+		"\n" +
+		"	const usageExample = `\u003c!DOCTYPE html\u003e\n" +
+		"\u003chtml\u003e\n" +
+		"\u003chead\u003e\n" +
+		"  \\u003cscript type=\"module\" src=\"./my-counter.js\"\\u003e\\u003c/script\\u003e\n" +
+		"\u003c/head\u003e\n" +
+		"\u003cbody\u003e\n" +
+		"  \u003cmy-counter initial=\"5\" label=\"Items\"\u003e\u003c/my-counter\u003e\n" +
+		"\n" +
+		"  \\u003cscript\\u003e\n" +
+		"    // You can also set attributes programmatically\n" +
+		"    const el = document.querySelector('my-counter');\n" +
+		"    if (el) el.setAttribute('label', 'Updated Label');\n" +
+		"  \\u003c/script\\u003e\n" +
+		"\u003c/body\u003e\n" +
+		"\u003c/html\u003e`;\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e14.2 — Building Custom Elements with Svelte\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		To compile a Svelte component as a custom element, you add\n" +
+		"		\u003cstrong\u003e\u003ccode\u003e&lt;svelte:options customElement=\"my-element\" /&gt;\u003c/code\u003e\u003c/strong\u003e at the top of\n" +
+		"		the component file. At build time, the Svelte compiler emits a class that extends\n" +
+		"		\u003ccode\u003eHTMLElement\u003c/code\u003e, registers itself via \u003ccode\u003ecustomElements.define()\u003c/code\u003e, and wires\n" +
+		"		up reactive props as DOM attributes.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eThe Compiler Option\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		You also need to enable custom element compilation in your build config. In\n" +
+		"		\u003ccode\u003esvelte.config.js\u003c/code\u003e, set \u003cstrong\u003e\u003ccode\u003ecompilerOptions.customElement: true\u003c/code\u003e\u003c/strong\u003e.\n" +
+		"		This tells the compiler to emit custom element wrappers instead of standard Svelte components.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cpre\u003e{`// svelte.config.js\n" +
+		"const config = {\n" +
+		"  compilerOptions: {\n" +
+		"    customElement: true\n" +
+		"  }\n" +
+		"};\n" +
+		"export default config;`}\u003c/pre\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eProps Become Attributes\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eEach \u003ccode\u003e$props()\u003c/code\u003e property becomes an observed HTML attribute\u003c/li\u003e\n" +
+		"		\u003cli\u003eAttribute names are lowercased: \u003ccode\u003einitialCount\u003c/code\u003e becomes \u003ccode\u003einitialcount\u003c/code\u003e\u003c/li\u003e\n" +
+		"		\u003cli\u003eOnly string values pass through attributes; use \u003ccode\u003eprops\u003c/code\u003e config for type coercion\u003c/li\u003e\n" +
+		"		\u003cli\u003eSetting attributes triggers Svelte's reactivity system automatically\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eMini-Build: A Counter Custom Element\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			Below is the complete source for a \u003ccode\u003e&lt;my-counter&gt;\u003c/code\u003e custom element.\n" +
+		"			This file would live outside of SvelteKit routes (e.g. in a standalone library project).\n" +
+		"		\u003c/p\u003e\n" +
+		"\n" +
+		"		\u003cpre\u003e\u003ccode\u003e{counterExample}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"		\u003cbutton class=\"toggle-btn\" onclick={() =\u003e showCompiled = !showCompiled}\u003e\n" +
+		"			{showCompiled ? 'Hide' : 'Show'} what happens at compile time\n" +
+		"		\u003c/button\u003e\n" +
+		"\n" +
+		"		{#if showCompiled}\n" +
+		"			\u003cdiv class=\"compiled-info\"\u003e\n" +
+		"				\u003ch3\u003eAt Compile Time\u003c/h3\u003e\n" +
+		"				\u003cul\u003e\n" +
+		"					\u003cli\u003eSvelte wraps the component in a class extending \u003ccode\u003eHTMLElement\u003c/code\u003e\u003c/li\u003e\n" +
+		"					\u003cli\u003eA Shadow DOM root is created (mode \u003ccode\u003e\"open\"\u003c/code\u003e by default)\u003c/li\u003e\n" +
+		"					\u003cli\u003eScoped styles are injected into the shadow root\u003c/li\u003e\n" +
+		"					\u003cli\u003e\u003ccode\u003eobservedAttributes\u003c/code\u003e is set to \u003ccode\u003e[\"initial\", \"label\"]\u003c/code\u003e\u003c/li\u003e\n" +
+		"					\u003cli\u003e\u003ccode\u003eattributeChangedCallback\u003c/code\u003e triggers Svelte's reactivity on attribute updates\u003c/li\u003e\n" +
+		"					\u003cli\u003e\u003ccode\u003ecustomElements.define(\"my-counter\", MyCounter)\u003c/code\u003e is called automatically\u003c/li\u003e\n" +
+		"				\u003c/ul\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		{/if}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eUsage in Plain HTML\u003c/h3\u003e\n" +
+		"	\u003cpre\u003e\u003ccode\u003e{usageExample}\u003c/code\u003e\u003c/pre\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003e&lt;svelte:options customElement=\"tag-name\" /&gt;\u003c/code\u003e compiles a Svelte component as a custom element.\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe \u003ccode\u003ecompilerOptions.customElement: true\u003c/code\u003e flag must be set in \u003ccode\u003esvelte.config.js\u003c/code\u003e.\u003c/li\u003e\n" +
+		"		\u003cli\u003eEach \u003ccode\u003e$props()\u003c/code\u003e property becomes an observed HTML attribute with automatic reactivity.\u003c/li\u003e\n" +
+		"		\u003cli\u003eThe compiled output is a standalone class that works in any HTML page without Svelte.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -132,6 +278,13 @@ export default config;`}</pre>
 	<h3>Usage in Plain HTML</h3>
 	<pre><code>{usageExample}</code></pre>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>&lt;svelte:options customElement="tag-name" /&gt;</code> compiles a Svelte component as a custom element.</li>
@@ -169,4 +322,41 @@ export default config;`}</pre>
 	}
 
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	interface CheckItem {
 		id: string;
 		label: string;
@@ -34,6 +35,108 @@
 	function resetChecklist() {
 		checklist = checklist.map(item => ({ ...item, checked: false }));
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"interface CheckItem {\n" +
+		"		id: string;\n" +
+		"		label: string;\n" +
+		"		checked: boolean;\n" +
+		"	}\n" +
+		"\n" +
+		"	let checklist = $state\u003cCheckItem[]\u003e([\n" +
+		"		{ id: 'types', label: 'TypeScript declarations generated and exports map includes \"types\" condition', checked: false },\n" +
+		"		{ id: 'peer', label: 'svelte listed as peerDependency, not dependency', checked: false },\n" +
+		"		{ id: 'sideeffects', label: '\"sideEffects\": false set for tree-shaking', checked: false },\n" +
+		"		{ id: 'esm', label: '\"type\": \"module\" in package.json', checked: false },\n" +
+		"		{ id: 'no-kit', label: 'No SvelteKit-specific imports ($app/*, $env/*) in library code', checked: false },\n" +
+		"		{ id: 'esm-env', label: 'Using esm-env for environment checks instead of import.meta.env', checked: false },\n" +
+		"		{ id: 'files', label: '\"files\" field includes only \"dist\" (no src leakage)', checked: false },\n" +
+		"		{ id: 'readme', label: 'README.md with install instructions and API docs', checked: false },\n" +
+		"		{ id: 'license', label: 'LICENSE file present', checked: false },\n" +
+		"		{ id: 'changelog', label: 'CHANGELOG.md updated with version notes', checked: false },\n" +
+		"		{ id: 'semver', label: 'Version bumped following semver rules', checked: false },\n" +
+		"		{ id: 'test', label: 'All tests pass', checked: false },\n" +
+		"		{ id: 'build', label: 'svelte-package builds without errors', checked: false },\n" +
+		"		{ id: 'dry-run', label: 'npm publish --dry-run reviewed (no extra files)', checked: false },\n" +
+		"	]);\n" +
+		"\n" +
+		"	let completedCount = $derived(checklist.filter(item =\u003e item.checked).length);\n" +
+		"	let allDone = $derived(completedCount === checklist.length);\n" +
+		"\n" +
+		"	function toggleItem(id: string) {\n" +
+		"		checklist = checklist.map(item =\u003e\n" +
+		"			item.id === id ? { ...item, checked: !item.checked } : item\n" +
+		"		);\n" +
+		"	}\n" +
+		"\n" +
+		"	function resetChecklist() {\n" +
+		"		checklist = checklist.map(item =\u003e ({ ...item, checked: false }));\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e14.6 — Publishing and Versioning\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Once your library is built with \u003ccode\u003esvelte-package\u003c/code\u003e, publishing to npm is\n" +
+		"		straightforward. The key challenges are \u003cstrong\u003esemver discipline\u003c/strong\u003e, avoiding\n" +
+		"		SvelteKit-specific imports, and ensuring your package works for all consumers.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003ePublishing Commands\u003c/h3\u003e\n" +
+		"	\u003cpre\u003e{`# Build the package\n" +
+		"npx svelte-package\n" +
+		"\n" +
+		"# Preview what will be published\n" +
+		"npm publish --dry-run\n" +
+		"\n" +
+		"# Publish (requires npm login)\n" +
+		"npm publish\n" +
+		"\n" +
+		"# Publish a scoped package as public\n" +
+		"npm publish --access public`}\u003c/pre\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eSemver for Component Libraries\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Semantic versioning (\u003cstrong\u003esemver\u003c/strong\u003e) communicates the nature of changes to consumers.\n" +
+		"		For component libraries, the boundaries are specific:\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"semver-row major\"\u003e\n" +
+		"			\u003cstrong\u003eMajor (X.0.0)\u003c/strong\u003e — Breaking changes\n" +
+		"			\u003cul\u003e\n" +
+		"				\u003cli\u003eRemoving or renaming an exported component\u003c/li\u003e\n" +
+		"				\u003cli\u003eChanging a required prop name or type\u003c/li\u003e\n" +
+		"				\u003cli\u003eRemoving a CSS custom property consumers depend on\u003c/li\u003e\n" +
+		"				\u003cli\u003eChanging the custom element tag name\u003c/li\u003e\n" +
+		"				\u003cli\u003eDropping support for a Svelte version\u003c/li\u003e\n" +
+		"			\u003c/ul\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"semver-row minor\"\u003e\n" +
+		"			\u003cstrong\u003eMinor (0.X.0)\u003c/strong\u003e — New features\n" +
+		"			\u003cul\u003e\n" +
+		"				\u003cli\u003eAdding a new component or export\u003c/li\u003e\n" +
+		"				\u003cli\u003eAdding an optional prop with a default\u003c/li\u003e\n" +
+		"				\u003cli\u003eAdding new slots or snippets\u003c/li\u003e\n" +
+		"				\u003cli\u003eAdding new CSS custom properties\u003c/li\u003e\n" +
+		"			\u003c/ul\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"semver-row patch\"\u003e\n" +
+		"			\u003cstrong\u003ePatch (0.0.X)\u003c/strong\u003e — Bug fixes\n" +
+		"			\u003cul\u003e\n" +
+		"				\u003cli\u003eFixing a rendering bug\u003c/li\u003e\n" +
+		"				\u003cli\u003eFixing a TypeScript type error\u003c/li\u003e\n" +
+		"				\u003cli\u003eFixing accessibility issues\u003c/li\u003e\n" +
+		"				\u003cli\u003ePerformance improvements with no API change\u003c/li\u003e\n" +
+		"			\u003c/ul\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -138,6 +241,13 @@ npm publish --access public`}</pre>
 		{/if}
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Follow semver: major for breaking changes, minor for new features, patch for bug fixes.</li>
@@ -217,4 +327,41 @@ npm publish --access public`}</pre>
 	}
 
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

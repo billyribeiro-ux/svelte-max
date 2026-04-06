@@ -238,18 +238,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>&lt;svelte:boundary&gt;</code> wrapper around a crashing component.</strong> The error propagates up and crashes the entire page instead of just the widget, proving that without a boundary the blast radius is unlimited.</li>
+		<li><strong>Throw an error in a <code>load()</code> function instead of a component.</strong> The boundary does not catch it because <code>svelte:boundary</code> only catches errors during rendering and effects, not during server-side data loading.</li>
+		<li><strong>Call <code>reset()</code> without fixing the underlying cause of the error.</strong> The component re-mounts, hits the same error immediately, and the boundary catches it again, creating an infinite crash-reset loop.</li>
+		<li><strong>Wrap an entire page in a single boundary instead of individual widgets.</strong> When one widget crashes, the entire page content is replaced with the error fallback, hiding all the other working content.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>&lt;svelte:boundary&gt;</code> catches errors in a component subtree and renders a <code>failed</code> snippet instead of crashing the page.</li>
-		<li>The <code>failed</code> snippet receives the <code>error</code> object and a <code>reset</code> function to re-mount the crashed subtree.</li>
-		<li>Wrap third-party components and data-fetching widgets individually for granular error recovery.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>&lt;svelte:boundary&gt;</code> catches errors thrown during rendering or in effects within its subtree, replacing the crashed content with a <code>failed</code> snippet. This prevents a single broken widget from taking down the entire page, giving you the same error boundary pattern that React popularised but built into Svelte's template syntax.</p>
+	<p class="prose">The <code>failed</code> snippet receives the <code>error</code> object for display and a <code>reset</code> function that re-mounts the crashed subtree. This is useful for transient errors like network failures where a retry might succeed. For persistent errors, show a meaningful fallback and log the error to your monitoring service.</p>
+	<p class="prose">Granularity matters: wrap individual widgets, third-party components, and data-fetching sections in their own boundaries. A single page-level boundary hides all content on any error, while per-widget boundaries let the rest of the page continue working normally.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-8-accessibility">12.8 — Accessibility</a> — build applications that work for everyone.</p>
 </section>
 
 <style>
@@ -257,8 +265,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

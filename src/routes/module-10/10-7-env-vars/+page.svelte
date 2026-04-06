@@ -167,19 +167,26 @@ export const handle = async ({ event, resolve }) => {
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Import <code>DATABASE_URL</code> from <code>$env/static/private</code> in a <code>+page.svelte</code> component.</strong> The build fails immediately with an error telling you that private env vars cannot be imported into client-side code, proving the compile-time guard works.</li>
+		<li><strong>Create a public env var without the <code>PUBLIC_</code> prefix and import it from <code>$env/static/public</code>.</strong> SvelteKit refuses to expose it because the prefix is mandatory for client-safe variables, so the import resolves to <code>undefined</code>.</li>
+		<li><strong>Read <code>process.env.DATABASE_URL</code> directly instead of using the <code>$env</code> modules.</strong> It may work in Node but bypasses SvelteKit's safety net entirely, so there is no build-time check preventing you from accidentally shipping the value to the client.</li>
+		<li><strong>Use <code>$env/static/private</code> in a file that is not <code>.server.ts</code> or under <code>$lib/server/</code>.</strong> If that file is ever imported by a client module, the build breaks, showing that the file naming convention is your first line of defence.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Four env paths = two axes: static/dynamic and private/public.</li>
-		<li>SvelteKit enforces the server/client split at build time for you.</li>
-		<li><code>PUBLIC_</code> prefix is mandatory for anything exposed to the browser.</li>
-		<li><code>$lib/server/</code> and <code>.server.ts</code> make leaks a build error, not a security incident.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit's environment variable system is organised along two axes: <em>when</em> the value is read (static at build time vs dynamic at request time) and <em>where</em> the value can ship (private server-only vs public client-safe). These four combinations map to four import paths, and the compiler enforces the boundaries so a mistake becomes a build error rather than a leaked secret.</p>
+	<p class="prose">Static imports are inlined at build time, which means the bundler can tree-shake unreachable branches and dead-code-eliminate based on the value. Dynamic imports read from the environment at request time, making them ideal for feature flags, rotating secrets, or deployments where a single build runs in multiple environments.</p>
+	<p class="prose">The <code>PUBLIC_</code> prefix is not a convention but a hard requirement: SvelteKit will not expose a variable to the browser unless its name starts with <code>PUBLIC_</code>. Combined with the <code>.server.ts</code> file convention and the <code>$lib/server/</code> directory, this gives you three layers of protection against accidentally shipping sensitive data to the client.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-10/10-8-auth">10.8 — Cookie-based authentication</a> — implement sessions with httpOnly cookies.</p>
 </section>
 
 <style>
@@ -188,8 +195,9 @@ export const handle = async ({ event, resolve }) => {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	.table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
 	table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }

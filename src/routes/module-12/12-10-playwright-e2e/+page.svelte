@@ -264,18 +264,26 @@ npx playwright test --update-snapshots`}</pre>
 	{/if}
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Use a CSS selector like <code>.btn-primary</code> instead of <code>getByRole('button')</code>.</strong> Renaming the CSS class breaks the test even though the button still works, proving that role-based selectors are more resilient to UI refactoring.</li>
+		<li><strong>Remove the <code>webServer</code> block from <code>playwright.config.ts</code> and run tests without starting the dev server.</strong> Every test fails with a connection error because Playwright has no server to navigate to.</li>
+		<li><strong>Add a <code>waitForTimeout(5000)</code> instead of waiting for a specific element.</strong> The test passes but takes 5 seconds regardless of how fast the page loads, proving that explicit waits like <code>waitForSelector</code> are faster and more reliable.</li>
+		<li><strong>Run tests in <code>--headed</code> mode and watch the browser.</strong> You can see each click, type, and navigation happen in real time, which is invaluable for debugging flaky tests that pass locally but fail in CI.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Playwright runs E2E tests in real browsers (Chromium, Firefox, WebKit) against your running SvelteKit app.</li>
-		<li>Role-based selectors like <code>getByRole</code> and <code>getByLabel</code> make tests resilient and verify accessibility.</li>
-		<li>The <code>webServer</code> config option auto-starts your dev server before tests run in CI.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Playwright runs end-to-end tests in real browsers (Chromium, Firefox, WebKit) against your running SvelteKit application. Unlike unit tests that verify isolated logic, E2E tests verify the full user flow: navigation, form submission, data persistence, and visual feedback as a real user would experience them.</p>
+	<p class="prose">Role-based selectors like <code>getByRole('button')</code> and <code>getByLabel('Email')</code> make tests resilient to CSS and structural changes while simultaneously verifying accessibility. If a test cannot find an element by its ARIA role, it means a screen reader cannot find it either.</p>
+	<p class="prose">The <code>webServer</code> configuration option in <code>playwright.config.ts</code> automatically starts your dev or preview server before tests run and shuts it down afterward. This makes E2E tests self-contained and CI-ready without any manual setup steps.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-11-deployment">12.11 — Deployment</a> — choose an adapter and ship your application.</p>
 </section>
 
 <style>
@@ -283,8 +291,9 @@ npx playwright test --update-snapshots`}</pre>
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

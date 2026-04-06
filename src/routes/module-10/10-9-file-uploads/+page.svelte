@@ -153,19 +153,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>enctype="multipart/form-data"</code> from the form.</strong> The browser sends the file name as a plain string instead of the actual file bytes, so <code>formData.get('avatar')</code> returns a string and the server's <code>instanceof File</code> check fails.</li>
+		<li><strong>Remove the server-side size limit check and upload a 50 MB file.</strong> The server happily accepts it, consuming memory and bandwidth, proving that the <code>accept</code> attribute and client-side limits are trivially bypassed.</li>
+		<li><strong>Change the <code>accept</code> attribute to <code>accept="image/png"</code> but upload a renamed <code>.exe</code> file.</strong> The browser may let it through, and the server must check the MIME type or magic bytes independently because the client cannot be trusted.</li>
+		<li><strong>Remove <code>use:enhance</code> and submit a large file.</strong> The form works via a full page reload, but there is no pending UI, so the user sees a blank screen while the upload completes, showing why progressive enhancement improves perceived performance.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>request.formData()</code> yields <code>File</code> objects when the form is multipart.</li>
-		<li>Always enforce size and MIME-type limits on the server.</li>
-		<li><code>file.arrayBuffer()</code> gives you the raw bytes for hashing, storage, or sniffing.</li>
-		<li><code>use:enhance</code> keeps uploads feeling instant without losing progressive enhancement.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">File uploads in SvelteKit use the same form action pattern as any other mutation, with one critical addition: the <code>enctype="multipart/form-data"</code> attribute. Without it the browser URL-encodes the form and sends file names as strings. With it, <code>request.formData()</code> gives you real <code>File</code> objects with <code>.name</code>, <code>.size</code>, <code>.type</code>, and <code>.arrayBuffer()</code>.</p>
+	<p class="prose">Server-side validation is non-negotiable for file uploads. You must enforce a maximum size, an allow-list of MIME types, and ideally a magic-byte check on the raw buffer. The <code>accept</code> attribute on the <code>&lt;input&gt;</code> is a hint to the browser's file picker, not a security boundary.</p>
+	<p class="prose">Combining file uploads with <code>use:enhance</code> gives you the best of both worlds: a pending spinner while the upload happens in the background, and a graceful fallback to a full-page POST if JavaScript is unavailable. The same action code handles both cases without any branching.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-1-prop-drilling">11.1 — Prop drilling</a> — understand the problem that context and shared state solve.</p>
 </section>
 
 <style>
@@ -174,8 +181,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.stack { display: flex; flex-direction: column; gap: var(--space-md); }
 	.field { display: flex; flex-direction: column; gap: var(--space-xs); }
 	.field > span { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 600; }

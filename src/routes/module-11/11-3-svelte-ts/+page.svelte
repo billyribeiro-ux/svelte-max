@@ -118,18 +118,26 @@ export function getCount() &#123; return count; &#125;</code></pre>
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Rename the file from <code>counter.svelte.ts</code> to <code>counter.ts</code>.</strong> The Svelte compiler no longer processes runes in this file, so <code>$state(0)</code> becomes a syntax error because plain TypeScript does not understand runes.</li>
+		<li><strong>Export the <code>count</code> variable directly instead of via <code>getCount()</code>.</strong> Consumers import a snapshot of the initial value (0) and never see updates, because primitive exports are not reactive references.</li>
+		<li><strong>Replace <code>getCount()</code> in the template with a variable captured at import time: <code>let c = getCount();</code>.</strong> The template renders the initial value and never updates because Svelte cannot track a dependency through a one-time function call stored in a local variable.</li>
+		<li><strong>Use <code>$derived</code> in the <code>.svelte.ts</code> file and export it as a plain value.</strong> Derived values are reactive objects, but exporting them as primitives loses the reactivity, proving that consumers must access reactive state through function calls or getter-based objects.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>.svelte.ts</code> files let you use <code>$state</code> at the module level for shared reactive state.</li>
-		<li>Exported functions that read/write module state keep consumers automatically reactive.</li>
-		<li>This pattern replaces the legacy <code>writable()</code> / <code>readable()</code> store API entirely.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Files ending in <code>.svelte.ts</code> are processed by the Svelte compiler, which means they can use runes like <code>$state</code>, <code>$derived</code>, and <code>$effect</code> at the module level. Regular <code>.ts</code> files cannot, because the TypeScript compiler does not understand Svelte's reactive primitives.</p>
+	<p class="prose">The key to sharing module-level state is exporting functions that read and write the internal <code>$state</code> variable. When a component calls <code>getCount()</code> inside its template, Svelte tracks the dependency on the underlying state and re-renders when it changes. Exporting the variable directly would only give consumers a static snapshot.</p>
+	<p class="prose">This pattern is the Svelte 5 replacement for the legacy <code>writable()</code> and <code>readable()</code> store API. It is simpler, fully typed, and requires no subscriptions or dollar-sign prefixes in templates. You just call functions and Svelte handles the reactivity.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-4-shared-state">11.4 — Shared State Across Pages</a> — understand the SSR implications of module-level state.</p>
 </section>
 
 <style>
@@ -137,8 +145,9 @@ export function getCount() &#123; return count; &#125;</code></pre>
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	pre {

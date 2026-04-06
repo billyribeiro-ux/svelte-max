@@ -333,18 +333,26 @@ function myAttach(element: HTMLElement) {
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>destroy()</code> cleanup from a <code>clickOutside</code> action.</strong> Navigate away and back, and the old event listener is still attached to the document, causing duplicate handlers and memory leaks.</li>
+		<li><strong>Forget to call <code>observer.disconnect()</code> in an <code>IntersectionObserver</code> action's destroy.</strong> The observer keeps running after the element is removed from the DOM, consuming resources and potentially throwing errors on callback.</li>
+		<li><strong>Pass a parameter to an action but do not implement the <code>update()</code> method.</strong> When the parameter changes reactively, the action does not respond because it only reads the initial value, creating stale behaviour.</li>
+		<li><strong>Try using <code>use:action</code> on a Svelte component instead of a DOM element.</strong> Svelte throws an error because actions only work on native HTML elements, not component instances.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Actions (<code>use:name</code>) attach reusable DOM behavior and return <code>update</code>/<code>destroy</code> lifecycle hooks.</li>
-		<li>Common action patterns include <code>clickOutside</code>, <code>tooltip</code>, and <code>IntersectionObserver</code> wrappers.</li>
-		<li>Svelte 5.29+ introduces <code>{'{@attach}'}</code> as a modern alternative that integrates with the component lifecycle.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Actions (<code>use:name</code>) are functions that receive a DOM element and optional parameters, attach behaviour to it, and return lifecycle hooks. The <code>destroy()</code> hook runs when the element is removed from the DOM, and the <code>update()</code> hook runs when the action's parameter changes reactively. Both are essential for preventing memory leaks and keeping behaviour in sync.</p>
+	<p class="prose">Common action patterns include <code>clickOutside</code> (listening for clicks on the document and checking if the target is outside the element), <code>tooltip</code> (creating and positioning a floating element on hover), and <code>IntersectionObserver</code> wrappers (triggering callbacks when elements enter or leave the viewport).</p>
+	<p class="prose">Svelte 5.29 introduced <code>{'{@attach}'}</code> as a modern alternative to <code>use:</code> actions. Attachments integrate more naturally with the component lifecycle and can return cleanup functions directly, but the <code>use:</code> API remains fully supported and is the right choice when you need maximum compatibility across Svelte versions.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-7-error-boundaries">12.7 — Error boundaries</a> — catch component errors without crashing the entire page.</p>
 </section>
 
 <style>
@@ -352,7 +360,9 @@ function myAttach(element: HTMLElement) {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

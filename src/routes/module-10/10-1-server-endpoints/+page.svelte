@@ -213,19 +213,26 @@
 	</p>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Rename the exported function from <code>GET</code> to <code>get</code> (lowercase).</strong> SvelteKit only recognises uppercase HTTP method names, so the endpoint stops responding and the fetch call returns a 405 Method Not Allowed.</li>
+		<li><strong>Remove the <code>json()</code> wrapper and return a raw <code>Response</code> with no <code>Content-Type</code> header.</strong> The browser receives the body but cannot parse it as JSON, so <code>res.json()</code> on the client throws a <code>SyntaxError</code>.</li>
+		<li><strong>Delete the <code>POST</code> handler from <code>+server.ts</code> but keep the client form that calls it.</strong> Submitting the form now hits a 405 because the endpoint has no POST export, proving each method must be explicitly defined.</li>
+		<li><strong>Change the fetch URL from <code>'./api'</code> to <code>'/api'</code> (absolute root path).</strong> The request goes to the site root instead of the route-relative API folder, returning a 404 and demonstrating why relative paths matter in nested routes.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Export HTTP method handlers (<code>GET</code>, <code>POST</code>, ...) from <code>+server.ts</code>.</li>
-		<li>Return <code>json(data, init)</code> for typed JSON responses.</li>
-		<li>Call endpoints from the client with <code>fetch</code>, or from anywhere with <code>curl</code>.</li>
-		<li>Use <code>+server.ts</code> for public APIs; prefer <code>load()</code>/form actions for internal pages.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>+server.ts</code> files turn any route directory into a full HTTP endpoint by exporting named functions that match HTTP verbs. SvelteKit hands each handler a typed <code>RequestEvent</code> and expects a standard <code>Response</code> back, which means you are writing against the Web Platform API rather than a framework-specific abstraction.</p>
+	<p class="prose">The <code>json()</code> helper is a thin convenience that creates a <code>Response</code> with the correct <code>Content-Type</code> header and serialises your data. Pairing it with <code>error()</code> for failure paths gives you a consistent, typed contract between server and client without needing a separate API framework.</p>
+	<p class="prose">Server endpoints shine when you need a publicly addressable API, for example for mobile clients, webhooks, or third-party integrations. For data that only your own pages consume, <code>load()</code> functions are simpler; for mutations triggered by HTML forms, form actions provide progressive enhancement out of the box.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-10/10-2-typed-handlers">10.2 — Typed RequestHandler</a> — learn how SvelteKit types every property on the request event.</p>
 </section>
 
 <style>
@@ -265,20 +272,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre {
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);

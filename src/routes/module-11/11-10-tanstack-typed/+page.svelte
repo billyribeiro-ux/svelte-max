@@ -354,18 +354,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Hide the "name" column via the toggle and then try to export selected rows.</strong> The exported JSON still includes the <code>name</code> field because visibility only affects rendering, not the underlying data model. The full <code>Member</code> object is always available.</li>
+		<li><strong>Remove <code>enableRowSelection: true</code> from the options.</strong> Clicking rows no longer selects them because the feature is disabled at the table level, and <code>getSelectedRowModel()</code> always returns an empty array.</li>
+		<li><strong>Remove the <code>onColumnVisibilityChange</code> callback.</strong> Toggling a visibility checkbox fires internally but the <code>columnVisibility</code> state never updates, so the column stays visible and the checkbox state drifts out of sync with the table.</li>
+		<li><strong>Change the <code>ColumnDef</code> generic from <code>Member</code> to <code>any</code>.</strong> The code still works but TypeScript can no longer verify that <code>accessorKey</code> values match the data shape, so misspelling a key like <code>'namee'</code> is silently accepted.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>VisibilityState</code> controls which columns render, toggled via <code>column.toggleVisibility()</code>.</li>
-		<li><code>RowSelectionState</code> tracks selected rows by index, and <code>getSelectedRowModel()</code> returns fully typed data.</li>
-		<li>Generic <code>createSvelteTable&lt;T&gt;</code> provides end-to-end type safety from column defs to exported results.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Column visibility in TanStack Table is controlled by a <code>VisibilityState</code> object that maps column IDs to booleans. Toggling a column with <code>column.toggleVisibility()</code> removes it from the rendered table but does not affect the underlying data, so hidden columns are still accessible when exporting or processing selected rows.</p>
+	<p class="prose">Row selection is enabled by setting <code>enableRowSelection: true</code> in the table options. The <code>RowSelectionState</code> tracks selected rows by their index, and <code>getSelectedRowModel().rows</code> gives you the full typed data for each selected row. This makes it trivial to build features like bulk export, bulk delete, or batch operations.</p>
+	<p class="prose">Using the generic <code>createSvelteTable&lt;Member&gt;</code> provides end-to-end type safety. Column definitions are checked against the <code>Member</code> interface, accessor keys must match actual property names, and exported data retains its full type. Dropping to <code>any</code> trades this safety for convenience, which is almost never worth it.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-11-optimistic-ui">11.11 — Optimistic UI with Rollback</a> — make your app feel instant by updating the UI before the server responds.</p>
 </section>
 
 <style>
@@ -373,8 +381,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	.visibility-toggles {

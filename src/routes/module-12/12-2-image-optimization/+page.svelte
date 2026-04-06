@@ -212,19 +212,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>width</code> and <code>height</code> attributes from an image.</strong> Reload with the Network tab throttled to slow 3G and watch the content below the image jump down as it loads, demonstrating CLS caused by missing dimensions.</li>
+		<li><strong>Change <code>loading="lazy"</code> to <code>loading="eager"</code> on all images.</strong> Every image starts downloading immediately on page load, competing for bandwidth with the LCP image and slowing down the initial paint.</li>
+		<li><strong>Remove the <code>fetchpriority="high"</code> attribute from the hero image.</strong> The browser may deprioritise it behind other resources, delaying the LCP event even though the image is above the fold.</li>
+		<li><strong>Delete the AVIF and WebP <code>&lt;source&gt;</code> elements from a <code>&lt;picture&gt;</code> tag.</strong> The browser falls back to the JPEG, which is typically 2-5x larger, increasing download time and bandwidth usage on every page view.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Explicit <code>width</code> and <code>height</code> attributes prevent CLS by reserving space before images load.</li>
-		<li><code>fetchpriority="high"</code> prioritizes the LCP image; <code>loading="lazy"</code> defers off-screen images.</li>
-		<li><code>srcset</code> and <code>sizes</code> let the browser pick the optimal resolution for each viewport.</li>
-		<li>Use <code>&lt;picture&gt;</code> with AVIF/WebP sources for significant file-size savings over JPEG.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Explicit <code>width</code> and <code>height</code> attributes on images are the single most effective way to prevent Cumulative Layout Shift. The browser uses these dimensions to calculate the aspect ratio and reserve the correct amount of space before the image finishes downloading, eliminating the content jump that frustrates users.</p>
+	<p class="prose">Loading strategy matters: the hero image should use <code>fetchpriority="high"</code> to tell the browser it is the LCP element, while off-screen images should use <code>loading="lazy"</code> to defer their download until the user scrolls near them. This prioritisation reduces contention for bandwidth during the critical initial load.</p>
+	<p class="prose">Modern formats like AVIF and WebP deliver the same visual quality at a fraction of JPEG's file size. The <code>&lt;picture&gt;</code> element with multiple <code>&lt;source&gt;</code> tags lets the browser choose the best format it supports, with the <code>&lt;img&gt;</code> fallback ensuring universal compatibility. Pair this with <code>srcset</code> and <code>sizes</code> for responsive resolution selection.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-3-code-splitting">12.3 — Code splitting</a> — load only the JavaScript each page needs.</p>
 </section>
 
 <style>
@@ -232,8 +239,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

@@ -313,18 +313,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>aria-live="polite"</code> from a dynamic region and test with a screen reader.</strong> Content changes silently — the screen reader does not announce the update, so users who cannot see the screen miss the new information entirely.</li>
+		<li><strong>Remove focus trapping from a modal and press Tab repeatedly.</strong> Focus escapes behind the modal to invisible page elements, creating a confusing experience where keyboard users interact with content they cannot see.</li>
+		<li><strong>Replace a <code>&lt;button&gt;</code> with a <code>&lt;div onclick&gt;</code> and try pressing Enter on it.</strong> The click does not fire because <code>div</code> elements are not keyboard-focusable or activatable by default, breaking keyboard navigation.</li>
+		<li><strong>Remove all <code>alt</code> attributes from images and run a Lighthouse accessibility audit.</strong> The score drops because screen readers announce images without alt text as "image" with no description, and Svelte's compile-time warnings flag the missing attributes.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>aria-live="polite"</code> regions announce dynamic content changes to screen readers without navigation.</li>
-		<li>Focus trapping in modals uses <code>Tab</code> cycling and <code>Escape</code> to close, managed via <code>role="dialog"</code> and <code>aria-modal</code>.</li>
-		<li>Svelte provides compile-time a11y warnings, but semantic HTML, ARIA labels, and keyboard navigation require deliberate implementation.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>aria-live</code> regions are how you announce dynamic content changes to screen readers. Setting <code>aria-live="polite"</code> on a container means the screen reader will announce its new content after finishing its current task, while <code>"assertive"</code> interrupts immediately. This is essential for toast notifications, form validation messages, and real-time updates.</p>
+	<p class="prose">Modal dialogs require focus trapping to prevent keyboard users from tabbing into invisible background content. The pattern uses <code>role="dialog"</code>, <code>aria-modal="true"</code>, Tab key cycling between the first and last focusable elements, and Escape to close. Without these, keyboard and screen reader users cannot reliably interact with modals.</p>
+	<p class="prose">Svelte provides compile-time accessibility warnings for common issues like missing alt text, non-interactive elements with click handlers, and missing form labels. However, these warnings are a starting point, not a complete solution. Semantic HTML, ARIA attributes, keyboard navigation, colour contrast, and screen reader testing all require deliberate implementation and manual verification.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-9-vitest-unit-tests">12.9 — Vitest unit tests</a> — test your reactive stores and load functions.</p>
 </section>
 
 <style>
@@ -332,7 +340,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

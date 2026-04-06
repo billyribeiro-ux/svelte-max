@@ -141,19 +141,26 @@
 	</p>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>use:enhance</code> from the form entirely.</strong> The form still submits because it is a native POST, but now the entire page reloads on every submission, losing the smooth in-place update and the pending UI state.</li>
+		<li><strong>Delete the <code>await update()</code> call inside the inner callback.</strong> The action runs and succeeds on the server, but the page never applies the result, so <code>form</code> stays null and no success message appears.</li>
+		<li><strong>Set <code>submitting = true</code> but forget to set it back to <code>false</code> in the inner callback.</strong> After the first submission the button stays permanently disabled and the pending pill never disappears, showing why cleanup in the inner callback is essential.</li>
+		<li><strong>Call <code>cancel()</code> unconditionally in the outer callback.</strong> The form appears to submit but the request never reaches the server, so no action runs and nothing changes on the page.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>use:enhance</code> turns a native POST form into an AJAX submit with zero extra code.</li>
-		<li>The callback shape is outer (before submit) returning inner (after response).</li>
-		<li>Use a <code>submitting</code> <code>$state</code> flag to render pending UI.</li>
-		<li>Call <code>await update()</code> to apply the default result handling, or skip it to take control.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>use:enhance</code> is the bridge between native form behaviour and a modern single-page-app feel. Adding it to a <code>&lt;form method="POST"&gt;</code> makes SvelteKit intercept the submission, send it via <code>fetch</code> in the background, and apply the result without a full page reload. Remove it and everything still works, just with a reload.</p>
+	<p class="prose">The callback architecture is a two-phase design: the outer function runs before the request is sent and can call <code>cancel()</code> to abort; the inner function runs after the response arrives and must call <code>update()</code> to apply the default behaviour of updating <code>form</code>, invalidating load data, and resetting form fields.</p>
+	<p class="prose">The inner callback also exposes <code>result</code> with a <code>type</code> discriminant of <code>'success'</code>, <code>'failure'</code>, <code>'redirect'</code>, or <code>'error'</code>. Branching on this type lets you implement optimistic UI, toast notifications, or custom error handling while still falling back to <code>update()</code> for the common path.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-10/10-6-validation">10.6 — Server-side validation</a> — never trust client input.</p>
 </section>
 
 <style>
@@ -193,20 +200,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	form {
 		display: flex;
 		flex-direction: column;

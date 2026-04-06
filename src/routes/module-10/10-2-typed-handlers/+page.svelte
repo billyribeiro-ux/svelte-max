@@ -157,19 +157,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>as SubmitPayload</code> type assertion from <code>await request.json()</code>.</strong> The response still works at runtime, but TypeScript no longer knows the shape of the body, so accessing <code>body.name</code> in the handler becomes a type error.</li>
+		<li><strong>Send a POST with <code>Content-Type: text/plain</code> instead of <code>application/json</code>.</strong> The server calls <code>request.json()</code> which throws because the body is not valid JSON, returning an unhandled 500 — proof you need a try/catch or content-type check.</li>
+		<li><strong>Add a dynamic route param like <code>[id]</code> and try accessing <code>params.id</code> without the param in the URL.</strong> TypeScript flags the mismatch because the generated param type does not include <code>id</code>, catching the mistake before runtime.</li>
+		<li><strong>Return a <code>Response</code> with status 200 but include an <code>error</code> field in the JSON body.</strong> The client receives a success status yet displays error data, showing that HTTP status codes and response bodies must agree for correct client-side branching.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>RequestHandler</code> types the event and param shapes automatically.</li>
-		<li>Always narrow <code>await request.json()</code> with a validator — never trust raw input.</li>
-		<li><code>url.searchParams</code> reads query strings as a typed <code>URLSearchParams</code>.</li>
-		<li>Return early with a <code>400</code> response when validation fails.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>RequestHandler</code> type is the backbone of type safety in SvelteKit endpoints. It automatically infers the shape of <code>params</code> from your route directory structure, so a file at <code>[slug]/+server.ts</code> gives you <code>params.slug</code> as a guaranteed string without any manual typing.</p>
+	<p class="prose">Destructuring the event reveals a rich API surface: <code>request</code> is a standard <code>Request</code>, <code>url</code> is a full <code>URL</code> object with <code>searchParams</code>, <code>cookies</code> provides a typed cookie jar, and <code>locals</code> carries per-request state set in hooks. Each property is fully typed, so IDE autocompletion guides you through what is available.</p>
+	<p class="prose">The critical lesson is that <code>await request.json()</code> returns <code>unknown</code> at the type level, so you must narrow it with a type assertion, a type predicate, or a schema validation library before trusting the data. Skipping this step trades compile-time safety for runtime surprises.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-10/10-3-form-actions">10.3 — Form actions</a> — the mutation pattern that works without JavaScript.</p>
 </section>
 
 <style>
@@ -209,20 +216,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre {
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);

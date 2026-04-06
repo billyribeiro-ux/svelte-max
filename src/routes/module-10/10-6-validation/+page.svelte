@@ -121,19 +121,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove all server-side validation and accept any input.</strong> The form always succeeds regardless of what you type, proving that client-side <code>required</code> and <code>minlength</code> attributes are trivially bypassed with DevTools.</li>
+		<li><strong>Replace <code>fail(400, ...)</code> with a plain <code>return</code> of the same error object.</strong> SvelteKit treats the return as a success (status 200), resets the form fields, and the user loses their input even though the data was invalid.</li>
+		<li><strong>Prefill the password field with <code>value={'{form?.password ?? ""}'}</code>.</strong> The password is now round-tripped through the server response and visible in the page source, creating a security vulnerability where sensitive input leaks into HTML.</li>
+		<li><strong>Remove the <code>email</code> prefill so the field starts blank after a validation error.</strong> Submitting with a valid email but a bad password wipes the email, forcing the user to retype it, demonstrating why preserving non-sensitive fields matters for UX.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>fail(status, data)</code> returns a validation failure that shows up as <code>form</code>.</li>
-		<li>Prefill submitted values (but never passwords) so users don't retype on error.</li>
-		<li><code>ActionData</code> is a typed union — narrow it with <code>form?.errors</code> or <code>form?.success</code>.</li>
-		<li>Always validate on the server; client validation is only for UX polish.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Server-side validation is the only validation that matters for security. Client-side checks like <code>required</code> and <code>pattern</code> improve the user experience but can be removed by anyone with DevTools. The server must independently verify every field before acting on the data.</p>
+	<p class="prose">SvelteKit's <code>fail(status, data)</code> function is how you signal validation errors. It sets the HTTP status to a 4xx code and returns the data as <code>ActionData</code>, which the page receives as the <code>form</code> prop. The status code matters: returning a plain object treats the action as a success, which triggers form reset and data invalidation.</p>
+	<p class="prose">A well-designed validation response prefills every non-sensitive field so the user only needs to correct their mistake, never retype everything. Passwords are the exception: they should never be included in the response because they would appear in the HTML source. The typed <code>ActionData</code> union ensures your template handles both success and error branches correctly at compile time.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-10/10-7-env-vars">10.7 — Environment variables</a> — keep secrets out of client bundles.</p>
 </section>
 
 <style>
@@ -142,8 +149,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.stack { display: flex; flex-direction: column; gap: var(--space-md); }
 	.field { display: flex; flex-direction: column; gap: var(--space-xs); }
 	.field > span { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 600; }

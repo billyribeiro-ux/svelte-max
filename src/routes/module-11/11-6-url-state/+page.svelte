@@ -237,18 +237,26 @@ function setFilter(f: string) &#123;
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Replace <code>goto('?filter=active')</code> with <code>window.location.search = '?filter=active'</code>.</strong> The filter still changes but the page does a full reload instead of a client-side navigation, losing all in-memory state and causing a visible flash.</li>
+		<li><strong>Use a local <code>$state</code> variable for the filter instead of reading from <code>page.url.searchParams</code>.</strong> The filter works on click but the URL never updates, so refreshing the page or sharing the link always shows "all" instead of the selected filter.</li>
+		<li><strong>Remove the <code>?? 'all'</code> fallback from <code>searchParams.get('filter')</code>.</strong> When no filter param is present, <code>currentFilter</code> becomes <code>null</code> and the equality check <code>=== 'all'</code> fails, so no filter button is highlighted and the task list shows nothing.</li>
+		<li><strong>Navigate to <code>?filter=deleted</code> manually in the URL bar.</strong> The derived filter computes correctly but no tasks match, showing an empty list. This proves that URL state needs validation if you want to prevent invalid filter values.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>page.url.searchParams</code> is reactive and drives filter/sort/pagination state from the URL.</li>
-		<li><code>goto('?filter=active')</code> updates the URL without a full page reload.</li>
-		<li>URL state is bookmarkable, shareable, and survives page refreshes, unlike in-memory state.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">URL search parameters are the ideal location for filter, sort, and pagination state because they are inherently shareable, bookmarkable, and survive full page refreshes. SvelteKit's reactive <code>page.url.searchParams</code> lets you derive component state directly from the URL, and <code>goto()</code> updates the URL without a full reload.</p>
+	<p class="prose">Combining <code>$derived</code> with <code>page.url.searchParams.get()</code> creates a reactive pipeline: when the URL changes via <code>goto()</code>, the derived filter updates, which re-computes the filtered task list, which re-renders the component. The entire flow is declarative and requires no manual subscription management.</p>
+	<p class="prose">Svelte also provides <code>SvelteURL</code> from <code>svelte/reactivity</code>, a reactive wrapper around the native <code>URL</code> class. It is useful for building and inspecting URLs in component state without touching the browser's address bar, for example when constructing API request URLs that depend on reactive parameters.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-7-reactive-window">11.7 — Reactive Window Values</a> — track viewport size, scroll position, and connectivity reactively.</p>
 </section>
 
 <style>
@@ -256,8 +264,9 @@ function setFilter(f: string) &#123;
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	pre {

@@ -177,18 +177,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>$state</code> from the <code>items</code> field and use a plain array.</strong> Adding items no longer triggers UI updates because Svelte cannot track mutations on a non-reactive array.</li>
+		<li><strong>Replace the <code>get total()</code> getter with a regular method <code>total()</code> and call it without parentheses in the template.</strong> The template renders the function reference instead of the computed value, and no error is thrown because Svelte treats it as a valid expression.</li>
+		<li><strong>Destructure the cart instance: <code>const {'{ add, items }'} = cart;</code> and use <code>items</code> directly.</strong> The destructured <code>items</code> is a snapshot, not a reactive binding, so the template never updates when items change.</li>
+		<li><strong>Push an item directly with <code>cart.items.push(item)</code> instead of using the <code>add()</code> method.</strong> The push works but the quantity-increment logic in <code>add()</code> is bypassed, so adding the same product twice creates duplicate entries instead of incrementing the quantity.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$state</code> on class fields makes mutations automatically trigger UI updates.</li>
-		<li>Getters like <code>get total()</code> act as derived values that recalculate when fields change.</li>
-		<li>Class instances encapsulate state and methods, replacing complex store logic with idiomatic TypeScript.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Svelte 5 lets you use <code>$state</code> directly on class fields, turning any class into a reactive data container. When you mutate a <code>$state</code> field, Svelte automatically re-renders every component that reads it, whether directly in the template or through a getter.</p>
+	<p class="prose">Getters like <code>get total()</code> behave as derived values: they recalculate whenever the underlying <code>$state</code> fields change. This gives you computed properties for free without needing <code>$derived</code> explicitly, because the getter is re-evaluated on every access during rendering.</p>
+	<p class="prose">The class-based pattern encapsulates state and mutation logic behind a clean API. Methods like <code>add()</code> and <code>remove()</code> ensure invariants (like incrementing quantity for duplicates) are always enforced, and the class can be shared across components via context or module exports.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-6-url-state">11.6 — URL SearchParams as State</a> — store filter and pagination state in the URL.</p>
 </section>
 
 <style>
@@ -196,8 +204,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	pre {

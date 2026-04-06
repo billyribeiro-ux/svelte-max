@@ -137,19 +137,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>action="?/login"</code> attribute from the login form.</strong> The form now hits the default action, which does not exist in this setup, so SvelteKit returns a 404-style error because no <code>default</code> export is defined.</li>
+		<li><strong>Misspell the action name, e.g. <code>action="?/logn"</code>.</strong> SvelteKit cannot find a handler matching that name and returns a 404, proving that the query-string action name must exactly match the key in the <code>actions</code> object.</li>
+		<li><strong>Remove the <code>action</code> discriminant from the return value (e.g. drop <code>action: 'login' as const</code>).</strong> TypeScript can no longer narrow <code>ActionData</code> to the correct branch, so accessing <code>form.email</code> becomes a type error because both action shapes overlap.</li>
+		<li><strong>Submit the login form and then the register form without reloading.</strong> Notice that <code>form</code> updates to the register result, wiping the login result, because only one action result exists at a time per page.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Name actions inside the <code>actions</code> object — any key other than <code>default</code>.</li>
-		<li>Target them with <code>{'action="?/name"'}</code> on the <code>&lt;form&gt;</code>.</li>
-		<li>Return a discriminant like <code>{"{ action: 'login' as const }"}</code> so TS narrows correctly.</li>
-		<li>Only one action runs per submit — the rest are untouched.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Named actions let a single page host multiple independent forms, each routed to its own server-side handler. You define them as keys on the <code>actions</code> object in <code>+page.server.ts</code>, and target them from the form via <code>action="?/name"</code>. SvelteKit dispatches based on the URL search parameter, so only one action ever runs per submission.</p>
+	<p class="prose">The key to making TypeScript work smoothly with multiple actions is returning a discriminant property like <code>action: 'login' as const</code>. This turns <code>ActionData</code> into a discriminated union, letting you narrow the type in your template with a simple equality check. Without the discriminant, TypeScript cannot tell which action's shape you are dealing with.</p>
+	<p class="prose">Because the <code>form</code> prop holds only the most recent action result, each form on the page should derive its own view of the data. Using <code>$derived</code> to filter by the discriminant keeps each form isolated, so a login error never accidentally renders in the register form.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-10/10-5-use-enhance">10.5 — use:enhance</a> — upgrade native forms to AJAX without losing progressive enhancement.</p>
 </section>
 
 <style>
@@ -189,20 +196,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.forms {
 		display: flex;
 		flex-direction: column;

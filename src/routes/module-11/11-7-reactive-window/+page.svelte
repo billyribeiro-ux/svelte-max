@@ -173,18 +173,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>{'{#if innerWidth}'}</code> guard and access <code>innerWidth.current</code> directly.</strong> During SSR the value is <code>undefined</code>, so <code>.current</code> throws a runtime error on the server because you are reading a property of undefined.</li>
+		<li><strong>Try using <code>window.innerWidth</code> directly instead of the reactive import.</strong> It works once but never updates when you resize the browser because there is no event listener or reactivity wiring. You would need to add your own resize listener.</li>
+		<li><strong>Access <code>scrollY.current</code> without the <code>?? 0</code> fallback.</strong> The value may be <code>undefined</code> on first render before the browser reports a scroll position, causing <code>Math.round(undefined)</code> to display <code>NaN</code>.</li>
+		<li><strong>Toggle your browser to offline mode in DevTools and watch the <code>online</code> value.</strong> It switches to "No" in real time without any manual listener, proving that Svelte handles the connectivity events internally.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>svelte/reactivity/window</code> exposes reactive objects like <code>innerWidth</code> and <code>scrollY</code> with a <code>.current</code> property.</li>
-		<li>These values are <code>undefined</code> during SSR, so you must guard access with <code>{'{#if innerWidth}'}</code>.</li>
-		<li>No manual event listeners are needed; Svelte manages resize, scroll, and online/offline tracking internally.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Svelte's <code>svelte/reactivity/window</code> module exposes browser globals as reactive objects with a <code>.current</code> property. Each object automatically subscribes to the appropriate browser event (resize, scroll, online/offline) and updates its value, so your template stays in sync without manual event listeners.</p>
+	<p class="prose">Because there is no browser window during server-side rendering, all reactive window values are <code>undefined</code> on the server. You must guard access with an <code>{'{#if innerWidth}'}</code> block or similar conditional to prevent runtime errors during SSR and provide a sensible fallback for the initial server-rendered HTML.</p>
+	<p class="prose">These reactive values are perfect for responsive logic (breakpoint detection), scroll-based animations (parallax, sticky headers), and connectivity-aware UI (offline banners). They replace the common pattern of writing <code>$effect</code> hooks with <code>addEventListener</code> and cleanup, giving you cleaner, more declarative code.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-8-tanstack-table">11.8 — Basic TanStack Table</a> — build a headless, sortable data table.</p>
 </section>
 
 <style>
@@ -192,8 +200,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	pre {

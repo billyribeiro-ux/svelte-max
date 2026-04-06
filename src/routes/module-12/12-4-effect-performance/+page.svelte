@@ -256,18 +256,26 @@ $effect(() => {
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the cleanup function from a debounced <code>$effect</code>.</strong> Typing rapidly fires the API call on every keystroke instead of waiting for the user to pause, flooding the network with requests and potentially causing race conditions.</li>
+		<li><strong>Remove <code>untrack()</code> around a reactive value you only want to read once.</strong> The effect now re-runs whenever that value changes too, causing unexpected side effects and potentially infinite loops if the effect writes to the same value it reads.</li>
+		<li><strong>Add <code>$inspect.trace()</code> inside an effect and change two dependencies simultaneously.</strong> The trace logs show exactly which dependency triggered each re-run, helping you identify unnecessary effect executions in complex reactive graphs.</li>
+		<li><strong>Write to a <code>$state</code> variable inside an <code>$effect</code> that reads it.</strong> Svelte detects the circular dependency and throws an infinite loop error, proving why effects should avoid writing to the same state they read.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Return a cleanup function from <code>$effect</code> to debounce expensive operations like API calls.</li>
-		<li><code>untrack()</code> reads a reactive value inside an effect without adding it as a dependency.</li>
-		<li><code>$inspect.trace()</code> logs which dependency triggered a re-run, aiding performance debugging.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The cleanup function returned by <code>$effect</code> is your primary tool for debouncing expensive operations. When an effect's dependencies change, Svelte calls the previous cleanup before running the new effect. By clearing a <code>setTimeout</code> in the cleanup, you ensure the expensive work only fires after the user stops changing input for a specified delay.</p>
+	<p class="prose"><code>untrack()</code> lets you read a reactive value inside an effect without registering it as a dependency. This is essential when you need a value for context (like a configuration setting) but do not want the effect to re-run when that value changes. It gives you fine-grained control over the reactive dependency graph.</p>
+	<p class="prose"><code>$inspect.trace()</code> is a dev-mode debugging tool that logs which specific dependency triggered an effect re-run. When effects fire more often than expected, trace identifies the culprit, letting you add <code>untrack()</code> or restructure your reactive code to eliminate unnecessary work.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-5-memoization">12.5 — Memoization</a> — cache expensive computations with <code>$derived.by()</code>.</p>
 </section>
 
 <style>
@@ -275,7 +283,9 @@ $effect(() => {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

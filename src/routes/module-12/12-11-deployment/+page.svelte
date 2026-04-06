@@ -260,18 +260,26 @@ npm run preview
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the adapter from <code>svelte.config.js</code> and run <code>pnpm build</code>.</strong> The build fails because SvelteKit does not know how to package the output without an adapter telling it the target platform.</li>
+		<li><strong>Use <code>adapter-static</code> on a project with server-side <code>load</code> functions.</strong> The build fails for any route that has <code>+page.server.ts</code> because static adapters cannot run server code at request time.</li>
+		<li><strong>Skip <code>pnpm preview</code> and deploy directly after <code>pnpm build</code>.</strong> You miss SSR-only bugs, missing environment variables, and runtime errors that only appear in the production build, leading to broken deployments.</li>
+		<li><strong>Set an environment variable without the <code>PUBLIC_</code> prefix and try to read it on the client.</strong> SvelteKit refuses to expose it, so the variable is <code>undefined</code> in the browser, causing client-side features to break.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>SvelteKit adapters transform your app for different targets: Node.js, Vercel, Cloudflare, or static hosting.</li>
-		<li>Environment variables use <code>$env/static/private</code> and <code>$env/static/public</code> with a <code>PUBLIC_</code> prefix for client-safe values.</li>
-		<li>Always <code>npm run preview</code> to test the production build locally before deploying.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit adapters are the bridge between your application and the deployment target. Each adapter transforms the build output for a specific platform: <code>adapter-node</code> for traditional Node.js servers, <code>adapter-vercel</code> and <code>adapter-cloudflare</code> for serverless platforms, and <code>adapter-static</code> for static hosting. The adapter you choose determines what features are available at runtime.</p>
+	<p class="prose">Environment variables in production use the same <code>$env</code> module system as development. Private variables from <code>$env/static/private</code> are inlined at build time and never reach the client, while public variables must be prefixed with <code>PUBLIC_</code> to be accessible in browser code. This compile-time enforcement prevents accidental secret leakage.</p>
+	<p class="prose">Always run <code>pnpm preview</code> to test the production build locally before deploying. The preview server runs the exact same code that will be deployed, so it catches SSR errors, missing environment variables, and adapter-specific issues that do not appear during development.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-12-service-worker">12.12 — Service workers</a> — add offline support and caching strategies.</p>
 </section>
 
 <style>
@@ -279,7 +287,9 @@ npm run preview
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

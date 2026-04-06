@@ -217,18 +217,26 @@
 	</p>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Replace <code>$derived.by()</code> with a plain function call in the template.</strong> The expensive computation runs on every render cycle, not just when its inputs change, causing visible lag when unrelated state updates.</li>
+		<li><strong>Change an unrelated <code>$state</code> variable and check if the derived computation re-runs.</strong> It does not, proving that Svelte only re-computes when the specific tracked dependencies change, not on every state change.</li>
+		<li><strong>Read a <code>$state</code> variable inside <code>$derived.by()</code> that you did not intend to track.</strong> The derived value now re-computes whenever that variable changes too, because Svelte automatically tracks every reactive read inside the callback.</li>
+		<li><strong>Wrap the accidental dependency in <code>untrack()</code>.</strong> The derived value no longer re-computes when that variable changes, proving that <code>untrack()</code> excludes specific reads from the dependency graph.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$derived.by()</code> caches expensive computations and only re-runs when tracked inputs change.</li>
-		<li>Changing an unrelated <code>$state</code> value does not trigger re-computation of a derived value.</li>
-		<li>Svelte tracks dependencies automatically, unlike React's <code>useMemo</code> which requires a manual dependency array.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>$derived.by()</code> is Svelte's memoization primitive. It takes a callback that performs an expensive computation, caches the result, and only re-runs when the reactive values read inside the callback change. This is the equivalent of React's <code>useMemo</code>, but without a manual dependency array because Svelte tracks dependencies automatically.</p>
+	<p class="prose">The key insight is that Svelte's reactivity system is fine-grained: changing an unrelated <code>$state</code> variable does not trigger re-computation of a derived value. Only the specific values read inside the <code>$derived.by()</code> callback are tracked, so the expensive work happens as rarely as possible.</p>
+	<p class="prose">If a derived computation accidentally tracks a dependency you do not want, wrap the read in <code>untrack()</code> to exclude it. This gives you precise control over when recomputations happen, letting you balance correctness with performance in complex reactive graphs.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-6-reusable-actions">12.6 — Reusable actions</a> — attach reusable DOM behaviour to elements.</p>
 </section>
 
 <style>
@@ -236,8 +244,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

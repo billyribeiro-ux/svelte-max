@@ -214,18 +214,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Replace the <code>Symbol('theme')</code> key with a plain string <code>'theme'</code> in one factory but not the other.</strong> The getter returns <code>undefined</code> because the keys no longer match, showing how Symbol guarantees uniqueness.</li>
+		<li><strong>Remove the getter syntax from the context value (use a plain object instead of one with <code>get mode()</code>).</strong> The grandchild component reads the initial value but never sees updates when you toggle, proving that reactive context requires getter-based objects.</li>
+		<li><strong>Call <code>ThemeContext.get()</code> in a module-level <code>.ts</code> file outside the component tree.</strong> It returns <code>undefined</code> because <code>getContext</code> only works within Svelte's component initialization phase, not in arbitrary modules.</li>
+		<li><strong>Create two different factories that both use <code>Symbol('theme')</code> and try to share the context between them.</strong> Each <code>Symbol()</code> call creates a unique key even with the same description, so the second factory cannot read the first factory's context.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>A factory function with a <code>Symbol</code> key creates collision-proof, type-safe context accessors.</li>
-		<li>Context values can be reactive objects with getters so descendants see live updates.</li>
-		<li><code>setContext</code> runs during component initialization; <code>getContext</code> reads from any descendant.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The typed context pattern wraps <code>setContext</code> and <code>getContext</code> in a factory function that owns a <code>Symbol</code> key. Because every <code>Symbol()</code> call produces a globally unique value, two factories can never accidentally collide, even if they share the same human-readable description.</p>
+	<p class="prose">Making the context value reactive requires passing an object with getter properties rather than plain values. Getters are evaluated lazily at read time, so when a descendant accesses <code>theme.mode</code> inside the template, Svelte tracks the underlying <code>$state</code> variable and re-renders when it changes.</p>
+	<p class="prose">This pattern is compatible with all Svelte 5.x versions and gives you full control over the key strategy and TypeScript typing. Svelte 5.40 later introduced a built-in <code>createContext</code> helper that works similarly, but understanding the manual approach equips you to customise context behaviour for advanced use cases.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-3-svelte-ts">11.3 — Universal Reactive State</a> — use <code>$state</code> at the module level in <code>.svelte.ts</code> files.</p>
 </section>
 
 <style>
@@ -233,8 +241,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	pre {

@@ -278,18 +278,26 @@ self.addEventListener('fetch', (event) => {
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>version</code> from your cache name.</strong> After a deploy, the old service worker serves stale assets from the old cache because there is no way to distinguish old and new caches, and the user sees the previous version of your app.</li>
+		<li><strong>Cache HTML pages with a cache-first strategy.</strong> After a deploy, users keep seeing the old HTML until the service worker updates and the cache is purged, which can take until the next page refresh, breaking navigation to new routes.</li>
+		<li><strong>Forget to delete old caches in the <code>activate</code> event.</strong> Storage fills up over multiple deploys because each version creates a new cache but never cleans up the old ones, eventually hitting the browser's storage quota.</li>
+		<li><strong>Open the Application tab in DevTools and unregister the service worker.</strong> The page reverts to normal fetch behaviour with no caching, proving that the service worker is the only thing providing offline support and cache-first loading.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>SvelteKit auto-registers a service worker when <code>src/service-worker.js</code> exists.</li>
-		<li>The <code>$service-worker</code> module exposes <code>build</code>, <code>files</code>, and <code>version</code> for building caching strategies.</li>
-		<li>Use cache-first for static assets and network-first for API calls to balance freshness with offline support.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit automatically registers a service worker when a <code>src/service-worker.js</code> (or <code>.ts</code>) file exists. The <code>$service-worker</code> module provides <code>build</code> (your compiled app assets), <code>files</code> (static files), and <code>version</code> (a build-unique hash), giving you everything you need to build a caching strategy without hardcoding file lists.</p>
+	<p class="prose">The two fundamental caching strategies are cache-first and network-first. Cache-first serves from the cache and only falls back to the network if the cache misses, making it ideal for static assets like JavaScript, CSS, and images that are content-hashed and immutable. Network-first tries the network and falls back to the cache on failure, making it right for API calls and HTML where freshness matters more than speed.</p>
+	<p class="prose">The service worker lifecycle (install, activate, fetch) requires careful cache management. During install, pre-cache your app shell assets. During activate, delete old caches from previous versions to free storage. Always include <code>version</code> in your cache name so each deploy creates a clean cache that does not serve stale content from a previous build.</p>
+	<p class="next"><strong>Congratulations!</strong> You have completed all 12 modules. Build something extraordinary with Svelte and SvelteKit.</p>
 </section>
 
 <style>
@@ -297,8 +305,9 @@ self.addEventListener('fetch', (event) => {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

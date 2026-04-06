@@ -263,18 +263,26 @@ const table = createSvelteTable(options);</code></pre>
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>getCoreRowModel: getCoreRowModel()</code> from the options.</strong> The table instance throws immediately because the core row model is required for any rendering to work, proving it is the mandatory foundation for all other row models.</li>
+		<li><strong>Remove <code>getSortedRowModel</code> but keep the sorting state and click handlers.</strong> Clicking a header still toggles the sorting state internally, but the rows never visually reorder because there is no sorted row model to apply the sort.</li>
+		<li><strong>Use <code>flexRender</code> output directly in the template without the <code>typeof</code> check.</strong> When the header is a plain string, Svelte tries to instantiate it as a component and throws an error because strings are not valid Svelte components.</li>
+		<li><strong>Misspell an <code>accessorKey</code> in a column definition (e.g. <code>'namee'</code> instead of <code>'name'</code>).</strong> The column renders empty cells because the accessor cannot find the property on the data objects, but no error is thrown at runtime.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>createSvelteTable</code> accepts a reactive <code>$state</code> options object and returns a headless table instance.</li>
-		<li><code>flexRender</code> bridges TanStack's cell renderers to Svelte snippets or strings.</li>
-		<li>Column definitions describe data access via <code>accessorKey</code>, and sorting is opt-in via <code>getSortedRowModel</code>.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">TanStack Table is a headless library: it manages data operations like sorting and filtering, but you own every line of HTML and CSS. In Svelte 5 you create a table with <code>createSvelteTable</code>, passing a reactive <code>$state</code> options object. The returned store provides methods to iterate over header groups, rows, and cells.</p>
+	<p class="prose"><code>flexRender</code> is the bridge between TanStack's renderer system and Svelte's template model. It returns either a plain string or a Svelte snippet, so you must check <code>typeof Rendered === 'string'</code> before deciding whether to render it as text or instantiate it as a component.</p>
+	<p class="prose">Column definitions describe how to access data (<code>accessorKey</code>), what to display in the header, and optional sizing. Sorting is opt-in: you add <code>getSortedRowModel()</code> to the options and wire up a <code>sorting</code> state with its <code>onSortingChange</code> callback. This composable architecture means you only pay for the features you use.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-9-tanstack-features">11.9 — Sorting, Filtering, Pagination</a> — layer more features onto the headless table.</p>
 </section>
 
 <style>
@@ -282,8 +290,9 @@ const table = createSvelteTable(options);</code></pre>
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	pre {

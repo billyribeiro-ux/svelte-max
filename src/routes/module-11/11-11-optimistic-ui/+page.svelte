@@ -277,18 +277,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>const previousLikes = likes</code> snapshot before the optimistic update.</strong> When the API fails, the rollback sets <code>likes</code> to <code>undefined</code> because there is no saved value to restore, and the counter displays <code>NaN</code>.</li>
+		<li><strong>Remove the <code>if (status === 'pending') return</code> guard at the top of <code>toggleLike()</code>.</strong> Clicking rapidly while a request is in flight fires multiple concurrent API calls, each saving a different "previous" value, and rollbacks corrupt the counter with stale data.</li>
+		<li><strong>Remove the optimistic update and only update after the API responds.</strong> The like count does not change until after the 1-second delay, making the app feel sluggish compared to the instant feedback of the optimistic version.</li>
+		<li><strong>Set the fake API to always fail (<code>resolve(false)</code>).</strong> Every click briefly shows the new count then snaps back to the old one, creating a jarring yo-yo effect that proves optimistic UI must be paired with reliable APIs or graceful error handling.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Save the previous state before an optimistic update so you can roll back on API failure.</li>
-		<li>A state machine (<code>idle | pending | success | rollback</code>) cleanly tracks async progress.</li>
-		<li>Disabling the UI during pending prevents race conditions from concurrent clicks.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Optimistic UI is the pattern of updating the interface immediately before the server confirms the change. The user sees instant feedback, and the app only rolls back if the server rejects the mutation. The key requirement is saving a snapshot of the previous state before applying the optimistic update, so you have something to restore on failure.</p>
+	<p class="prose">A state machine with states like <code>idle</code>, <code>pending</code>, <code>success</code>, and <code>rollback</code> cleanly tracks the progress of an async operation. Each state maps to specific UI behaviour: disabling the button during pending, showing a success message, or displaying a rollback warning. This eliminates the boolean soup of multiple <code>isLoading</code> and <code>hasError</code> flags.</p>
+	<p class="prose">Handling concurrent clicks is critical. The simplest approach is to disable the UI during the pending state, preventing race conditions where multiple in-flight requests each capture different "previous" values. More advanced patterns include request queuing or aborting the previous request with an <code>AbortController</code>.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-1-core-web-vitals">12.1 — Core Web Vitals</a> — measure and optimise real-world performance.</p>
 </section>
 
 <style>
@@ -296,8 +304,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	pre {

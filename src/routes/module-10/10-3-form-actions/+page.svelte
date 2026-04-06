@@ -125,19 +125,26 @@
 	</p>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>method="POST"</code> attribute from the <code>&lt;form&gt;</code> tag.</strong> The form submits as a GET request, SvelteKit finds no matching GET action, and you get a 405 error because form actions only respond to POST.</li>
+		<li><strong>Change <code>fail(400, ...)</code> to a plain <code>return</code> with the same error shape.</strong> The page still renders the data, but SvelteKit treats it as a success response and resets the form fields, so the user loses their partially-entered input.</li>
+		<li><strong>Try accessing <code>form.name</code> directly without the optional chain <code>form?.name</code>.</strong> On the first page load <code>form</code> is <code>null</code> because no action has run yet, so your template throws a runtime error trying to read a property of null.</li>
+		<li><strong>Disable JavaScript in DevTools and submit the form.</strong> It still works because SvelteKit processes the action server-side and returns a full page reload with the updated <code>form</code> prop, proving progressive enhancement is built in.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Export <code>actions</code> from <code>+page.server.ts</code>; the <code>default</code> action handles unnamed submits.</li>
-		<li>Read fields with <code>await request.formData()</code>.</li>
-		<li>Return <code>fail(400, {'{...}'})</code> for validation errors; return a plain object on success.</li>
-		<li>Access the result on the page via the <code>form</code> prop, typed as <code>ActionData</code>.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Form actions are SvelteKit's answer to the age-old question of how to handle mutations. They live in <code>+page.server.ts</code> as an <code>actions</code> export, and the default action runs whenever a <code>&lt;form method="POST"&gt;</code> on that page is submitted. The browser sends a native form submission, which means it works even with JavaScript disabled.</p>
+	<p class="prose">Inside the action you call <code>await request.formData()</code> to read the fields, validate them, and either return <code>fail(status, data)</code> for errors or return a plain success object. The returned data becomes the <code>form</code> prop on the page, fully typed as <code>ActionData</code>, so your template can branch on success or failure with full type safety.</p>
+	<p class="prose">The beauty of this pattern is progressive enhancement by default. Without any client-side JavaScript the form does a full round-trip POST and page reload. Add <code>use:enhance</code> later and the same form upgrades to an AJAX-style submit with no structural changes to your code.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-10/10-4-named-actions">10.4 — Named actions</a> — handle multiple forms on a single page.</p>
 </section>
 
 <style>
@@ -177,20 +184,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	form {
 		display: flex;
 		flex-direction: column;

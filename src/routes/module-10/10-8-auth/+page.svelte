@@ -153,19 +153,26 @@
 	</p>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>httpOnly: true</code> from the <code>cookies.set()</code> call.</strong> Now run <code>document.cookie</code> in the browser console and you can see the session token, proving that without <code>httpOnly</code> any XSS script could steal the session.</li>
+		<li><strong>Set <code>path</code> to the current route instead of <code>'/'</code>.</strong> The cookie is scoped to this lesson's URL, so navigating to another page and back loses the session because the browser does not send the cookie outside that path.</li>
+		<li><strong>Delete the server-side session map entry but keep the cookie.</strong> The cookie still arrives on the next request, but the server cannot find a matching session, so it treats the user as logged out, proving the server map is the source of truth.</li>
+		<li><strong>Store the user object directly in the cookie value instead of an opaque token.</strong> The data is visible in DevTools Application tab, and a user could forge a cookie with any email, bypassing authentication entirely because the server trusts the cookie contents.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Session cookies hold opaque tokens, not user data.</li>
-		<li>The server-side map is the source of truth — losing it logs everyone out.</li>
-		<li>Named actions <code>?/login</code> and <code>?/logout</code> let one page own both flows.</li>
-		<li>With no <code>use:enhance</code>, the page still works — the form does a full POST and reload.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Cookie-based authentication follows a simple flow: on login the server generates a random opaque token, stores a mapping from that token to the user record, and sets the token as an <code>httpOnly</code> cookie. On every subsequent request the server reads the cookie, looks up the token, and populates <code>locals.user</code> so that load functions and actions can check who is making the request.</p>
+	<p class="prose">The cookie attributes are your security controls. <code>httpOnly</code> prevents JavaScript from reading the token (mitigating XSS theft), <code>sameSite: 'lax'</code> blocks cross-site request forgery, <code>secure</code> ensures the cookie only travels over HTTPS, and <code>path: '/'</code> makes the cookie available to every route in your application.</p>
+	<p class="prose">In production you would move the session lookup into <code>hooks.server.ts</code> so every request is authenticated before any load function or action runs. The session store would be a database or Redis rather than an in-memory map, and passwords would be hashed with bcrypt or argon2 rather than stored in plaintext.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-10/10-9-file-uploads">10.9 — File uploads</a> — handle multipart form data on the server.</p>
 </section>
 
 <style>
@@ -174,8 +181,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.stack { display: flex; flex-direction: column; gap: var(--space-md); }
 	.field { display: flex; flex-direction: column; gap: var(--space-xs); }
 	.field > span { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 600; }

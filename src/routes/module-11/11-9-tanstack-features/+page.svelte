@@ -319,18 +319,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>getFilteredRowModel()</code> from the options but keep the search input.</strong> Typing in the search box updates the <code>globalFilter</code> state, but the table ignores it and shows all rows because there is no filter row model to apply the filter.</li>
+		<li><strong>Set <code>pageSize</code> to 0 in the initial pagination state.</strong> The table shows no rows and pagination controls break because a page size of zero means every page is empty, demonstrating that page size must be at least 1.</li>
+		<li><strong>Remove the <code>onGlobalFilterChange</code> callback but keep the bind on the input.</strong> The input still visually updates, but the table's internal filter state never changes because TanStack Table relies on the callback to synchronise external state with its internal model.</li>
+		<li><strong>Add 1000 rows to the data array and observe client-side pagination performance.</strong> All data is loaded into memory at once, so filtering is fast but initial load is heavy. This is where <code>manualPagination: true</code> would delegate slicing to the server.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>getFilteredRowModel</code> and <code>globalFilter</code> add cross-column search with minimal code.</li>
-		<li><code>getPaginationRowModel</code> slices data into pages controlled by <code>previousPage()</code> and <code>nextPage()</code>.</li>
-		<li>For large datasets, <code>manualPagination: true</code> delegates slicing to the server via your <code>load()</code> function.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">TanStack Table's architecture is based on composable row models. Each feature (sorting, filtering, pagination) is a separate function you add to the options, and they chain together: raw data flows through the filter model, then the sort model, then the pagination model. Removing any model from the chain disables that feature without affecting the others.</p>
+	<p class="prose">The <code>globalFilter</code> state searches across all columns at once, driven by <code>getFilteredRowModel()</code>. Pagination is controlled by <code>getPaginationRowModel()</code> with <code>initialState.pagination</code> setting the page size and starting index. Navigation is handled by <code>previousPage()</code>, <code>nextPage()</code>, and boundary checks via <code>getCanPreviousPage()</code> and <code>getCanNextPage()</code>.</p>
+	<p class="prose">For datasets with thousands of rows, client-side pagination loads everything into memory upfront. The alternative is <code>manualPagination: true</code>, which tells TanStack Table not to slice the data itself. Instead, your <code>load()</code> function accepts a page parameter, fetches only that page from the API, and passes the slice to the table along with the total row count.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-10-tanstack-typed">11.10 — Typed Table with Visibility Toggles</a> — add column visibility and row selection with full type safety.</p>
 </section>
 
 <style>
@@ -338,8 +346,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	.toolbar {

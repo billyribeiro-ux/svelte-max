@@ -265,18 +265,26 @@ it('shows loading then data', async () => {
 	{/if}
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the Svelte plugin from <code>vitest.config.ts</code>.</strong> Tests that import <code>.svelte.ts</code> files fail because Vitest cannot transform runes like <code>$state</code> without the Svelte compiler in the pipeline.</li>
+		<li><strong>Forget to reset mocks between tests (remove <code>vi.restoreAllMocks()</code>).</strong> A mock set up in one test leaks into the next, causing false positives or confusing failures because the test environment is not clean.</li>
+		<li><strong>Test a reactive getter without calling it as a function.</strong> You get the function reference instead of the value, so assertions like <code>expect(getCount).toBe(0)</code> fail because you are comparing a function to a number.</li>
+		<li><strong>Mock <code>fetch</code> but forget to make it return a proper <code>Response</code> object with <code>.json()</code>.</strong> The <code>load</code> function crashes when it calls <code>res.json()</code> because the mock returns a plain object instead of a Response.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Vitest integrates with Vite's transform pipeline, so <code>.svelte.ts</code> runes and TypeScript work without extra config.</li>
-		<li>Test reactive stores by calling their methods and asserting on getter values directly.</li>
-		<li>Mock <code>fetch</code> with <code>vi.fn()</code> to unit-test <code>load</code> functions without a running server.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Vitest integrates seamlessly with Vite's transform pipeline, which means <code>.svelte.ts</code> files with runes and TypeScript work without any extra configuration beyond adding the Svelte plugin. Tests run in the same environment as your development server, so the reactive primitives behave identically in tests and in the browser.</p>
+	<p class="prose">Testing reactive stores follows a simple pattern: call the store's methods (like <code>increment()</code> or <code>reset()</code>) and assert on the getter values directly. Because runes are compiled to plain JavaScript by the Svelte plugin, you can call <code>getCount()</code> and compare the result without any special test harness or subscription.</p>
+	<p class="prose">For <code>load</code> functions, mock <code>fetch</code> with <code>vi.fn()</code> to control the response shape without a running server. This lets you test error handling, empty states, and edge cases by returning different mock responses. Always restore mocks between tests to prevent state leakage across test cases.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-10-playwright-e2e">12.10 — Playwright E2E tests</a> — test your app in real browsers.</p>
 </section>
 
 <style>
@@ -284,8 +292,9 @@ it('shows loading then data', async () => {
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

@@ -207,18 +207,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Import a heavy component statically instead of dynamically.</strong> Open the Network tab and notice the component's JavaScript downloads on page load even if you never interact with it, inflating the initial bundle size.</li>
+		<li><strong>Remove the <code>{'{#await}'}</code> block around a dynamic import and use <code>await</code> at the top level.</strong> The entire page waits for the component to download before rendering anything, defeating the purpose of lazy loading.</li>
+		<li><strong>Add <code>data-sveltekit-preload-data="off"</code> to a navigation link.</strong> Hovering the link no longer prefetches the route data, so clicking it has a noticeable delay as the browser fetches the JavaScript and data on demand.</li>
+		<li><strong>Run <code>pnpm build</code> and inspect the output chunks.</strong> Each route gets its own chunk file, proving that SvelteKit's automatic code-splitting creates separate bundles per page without any manual configuration.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>SvelteKit automatically code-splits at every <code>+page.svelte</code> boundary with zero configuration.</li>
-		<li>Dynamic <code>import()</code> inside <code>{'{#await}'}</code> defers heavy components (charts, editors) until needed.</li>
-		<li><code>data-sveltekit-preload-data</code> prefetches route data on link hover for near-instant navigation.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SvelteKit automatically code-splits at every <code>+page.svelte</code> boundary, so each route only downloads the JavaScript it needs. This happens at build time with zero configuration: Vite analyses the import graph and creates separate chunks for each route, shared utilities, and third-party libraries.</p>
+	<p class="prose">For heavy components like charts, rich text editors, or map widgets, dynamic <code>import()</code> inside an <code>{'{#await}'}</code> block defers the download until the user actually needs the component. This keeps the initial page load fast while loading expensive features on demand with a loading spinner as feedback.</p>
+	<p class="prose">SvelteKit's <code>data-sveltekit-preload-data</code> attribute takes this further by prefetching route data on link hover, so by the time the user clicks, the next page's data is already in memory. Combined with automatic code-splitting and dynamic imports, this creates the illusion of instant navigation even for large applications.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-4-effect-performance">12.4 — Effect performance</a> — debounce, untrack, and inspect your reactive effects.</p>
 </section>
 
 <style>
@@ -226,8 +234,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 

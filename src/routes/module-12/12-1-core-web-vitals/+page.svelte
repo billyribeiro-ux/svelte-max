@@ -250,18 +250,26 @@
 	</p>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Add a 3-second <code>await new Promise(r => setTimeout(r, 3000))</code> in your <code>load()</code> function.</strong> LCP jumps because the server delays the HTML response, proving that slow data fetching directly harms perceived loading speed.</li>
+		<li><strong>Remove <code>width</code> and <code>height</code> attributes from an image above the fold.</strong> The page content shifts down once the image loads, causing a visible layout jump that worsens CLS.</li>
+		<li><strong>Add a synchronous <code>for</code> loop that runs 100 million iterations in a click handler.</strong> The browser freezes during the loop and the click takes seconds to respond, demonstrating exactly what INP measures.</li>
+		<li><strong>Disable JavaScript in DevTools and reload the page.</strong> With SSR enabled, the page still renders its content because SvelteKit sends HTML from the server, proving that SSR directly improves LCP even without client-side JS.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>LCP, CLS, and INP are the three Core Web Vitals that measure loading, stability, and responsiveness.</li>
-		<li>Svelte's compile-time approach eliminates virtual DOM overhead, directly improving INP and LCP.</li>
-		<li>SvelteKit's SSR, automatic code-splitting, and streaming further boost all three metrics.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Core Web Vitals are three metrics that Google uses to measure real-world user experience: LCP (Largest Contentful Paint) measures loading speed, CLS (Cumulative Layout Shift) measures visual stability, and INP (Interaction to Next Paint) measures responsiveness. All three directly affect search ranking and user satisfaction.</p>
+	<p class="prose">Svelte's compiler-first architecture gives you a head start on these metrics. Because Svelte compiles components to direct DOM operations at build time, there is no virtual DOM diffing at runtime, which keeps INP low. The small bundle size means less JavaScript to download and parse, directly improving LCP.</p>
+	<p class="prose">SvelteKit layers additional performance features on top: server-side rendering sends real HTML on the first response (improving LCP), automatic code-splitting ensures each page loads only the JavaScript it needs, and streaming lets the browser start painting before all data has resolved. Together, these features make good Core Web Vitals the default rather than an afterthought.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-12/12-2-image-optimization">12.2 — Image optimization</a> — prevent layout shift and speed up image loading.</p>
 </section>
 
 <style>
@@ -269,8 +277,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	.cards {

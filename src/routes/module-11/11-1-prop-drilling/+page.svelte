@@ -193,18 +193,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove one intermediate prop pass (e.g. skip Level 2) in the drilling example.</strong> The Level 3 component can no longer read <code>userName</code>, proving that every link in the prop chain must be maintained or the data disappears.</li>
+		<li><strong>Call <code>getContext</code> with a plain string key like <code>'theme'</code> from a component that is not a descendant of the provider.</strong> The function returns <code>undefined</code> and your template crashes trying to read <code>.current</code> on it, showing that context is strictly tree-scoped.</li>
+		<li><strong>Pass a plain value (not a getter-based object) to <code>setContext</code> and then mutate the original variable.</strong> The context consumer never sees the update because context captured the value at set time, not a reactive reference.</li>
+		<li><strong>Try calling <code>setContext</code> inside an event handler instead of at the top level of the script.</strong> Svelte throws an error because <code>setContext</code> must be called during component initialisation, not inside callbacks or lifecycle hooks.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Prop drilling passes data through intermediate components that do not use it, creating fragile code.</li>
-		<li><code>setContext</code> and <code>getContext</code> let any descendant read shared state without props.</li>
-		<li>Context is scoped to the component subtree, preventing leakage to unrelated parts of the app.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Prop drilling forces every intermediate component in a tree to accept and forward data it does not use, creating tight coupling between layers. Adding or renaming a prop requires changes at every level, making refactoring expensive and error-prone in deep component hierarchies.</p>
+	<p class="prose">Svelte's <code>setContext</code> and <code>getContext</code> solve this by letting a parent inject a value into the component tree and any descendant read it directly. The intermediate components remain blissfully unaware of the data flowing past them, keeping their interfaces clean and focused.</p>
+	<p class="prose">Context is scoped to the component subtree rooted at the provider, which means it cannot leak to siblings or cousins. For reactive context values, pass an object with getters so descendants always read the latest state rather than a stale snapshot captured at initialization time.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-2-context">11.2 — Typed Context Pattern</a> — build collision-proof, type-safe context with Symbol keys.</p>
 </section>
 
 <style>
@@ -212,8 +220,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	.level {

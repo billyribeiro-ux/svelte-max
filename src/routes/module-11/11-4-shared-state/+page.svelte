@@ -138,18 +138,26 @@ const user = getContext&lt;User&gt;('user');</code></pre>
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Navigate to lesson 11.3, increment the counter, then come back here.</strong> The counter value persists because both pages import the same module singleton, proving that module state survives client-side navigations.</li>
+		<li><strong>Store a user object in module-level <code>$state</code> and render it during SSR.</strong> Open two browser tabs and log in as different users. The server shares one module instance across all requests, so User A's data can leak into User B's response.</li>
+		<li><strong>Replace the module-level state with <code>setContext</code> in <code>+layout.svelte</code>.</strong> Now each request creates a fresh context, and the SSR leak disappears because context is scoped to the component tree, not the module cache.</li>
+		<li><strong>Do a full page reload (not client-side navigation) after incrementing the counter.</strong> The value resets to zero because a full reload creates a new JavaScript execution context, destroying all module-level state.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Module-level <code>.svelte.ts</code> state persists across client-side navigations because JS modules are cached.</li>
-		<li>Server-side module state is shared across all requests, creating a critical data-leak risk.</li>
-		<li>Use context for per-user/per-request state, and module state only for client-only globals.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Module-level state in <code>.svelte.ts</code> files lives in the JavaScript module cache, which persists for the lifetime of the client-side application. This means any page that imports the same module sees the same state, making it ideal for global settings, caches, and UI preferences that are not user-specific.</p>
+	<p class="prose">The critical caveat is SSR. On the server, Node.js caches modules across all requests, so module-level state is shared between every user hitting your application. Storing user-specific data like authentication tokens or preferences in module state creates a data-leak vulnerability where one user's information bleeds into another user's server-rendered response.</p>
+	<p class="prose">The rule of thumb is clear: use module state for client-only globals that are not user-specific, use context for per-user or per-request state that must be SSR-safe, and use URL search parameters for state that should be bookmarkable and shareable.</p>
+	<p class="next"><strong>Next:</strong> <a href="/module-11/11-5-reactive-classes">11.5 — Reactive Classes</a> — use <code>$state</code> on class fields for encapsulated reactive state.</p>
 </section>
 
 <style>
@@ -157,8 +165,9 @@ const user = getContext&lt;User&gt;('user');</code></pre>
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	pre {

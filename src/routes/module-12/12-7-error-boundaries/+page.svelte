@@ -27,9 +27,11 @@
 		asyncDone = false;
 	}
 
-	if (crashTriggered) {
-		throw new Error('Widget crashed intentionally!');
-	}
+	$effect(() => {
+		if (crashTriggered) {
+			throw new Error('Widget crashed intentionally!');
+		}
+	});
 </script>
 
 <section class="page">

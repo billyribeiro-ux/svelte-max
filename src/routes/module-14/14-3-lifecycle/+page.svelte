@@ -1,5 +1,22 @@
 <script lang="ts">
 	let showShadowNone = $state(false);
+
+	const formUsageExample = `<!-- Usage in a form -->
+<form>
+  <my-input value="hello" required></my-input>
+  <button type="submit">Submit</button>
+</form>
+
+\u003cscript\u003e
+  const form = document.querySelector('form');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(e.target instanceof HTMLFormElement ? e.target : undefined);
+      console.log('Form value:', data.get('my-input'));
+    });
+  }
+\u003c/script\u003e`;
 </script>
 
 <section class="page">
@@ -123,19 +140,7 @@
 		pseudo-class — just like a native <code>&lt;input&gt;</code>.
 	</p>
 
-	<pre>{`<!-- Usage in a form -->
-<form>
-  <my-input value="hello" required></my-input>
-  <button type="submit">Submit</button>
-</form>
-
-<script>
-  document.querySelector('form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const data = new FormData(e.target);
-    console.log('Form value:', data.get('my-input'));
-  });
-</script>`}</pre>
+	<pre><code>{formUsageExample}</code></pre>
 </section>
 
 <style>

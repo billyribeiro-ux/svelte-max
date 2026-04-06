@@ -8,40 +8,11 @@
 	function clearLog() {
 		eventLog = [];
 	}
-</script>
 
-<section class="page">
-	<h1>14.4 — The $host() Rune</h1>
+	const stepperExample = `<!-- MyStepper.svelte -->
+\u003csvelte:options customElement="my-stepper" /\u003e
 
-	<p class="concept">
-		The <strong><code>$host()</code></strong> rune gives you a reference to the custom element's
-		host node from inside the component. Its primary use case is <strong>dispatching
-		CustomEvents</strong> that bubble out of the shadow DOM so consumers can listen with
-		<code>addEventListener</code>. It only works in components compiled with the
-		<code>customElement</code> option.
-	</p>
-
-	<h3>How It Works</h3>
-	<ul>
-		<li><code>$host()</code> returns the <code>HTMLElement</code> instance (the custom element itself)</li>
-		<li>You call <code>$host().dispatchEvent(new CustomEvent(...))</code> to emit events</li>
-		<li>Events can carry typed payloads via the <code>detail</code> property</li>
-		<li>Set <code>bubbles: true</code> and <code>composed: true</code> to cross shadow DOM boundaries</li>
-		<li>Only available inside components with <code>customElement</code> set — errors otherwise</li>
-	</ul>
-
-	<h3>Mini-Build: A Stepper Custom Element</h3>
-	<div class="build">
-		<p class="concept">
-			This <code>&lt;my-stepper&gt;</code> component dispatches <code>increment</code> and
-			<code>decrement</code> custom events. The parent page listens for them without any
-			framework coupling.
-		</p>
-
-		<pre>{`<!-- MyStepper.svelte -->
-<svelte:options customElement="my-stepper" />
-
-<script lang="ts">
+\u003cscript lang="ts"\u003e
   interface Props {
     value?: number;
     min?: number;
@@ -77,18 +48,17 @@
       );
     }
   }
-</script>
+\u003c/script\u003e
 
 <div class="stepper">
   <button onclick={dec} disabled={current <= min}>-</button>
   <output>{current}</output>
   <button onclick={inc} disabled={current >= max}>+</button>
-</div>`}</pre>
+</div>`;
 
-		<h3>Consuming in Plain HTML</h3>
-		<pre>{`<my-stepper value="10" min="0" max="50" step="5"></my-stepper>
+	const consumingExample = `<my-stepper value="10" min="0" max="50" step="5"></my-stepper>
 
-<script type="module">
+\u003cscript type="module"\u003e
   import './my-stepper.js';
 
   const stepper = document.querySelector('my-stepper');
@@ -100,7 +70,41 @@
   stepper.addEventListener('decrement', (e) => {
     console.log('Decremented to:', e.detail.value);
   });
-</script>`}</pre>
+\u003c/script\u003e`;
+</script>
+
+<section class="page">
+	<h1>14.4 — The $host() Rune</h1>
+
+	<p class="concept">
+		The <strong><code>$host()</code></strong> rune gives you a reference to the custom element's
+		host node from inside the component. Its primary use case is <strong>dispatching
+		CustomEvents</strong> that bubble out of the shadow DOM so consumers can listen with
+		<code>addEventListener</code>. It only works in components compiled with the
+		<code>customElement</code> option.
+	</p>
+
+	<h3>How It Works</h3>
+	<ul>
+		<li><code>$host()</code> returns the <code>HTMLElement</code> instance (the custom element itself)</li>
+		<li>You call <code>$host().dispatchEvent(new CustomEvent(...))</code> to emit events</li>
+		<li>Events can carry typed payloads via the <code>detail</code> property</li>
+		<li>Set <code>bubbles: true</code> and <code>composed: true</code> to cross shadow DOM boundaries</li>
+		<li>Only available inside components with <code>customElement</code> set — errors otherwise</li>
+	</ul>
+
+	<h3>Mini-Build: A Stepper Custom Element</h3>
+	<div class="build">
+		<p class="concept">
+			This <code>&lt;my-stepper&gt;</code> component dispatches <code>increment</code> and
+			<code>decrement</code> custom events. The parent page listens for them without any
+			framework coupling.
+		</p>
+
+		<pre><code>{stepperExample}</code></pre>
+
+		<h3>Consuming in Plain HTML</h3>
+		<pre><code>{consumingExample}</code></pre>
 	</div>
 
 	<h3>Try the Event Flow</h3>

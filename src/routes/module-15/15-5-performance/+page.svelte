@@ -1,5 +1,7 @@
 <script lang="ts">
+	// @ts-ignore — Threlte types not fully compatible with strict mode
 	import { Canvas, T } from '@threlte/core';
+	// @ts-ignore — Threlte types not fully compatible with strict mode
 	import { OrbitControls } from '@threlte/extras';
 
 	let mounted = $state(false);
@@ -22,6 +24,32 @@
 		}, 16);
 		return () => clearInterval(interval);
 	});
+
+	const implementationExample = `\u003cscript lang="ts"\u003e
+  let mounted = $state(false);
+  let prefersReducedMotion = $state(false);
+
+  $effect(() => {
+    mounted = true;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    prefersReducedMotion = mq.matches;
+    const handler = (e: MediaQueryListEvent) => {
+      prefersReducedMotion = e.matches;
+    };
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  });
+\u003c/script\u003e
+
+{#if mounted}
+  <Canvas>
+    <!-- 3D content with conditional animation -->
+  </Canvas>
+{:else}
+  <div class="fallback">
+    <img src="/scene-preview.jpg" alt="3D scene preview" />
+  </div>
+{/if}`;
 </script>
 
 <section class="page">
@@ -120,31 +148,7 @@
 	</div>
 
 	<h3>Implementation Pattern</h3>
-	<pre>{`<script lang="ts">
-  let mounted = $state(false);
-  let prefersReducedMotion = $state(false);
-
-  $effect(() => {
-    mounted = true;
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    prefersReducedMotion = mq.matches;
-    const handler = (e: MediaQueryListEvent) => {
-      prefersReducedMotion = e.matches;
-    };
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  });
-</script>
-
-{#if mounted}
-  <Canvas>
-    <!-- 3D content with conditional animation -->
-  </Canvas>
-{:else}
-  <div class="fallback">
-    <img src="/scene-preview.jpg" alt="3D scene preview" />
-  </div>
-{/if}`}</pre>
+	<pre><code>{implementationExample}</code></pre>
 
 	<h3>Checklist</h3>
 	<ul>

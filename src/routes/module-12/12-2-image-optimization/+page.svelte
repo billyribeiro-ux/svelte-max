@@ -95,7 +95,7 @@
 			<div class="image-placeholder small" class:loaded={loaded.icon}>
 				<img
 					src="https://picsum.photos/seed/icon/100/100"
-					alt="Icon placeholder demonstrating small lazy image"
+					alt="Icon placeholder demonstrating small lazy loading"
 					width="100"
 					height="100"
 					loading="lazy"

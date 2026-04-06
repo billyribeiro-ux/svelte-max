@@ -1,5 +1,70 @@
 <script lang="ts">
 	let showCompiled = $state(false);
+
+	const counterExample = `<!-- MyCounter.svelte -->
+\u003csvelte:options customElement="my-counter" /\u003e
+
+\u003cscript lang="ts"\u003e
+  interface Props {
+    initial?: number;
+    label?: string;
+  }
+
+  let { initial = 0, label = 'Count' }: Props = $props();
+  let count = $state(initial);
+
+  function increment() {
+    count += 1;
+  }
+
+  function decrement() {
+    count -= 1;
+  }
+\u003c/script\u003e
+
+<div class="counter">
+  <span class="label">{label}</span>
+  <button onclick={decrement}>-</button>
+  <span class="value">{count}</span>
+  <button onclick={increment}>+</button>
+</div>
+
+\u003cstyle\u003e
+  .counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: system-ui;
+  }
+  .label { font-weight: 600; }
+  .value {
+    min-width: 2rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  button {
+    width: 2rem; height: 2rem;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+\u003c/style\u003e`;
+
+	const usageExample = `<!DOCTYPE html>
+<html>
+<head>
+  \u003cscript type="module" src="./my-counter.js"\u003e\u003c/script\u003e
+</head>
+<body>
+  <my-counter initial="5" label="Items"></my-counter>
+
+  \u003cscript\u003e
+    // You can also set attributes programmatically
+    const el = document.querySelector('my-counter');
+    if (el) el.setAttribute('label', 'Updated Label');
+  \u003c/script\u003e
+</body>
+</html>`;
 </script>
 
 <section class="page">
@@ -43,54 +108,7 @@ export default config;`}</pre>
 			This file would live outside of SvelteKit routes (e.g. in a standalone library project).
 		</p>
 
-		<pre>{`<!-- MyCounter.svelte -->
-<svelte:options customElement="my-counter" />
-
-<script lang="ts">
-  interface Props {
-    initial?: number;
-    label?: string;
-  }
-
-  let { initial = 0, label = 'Count' }: Props = $props();
-  let count = $state(initial);
-
-  function increment() {
-    count += 1;
-  }
-
-  function decrement() {
-    count -= 1;
-  }
-</script>
-
-<div class="counter">
-  <span class="label">{label}</span>
-  <button onclick={decrement}>-</button>
-  <span class="value">{count}</span>
-  <button onclick={increment}>+</button>
-</div>
-
-<style>
-  .counter {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: system-ui;
-  }
-  .label { font-weight: 600; }
-  .value {
-    min-width: 2rem;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
-  }
-  button {
-    width: 2rem; height: 2rem;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    cursor: pointer;
-  }
-</style>`}</pre>
+		<pre><code>{counterExample}</code></pre>
 
 		<button class="toggle-btn" onclick={() => showCompiled = !showCompiled}>
 			{showCompiled ? 'Hide' : 'Show'} what happens at compile time
@@ -112,21 +130,7 @@ export default config;`}</pre>
 	</div>
 
 	<h3>Usage in Plain HTML</h3>
-	<pre>{`<!DOCTYPE html>
-<html>
-<head>
-  <script type="module" src="./my-counter.js"></script>
-</head>
-<body>
-  <my-counter initial="5" label="Items"></my-counter>
-
-  <script>
-    // You can also set attributes programmatically
-    const el = document.querySelector('my-counter');
-    el.setAttribute('label', 'Updated Label');
-  </script>
-</body>
-</html>`}</pre>
+	<pre><code>{usageExample}</code></pre>
 </section>
 
 <style>

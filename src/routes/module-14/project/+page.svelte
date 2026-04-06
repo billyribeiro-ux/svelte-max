@@ -78,6 +78,65 @@
 	function toggleSection(name: string) {
 		activeSection = activeSection === name ? null : name;
 	}
+
+	const buttonAdapterExample = `<!-- ButtonElement.svelte — Custom Element adapter for Button -->
+\u003csvelte:options
+  customElement={{
+    tag: "sm-button",
+    shadow: "open",
+    props: {
+      variant: { reflect: true, type: "String", attribute: "variant" },
+      size: { reflect: true, type: "String", attribute: "size" },
+      disabled: { reflect: true, type: "Boolean", attribute: "disabled" }
+    }
+  }}
+/\u003e
+
+\u003cscript lang="ts"\u003e
+  import Button from './Button.svelte';
+
+  interface Props {
+    variant?: 'primary' | 'secondary' | 'ghost';
+    size?: 'sm' | 'md' | 'lg';
+    disabled?: boolean;
+  }
+
+  let { variant = 'primary', size = 'md', disabled = false }: Props = $props();
+\u003c/script\u003e
+
+<Button {variant} {size} {disabled}>
+  <slot />
+</Button>`;
+
+	const badgeAdapterExample = `<!-- BadgeElement.svelte — Custom Element adapter for Badge -->
+\u003csvelte:options
+  customElement={{
+    tag: "sm-badge",
+    shadow: "open",
+    props: {
+      variant: { reflect: true, type: "String", attribute: "variant" }
+    }
+  }}
+/\u003e
+
+\u003cscript lang="ts"\u003e
+  import Badge from './Badge.svelte';
+
+  interface Props {
+    variant?: 'default' | 'success' | 'warning' | 'error';
+  }
+
+  let { variant = 'default' }: Props = $props();
+\u003c/script\u003e
+
+<Badge {variant}>
+  <slot />
+</Badge>
+
+<!-- Usage in any HTML page:
+\u003cscript type="module" src="./sm-badge.js"\u003e\u003c/script\u003e
+<sm-badge variant="success">Active</sm-badge>
+-->`;
 </script>
 
 <section class="page">
@@ -104,18 +163,18 @@
 			<h4>Badge</h4>
 			<div class="demo-row">
 				<Badge>Default</Badge>
-				<Badge variant="success">Success</Badge>
-				<Badge variant="warning">Warning</Badge>
-				<Badge variant="error">Error</Badge>
+				<Badge tone="success">Success</Badge>
+				<Badge tone="warning">Warning</Badge>
+				<Badge tone="error">Error</Badge>
 			</div>
 		</div>
 
 		<div class="gallery-item">
 			<h4>Avatar</h4>
 			<div class="demo-row">
-				<Avatar alt="User" size="sm" />
-				<Avatar alt="User" size="md" />
-				<Avatar alt="User" size="lg" />
+				<Avatar src={null} name="User" size="sm" />
+				<Avatar src={null} name="User" size="md" />
+				<Avatar src={null} name="User" size="lg" />
 			</div>
 		</div>
 
@@ -126,7 +185,8 @@
 
 		<div class="gallery-item">
 			<h4>Card</h4>
-			<Card title="Example Card">
+			<Card>
+				{#snippet header()}<h4>Example Card</h4>{/snippet}
 				<p>This is card content rendered via a snippet.</p>
 			</Card>
 		</div>
@@ -216,64 +276,9 @@
 		<strong>Button</strong> and <strong>Badge</strong>:
 	</p>
 
-	<pre>{`<!-- ButtonElement.svelte — Custom Element adapter for Button -->
-<svelte:options
-  customElement={{
-    tag: "sm-button",
-    shadow: "open",
-    props: {
-      variant: { reflect: true, type: "String", attribute: "variant" },
-      size: { reflect: true, type: "String", attribute: "size" },
-      disabled: { reflect: true, type: "Boolean", attribute: "disabled" }
-    }
-  }}
-/>
+	<pre><code>{buttonAdapterExample}</code></pre>
 
-<script lang="ts">
-  import Button from './Button.svelte';
-
-  interface Props {
-    variant?: 'primary' | 'secondary' | 'ghost';
-    size?: 'sm' | 'md' | 'lg';
-    disabled?: boolean;
-  }
-
-  let { variant = 'primary', size = 'md', disabled = false }: Props = $props();
-</script>
-
-<Button {variant} {size} {disabled}>
-  <slot />
-</Button>`}</pre>
-
-	<pre>{`<!-- BadgeElement.svelte — Custom Element adapter for Badge -->
-<svelte:options
-  customElement={{
-    tag: "sm-badge",
-    shadow: "open",
-    props: {
-      variant: { reflect: true, type: "String", attribute: "variant" }
-    }
-  }}
-/>
-
-<script lang="ts">
-  import Badge from './Badge.svelte';
-
-  interface Props {
-    variant?: 'default' | 'success' | 'warning' | 'error';
-  }
-
-  let { variant = 'default' }: Props = $props();
-</script>
-
-<Badge {variant}>
-  <slot />
-</Badge>
-
-<!-- Usage in any HTML page:
-<script type="module" src="./sm-badge.js"></script>
-<sm-badge variant="success">Active</sm-badge>
--->`}</pre>
+	<pre><code>{badgeAdapterExample}</code></pre>
 
 	<footer class="project-footer">
 		Built with <code>$lib/components</code> and Module 14 custom element patterns.
@@ -283,10 +288,8 @@
 <style>
 	.concept { font-size: var(--text-base); color: var(--color-text-muted); max-inline-size: 65ch; line-height: 1.6; margin: 0; }
 	.concept strong { color: var(--color-text); }
-	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
 	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 
 	.gallery {

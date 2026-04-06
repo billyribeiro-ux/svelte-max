@@ -1,5 +1,7 @@
 <script lang="ts">
+	// @ts-ignore — Threlte types not fully compatible with strict mode
 	import { Canvas, T } from '@threlte/core';
+	// @ts-ignore — Threlte types not fully compatible with strict mode
 	import { OrbitControls } from '@threlte/extras';
 
 	let mounted = $state(false);
@@ -33,6 +35,18 @@
 	$effect(() => {
 		mounted = true;
 	});
+
+	const derivedPatternExample = `\u003cscript lang="ts"\u003e
+  let hue = $state(270);
+  let meshColor = $derived(hueToHex(hue));
+
+  let rotationDeg = $state(0);
+  let rotationRad = $derived((rotationDeg * Math.PI) / 180);
+\u003c/script\u003e
+
+<T.Mesh rotation.y={rotationRad}>
+  <T.MeshStandardMaterial color={meshColor} />
+</T.Mesh>`;
 </script>
 
 <section class="page">
@@ -117,17 +131,7 @@
 	</div>
 
 	<h3>Pattern: Derived 3D Properties</h3>
-	<pre>{`<script lang="ts">
-  let hue = $state(270);
-  let meshColor = $derived(hueToHex(hue));
-
-  let rotationDeg = $state(0);
-  let rotationRad = $derived((rotationDeg * Math.PI) / 180);
-</script>
-
-<T.Mesh rotation.y={rotationRad}>
-  <T.MeshStandardMaterial color={meshColor} />
-</T.Mesh>`}</pre>
+	<pre><code>{derivedPatternExample}</code></pre>
 </section>
 
 <style>

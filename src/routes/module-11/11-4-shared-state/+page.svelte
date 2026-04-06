@@ -1,5 +1,80 @@
 <script lang="ts">
 	import { increment, decrement, reset, getCount } from '$lib/stores/counter.svelte';
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { increment, decrement, reset, getCount } from '$lib/stores/counter.svelte';\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e11.4 — Shared State Across Pages\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Because \u003ccode\u003e.svelte.ts\u003c/code\u003e module state lives in a JavaScript module, it\n" +
+		"		\u003cstrong\u003epersists across client-side navigations\u003c/strong\u003e. Navigate away and come back —\n" +
+		"		the counter value from lesson 11.3 is still here. This is powerful but comes with\n" +
+		"		an important caveat for SSR.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eTry It: The Counter Persists\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			This page imports the exact same \u003ccode\u003ecounter.svelte.ts\u003c/code\u003e from lesson 11.3.\n" +
+		"			If you incremented the counter there, the value carries over here.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003cdiv class=\"counter-display\"\u003e\n" +
+		"			\u003cspan class=\"count\"\u003e{getCount()}\u003c/span\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"		\u003cdiv class=\"button-row\"\u003e\n" +
+		"			\u003cbutton onclick={decrement}\u003e- Decrement\u003c/button\u003e\n" +
+		"			\u003cbutton class=\"reset-btn\" onclick={reset}\u003eReset\u003c/button\u003e\n" +
+		"			\u003cbutton onclick={increment}\u003e+ Increment\u003c/button\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eSSR Warning: Module State Leaks\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build warning\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			\u003cstrong\u003eOn the server\u003c/strong\u003e, module-level state is shared across all requests\n" +
+		"			because Node.js caches modules. This means one user's state could leak to another\n" +
+		"			user's response. This is a \u003cstrong\u003ecritical security issue\u003c/strong\u003e.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e// DANGEROUS on the server:\n" +
+		"// src/lib/stores/user.svelte.ts\n" +
+		"let currentUser = $state&lt;User | null&gt;(null);\n" +
+		"// User A's data could leak to User B!\u003c/code\u003e\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eThe Safe Alternative: Context\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build safe\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			For per-user or per-request state, use \u003cstrong\u003econtext\u003c/strong\u003e instead.\n" +
+		"			Context is scoped to the component tree and created fresh for each request on the server.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e// Safe: per-component-tree state\n" +
+		"// In +layout.svelte:\n" +
+		"setContext('user', userFromLoad);\n" +
+		"\n" +
+		"// In any descendant:\n" +
+		"const user = getContext&lt;User&gt;('user');\u003c/code\u003e\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhen to Use Each\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eModule state\u003c/strong\u003e (\u003ccode\u003e.svelte.ts\u003c/code\u003e): Client-only state, global settings, caches — anything not user-specific\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eContext\u003c/strong\u003e: User-specific data, request-scoped values, anything that differs per visitor\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003cstrong\u003eURL state\u003c/strong\u003e: Filter/sort params, pagination — anything the user should be able to bookmark or share\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eModule-level \u003ccode\u003e.svelte.ts\u003c/code\u003e state persists across client-side navigations because JS modules are cached.\u003c/li\u003e\n" +
+		"		\u003cli\u003eServer-side module state is shared across all requests, creating a critical data-leak risk.\u003c/li\u003e\n" +
+		"		\u003cli\u003eUse context for per-user/per-request state, and module state only for client-only globals.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -61,6 +136,13 @@ const user = getContext&lt;User&gt;('user');</code></pre>
 		<li><strong>Context</strong>: User-specific data, request-scoped values, anything that differs per visitor</li>
 		<li><strong>URL state</strong>: Filter/sort params, pagination — anything the user should be able to bookmark or share</li>
 	</ul>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -129,5 +211,42 @@ const user = getContext&lt;User&gt;('user');</code></pre>
 	.safe {
 		border-color: #27ae60;
 		background: color-mix(in oklch, #27ae60 5%, var(--color-surface-1));
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

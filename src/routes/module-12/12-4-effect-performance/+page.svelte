@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	// --- Wrong way: re-runs on every keystroke ---
 	let wrongQuery = $state('');
 	let wrongResults = $state<string[]>([]);
@@ -46,6 +47,120 @@
 		logCount++;
 		untrackedLog = `Effect ran #${logCount} — tracked: "${_tracked}", untracked: ${_untracked}`;
 	});
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { untrack } from 'svelte';\n" +
+		"\n" +
+		"	// --- Wrong way: re-runs on every keystroke ---\n" +
+		"	let wrongQuery = $state('');\n" +
+		"	let wrongResults = $state\u003cstring[]\u003e([]);\n" +
+		"	let wrongRunCount = $state(0);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const q = wrongQuery;\n" +
+		"		if (q.length \u003e 0) {\n" +
+		"			wrongRunCount++;\n" +
+		"			wrongResults = [`Result for \"${q}\" (run #${wrongRunCount})`];\n" +
+		"		} else {\n" +
+		"			wrongResults = [];\n" +
+		"		}\n" +
+		"	});\n" +
+		"\n" +
+		"	// --- Right way: debounced with cleanup ---\n" +
+		"	let rightQuery = $state('');\n" +
+		"	let rightResults = $state\u003cstring[]\u003e([]);\n" +
+		"	let rightRunCount = $state(0);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const q = rightQuery;\n" +
+		"		if (q.length === 0) {\n" +
+		"			rightResults = [];\n" +
+		"			return;\n" +
+		"		}\n" +
+		"		const timeout = setTimeout(() =\u003e {\n" +
+		"			rightRunCount++;\n" +
+		"			rightResults = [`Result for \"${q}\" (run #${rightRunCount})`];\n" +
+		"		}, 300);\n" +
+		"		return () =\u003e clearTimeout(timeout);\n" +
+		"	});\n" +
+		"\n" +
+		"	// --- untrack demo ---\n" +
+		"	let trackedValue = $state('hello');\n" +
+		"	let untrackedLog = $state('');\n" +
+		"	let logCount = $state(0);\n" +
+		"	let otherValue = $state(0);\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		const _tracked = trackedValue;\n" +
+		"		const _untracked = untrack(() =\u003e otherValue);\n" +
+		"		logCount++;\n" +
+		"		untrackedLog = `Effect ran #${logCount} — tracked: \"${_tracked}\", untracked: ${_untracked}`;\n" +
+		"	});\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e12.4 — $effect Performance\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003e$effect\u003c/strong\u003e automatically tracks every reactive value read inside it and re-runs\n" +
+		"		when any dependency changes. This is powerful but can cause excessive re-runs if you are not\n" +
+		"		careful. Use \u003cstrong\u003ecleanup functions\u003c/strong\u003e for debouncing, \u003cstrong\u003e\u003ccode\u003euntrack()\u003c/code\u003e\u003c/strong\u003e\n" +
+		"		to exclude reads, and \u003cstrong\u003e\u003ccode\u003e$inspect.trace()\u003c/code\u003e\u003c/strong\u003e to debug which dependency triggered a re-run.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWrong Way: Effect on Every Keystroke\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			This effect re-runs on \u003cem\u003eevery single character\u003c/em\u003e typed. For a search that triggers\n" +
+		"			a network request, this would fire dozens of unnecessary API calls.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003clabel class=\"input-label\"\u003e\n" +
+		"			Search (no debounce):\n" +
+		"			\u003cinput type=\"text\" bind:value={wrongQuery} placeholder=\"Type here...\" /\u003e\n" +
+		"		\u003c/label\u003e\n" +
+		"		\u003cdiv class=\"counter bad\"\u003eEffect re-runs: \u003cstrong\u003e{wrongRunCount}\u003c/strong\u003e\u003c/div\u003e\n" +
+		"		{#each wrongResults as result}\n" +
+		"			\u003cp class=\"result\"\u003e{result}\u003c/p\u003e\n" +
+		"		{/each}\n" +
+		"		\u003cpre\u003e{`// BAD: re-runs on every keystroke\n" +
+		"$effect(() =\u003e {\n" +
+		"  const q = query;       // tracked!\n" +
+		"  fetchResults(q);       // fires every character\n" +
+		"});`}\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eRight Way: Debounced with Cleanup\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			By returning a cleanup function that clears the timeout, the effect only executes the\n" +
+		"			search after the user stops typing for 300ms.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003clabel class=\"input-label\"\u003e\n" +
+		"			Search (300ms debounce):\n" +
+		"			\u003cinput type=\"text\" bind:value={rightQuery} placeholder=\"Type here...\" /\u003e\n" +
+		"		\u003c/label\u003e\n" +
+		"		\u003cdiv class=\"counter good\"\u003eEffect re-runs: \u003cstrong\u003e{rightRunCount}\u003c/strong\u003e\u003c/div\u003e\n" +
+		"		{#each rightResults as result}\n" +
+		"			\u003cp class=\"result\"\u003e{result}\u003c/p\u003e\n" +
+		"		{/each}\n" +
+		"		\u003cpre\u003e{`// GOOD: debounced via cleanup\n" +
+		"$effect(() =\u003e {\n" +
+		"  const q = query;       // tracked\n" +
+		"  const timeout = setTimeout(() =\u003e {\n" +
+		"    fetchResults(q);     // fires after 300ms pause\n" +
+		"  }, 300);\n" +
+		"  return () =\u003e clearTimeout(timeout);  // cleanup\n" +
+		"});`}\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003euntrack() — Exclude Dependencies\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			\u003ccode\u003euntrack()\u003c/code\u003e lets you read a reactive value inside an effect without adding it\n" +
+		"			as a dependency. The effect below only re-runs when \u003ccode\u003etrackedValue\u003c/code\u003e changes,\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -138,6 +253,13 @@ $effect(() => {
 });`}</pre>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Return a cleanup function from <code>$effect</code> to debounce expensive operations like API calls.</li>
@@ -193,5 +315,42 @@ $effect(() => {
 		cursor: pointer;
 		font-weight: 600;
 		align-self: flex-start;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	type LikeStatus = 'idle' | 'pending' | 'success' | 'rollback';
 
 	let likes = $state(42);
@@ -51,6 +52,125 @@
 			}, 1000);
 		});
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"type LikeStatus = 'idle' | 'pending' | 'success' | 'rollback';\n" +
+		"\n" +
+		"	let likes = $state(42);\n" +
+		"	let isLiked = $state(false);\n" +
+		"	let status = $state\u003cLikeStatus\u003e('idle');\n" +
+		"	let message = $state('');\n" +
+		"\n" +
+		"	async function toggleLike() {\n" +
+		"		if (status === 'pending') return;\n" +
+		"\n" +
+		"		const previousLikes = likes;\n" +
+		"		const previousIsLiked = isLiked;\n" +
+		"\n" +
+		"		// Optimistic update\n" +
+		"		isLiked = !isLiked;\n" +
+		"		likes = isLiked ? likes + 1 : likes - 1;\n" +
+		"		status = 'pending';\n" +
+		"		message = '';\n" +
+		"\n" +
+		"		try {\n" +
+		"			// Simulate API call\n" +
+		"			const success = await fakeApiCall();\n" +
+		"\n" +
+		"			if (success) {\n" +
+		"				status = 'success';\n" +
+		"				message = 'Saved successfully!';\n" +
+		"			} else {\n" +
+		"				throw new Error('Server rejected the request');\n" +
+		"			}\n" +
+		"		} catch {\n" +
+		"			// Rollback\n" +
+		"			likes = previousLikes;\n" +
+		"			isLiked = previousIsLiked;\n" +
+		"			status = 'rollback';\n" +
+		"			message = 'Failed! Rolled back.';\n" +
+		"		}\n" +
+		"\n" +
+		"		// Reset status after delay\n" +
+		"		setTimeout(() =\u003e {\n" +
+		"			status = 'idle';\n" +
+		"			message = '';\n" +
+		"		}, 2000);\n" +
+		"	}\n" +
+		"\n" +
+		"	function fakeApiCall(): Promise\u003cboolean\u003e {\n" +
+		"		return new Promise((resolve) =\u003e {\n" +
+		"			setTimeout(() =\u003e {\n" +
+		"				// 50% chance of failure\n" +
+		"				resolve(Math.random() \u003e 0.5);\n" +
+		"			}, 1000);\n" +
+		"		});\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e11.11 — Optimistic UI with Rollback\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eOptimistic UI\u003c/strong\u003e updates the interface immediately before the server\n" +
+		"		confirms the change. If the server rejects the update, we \u003cstrong\u003eroll back\u003c/strong\u003e\n" +
+		"		to the previous state. This makes the app feel instant while staying consistent.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eState Machine\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"state-diagram\"\u003e\n" +
+		"			\u003cdiv class=\"state-node\" class:active={status === 'idle'}\u003eidle\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"state-arrow\"\u003eclick\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"state-node\" class:active={status === 'pending'}\u003epending\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"state-fork\"\u003e\n" +
+		"				\u003cdiv class=\"state-branch\"\u003e\n" +
+		"					\u003cdiv class=\"state-arrow success-arrow\"\u003eAPI ok\u003c/div\u003e\n" +
+		"					\u003cdiv class=\"state-node success-node\" class:active={status === 'success'}\u003esuccess\u003c/div\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"state-branch\"\u003e\n" +
+		"					\u003cdiv class=\"state-arrow fail-arrow\"\u003eAPI fail\u003c/div\u003e\n" +
+		"					\u003cdiv class=\"state-node fail-node\" class:active={status === 'rollback'}\u003erollback\u003c/div\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eLive Demo: Like Button (50% failure rate)\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"like-area\"\u003e\n" +
+		"			\u003cbutton\n" +
+		"				class=\"like-button\"\n" +
+		"				class:liked={isLiked}\n" +
+		"				class:pending={status === 'pending'}\n" +
+		"				onclick={toggleLike}\n" +
+		"				disabled={status === 'pending'}\n" +
+		"			\u003e\n" +
+		"				\u003cspan class=\"heart\"\u003e{isLiked ? '\\u2665' : '\\u2661'}\u003c/span\u003e\n" +
+		"				\u003cspan class=\"like-count\"\u003e{likes}\u003c/span\u003e\n" +
+		"			\u003c/button\u003e\n" +
+		"\n" +
+		"			\u003cdiv class=\"status-area\"\u003e\n" +
+		"				\u003cspan class=\"status-badge\" data-status={status}\u003e\n" +
+		"					{status}\n" +
+		"				\u003c/span\u003e\n" +
+		"				{#if message}\n" +
+		"					\u003cspan\n" +
+		"						class=\"message\"\n" +
+		"						class:success-msg={status === 'success'}\n" +
+		"						class:fail-msg={status === 'rollback'}\n" +
+		"					\u003e\n" +
+		"						{message}\n" +
+		"					\u003c/span\u003e\n" +
+		"				{/if}\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			Click the heart to like/unlike. The count updates \u003cstrong\u003eimmediately\u003c/strong\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -155,6 +275,13 @@
 		<li>On failure, restore the saved state and show a message</li>
 		<li>This pattern works for likes, toggles, inline edits, and any fast-feedback interaction</li>
 	</ul>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -304,4 +431,41 @@
 	}
 	.success-msg { color: oklch(60% 0.18 150); }
 	.fail-msg { color: #e74c3c; }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

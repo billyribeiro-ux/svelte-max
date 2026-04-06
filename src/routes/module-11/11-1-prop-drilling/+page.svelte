@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { setContext, getContext } from 'svelte';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let userName = $state('Alice');
 	let theme = $state<'light' | 'dark'>('light');
 
@@ -23,6 +24,97 @@
 
 	// Simulate reading context in deeply nested component
 	const themeCtx = getThemeContext();
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { setContext, getContext } from 'svelte';\n" +
+		"\n" +
+		"	let userName = $state('Alice');\n" +
+		"	let theme = $state\u003c'light' | 'dark'\u003e('light');\n" +
+		"\n" +
+		"	// The context-based solution\n" +
+		"	const THEME_KEY = Symbol('theme');\n" +
+		"\n" +
+		"	setContext(THEME_KEY, {\n" +
+		"		get current() { return theme; },\n" +
+		"		toggle() { theme = theme === 'light' ? 'dark' : 'light'; }\n" +
+		"	});\n" +
+		"\n" +
+		"	interface ThemeCtx {\n" +
+		"		readonly current: 'light' | 'dark';\n" +
+		"		toggle: () =\u003e void;\n" +
+		"	}\n" +
+		"\n" +
+		"	function getThemeContext(): ThemeCtx {\n" +
+		"		return getContext\u003cThemeCtx\u003e(THEME_KEY);\n" +
+		"	}\n" +
+		"\n" +
+		"	// Simulate reading context in deeply nested component\n" +
+		"	const themeCtx = getThemeContext();\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e11.1 — The Prop Drilling Problem\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eProp drilling\u003c/strong\u003e is the pattern of passing data through multiple layers of\n" +
+		"		components that don't need it, just so a deeply nested child can access the value.\n" +
+		"		This creates fragile, verbose code. \u003cstrong\u003eContext\u003c/strong\u003e solves this by providing\n" +
+		"		values to any descendant without explicit prop passing.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eThe Problem: 4 Levels Deep\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Imagine passing \u003ccode\u003euserName\u003c/code\u003e through four nested levels. Each intermediate\n" +
+		"		layer must accept and forward the prop even though it doesn't use it.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"level\" style=\"padding: var(--space-sm);\"\u003e\n" +
+		"			\u003cspan class=\"label\"\u003eLevel 1 — App\u003c/span\u003e\n" +
+		"			\u003ccode\u003eprops: userName=\"{userName}\"\u003c/code\u003e\n" +
+		"			\u003cdiv class=\"level nested\" style=\"padding: var(--space-sm);\"\u003e\n" +
+		"				\u003cspan class=\"label\"\u003eLevel 2 — Layout\u003c/span\u003e\n" +
+		"				\u003ccode\u003eprops: userName=\"{userName}\" (just forwarding)\u003c/code\u003e\n" +
+		"				\u003cdiv class=\"level nested\" style=\"padding: var(--space-sm);\"\u003e\n" +
+		"					\u003cspan class=\"label\"\u003eLevel 3 — Sidebar\u003c/span\u003e\n" +
+		"					\u003ccode\u003eprops: userName=\"{userName}\" (still forwarding)\u003c/code\u003e\n" +
+		"					\u003cdiv class=\"level nested\" style=\"padding: var(--space-sm);\"\u003e\n" +
+		"						\u003cspan class=\"label\"\u003eLevel 4 — UserBadge\u003c/span\u003e\n" +
+		"						\u003ccode class=\"highlight\"\u003eFinally uses: {userName}\u003c/code\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eThe Fix: Context\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		With \u003cstrong\u003econtext\u003c/strong\u003e, the top-level component sets a value, and any\n" +
+		"		descendant can read it directly. No intermediate prop passing required.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"context-demo\"\u003e\n" +
+		"			\u003cp\u003eCurrent theme: \u003cstrong\u003e{themeCtx.current}\u003c/strong\u003e\u003c/p\u003e\n" +
+		"			\u003cbutton onclick={() =\u003e themeCtx.toggle()}\u003eToggle Theme\u003c/button\u003e\n" +
+		"\n" +
+		"			\u003cdiv class=\"level\" style=\"padding: var(--space-sm);\"\u003e\n" +
+		"				\u003cspan class=\"label\"\u003eLevel 1 — sets context\u003c/span\u003e\n" +
+		"				\u003cdiv class=\"level nested\" style=\"padding: var(--space-sm);\"\u003e\n" +
+		"					\u003cspan class=\"label\"\u003eLevel 2 — no props needed\u003c/span\u003e\n" +
+		"					\u003cdiv class=\"level nested\" style=\"padding: var(--space-sm);\"\u003e\n" +
+		"						\u003cspan class=\"label\"\u003eLevel 3 — no props needed\u003c/span\u003e\n" +
+		"						\u003cdiv class=\"level nested\" style=\"padding: var(--space-sm);\"\u003e\n" +
+		"							\u003cspan class=\"label\"\u003eLevel 4 — reads context directly\u003c/span\u003e\n" +
+		"							\u003ccode class=\"highlight\"\u003eTheme: {themeCtx.current}\u003c/code\u003e\n" +
+		"						\u003c/div\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -100,6 +192,13 @@
 		<li>Context is scoped to the component tree — it won't leak to unrelated components</li>
 	</ul>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Prop drilling passes data through intermediate components that do not use it, creating fragile code.</li>
@@ -158,5 +257,42 @@
 		gap: var(--space-xs);
 		font-size: 0.9em;
 		color: var(--color-text-muted);
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

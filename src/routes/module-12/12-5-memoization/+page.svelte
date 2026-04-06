@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	type Item = { id: number; name: string; value: number };
 
 	let sortInvocations = $state(0);
@@ -29,6 +30,103 @@
 	function incrementUnrelated() {
 		unrelatedCounter++;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"type Item = { id: number; name: string; value: number };\n" +
+		"\n" +
+		"	let sortInvocations = $state(0);\n" +
+		"	let unrelatedCounter = $state(0);\n" +
+		"\n" +
+		"	const items: Item[] = Array.from({ length: 1000 }, (_, i) =\u003e ({\n" +
+		"		id: i,\n" +
+		"		name: `Item ${String(i).padStart(4, '0')}`,\n" +
+		"		value: Math.round(Math.random() * 10000)\n" +
+		"	}));\n" +
+		"\n" +
+		"	let sortDirection = $state\u003c'asc' | 'desc'\u003e('asc');\n" +
+		"\n" +
+		"	const sortedItems = $derived.by(() =\u003e {\n" +
+		"		sortInvocations++;\n" +
+		"		const sorted = [...items].sort((a, b) =\u003e\n" +
+		"			sortDirection === 'asc' ? a.value - b.value : b.value - a.value\n" +
+		"		);\n" +
+		"		return sorted;\n" +
+		"	});\n" +
+		"\n" +
+		"	const top10 = $derived(sortedItems.slice(0, 10));\n" +
+		"\n" +
+		"	function toggleSort() {\n" +
+		"		sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';\n" +
+		"	}\n" +
+		"\n" +
+		"	function incrementUnrelated() {\n" +
+		"		unrelatedCounter++;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e12.5 — Memoization with $derived\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003e\u003ccode\u003e$derived\u003c/code\u003e\u003c/strong\u003e provides natural memoization in Svelte 5. An expensive\n" +
+		"		computation inside \u003ccode\u003e$derived.by()\u003c/code\u003e only re-runs when its tracked inputs actually change.\n" +
+		"		Unlike \u003ccode\u003e$effect\u003c/code\u003e, derived values are \u003cstrong\u003esynchronous and lazy\u003c/strong\u003e — they\n" +
+		"		compute only when read, and cache until a dependency changes.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eHow It Works\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cul\u003e\n" +
+		"			\u003cli\u003e\u003cstrong\u003e\u003ccode\u003e$derived(expr)\u003c/code\u003e\u003c/strong\u003e — re-evaluates the expression when any reactive value in it changes\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003cstrong\u003e\u003ccode\u003e$derived.by(fn)\u003c/code\u003e\u003c/strong\u003e — same but for multi-line computations (like sorting 1000 items)\u003c/li\u003e\n" +
+		"			\u003cli\u003eThe result is \u003cstrong\u003ecached\u003c/strong\u003e — reading it multiple times does not re-compute\u003c/li\u003e\n" +
+		"			\u003cli\u003eChanging an \u003cstrong\u003eunrelated\u003c/strong\u003e state value does NOT trigger re-computation\u003c/li\u003e\n" +
+		"		\u003c/ul\u003e\n" +
+		"		\u003cpre\u003e{`const sorted = $derived.by(() =\u003e {\n" +
+		"  // Only re-runs when 'items' or 'direction' changes\n" +
+		"  return [...items].sort((a, b) =\u003e\n" +
+		"    direction === 'asc' ? a.value - b.value : b.value - a.value\n" +
+		"  );\n" +
+		"});`}\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eDemo: 1000-Item Sort\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			Below, 1000 items are sorted inside a \u003ccode\u003e$derived.by()\u003c/code\u003e. The invocation counter\n" +
+		"			tracks how many times the sort runs. Toggle sort direction to see it increment.\n" +
+		"			Then click \"Increment Unrelated\" — the counter should \u003cstrong\u003enot\u003c/strong\u003e increase,\n" +
+		"			proving the sort does not re-run.\n" +
+		"		\u003c/p\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"controls\"\u003e\n" +
+		"			\u003cbutton class=\"demo-btn\" onclick={toggleSort}\u003e\n" +
+		"				Sort: {sortDirection === 'asc' ? 'Ascending' : 'Descending'}\n" +
+		"			\u003c/button\u003e\n" +
+		"			\u003cbutton class=\"demo-btn secondary\" onclick={incrementUnrelated}\u003e\n" +
+		"				Increment Unrelated ({unrelatedCounter})\n" +
+		"			\u003c/button\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"stats\"\u003e\n" +
+		"			\u003cdiv class=\"stat\"\u003e\n" +
+		"				\u003cspan class=\"stat-label\"\u003eSort invocations\u003c/span\u003e\n" +
+		"				\u003cspan class=\"stat-value\"\u003e{sortInvocations}\u003c/span\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"stat\"\u003e\n" +
+		"				\u003cspan class=\"stat-label\"\u003eUnrelated counter\u003c/span\u003e\n" +
+		"				\u003cspan class=\"stat-value\"\u003e{unrelatedCounter}\u003c/span\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"			\u003cdiv class=\"stat\"\u003e\n" +
+		"				\u003cspan class=\"stat-label\"\u003eSort direction\u003c/span\u003e\n" +
+		"				\u003cspan class=\"stat-value\"\u003e{sortDirection}\u003c/span\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003ch4\u003eTop 10 Items\u003c/h4\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -118,6 +216,13 @@
 		tracks them automatically. The cached value is always consistent and never stale.
 	</p>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>$derived.by()</code> caches expensive computations and only re-runs when tracked inputs change.</li>
@@ -194,4 +299,41 @@
 		font-weight: 600;
 	}
 	h4 { margin: 0; }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

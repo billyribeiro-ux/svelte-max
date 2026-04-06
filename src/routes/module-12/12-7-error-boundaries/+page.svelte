@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let crashTriggered = $state(false);
 	let asyncLoading = $state(false);
 	let asyncDone = $state(false);
@@ -32,6 +33,106 @@
 			throw new Error('Widget crashed intentionally!');
 		}
 	});
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"let crashTriggered = $state(false);\n" +
+		"	let asyncLoading = $state(false);\n" +
+		"	let asyncDone = $state(false);\n" +
+		"	let errorKey = $state(0);\n" +
+		"\n" +
+		"	function triggerCrash() {\n" +
+		"		crashTriggered = true;\n" +
+		"	}\n" +
+		"\n" +
+		"	function resetCrash() {\n" +
+		"		crashTriggered = false;\n" +
+		"		errorKey++;\n" +
+		"	}\n" +
+		"\n" +
+		"	function startAsync() {\n" +
+		"		asyncLoading = true;\n" +
+		"		asyncDone = false;\n" +
+		"		setTimeout(() =\u003e {\n" +
+		"			asyncLoading = false;\n" +
+		"			asyncDone = true;\n" +
+		"		}, 2000);\n" +
+		"	}\n" +
+		"\n" +
+		"	function resetAsync() {\n" +
+		"		asyncLoading = false;\n" +
+		"		asyncDone = false;\n" +
+		"	}\n" +
+		"\n" +
+		"	$effect(() =\u003e {\n" +
+		"		if (crashTriggered) {\n" +
+		"			throw new Error('Widget crashed intentionally!');\n" +
+		"		}\n" +
+		"	});\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e12.7 — Error Boundaries\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003e\u003ccode\u003e&lt;svelte:boundary&gt;\u003c/code\u003e\u003c/strong\u003e catches errors thrown in a component\n" +
+		"		subtree and renders fallback UI instead of crashing the whole page. The \u003ccode\u003efailed\u003c/code\u003e\n" +
+		"		snippet receives the error and a \u003ccode\u003ereset\u003c/code\u003e function. This is essential for\n" +
+		"		production apps where individual widgets should fail gracefully.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eHow It Works\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cpre\u003e{`\u003csvelte:boundary\u003e\n" +
+		"  \u003cDangerousWidget /\u003e\n" +
+		"\n" +
+		"  {#snippet failed(error, reset)}\n" +
+		"    \u003cp\u003eSomething went wrong: {error.message}\u003c/p\u003e\n" +
+		"    \u003cbutton onclick={reset}\u003eTry again\u003c/button\u003e\n" +
+		"  {/snippet}\n" +
+		"\u003c/svelte:boundary\u003e`}\u003c/pre\u003e\n" +
+		"		\u003cul\u003e\n" +
+		"			\u003cli\u003e\u003cstrong\u003e\u003ccode\u003efailed\u003c/code\u003e snippet\u003c/strong\u003e — renders when a child component throws an error\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003cstrong\u003e\u003ccode\u003eerror\u003c/code\u003e\u003c/strong\u003e — the thrown Error object\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003cstrong\u003e\u003ccode\u003ereset\u003c/code\u003e\u003c/strong\u003e — function to re-mount the crashed subtree\u003c/li\u003e\n" +
+		"			\u003cli\u003eErrors \u003cstrong\u003edo not propagate\u003c/strong\u003e past the boundary\u003c/li\u003e\n" +
+		"		\u003c/ul\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eDemo 1: Crashing Widget\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			Click \"Crash Widget\" to throw an error inside the boundary. The fallback UI appears\n" +
+		"			with the error message and a reset button.\n" +
+		"		\u003c/p\u003e\n" +
+		"\n" +
+		"		{#key errorKey}\n" +
+		"			\u003csvelte:boundary\u003e\n" +
+		"				\u003cdiv class=\"widget\"\u003e\n" +
+		"					\u003ch4\u003eWidget A (Crashable)\u003c/h4\u003e\n" +
+		"					{#if crashTriggered}\n" +
+		"						{(() =\u003e { throw new Error('Widget A crashed intentionally!'); })()}\n" +
+		"					{/if}\n" +
+		"					\u003cp class=\"widget-text\"\u003eThis widget is working normally.\u003c/p\u003e\n" +
+		"					\u003cbutton class=\"demo-btn danger\" onclick={triggerCrash}\u003eCrash Widget\u003c/button\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"\n" +
+		"				{#snippet failed(error)}\n" +
+		"					\u003cdiv class=\"widget error-widget\"\u003e\n" +
+		"						\u003ch4\u003eWidget A (Crashed)\u003c/h4\u003e\n" +
+		"						\u003cp class=\"error-msg\"\u003eError: {(error as Error).message}\u003c/p\u003e\n" +
+		"						\u003cbutton class=\"demo-btn\" onclick={resetCrash}\u003eReset Widget\u003c/button\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				{/snippet}\n" +
+		"			\u003c/svelte:boundary\u003e\n" +
+		"		{/key}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eDemo 2: Async Loading Widget\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -136,6 +237,13 @@
 		<li><strong>Keep boundaries granular</strong> — wrap individual widgets, not entire pages</li>
 	</ul>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>&lt;svelte:boundary&gt;</code> catches errors in a component subtree and renders a <code>failed</code> snippet instead of crashing the page.</li>
@@ -213,4 +321,41 @@
 		margin-bottom: var(--space-sm);
 	}
 	.check { font-size: 1.2em; }
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
+	}
 </style>

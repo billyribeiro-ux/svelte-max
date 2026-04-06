@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import type { Action } from 'svelte/action';
 
 	// --- Dashboard state ---
@@ -92,6 +93,166 @@
 		widgetCrashed = false;
 		widgetKey++;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import type { Action } from 'svelte/action';\n" +
+		"\n" +
+		"	// --- Dashboard state ---\n" +
+		"	let dropdownOpen = $state(false);\n" +
+		"	let widgetCrashed = $state(false);\n" +
+		"	let widgetKey = $state(0);\n" +
+		"	let sectionVisible = $state(false);\n" +
+		"	let activeTab = $state\u003c'vitest' | 'playwright' | 'sw'\u003e('vitest');\n" +
+		"\n" +
+		"	// --- use:clickOutside ---\n" +
+		"	const clickOutside: Action\u003cHTMLElement, () =\u003e void\u003e = (node, callback) =\u003e {\n" +
+		"		function handleClick(event: MouseEvent) {\n" +
+		"			if (!node.contains(event.target as Node)) {\n" +
+		"				callback();\n" +
+		"			}\n" +
+		"		}\n" +
+		"		document.addEventListener('click', handleClick, true);\n" +
+		"		return {\n" +
+		"			destroy() {\n" +
+		"				document.removeEventListener('click', handleClick, true);\n" +
+		"			}\n" +
+		"		};\n" +
+		"	};\n" +
+		"\n" +
+		"	// --- use:intersect ---\n" +
+		"	const intersect: Action\u003cHTMLElement, (visible: boolean) =\u003e void\u003e = (node, callback) =\u003e {\n" +
+		"		const observer = new IntersectionObserver(\n" +
+		"			(entries) =\u003e {\n" +
+		"				for (const entry of entries) {\n" +
+		"					callback(entry.isIntersecting);\n" +
+		"				}\n" +
+		"			},\n" +
+		"			{ threshold: 0.3 }\n" +
+		"		);\n" +
+		"		observer.observe(node);\n" +
+		"		return {\n" +
+		"			destroy() {\n" +
+		"				observer.disconnect();\n" +
+		"			}\n" +
+		"		};\n" +
+		"	};\n" +
+		"\n" +
+		"	// --- $derived.by memoized computation ---\n" +
+		"	type MetricData = { label: string; value: number; change: number };\n" +
+		"\n" +
+		"	const rawMetrics: MetricData[] = [\n" +
+		"		{ label: 'Page Views', value: 24580, change: 12.3 },\n" +
+		"		{ label: 'Unique Visitors', value: 8920, change: -2.1 },\n" +
+		"		{ label: 'Bounce Rate', value: 34, change: -5.8 },\n" +
+		"		{ label: 'Avg. Session', value: 185, change: 8.4 },\n" +
+		"		{ label: 'Conversions', value: 342, change: 15.7 },\n" +
+		"		{ label: 'Revenue', value: 18450, change: 22.1 }\n" +
+		"	];\n" +
+		"\n" +
+		"	let sortBy = $state\u003c'label' | 'value' | 'change'\u003e('value');\n" +
+		"	let computeCount = $state(0);\n" +
+		"\n" +
+		"	const sortedMetrics = $derived.by(() =\u003e {\n" +
+		"		computeCount++;\n" +
+		"		return [...rawMetrics].sort((a, b) =\u003e {\n" +
+		"			if (sortBy === 'label') return a.label.localeCompare(b.label);\n" +
+		"			if (sortBy === 'value') return b.value - a.value;\n" +
+		"			return b.change - a.change;\n" +
+		"		});\n" +
+		"	});\n" +
+		"\n" +
+		"	// --- Deployment checklist ---\n" +
+		"	type CheckItem = { label: string; done: boolean };\n" +
+		"	let deployChecklist = $state\u003cCheckItem[]\u003e([\n" +
+		"		{ label: 'Choose adapter (node/vercel/static)', done: false },\n" +
+		"		{ label: 'Set environment variables', done: false },\n" +
+		"		{ label: 'Run npm run build', done: false },\n" +
+		"		{ label: 'Test with npm run preview', done: false },\n" +
+		"		{ label: 'Enable HTTPS', done: false },\n" +
+		"		{ label: 'Configure error monitoring', done: false },\n" +
+		"		{ label: 'Verify Core Web Vitals', done: false },\n" +
+		"		{ label: 'Set up CI/CD pipeline', done: false }\n" +
+		"	]);\n" +
+		"\n" +
+		"	function toggleDeploy(index: number) {\n" +
+		"		deployChecklist[index].done = !deployChecklist[index].done;\n" +
+		"	}\n" +
+		"\n" +
+		"	const deployDone = $derived(deployChecklist.filter((c) =\u003e c.done).length);\n" +
+		"\n" +
+		"	function crashWidget() {\n" +
+		"		widgetCrashed = true;\n" +
+		"	}\n" +
+		"\n" +
+		"	function resetWidget() {\n" +
+		"		widgetCrashed = false;\n" +
+		"		widgetKey++;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eModule 12 Project — Production Ready\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		This dashboard brings together everything from Module 12: \u003cstrong\u003eimage optimization\u003c/strong\u003e,\n" +
+		"		\u003cstrong\u003eerror boundaries\u003c/strong\u003e, \u003cstrong\u003ereusable actions\u003c/strong\u003e, \u003cstrong\u003ememoized computations\u003c/strong\u003e,\n" +
+		"		\u003cstrong\u003edeployment readiness\u003c/strong\u003e, \u003cstrong\u003etesting patterns\u003c/strong\u003e, and\n" +
+		"		\u003cstrong\u003eservice worker strategies\u003c/strong\u003e. A production-ready Svelte application in one page.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003c!-- Hero Image with optimization --\u003e\n" +
+		"	\u003cdiv class=\"hero\"\u003e\n" +
+		"		\u003cimg\n" +
+		"			src=\"https://picsum.photos/seed/dashboard/1200/400\"\n" +
+		"			alt=\"Dashboard hero banner showing analytics overview\"\n" +
+		"			width=\"1200\"\n" +
+		"			height=\"400\"\n" +
+		"			fetchpriority=\"high\"\n" +
+		"		/\u003e\n" +
+		"		\u003cdiv class=\"hero-overlay\"\u003e\n" +
+		"			\u003ch2\u003ePerformance Dashboard\u003c/h2\u003e\n" +
+		"			\u003cp\u003eReal-time analytics with production-grade patterns\u003c/p\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003c!-- Dropdown with use:clickOutside --\u003e\n" +
+		"	\u003ch3\u003eQuick Actions (use:clickOutside)\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			This dropdown uses \u003ccode\u003euse:clickOutside\u003c/code\u003e to close when clicking elsewhere on the page.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003cdiv class=\"dropdown-wrapper\" use:clickOutside={() =\u003e { dropdownOpen = false; }}\u003e\n" +
+		"			\u003cbutton class=\"demo-btn\" onclick={() =\u003e { dropdownOpen = !dropdownOpen; }}\u003e\n" +
+		"				Actions {dropdownOpen ? '(open)' : '(closed)'}\n" +
+		"			\u003c/button\u003e\n" +
+		"			{#if dropdownOpen}\n" +
+		"				\u003cdiv class=\"dropdown-menu\"\u003e\n" +
+		"					\u003cdiv class=\"dropdown-item\"\u003eExport CSV\u003c/div\u003e\n" +
+		"					\u003cdiv class=\"dropdown-item\"\u003eGenerate Report\u003c/div\u003e\n" +
+		"					\u003cdiv class=\"dropdown-item\"\u003eShare Dashboard\u003c/div\u003e\n" +
+		"					\u003cdiv class=\"dropdown-item\"\u003eSettings\u003c/div\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			{/if}\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003c!-- Error boundary widget --\u003e\n" +
+		"	\u003ch3\u003eAnalytics Widget (svelte:boundary)\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			This widget is wrapped in \u003ccode\u003e&lt;svelte:boundary&gt;\u003c/code\u003e. Click \"Crash\" to trigger\n" +
+		"			an error — the boundary catches it and shows fallback UI.\n" +
+		"		\u003c/p\u003e\n" +
+		"		{#key widgetKey}\n" +
+		"			\u003csvelte:boundary\u003e\n" +
+		"				\u003cdiv class=\"widget\"\u003e\n" +
+		"					{#if widgetCrashed}\n" +
+		"						{(() =\u003e { throw new Error('Analytics widget crashed!'); })()}\n" +
+		"					{/if}\n" +
+		"					\u003cdiv class=\"widget-header\"\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -357,6 +518,14 @@ self.addEventListener('fetch', (event) => {
 		<p>Built with SvelteKit, Svelte 5 runes, and production-grade patterns from Module 12.</p>
 		<p class="footer-sub">Image optimization | Error boundaries | Reusable actions | Memoization | Deployment | Testing | Service workers</p>
 	</footer>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 </section>
 
 <style>
@@ -610,5 +779,43 @@ self.addEventListener('fetch', (event) => {
 		font-weight: 400 !important;
 		color: var(--color-text-muted) !important;
 		font-size: var(--text-sm);
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		h2 { font-size: var(--text-xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

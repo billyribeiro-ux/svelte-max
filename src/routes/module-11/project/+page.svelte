@@ -14,6 +14,7 @@
 	} from '@tanstack/svelte-table';
 	import type { ColumnDef, TableOptions, SortingState } from '@tanstack/svelte-table';
 
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	// ─── Theme Context ───
 	interface ThemeState {
 		accent: string;
@@ -161,6 +162,235 @@
 
 	// ─── Responsive ───
 	let isMobile = $derived((innerWidth?.current ?? 1024) < 768);
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { setContext, getContext } from 'svelte';\n" +
+		"	import { page } from '$app/state';\n" +
+		"	import { goto } from '$app/navigation';\n" +
+		"	import { innerWidth, online } from 'svelte/reactivity/window';\n" +
+		"	import { CartStore, type CartItem } from '$lib/stores/cart.svelte';\n" +
+		"	import {\n" +
+		"		createSvelteTable,\n" +
+		"		flexRender,\n" +
+		"		getCoreRowModel,\n" +
+		"		getSortedRowModel,\n" +
+		"		getFilteredRowModel,\n" +
+		"		getPaginationRowModel\n" +
+		"	} from '@tanstack/svelte-table';\n" +
+		"	import type { ColumnDef, TableOptions, SortingState } from '@tanstack/svelte-table';\n" +
+		"\n" +
+		"	// ─── Theme Context ───\n" +
+		"	interface ThemeState {\n" +
+		"		accent: string;\n" +
+		"		label: string;\n" +
+		"	}\n" +
+		"\n" +
+		"	function createThemeContext() {\n" +
+		"		const key = Symbol('dashboard-theme');\n" +
+		"		return {\n" +
+		"			set: (v: ThemeState) =\u003e setContext(key, v),\n" +
+		"			get: () =\u003e getContext\u003cThemeState\u003e(key)\n" +
+		"		};\n" +
+		"	}\n" +
+		"\n" +
+		"	const ThemeContext = createThemeContext();\n" +
+		"	ThemeContext.set({ accent: 'oklch(55% 0.18 260)', label: 'Deep Purple' });\n" +
+		"	const theme = ThemeContext.get();\n" +
+		"\n" +
+		"	// ─── Cart ───\n" +
+		"	const cart = new CartStore();\n" +
+		"\n" +
+		"	const products = [\n" +
+		"		{ id: 'addon-1', name: 'Priority Support', price: 19.99 },\n" +
+		"		{ id: 'addon-2', name: 'Extra Storage (50GB)', price: 9.99 },\n" +
+		"		{ id: 'addon-3', name: 'Custom Domain', price: 14.99 },\n" +
+		"		{ id: 'addon-4', name: 'API Access', price: 29.99 }\n" +
+		"	] as const;\n" +
+		"\n" +
+		"	let showCart = $state(false);\n" +
+		"\n" +
+		"	// ─── Member Data ───\n" +
+		"	interface Member {\n" +
+		"		id: number;\n" +
+		"		name: string;\n" +
+		"		email: string;\n" +
+		"		role: 'Admin' | 'Editor' | 'Viewer';\n" +
+		"		joinedAt: string;\n" +
+		"		likes: number;\n" +
+		"		liked: boolean;\n" +
+		"	}\n" +
+		"\n" +
+		"	let members = $state\u003cMember[]\u003e([\n" +
+		"		{ id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', joinedAt: '2023-01-15', likes: 24, liked: false },\n" +
+		"		{ id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'Editor', joinedAt: '2023-03-22', likes: 12, liked: false },\n" +
+		"		{ id: 3, name: 'Carol White', email: 'carol@example.com', role: 'Viewer', joinedAt: '2023-05-10', likes: 8, liked: true },\n" +
+		"		{ id: 4, name: 'Dave Brown', email: 'dave@example.com', role: 'Editor', joinedAt: '2023-06-01', likes: 31, liked: false },\n" +
+		"		{ id: 5, name: 'Eve Davis', email: 'eve@example.com', role: 'Admin', joinedAt: '2023-07-14', likes: 19, liked: true },\n" +
+		"		{ id: 6, name: 'Frank Miller', email: 'frank@example.com', role: 'Viewer', joinedAt: '2023-08-20', likes: 5, liked: false },\n" +
+		"		{ id: 7, name: 'Grace Lee', email: 'grace@example.com', role: 'Editor', joinedAt: '2023-09-05', likes: 27, liked: false },\n" +
+		"		{ id: 8, name: 'Hank Wilson', email: 'hank@example.com', role: 'Viewer', joinedAt: '2023-10-30', likes: 3, liked: false },\n" +
+		"		{ id: 9, name: 'Iris Chen', email: 'iris@example.com', role: 'Admin', joinedAt: '2023-11-12', likes: 45, liked: true },\n" +
+		"		{ id: 10, name: 'Jack Taylor', email: 'jack@example.com', role: 'Editor', joinedAt: '2023-12-01', likes: 16, liked: false },\n" +
+		"		{ id: 11, name: 'Kim Park', email: 'kim@example.com', role: 'Viewer', joinedAt: '2024-01-08', likes: 9, liked: false },\n" +
+		"		{ id: 12, name: 'Leo Martinez', email: 'leo@example.com', role: 'Admin', joinedAt: '2024-02-14', likes: 38, liked: false }\n" +
+		"	]);\n" +
+		"\n" +
+		"	// ─── Optimistic Like ───\n" +
+		"	let pendingLikes = $state\u003cSet\u003cnumber\u003e\u003e(new Set());\n" +
+		"\n" +
+		"	async function toggleLike(memberId: number) {\n" +
+		"		if (pendingLikes.has(memberId)) return;\n" +
+		"\n" +
+		"		const member = members.find((m) =\u003e m.id === memberId);\n" +
+		"		if (!member) return;\n" +
+		"\n" +
+		"		const prevLikes = member.likes;\n" +
+		"		const prevLiked = member.liked;\n" +
+		"\n" +
+		"		// Optimistic\n" +
+		"		member.liked = !member.liked;\n" +
+		"		member.likes = member.liked ? member.likes + 1 : member.likes - 1;\n" +
+		"		pendingLikes = new Set([...pendingLikes, memberId]);\n" +
+		"\n" +
+		"		try {\n" +
+		"			const success = await new Promise\u003cboolean\u003e((resolve) =\u003e {\n" +
+		"				setTimeout(() =\u003e resolve(Math.random() \u003e 0.5), 1000);\n" +
+		"			});\n" +
+		"			if (!success) throw new Error('fail');\n" +
+		"		} catch {\n" +
+		"			member.likes = prevLikes;\n" +
+		"			member.liked = prevLiked;\n" +
+		"		}\n" +
+		"\n" +
+		"		const next = new Set(pendingLikes);\n" +
+		"		next.delete(memberId);\n" +
+		"		pendingLikes = next;\n" +
+		"	}\n" +
+		"\n" +
+		"	// ─── URL Filter ───\n" +
+		"	const roles = ['all', 'Admin', 'Editor', 'Viewer'] as const;\n" +
+		"	let roleFilter = $derived(page.url.searchParams.get('role') ?? 'all');\n" +
+		"\n" +
+		"	let filteredMembers = $derived(\n" +
+		"		roleFilter === 'all' ? members : members.filter((m) =\u003e m.role === roleFilter)\n" +
+		"	);\n" +
+		"\n" +
+		"	function setRole(role: string) {\n" +
+		"		goto(role === 'all' ? '?' : `?role=${role}`);\n" +
+		"	}\n" +
+		"\n" +
+		"	// ─── TanStack Table ───\n" +
+		"	const columns: ColumnDef\u003cMember\u003e[] = [\n" +
+		"		{ accessorKey: 'id', header: 'ID', size: 50 },\n" +
+		"		{ accessorKey: 'name', header: 'Name' },\n" +
+		"		{ accessorKey: 'email', header: 'Email' },\n" +
+		"		{ accessorKey: 'role', header: 'Role', size: 90 },\n" +
+		"		{ accessorKey: 'joinedAt', header: 'Joined', size: 110 },\n" +
+		"		{\n" +
+		"			accessorKey: 'likes',\n" +
+		"			header: 'Likes',\n" +
+		"			size: 100,\n" +
+		"			cell: ({ row }) =\u003e {\n" +
+		"				const m = row.original;\n" +
+		"				return `${m.liked ? '\\u2665' : '\\u2661'} ${m.likes}`;\n" +
+		"			}\n" +
+		"		}\n" +
+		"	];\n" +
+		"\n" +
+		"	let sorting = $state\u003cSortingState\u003e([]);\n" +
+		"	let globalFilter = $state('');\n" +
+		"\n" +
+		"	let options = $state\u003cTableOptions\u003cMember\u003e\u003e({\n" +
+		"		get data() { return filteredMembers; },\n" +
+		"		columns,\n" +
+		"		state: {\n" +
+		"			get sorting() { return sorting; },\n" +
+		"			get globalFilter() { return globalFilter; }\n" +
+		"		},\n" +
+		"		onSortingChange(updater) {\n" +
+		"			sorting = typeof updater === 'function' ? updater(sorting) : updater;\n" +
+		"		},\n" +
+		"		onGlobalFilterChange(updater) {\n" +
+		"			globalFilter = typeof updater === 'function' ? updater(globalFilter) : updater;\n" +
+		"		},\n" +
+		"		getCoreRowModel: getCoreRowModel(),\n" +
+		"		getSortedRowModel: getSortedRowModel(),\n" +
+		"		getFilteredRowModel: getFilteredRowModel(),\n" +
+		"		getPaginationRowModel: getPaginationRowModel(),\n" +
+		"		initialState: {\n" +
+		"			pagination: { pageSize: 6, pageIndex: 0 }\n" +
+		"		}\n" +
+		"	});\n" +
+		"\n" +
+		"	const table = createSvelteTable(options);\n" +
+		"\n" +
+		"	// ─── Responsive ───\n" +
+		"	let isMobile = $derived((innerWidth?.current ?? 1024) \u003c 768);\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003eModule 11 Project — Admin Dashboard\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		This project combines \u003cstrong\u003eevery state management pattern\u003c/strong\u003e from Module 11:\n" +
+		"		TanStack Table with sort/filter/pagination, a reactive CartStore class, URL-driven\n" +
+		"		filter tabs, reactive window values, optimistic like/unlike, and typed context for\n" +
+		"		theme sharing.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003c!-- Status Bar --\u003e\n" +
+		"	\u003cdiv class=\"status-bar\"\u003e\n" +
+		"		{#if innerWidth}\n" +
+		"			\u003cspan class=\"status-chip\"\u003e\n" +
+		"				{isMobile ? 'Mobile' : 'Desktop'} ({innerWidth.current}px)\n" +
+		"			\u003c/span\u003e\n" +
+		"			\u003cspan class=\"status-chip\" class:status-online={online?.current} class:status-offline={!online?.current}\u003e\n" +
+		"				{online?.current ? 'Online' : 'Offline'}\n" +
+		"			\u003c/span\u003e\n" +
+		"		{/if}\n" +
+		"		\u003cspan class=\"status-chip theme-chip\" style:border-color={theme.accent}\u003e\n" +
+		"			Theme: {theme.label}\n" +
+		"		\u003c/span\u003e\n" +
+		"		\u003cbutton class=\"cart-toggle\" onclick={() =\u003e showCart = !showCart}\u003e\n" +
+		"			Cart ({cart.count})\n" +
+		"		\u003c/button\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003c!-- URL Filter Tabs --\u003e\n" +
+		"	\u003cdiv class=\"filter-tabs\"\u003e\n" +
+		"		{#each roles as role}\n" +
+		"			\u003cbutton\n" +
+		"				class=\"tab-btn\"\n" +
+		"				class:active={roleFilter === role}\n" +
+		"				onclick={() =\u003e setRole(role)}\n" +
+		"			\u003e\n" +
+		"				{role}\n" +
+		"			\u003c/button\u003e\n" +
+		"		{/each}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003c!-- Search --\u003e\n" +
+		"	\u003cdiv class=\"search-bar\"\u003e\n" +
+		"		\u003cinput\n" +
+		"			type=\"text\"\n" +
+		"			placeholder=\"Search members...\"\n" +
+		"			bind:value={globalFilter}\n" +
+		"			class=\"search-input\"\n" +
+		"		/\u003e\n" +
+		"		\u003cspan class=\"result-count\"\u003e\n" +
+		"			{$table.getFilteredRowModel().rows.length} of {filteredMembers.length} shown\n" +
+		"		\u003c/span\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003c!-- Table --\u003e\n" +
+		"	\u003cdiv class=\"build table-section\"\u003e\n" +
+		"		\u003cdiv class=\"table-wrapper\"\u003e\n" +
+		"			\u003ctable\u003e\n" +
+		"				\u003cthead\u003e\n" +
+		"					{#each $table.getHeaderGroups() as headerGroup}\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -346,6 +576,14 @@
 			<code>svelte/reactivity/window</code>, and Optimistic UI patterns.
 		</p>
 	</footer>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 </section>
 
 <style>
@@ -671,5 +909,42 @@
 		color: var(--color-text-muted);
 		line-height: 1.6;
 		margin: 0;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

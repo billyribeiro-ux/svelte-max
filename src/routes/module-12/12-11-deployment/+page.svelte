@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	type Adapter = {
 		platform: string;
 		adapter: string;
@@ -39,6 +40,113 @@
 	}
 
 	const completedCount = $derived(checklist.filter((item) => item.done).length);
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"type Adapter = {\n" +
+		"		platform: string;\n" +
+		"		adapter: string;\n" +
+		"		install: string;\n" +
+		"		notes: string;\n" +
+		"	};\n" +
+		"\n" +
+		"	const adapters: Adapter[] = [\n" +
+		"		{ platform: 'Auto-detect', adapter: 'adapter-auto', install: '@sveltejs/adapter-auto', notes: 'Detects deployment platform automatically. Default in new projects.' },\n" +
+		"		{ platform: 'Node.js server', adapter: 'adapter-node', install: '@sveltejs/adapter-node', notes: 'Builds a standalone Node server. Good for Docker, VPS, Railway.' },\n" +
+		"		{ platform: 'Vercel', adapter: 'adapter-vercel', install: '@sveltejs/adapter-vercel', notes: 'Optimized for Vercel edge/serverless functions. Zero-config.' },\n" +
+		"		{ platform: 'Cloudflare', adapter: 'adapter-cloudflare', install: '@sveltejs/adapter-cloudflare', notes: 'Runs on Cloudflare Workers/Pages. Edge runtime.' },\n" +
+		"		{ platform: 'Static hosting', adapter: 'adapter-static', install: '@sveltejs/adapter-static', notes: 'Pre-renders all pages to HTML. No server needed. Good for GitHub Pages, S3.' }\n" +
+		"	];\n" +
+		"\n" +
+		"	type CheckItem = {\n" +
+		"		label: string;\n" +
+		"		done: boolean;\n" +
+		"	};\n" +
+		"\n" +
+		"	let checklist = $state\u003cCheckItem[]\u003e([\n" +
+		"		{ label: 'Choose the correct adapter for your platform', done: false },\n" +
+		"		{ label: 'Set environment variables in production (not .env)', done: false },\n" +
+		"		{ label: 'Run npm run build and verify output', done: false },\n" +
+		"		{ label: 'Test the production build locally with npm run preview', done: false },\n" +
+		"		{ label: 'Enable HTTPS in production', done: false },\n" +
+		"		{ label: 'Configure CSP headers', done: false },\n" +
+		"		{ label: 'Set up error monitoring (Sentry, LogRocket)', done: false },\n" +
+		"		{ label: 'Verify Core Web Vitals with Lighthouse', done: false },\n" +
+		"		{ label: 'Set up CI/CD pipeline (GitHub Actions, etc.)', done: false },\n" +
+		"		{ label: 'Configure caching headers for static assets', done: false },\n" +
+		"		{ label: 'Add robots.txt and sitemap.xml', done: false },\n" +
+		"		{ label: 'Test on multiple browsers and devices', done: false }\n" +
+		"	]);\n" +
+		"\n" +
+		"	function toggleItem(index: number) {\n" +
+		"		checklist[index].done = !checklist[index].done;\n" +
+		"	}\n" +
+		"\n" +
+		"	const completedCount = $derived(checklist.filter((item) =\u003e item.done).length);\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e12.11 — Deployment\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		SvelteKit uses \u003cstrong\u003eadapters\u003c/strong\u003e to transform your app for different deployment targets.\n" +
+		"		The adapter runs at build time and produces output optimized for your platform — whether that is\n" +
+		"		a Node.js server, a serverless function, or a static site.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eAdapter Decision Table\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"table-wrapper\"\u003e\n" +
+		"			\u003ctable class=\"adapter-table\"\u003e\n" +
+		"				\u003cthead\u003e\n" +
+		"					\u003ctr\u003e\n" +
+		"						\u003cth\u003ePlatform\u003c/th\u003e\n" +
+		"						\u003cth\u003eAdapter\u003c/th\u003e\n" +
+		"						\u003cth\u003enpm install\u003c/th\u003e\n" +
+		"						\u003cth\u003eNotes\u003c/th\u003e\n" +
+		"					\u003c/tr\u003e\n" +
+		"				\u003c/thead\u003e\n" +
+		"				\u003ctbody\u003e\n" +
+		"					{#each adapters as adapter}\n" +
+		"						\u003ctr\u003e\n" +
+		"							\u003ctd\u003e\u003cstrong\u003e{adapter.platform}\u003c/strong\u003e\u003c/td\u003e\n" +
+		"							\u003ctd\u003e\u003ccode\u003e{adapter.adapter}\u003c/code\u003e\u003c/td\u003e\n" +
+		"							\u003ctd\u003e\u003ccode\u003e{adapter.install}\u003c/code\u003e\u003c/td\u003e\n" +
+		"							\u003ctd\u003e{adapter.notes}\u003c/td\u003e\n" +
+		"						\u003c/tr\u003e\n" +
+		"					{/each}\n" +
+		"				\u003c/tbody\u003e\n" +
+		"			\u003c/table\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eAdapter Configuration\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cpre\u003e{`// svelte.config.js\n" +
+		"import adapter from '@sveltejs/adapter-node';\n" +
+		"// or: import adapter from '@sveltejs/adapter-vercel';\n" +
+		"// or: import adapter from '@sveltejs/adapter-static';\n" +
+		"\n" +
+		"/** @type {import('@sveltejs/kit').Config} */\n" +
+		"const config = {\n" +
+		"  kit: {\n" +
+		"    adapter: adapter({\n" +
+		"      // adapter-node options:\n" +
+		"      out: 'build',\n" +
+		"      precompress: true,\n" +
+		"      envPrefix: 'APP_'\n" +
+		"    })\n" +
+		"  }\n" +
+		"};\n" +
+		"\n" +
+		"export default config;`}\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eEnvironment Variables\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -151,6 +259,13 @@ npm run preview
 		</div>
 	</div>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>SvelteKit adapters transform your app for different targets: Node.js, Vercel, Cloudflare, or static hosting.</li>
@@ -225,5 +340,42 @@ npm run preview
 		background: #2d8a4e;
 		border-radius: 3px;
 		transition: width 0.3s;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

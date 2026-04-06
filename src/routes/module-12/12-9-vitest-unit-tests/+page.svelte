@@ -1,5 +1,74 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let activeTab = $state<'test' | 'config' | 'tips'>('test');
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"let activeTab = $state\u003c'test' | 'config' | 'tips'\u003e('test');\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e12.9 — Vitest Unit Tests\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eVitest\u003c/strong\u003e is the recommended test runner for SvelteKit projects. It integrates\n" +
+		"		with Vite's transform pipeline, so your Svelte components and TypeScript files work without\n" +
+		"		extra configuration. You can test reactive logic in \u003ccode\u003e.svelte.ts\u003c/code\u003e files,\n" +
+		"		load functions, and utility code.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eSetup\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cul\u003e\n" +
+		"			\u003cli\u003eVitest is already installed as a devDependency in this project\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003e@testing-library/svelte\u003c/code\u003e provides \u003ccode\u003erender\u003c/code\u003e and DOM queries\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003ejsdom\u003c/code\u003e provides a browser-like environment for tests\u003c/li\u003e\n" +
+		"			\u003cli\u003eTest files use \u003ccode\u003e.test.ts\u003c/code\u003e or \u003ccode\u003e.svelte.test.ts\u003c/code\u003e extension\u003c/li\u003e\n" +
+		"		\u003c/ul\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"tabs\"\u003e\n" +
+		"		\u003cbutton class=\"tab\" class:active={activeTab === 'test'} onclick={() =\u003e activeTab = 'test'}\u003e\n" +
+		"			Test Suite\n" +
+		"		\u003c/button\u003e\n" +
+		"		\u003cbutton class=\"tab\" class:active={activeTab === 'config'} onclick={() =\u003e activeTab = 'config'}\u003e\n" +
+		"			vitest.config.ts\n" +
+		"		\u003c/button\u003e\n" +
+		"		\u003cbutton class=\"tab\" class:active={activeTab === 'tips'} onclick={() =\u003e activeTab = 'tips'}\u003e\n" +
+		"			Tips\n" +
+		"		\u003c/button\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	{#if activeTab === 'test'}\n" +
+		"		\u003ch3\u003eComplete Test Suite: Counter Store\u003c/h3\u003e\n" +
+		"		\u003cdiv class=\"build\"\u003e\n" +
+		"			\u003cp class=\"concept\"\u003e\n" +
+		"				This test file demonstrates testing a reactive counter store defined in a\n" +
+		"				\u003ccode\u003e.svelte.ts\u003c/code\u003e file. It tests increment, reset, and a derived total.\n" +
+		"			\u003c/p\u003e\n" +
+		"			\u003cpre\u003e{`// src/lib/stores/counter.svelte.ts\n" +
+		"export function createCounter(initial = 0) {\n" +
+		"  let count = $state(initial);\n" +
+		"  const doubled = $derived(count * 2);\n" +
+		"\n" +
+		"  return {\n" +
+		"    get count() { return count; },\n" +
+		"    get doubled() { return doubled; },\n" +
+		"    increment() { count++; },\n" +
+		"    decrement() { count--; },\n" +
+		"    reset() { count = initial; }\n" +
+		"  };\n" +
+		"}\n" +
+		"\n" +
+		"// src/lib/stores/counter.svelte.test.ts\n" +
+		"import { describe, it, expect } from 'vitest';\n" +
+		"import { createCounter } from './counter.svelte';\n" +
+		"\n" +
+		"describe('createCounter', () =\u003e {\n" +
+		"  it('initializes with default value', () =\u003e {\n" +
+		"    const counter = createCounter();\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -195,6 +264,13 @@ it('shows loading then data', async () => {
 		</div>
 	{/if}
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Vitest integrates with Vite's transform pipeline, so <code>.svelte.ts</code> runes and TypeScript work without extra config.</li>
@@ -233,5 +309,42 @@ it('shows loading then data', async () => {
 		background: var(--color-surface-2);
 		color: var(--color-text);
 		border-bottom: 2px solid var(--color-primary);
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

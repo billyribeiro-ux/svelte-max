@@ -1,5 +1,74 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	let activeTab = $state<'test' | 'config' | 'tips'>('test');
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"let activeTab = $state\u003c'test' | 'config' | 'tips'\u003e('test');\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e12.10 — Playwright E2E\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003ePlaywright\u003c/strong\u003e runs end-to-end tests in real browsers (Chromium, Firefox, WebKit).\n" +
+		"		It navigates your actual app, fills forms, clicks buttons, and asserts on the resulting DOM.\n" +
+		"		SvelteKit integrates with Playwright for testing full user flows across multiple pages.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eSetup\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cul\u003e\n" +
+		"			\u003cli\u003e\u003ccode\u003e@playwright/test\u003c/code\u003e is already installed as a devDependency\u003c/li\u003e\n" +
+		"			\u003cli\u003eTests live in a \u003ccode\u003etests/\u003c/code\u003e or \u003ccode\u003ee2e/\u003c/code\u003e directory\u003c/li\u003e\n" +
+		"			\u003cli\u003ePlaywright launches a real browser and navigates your running app\u003c/li\u003e\n" +
+		"			\u003cli\u003eRun with \u003ccode\u003enpx playwright test\u003c/code\u003e\u003c/li\u003e\n" +
+		"		\u003c/ul\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003cdiv class=\"tabs\"\u003e\n" +
+		"		\u003cbutton class=\"tab\" class:active={activeTab === 'test'} onclick={() =\u003e activeTab = 'test'}\u003e\n" +
+		"			E2E Test\n" +
+		"		\u003c/button\u003e\n" +
+		"		\u003cbutton class=\"tab\" class:active={activeTab === 'config'} onclick={() =\u003e activeTab = 'config'}\u003e\n" +
+		"			Config\n" +
+		"		\u003c/button\u003e\n" +
+		"		\u003cbutton class=\"tab\" class:active={activeTab === 'tips'} onclick={() =\u003e activeTab = 'tips'}\u003e\n" +
+		"			Tips\n" +
+		"		\u003c/button\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	{#if activeTab === 'test'}\n" +
+		"		\u003ch3\u003eE2E Test: CRUD Notes App\u003c/h3\u003e\n" +
+		"		\u003cdiv class=\"build\"\u003e\n" +
+		"			\u003cp class=\"concept\"\u003e\n" +
+		"				This test navigates to the Module 10 CRUD notes app, simulates a login,\n" +
+		"				creates a new note, and verifies it appears on the page.\n" +
+		"			\u003c/p\u003e\n" +
+		"			\u003cpre\u003e{`// e2e/notes-crud.test.ts\n" +
+		"import { test, expect } from '@playwright/test';\n" +
+		"\n" +
+		"test.describe('Notes CRUD App', () =\u003e {\n" +
+		"  test.beforeEach(async ({ page }) =\u003e {\n" +
+		"    // Navigate to the notes app\n" +
+		"    await page.goto('/module-10/project');\n" +
+		"  });\n" +
+		"\n" +
+		"  test('user can log in', async ({ page }) =\u003e {\n" +
+		"    // Fill in login form\n" +
+		"    await page.getByLabel('Username').fill('testuser');\n" +
+		"    await page.getByLabel('Password').fill('password123');\n" +
+		"    await page.getByRole('button', { name: 'Log in' }).click();\n" +
+		"\n" +
+		"    // Verify logged in state\n" +
+		"    await expect(\n" +
+		"      page.getByText('Welcome, testuser')\n" +
+		"    ).toBeVisible();\n" +
+		"  });\n" +
+		"\n" +
+		"  test('user can create a note', async ({ page }) =\u003e {\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -194,6 +263,13 @@ npx playwright test --update-snapshots`}</pre>
 		</div>
 	{/if}
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Playwright runs E2E tests in real browsers (Chromium, Firefox, WebKit) against your running SvelteKit app.</li>
@@ -232,5 +308,42 @@ npx playwright test --update-snapshots`}</pre>
 		background: var(--color-surface-2);
 		color: var(--color-text);
 		border-bottom: 2px solid var(--color-primary);
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

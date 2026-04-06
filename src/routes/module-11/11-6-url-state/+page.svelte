@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
@@ -36,6 +37,120 @@
 			goto(`?filter=${filter}`);
 		}
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { page } from '$app/state';\n" +
+		"	import { goto } from '$app/navigation';\n" +
+		"\n" +
+		"	interface Task {\n" +
+		"		id: number;\n" +
+		"		title: string;\n" +
+		"		status: 'active' | 'completed' | 'archived';\n" +
+		"	}\n" +
+		"\n" +
+		"	const tasks: Task[] = [\n" +
+		"		{ id: 1, title: 'Set up SvelteKit project', status: 'completed' },\n" +
+		"		{ id: 2, title: 'Learn runes', status: 'completed' },\n" +
+		"		{ id: 3, title: 'Build state management module', status: 'active' },\n" +
+		"		{ id: 4, title: 'Add TanStack Table', status: 'active' },\n" +
+		"		{ id: 5, title: 'Write tests', status: 'active' },\n" +
+		"		{ id: 6, title: 'Old migration task', status: 'archived' },\n" +
+		"		{ id: 7, title: 'Deploy v1', status: 'active' },\n" +
+		"		{ id: 8, title: 'Initial prototype', status: 'archived' }\n" +
+		"	];\n" +
+		"\n" +
+		"	const filters = ['all', 'active', 'completed', 'archived'] as const;\n" +
+		"\n" +
+		"	let currentFilter = $derived(page.url.searchParams.get('filter') ?? 'all');\n" +
+		"\n" +
+		"	let filteredTasks = $derived(\n" +
+		"		currentFilter === 'all'\n" +
+		"			? tasks\n" +
+		"			: tasks.filter((t) =\u003e t.status === currentFilter)\n" +
+		"	);\n" +
+		"\n" +
+		"	function setFilter(filter: string) {\n" +
+		"		if (filter === 'all') {\n" +
+		"			goto('?');\n" +
+		"		} else {\n" +
+		"			goto(`?filter=${filter}`);\n" +
+		"		}\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e11.6 — URL SearchParams as State\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		URL search parameters are an excellent place to store \u003cstrong\u003efilter, sort, and\n" +
+		"		pagination state\u003c/strong\u003e. They're shareable, bookmarkable, and survive page refreshes.\n" +
+		"		SvelteKit's \u003ccode\u003epage\u003c/code\u003e state and \u003ccode\u003egoto\u003c/code\u003e make this seamless.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eReading URL State\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003eimport &#123; page &#125; from '$app/state';\n" +
+		"import &#123; goto &#125; from '$app/navigation';\n" +
+		"\n" +
+		"let filter = $derived(\n" +
+		"  page.url.searchParams.get('filter') ?? 'all'\n" +
+		");\n" +
+		"\n" +
+		"function setFilter(f: string) &#123;\n" +
+		"  goto(`?filter=$&#123;f&#125;`);\n" +
+		"&#125;\u003c/code\u003e\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eLive Demo: Filtered Task List\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"filter-bar\"\u003e\n" +
+		"			{#each filters as filter}\n" +
+		"				\u003cbutton\n" +
+		"					class=\"filter-btn\"\n" +
+		"					class:active={currentFilter === filter}\n" +
+		"					onclick={() =\u003e setFilter(filter)}\n" +
+		"				\u003e\n" +
+		"					{filter}\n" +
+		"				\u003c/button\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cp class=\"url-display\"\u003e\n" +
+		"			Current URL: \u003ccode\u003e?filter={currentFilter}\u003c/code\u003e\n" +
+		"		\u003c/p\u003e\n" +
+		"\n" +
+		"		\u003cdiv class=\"task-list\"\u003e\n" +
+		"			{#each filteredTasks as task}\n" +
+		"				\u003cdiv class=\"task-item\" data-status={task.status}\u003e\n" +
+		"					\u003cspan class=\"status-badge\"\u003e{task.status}\u003c/span\u003e\n" +
+		"					\u003cspan class=\"task-title\"\u003e{task.title}\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			{:else}\n" +
+		"				\u003cp class=\"empty\"\u003eNo tasks match this filter.\u003c/p\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"\n" +
+		"		\u003cp class=\"task-count\"\u003e{filteredTasks.length} task{filteredTasks.length === 1 ? '' : 's'} shown\u003c/p\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eKey Takeaways\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eURL params persist across refreshes and are shareable via links\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003epage.url.searchParams\u003c/code\u003e is reactive — changes trigger UI updates\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003egoto('?filter=active')\u003c/code\u003e updates the URL without a full page reload\u003c/li\u003e\n" +
+		"		\u003cli\u003eUse URL state for anything the user might want to bookmark or share\u003c/li\u003e\n" +
+		"		\u003cli\u003eCombine with \u003ccode\u003e$derived\u003c/code\u003e for computed filtered/sorted lists\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003epage.url.searchParams\u003c/code\u003e is reactive and drives filter/sort/pagination state from the URL.\u003c/li\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003egoto('?filter=active')\u003c/code\u003e updates the URL without a full page reload.\u003c/li\u003e\n" +
+		"		\u003cli\u003eURL state is bookmarkable, shareable, and survives page refreshes, unlike in-memory state.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -101,6 +216,13 @@ function setFilter(f: string) &#123;
 		<li>Use URL state for anything the user might want to bookmark or share</li>
 		<li>Combine with <code>$derived</code> for computed filtered/sorted lists</li>
 	</ul>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -201,5 +323,42 @@ function setFilter(f: string) &#123;
 		color: var(--color-text-muted);
 		font-style: italic;
 		margin: 0;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

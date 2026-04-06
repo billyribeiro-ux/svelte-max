@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	type Metric = {
 		name: string;
 		full: string;
@@ -47,6 +48,121 @@
 		const colors = { good: '#2d8a4e', needsWork: '#c47a10', poor: '#cc3333' };
 		return colors[level];
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"type Metric = {\n" +
+		"		name: string;\n" +
+		"		full: string;\n" +
+		"		good: string;\n" +
+		"		needsWork: string;\n" +
+		"		poor: string;\n" +
+		"		description: string;\n" +
+		"		causes: string[];\n" +
+		"		mitigations: string[];\n" +
+		"	};\n" +
+		"\n" +
+		"	const metrics: Metric[] = [\n" +
+		"		{\n" +
+		"			name: 'LCP',\n" +
+		"			full: 'Largest Contentful Paint',\n" +
+		"			good: '≤ 2.5s',\n" +
+		"			needsWork: '2.5s – 4.0s',\n" +
+		"			poor: '\u003e 4.0s',\n" +
+		"			description: 'Measures loading performance — time until the largest visible element renders.',\n" +
+		"			causes: ['Slow server response', 'Render-blocking resources', 'Large unoptimized images', 'Client-side rendering delays'],\n" +
+		"			mitigations: ['Use SSR/SSG with SvelteKit', 'Optimize images (width/height, lazy)', 'Preload critical resources', 'Use CDN for static assets']\n" +
+		"		},\n" +
+		"		{\n" +
+		"			name: 'CLS',\n" +
+		"			full: 'Cumulative Layout Shift',\n" +
+		"			good: '≤ 0.1',\n" +
+		"			needsWork: '0.1 – 0.25',\n" +
+		"			poor: '\u003e 0.25',\n" +
+		"			description: 'Measures visual stability — how much visible content shifts unexpectedly.',\n" +
+		"			causes: ['Images without dimensions', 'Dynamically injected content', 'Web fonts causing FOIT/FOUT', 'Late-loading ads or embeds'],\n" +
+		"			mitigations: ['Always set width/height on images', 'Reserve space for dynamic content', 'Use font-display: swap', 'Use CSS contain where possible']\n" +
+		"		},\n" +
+		"		{\n" +
+		"			name: 'INP',\n" +
+		"			full: 'Interaction to Next Paint',\n" +
+		"			good: '≤ 200ms',\n" +
+		"			needsWork: '200ms – 500ms',\n" +
+		"			poor: '\u003e 500ms',\n" +
+		"			description: 'Measures responsiveness — latency of user interactions throughout the page lifecycle.',\n" +
+		"			causes: ['Long main-thread tasks', 'Excessive re-renders', 'Heavy event handlers', 'Large DOM size'],\n" +
+		"			mitigations: ['Break up long tasks', 'Use $derived for memoization', 'Debounce rapid inputs', 'Minimize DOM nodes']\n" +
+		"		}\n" +
+		"	];\n" +
+		"\n" +
+		"	function getColor(level: 'good' | 'needsWork' | 'poor'): string {\n" +
+		"		const colors = { good: '#2d8a4e', needsWork: '#c47a10', poor: '#cc3333' };\n" +
+		"		return colors[level];\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e12.1 — Core Web Vitals\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eCore Web Vitals\u003c/strong\u003e are three metrics Google uses to measure real-world user experience:\n" +
+		"		loading (LCP), visual stability (CLS), and interactivity (INP). Svelte's\n" +
+		"		\u003cstrong\u003ezero-runtime architecture\u003c/strong\u003e helps because compiled output is minimal — no framework\n" +
+		"		overhead at runtime means faster paint times, smaller bundles, and less main-thread work.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eScore Cards\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"cards\"\u003e\n" +
+		"		{#each metrics as metric}\n" +
+		"			\u003cdiv class=\"score-card\"\u003e\n" +
+		"				\u003ch4\u003e{metric.name}\u003c/h4\u003e\n" +
+		"				\u003cp class=\"full-name\"\u003e{metric.full}\u003c/p\u003e\n" +
+		"				\u003cp class=\"metric-desc\"\u003e{metric.description}\u003c/p\u003e\n" +
+		"				\u003cdiv class=\"thresholds\"\u003e\n" +
+		"					\u003cspan class=\"threshold\" style=\"background: {getColor('good')}\"\u003eGood: {metric.good}\u003c/span\u003e\n" +
+		"					\u003cspan class=\"threshold\" style=\"background: {getColor('needsWork')}\"\u003eNeeds Work: {metric.needsWork}\u003c/span\u003e\n" +
+		"					\u003cspan class=\"threshold\" style=\"background: {getColor('poor')}\"\u003ePoor: {metric.poor}\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		{/each}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eCauses &amp; Mitigations\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003ctable class=\"causes-table\"\u003e\n" +
+		"			\u003cthead\u003e\n" +
+		"				\u003ctr\u003e\n" +
+		"					\u003cth\u003eMetric\u003c/th\u003e\n" +
+		"					\u003cth\u003eCommon Causes\u003c/th\u003e\n" +
+		"					\u003cth\u003eMitigations\u003c/th\u003e\n" +
+		"				\u003c/tr\u003e\n" +
+		"			\u003c/thead\u003e\n" +
+		"			\u003ctbody\u003e\n" +
+		"				{#each metrics as metric}\n" +
+		"					\u003ctr\u003e\n" +
+		"						\u003ctd\u003e\u003cstrong\u003e{metric.name}\u003c/strong\u003e\u003c/td\u003e\n" +
+		"						\u003ctd\u003e\n" +
+		"							\u003cul\u003e\n" +
+		"								{#each metric.causes as cause}\n" +
+		"									\u003cli\u003e{cause}\u003c/li\u003e\n" +
+		"								{/each}\n" +
+		"							\u003c/ul\u003e\n" +
+		"						\u003c/td\u003e\n" +
+		"						\u003ctd\u003e\n" +
+		"							\u003cul\u003e\n" +
+		"								{#each metric.mitigations as fix}\n" +
+		"									\u003cli\u003e{fix}\u003c/li\u003e\n" +
+		"								{/each}\n" +
+		"							\u003c/ul\u003e\n" +
+		"						\u003c/td\u003e\n" +
+		"					\u003c/tr\u003e\n" +
+		"				{/each}\n" +
+		"			\u003c/tbody\u003e\n" +
+		"		\u003c/table\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -133,6 +249,13 @@
 		automatic code-splitting — all of which directly improve Core Web Vitals scores.
 	</p>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>LCP, CLS, and INP are the three Core Web Vitals that measure loading, stability, and responsiveness.</li>
@@ -209,5 +332,42 @@
 	.causes-table th {
 		background: var(--color-surface-2);
 		font-weight: 600;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

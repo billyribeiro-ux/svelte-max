@@ -1,5 +1,70 @@
 <script lang="ts">
 	import { increment, decrement, reset, getCount } from '$lib/stores/counter.svelte';
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { increment, decrement, reset, getCount } from '$lib/stores/counter.svelte';\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e11.3 — Universal Reactive State (.svelte.ts)\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Files ending in \u003ccode\u003e.svelte.ts\u003c/code\u003e can use runes like \u003ccode\u003e$state\u003c/code\u003e at\n" +
+		"		the module level. When you export functions that read/write that state, any component\n" +
+		"		importing them gets \u003cstrong\u003eautomatic reactivity\u003c/strong\u003e — no stores, no subscriptions,\n" +
+		"		just plain functions.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eThe Store: \u003ccode\u003ecounter.svelte.ts\u003c/code\u003e\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003e// src/lib/stores/counter.svelte.ts\n" +
+		"let count = $state(0);\n" +
+		"\n" +
+		"export function increment() &#123; count++; &#125;\n" +
+		"export function decrement() &#123; count--; &#125;\n" +
+		"export function reset() &#123; count = 0; &#125;\n" +
+		"export function getCount() &#123; return count; &#125;\u003c/code\u003e\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eLive Demo\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"counter-display\"\u003e\n" +
+		"			\u003cspan class=\"count\"\u003e{getCount()}\u003c/span\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"		\u003cdiv class=\"button-row\"\u003e\n" +
+		"			\u003cbutton onclick={decrement}\u003e- Decrement\u003c/button\u003e\n" +
+		"			\u003cbutton class=\"reset\" onclick={reset}\u003eReset\u003c/button\u003e\n" +
+		"			\u003cbutton onclick={increment}\u003e+ Increment\u003c/button\u003e\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhy .svelte.ts?\u003c/h3\u003e\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		The \u003ccode\u003e.svelte.ts\u003c/code\u003e extension tells the Svelte compiler to process runes\n" +
+		"		in TypeScript files. Regular \u003ccode\u003e.ts\u003c/code\u003e files cannot use \u003ccode\u003e$state\u003c/code\u003e,\n" +
+		"		\u003ccode\u003e$derived\u003c/code\u003e, or \u003ccode\u003e$effect\u003c/code\u003e. This is the Svelte 5 replacement\n" +
+		"		for writable/readable stores.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eKey Takeaways\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003eModule-level \u003ccode\u003e$state\u003c/code\u003e in \u003ccode\u003e.svelte.ts\u003c/code\u003e files creates shared reactive state\u003c/li\u003e\n" +
+		"		\u003cli\u003eExport functions that read/write the state — consumers stay reactive automatically\u003c/li\u003e\n" +
+		"		\u003cli\u003eUse \u003ccode\u003egetCount()\u003c/code\u003e (a function call) in templates so Svelte tracks the dependency\u003c/li\u003e\n" +
+		"		\u003cli\u003eThis replaces the old \u003ccode\u003ewritable()\u003c/code\u003e / \u003ccode\u003ereadable()\u003c/code\u003e store pattern entirely\u003c/li\u003e\n" +
+		"		\u003cli\u003eWorks with \u003ccode\u003e$derived\u003c/code\u003e and \u003ccode\u003e$effect\u003c/code\u003e too\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eWhat you learned\u003c/h3\u003e\n" +
+		"	\u003cul\u003e\n" +
+		"		\u003cli\u003e\u003ccode\u003e.svelte.ts\u003c/code\u003e files let you use \u003ccode\u003e$state\u003c/code\u003e at the module level for shared reactive state.\u003c/li\u003e\n" +
+		"		\u003cli\u003eExported functions that read/write module state keep consumers automatically reactive.\u003c/li\u003e\n" +
+		"		\u003cli\u003eThis pattern replaces the legacy \u003ccode\u003ewritable()\u003c/code\u003e / \u003ccode\u003ereadable()\u003c/code\u003e store API entirely.\u003c/li\u003e\n" +
+		"	\u003c/ul\u003e\n" +
+		"\u003c/section\u003e";
 </script>
 
 <section class="page">
@@ -51,6 +116,13 @@ export function getCount() &#123; return count; &#125;</code></pre>
 		<li>This replaces the old <code>writable()</code> / <code>readable()</code> store pattern entirely</li>
 		<li>Works with <code>$derived</code> and <code>$effect</code> too</li>
 	</ul>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -111,5 +183,42 @@ export function getCount() &#123; return count; &#125;</code></pre>
 		background: var(--color-surface-2);
 		color: var(--color-text);
 		border: 1px solid var(--color-border);
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

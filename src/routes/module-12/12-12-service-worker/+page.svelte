@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	type LifecycleStep = {
 		name: string;
 		description: string;
@@ -11,6 +12,85 @@
 		{ name: 'Fetch', description: 'The service worker intercepts network requests. Apply caching strategies here.' },
 		{ name: 'Update', description: 'When the SW file changes, the browser installs the new version alongside the old one.' }
 	];
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"type LifecycleStep = {\n" +
+		"		name: string;\n" +
+		"		description: string;\n" +
+		"	};\n" +
+		"\n" +
+		"	const lifecycle: LifecycleStep[] = [\n" +
+		"		{ name: 'Register', description: 'SvelteKit auto-registers src/service-worker.js when the file exists.' },\n" +
+		"		{ name: 'Install', description: 'The browser downloads and installs the service worker. Precache static assets here.' },\n" +
+		"		{ name: 'Activate', description: 'The new service worker takes control. Clean up old caches here.' },\n" +
+		"		{ name: 'Fetch', description: 'The service worker intercepts network requests. Apply caching strategies here.' },\n" +
+		"		{ name: 'Update', description: 'When the SW file changes, the browser installs the new version alongside the old one.' }\n" +
+		"	];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e12.12 — Service Workers\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		SvelteKit automatically registers a service worker if you create a\n" +
+		"		\u003ccode\u003esrc/service-worker.js\u003c/code\u003e (or \u003ccode\u003e.ts\u003c/code\u003e) file. The\n" +
+		"		\u003cstrong\u003e\u003ccode\u003e$service-worker\u003c/code\u003e\u003c/strong\u003e module gives you access to \u003ccode\u003ebuild\u003c/code\u003e\n" +
+		"		(compiled app files), \u003ccode\u003efiles\u003c/code\u003e (static assets), and \u003ccode\u003eversion\u003c/code\u003e\n" +
+		"		(a unique build identifier) for building caching strategies.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eService Worker Lifecycle\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"lifecycle\"\u003e\n" +
+		"			{#each lifecycle as step, i}\n" +
+		"				\u003cdiv class=\"lifecycle-step\"\u003e\n" +
+		"					\u003cdiv class=\"step-num\"\u003e{i + 1}\u003c/div\u003e\n" +
+		"					\u003cdiv class=\"step-content\"\u003e\n" +
+		"						\u003cstrong\u003e{step.name}\u003c/strong\u003e\n" +
+		"						\u003cp\u003e{step.description}\u003c/p\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003e$service-worker Module\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cul\u003e\n" +
+		"			\u003cli\u003e\u003cstrong\u003e\u003ccode\u003ebuild\u003c/code\u003e\u003c/strong\u003e — array of URLs for the compiled app (JS, CSS chunks)\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003cstrong\u003e\u003ccode\u003efiles\u003c/code\u003e\u003c/strong\u003e — array of URLs for files in \u003ccode\u003estatic/\u003c/code\u003e directory\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003cstrong\u003e\u003ccode\u003eversion\u003c/code\u003e\u003c/strong\u003e — unique string that changes on every build (use as cache key)\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003cstrong\u003e\u003ccode\u003eprerendered\u003c/code\u003e\u003c/strong\u003e — array of pre-rendered page URLs\u003c/li\u003e\n" +
+		"			\u003cli\u003e\u003cstrong\u003e\u003ccode\u003ebase\u003c/code\u003e\u003c/strong\u003e — the app's base path\u003c/li\u003e\n" +
+		"		\u003c/ul\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eCache-First for App Shell\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			The app shell (compiled JS, CSS, static images) rarely changes between deploys.\n" +
+		"			Use a \u003cstrong\u003ecache-first\u003c/strong\u003e strategy: serve from cache, falling back to network.\n" +
+		"			The \u003ccode\u003eversion\u003c/code\u003e string ensures old caches are cleaned up on deploy.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003cpre\u003e{`// src/service-worker.js\n" +
+		"/// \u003creference types=\"@sveltejs/kit\" /\u003e\n" +
+		"import { build, files, version } from '$service-worker';\n" +
+		"\n" +
+		"const CACHE = \\`cache-\\${version}\\`;\n" +
+		"const ASSETS = [...build, ...files];\n" +
+		"\n" +
+		"// Install: precache all app assets\n" +
+		"self.addEventListener('install', (event) =\u003e {\n" +
+		"  event.waitUntil(\n" +
+		"    caches.open(CACHE).then((cache) =\u003e cache.addAll(ASSETS))\n" +
+		"  );\n" +
+		"});\n" +
+		"\n" +
+		"// Activate: delete old caches\n" +
+		"self.addEventListener('activate', (event) =\u003e {\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -197,6 +277,13 @@ self.addEventListener('fetch', (event) => {
 		<li><strong>Be careful with caching HTML</strong> — stale HTML can break your app after a deploy</li>
 	</ul>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>SvelteKit auto-registers a service worker when <code>src/service-worker.js</code> exists.</li>
@@ -249,5 +336,42 @@ self.addEventListener('fetch', (event) => {
 		color: var(--color-text-muted);
 		font-size: var(--text-sm);
 		line-height: 1.5;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

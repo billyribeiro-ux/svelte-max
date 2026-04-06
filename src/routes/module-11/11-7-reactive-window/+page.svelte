@@ -1,5 +1,74 @@
 <script lang="ts">
 	import { innerWidth, innerHeight, scrollY, online, devicePixelRatio } from 'svelte/reactivity/window';
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"import { innerWidth, innerHeight, scrollY, online, devicePixelRatio } from 'svelte/reactivity/window';\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e11.7 — Reactive Window Values\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		Svelte provides \u003cstrong\u003ereactive window values\u003c/strong\u003e via \u003ccode\u003esvelte/reactivity/window\u003c/code\u003e.\n" +
+		"		These are objects with a \u003ccode\u003e.current\u003c/code\u003e property that updates automatically when the\n" +
+		"		browser value changes. They are \u003ccode\u003eundefined\u003c/code\u003e during SSR, so guard them\n" +
+		"		appropriately.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eAvailable Values\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003eimport &#123;\n" +
+		"  innerWidth,\n" +
+		"  innerHeight,\n" +
+		"  scrollY,\n" +
+		"  online,\n" +
+		"  devicePixelRatio\n" +
+		"&#125; from 'svelte/reactivity/window';\n" +
+		"\n" +
+		"// Each is an object with .current\n" +
+		"// innerWidth.current === window.innerWidth (reactive)\n" +
+		"// undefined during SSR\u003c/code\u003e\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eLive Dashboard\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		{#if innerWidth}\n" +
+		"			\u003cdiv class=\"value-grid\"\u003e\n" +
+		"				\u003cdiv class=\"value-card\"\u003e\n" +
+		"					\u003cspan class=\"value-label\"\u003einnerWidth\u003c/span\u003e\n" +
+		"					\u003cspan class=\"value-number\"\u003e{innerWidth.current}px\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"value-card\"\u003e\n" +
+		"					\u003cspan class=\"value-label\"\u003einnerHeight\u003c/span\u003e\n" +
+		"					\u003cspan class=\"value-number\"\u003e{innerHeight.current}px\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"value-card\"\u003e\n" +
+		"					\u003cspan class=\"value-label\"\u003escrollY\u003c/span\u003e\n" +
+		"					\u003cspan class=\"value-number\"\u003e{Math.round(scrollY.current ?? 0)}px\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"value-card\"\u003e\n" +
+		"					\u003cspan class=\"value-label\"\u003eonline\u003c/span\u003e\n" +
+		"					\u003cspan class=\"value-number\" class:online-true={online.current} class:online-false={!online.current}\u003e\n" +
+		"						{online.current ? 'Yes' : 'No'}\n" +
+		"					\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"				\u003cdiv class=\"value-card\"\u003e\n" +
+		"					\u003cspan class=\"value-label\"\u003edevicePixelRatio\u003c/span\u003e\n" +
+		"					\u003cspan class=\"value-number\"\u003e{devicePixelRatio.current}x\u003c/span\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"\n" +
+		"			\u003cdiv class=\"responsive-indicator\"\u003e\n" +
+		"				\u003cp\u003e\n" +
+		"					Breakpoint:\n" +
+		"					\u003cstrong\u003e\n" +
+		"						{#if (innerWidth.current ?? 0) \u003c 640}\n" +
+		"							Mobile (&lt;640px)\n" +
+		"						{:else if (innerWidth.current ?? 0) \u003c 768}\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -103,6 +172,13 @@
 		<li>No need for manual event listeners — Svelte handles it internally</li>
 	</ul>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>svelte/reactivity/window</code> exposes reactive objects like <code>innerWidth</code> and <code>scrollY</code> with a <code>.current</code> property.</li>
@@ -185,5 +261,42 @@
 		border-radius: var(--radius-md);
 		color: var(--color-text-muted);
 		margin-block: var(--space-md);
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

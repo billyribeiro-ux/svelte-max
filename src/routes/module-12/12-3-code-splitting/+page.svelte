@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	type ChartResult = { label: string; data: number[] };
 
 	let showChart = $state(false);
@@ -20,6 +21,94 @@
 		showChart = false;
 		chartPromise = null;
 	}
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"type ChartResult = { label: string; data: number[] };\n" +
+		"\n" +
+		"	let showChart = $state(false);\n" +
+		"	let chartPromise = $state\u003cPromise\u003cChartResult\u003e | null\u003e(null);\n" +
+		"\n" +
+		"	function loadChart() {\n" +
+		"		showChart = true;\n" +
+		"		chartPromise = new Promise\u003cChartResult\u003e((resolve) =\u003e {\n" +
+		"			setTimeout(() =\u003e {\n" +
+		"				resolve({\n" +
+		"					label: 'Monthly Revenue',\n" +
+		"					data: [120, 340, 250, 480, 390, 520, 610, 580, 700, 650, 810, 900]\n" +
+		"				});\n" +
+		"			}, 500);\n" +
+		"		});\n" +
+		"	}\n" +
+		"\n" +
+		"	function hideChart() {\n" +
+		"		showChart = false;\n" +
+		"		chartPromise = null;\n" +
+		"	}\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e12.3 — Code Splitting\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eCode splitting\u003c/strong\u003e ensures users only download the JavaScript they need.\n" +
+		"		SvelteKit automatically code-splits every route — each page's component and its dependencies\n" +
+		"		are loaded in a separate chunk. For heavy components within a page, you can use\n" +
+		"		\u003cstrong\u003edynamic \u003ccode\u003eimport()\u003c/code\u003e\u003c/strong\u003e to defer loading until the user needs it.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eRoute-Based Splitting (Automatic)\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			SvelteKit splits code at every \u003ccode\u003e+page.svelte\u003c/code\u003e boundary. When a user navigates\n" +
+		"			to \u003ccode\u003e/module-12/12-3-code-splitting\u003c/code\u003e, only this page's code is loaded — not\n" +
+		"			every other module. This happens automatically with zero configuration.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003cpre\u003e{`// SvelteKit handles this internally:\n" +
+		"// /routes/module-12/12-3-code-splitting/+page.svelte\n" +
+		"//   → chunk-12-3.js (loaded on demand)\n" +
+		"// /routes/module-12/12-4-effect-performance/+page.svelte\n" +
+		"//   → chunk-12-4.js (loaded only when navigated to)`}\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eDynamic Import for Heavy Components\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			For expensive components (charts, editors, 3D renderers), use dynamic \u003ccode\u003eimport()\u003c/code\u003e\n" +
+		"			inside an \u003ccode\u003e{'{#await}'}\u003c/code\u003e block. The component's code is fetched only when the\n" +
+		"			user triggers it.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003cpre\u003e{`\u003c!-- Pattern: load heavy component on demand --\u003e\n" +
+		"\u003c` + `script lang=\"ts\"\u003e\n" +
+		"  let show = $state(false);\n" +
+		"\u003c/` + `script\u003e\n" +
+		"\n" +
+		"{#if show}\n" +
+		"  {#await import('./HeavyChart.svelte')}\n" +
+		"    \u003cp\u003eLoading chart...\u003c/p\u003e\n" +
+		"  {:then module}\n" +
+		"    \u003cmodule.default data={chartData} /\u003e\n" +
+		"  {:catch err}\n" +
+		"    \u003cp\u003eFailed to load chart.\u003c/p\u003e\n" +
+		"  {/await}\n" +
+		"{/if}\n" +
+		"\n" +
+		"\u003cbutton onclick={() =\u003e show = true}\u003eShow Chart\u003c/button\u003e`}\u003c/pre\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eDemo: Lazy-Loaded Chart\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			Click the button below to simulate loading a heavy chart component.\n" +
+		"			The chart data resolves after 500ms, simulating a dynamic import.\n" +
+		"		\u003c/p\u003e\n" +
+		"\n" +
+		"		{#if !showChart}\n" +
+		"			\u003cbutton class=\"load-btn\" onclick={loadChart}\u003eShow Chart\u003c/button\u003e\n" +
+		"		{:else}\n" +
+		"			\u003cbutton class=\"load-btn secondary\" onclick={hideChart}\u003eHide Chart\u003c/button\u003e\n" +
+		"\u003c!-- ... remaining markup ... --\u003e";
 </script>
 
 <section class="page">
@@ -117,6 +206,13 @@
 		<li><strong>Analyze your bundle</strong> — use <code>vite-plugin-visualizer</code> to find large chunks</li>
 	</ul>
 
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>SvelteKit automatically code-splits at every <code>+page.svelte</code> boundary with zero configuration.</li>
@@ -200,5 +296,42 @@
 		font-size: 0.7em;
 		color: var(--color-text-muted);
 		margin-block-start: 2px;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 480px) {
+		.concept { max-inline-size: 65ch; }
+	}
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
+		.concept { max-inline-size: 72ch; }
+	}
+	@media (min-width: 1024px) {
+		.concept { max-inline-size: 80ch; }
 	}
 </style>

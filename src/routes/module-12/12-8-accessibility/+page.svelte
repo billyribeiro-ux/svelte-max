@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 	type A11yPattern = {
 		id: number;
 		name: string;
@@ -63,6 +64,156 @@
 		{ id: 9, name: 'Form labels', description: 'Every input needs an associated label element or aria-label.', example: '<label for="email">Email</label><input id="email" />', reference: 'Module 8 — Form components' },
 		{ id: 10, name: 'Error announcements', description: 'Form validation errors should be announced to screen readers and associated with inputs.', example: 'aria-describedby pointing to error message', reference: 'Module 9 — Form validation' }
 	];
+
+
+	/* ── Complete code for "Having issues?" ── */
+	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
+		"type A11yPattern = {\n" +
+		"		id: number;\n" +
+		"		name: string;\n" +
+		"		description: string;\n" +
+		"		example: string;\n" +
+		"		reference: string;\n" +
+		"	};\n" +
+		"\n" +
+		"	let announcement = $state('');\n" +
+		"\n" +
+		"	function announce(message: string) {\n" +
+		"		announcement = '';\n" +
+		"		setTimeout(() =\u003e {\n" +
+		"			announcement = message;\n" +
+		"		}, 50);\n" +
+		"	}\n" +
+		"\n" +
+		"	let modalOpen = $state(false);\n" +
+		"	let modalRef = $state\u003cHTMLDivElement | null\u003e(null);\n" +
+		"\n" +
+		"	function openModal() {\n" +
+		"		modalOpen = true;\n" +
+		"		setTimeout(() =\u003e {\n" +
+		"			modalRef?.querySelector\u003cHTMLElement\u003e('[data-focus]')?.focus();\n" +
+		"		}, 0);\n" +
+		"	}\n" +
+		"\n" +
+		"	function closeModal() {\n" +
+		"		modalOpen = false;\n" +
+		"	}\n" +
+		"\n" +
+		"	function handleModalKeydown(event: KeyboardEvent) {\n" +
+		"		if (event.key === 'Escape') {\n" +
+		"			closeModal();\n" +
+		"			return;\n" +
+		"		}\n" +
+		"		if (event.key === 'Tab' && modalRef) {\n" +
+		"			const focusable = modalRef.querySelectorAll\u003cHTMLElement\u003e(\n" +
+		"				'button, [href], input, select, textarea, [tabindex]:not([tabindex=\"-1\"])'\n" +
+		"			);\n" +
+		"			const first = focusable[0];\n" +
+		"			const last = focusable[focusable.length - 1];\n" +
+		"			if (event.shiftKey && document.activeElement === first) {\n" +
+		"				event.preventDefault();\n" +
+		"				last.focus();\n" +
+		"			} else if (!event.shiftKey && document.activeElement === last) {\n" +
+		"				event.preventDefault();\n" +
+		"				first.focus();\n" +
+		"			}\n" +
+		"		}\n" +
+		"	}\n" +
+		"\n" +
+		"	const patterns: A11yPattern[] = [\n" +
+		"		{ id: 1, name: 'Semantic HTML', description: 'Use native HTML elements (button, nav, main, article) instead of div/span with roles.', example: '\u003cbutton\u003e instead of \u003cdiv role=\"button\"\u003e', reference: 'Module 1 — HTML fundamentals' },\n" +
+		"		{ id: 2, name: 'Alt text on images', description: 'Every img needs an alt attribute. Decorative images use alt=\"\".', example: '\u003cimg alt=\"User avatar\" /\u003e', reference: 'Module 12.2 — Image optimization' },\n" +
+		"		{ id: 3, name: 'ARIA labels', description: 'Use aria-label or aria-labelledby for elements without visible text labels.', example: '\u003cbutton aria-label=\"Close menu\"\u003eX\u003c/button\u003e', reference: 'Module 8 — Form components' },\n" +
+		"		{ id: 4, name: 'Focus management', description: 'Move focus to new content (modals, notifications). Trap focus in modals.', example: 'Focus trap on dialog open', reference: 'Module 12.8 — This lesson (modal demo)' },\n" +
+		"		{ id: 5, name: 'Keyboard navigation', description: 'All interactive elements must be reachable and operable via keyboard.', example: 'Tab order, Enter/Space activation', reference: 'Module 6 — Event handling' },\n" +
+		"		{ id: 6, name: 'aria-live regions', description: 'Use aria-live=\"polite\" for dynamic content updates that screen readers should announce.', example: '\u003cdiv aria-live=\"polite\"\u003e{status}\u003c/div\u003e', reference: 'Module 12.8 — This lesson (live region demo)' },\n" +
+		"		{ id: 7, name: 'Skip-to-content link', description: 'A hidden link at the top of the page lets keyboard users skip past navigation.', example: '\u003ca href=\"#main\" class=\"skip-link\"\u003eSkip to content\u003c/a\u003e', reference: 'Module 4 — Layout components' },\n" +
+		"		{ id: 8, name: 'Color contrast', description: 'Text must have at least 4.5:1 contrast ratio against its background (WCAG AA).', example: 'Dark text on light backgrounds', reference: 'Module 3 — CSS design tokens' },\n" +
+		"		{ id: 9, name: 'Form labels', description: 'Every input needs an associated label element or aria-label.', example: '\u003clabel for=\"email\"\u003eEmail\u003c/label\u003e\u003cinput id=\"email\" /\u003e', reference: 'Module 8 — Form components' },\n" +
+		"		{ id: 10, name: 'Error announcements', description: 'Form validation errors should be announced to screen readers and associated with inputs.', example: 'aria-describedby pointing to error message', reference: 'Module 9 — Form validation' }\n" +
+		"	];\n" +
+		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003csection class=\"page\"\u003e\n" +
+		"	\u003ch1\u003e12.8 — Accessibility\u003c/h1\u003e\n" +
+		"\n" +
+		"	\u003cp class=\"concept\"\u003e\n" +
+		"		\u003cstrong\u003eAccessibility (a11y)\u003c/strong\u003e ensures your app is usable by everyone, including people\n" +
+		"		who rely on screen readers, keyboard navigation, or other assistive technologies. Svelte\n" +
+		"		provides compile-time a11y warnings, but building truly accessible apps requires understanding\n" +
+		"		ARIA roles, focus management, and live regions.\n" +
+		"	\u003c/p\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eTop 10 A11y Patterns\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cdiv class=\"checklist\"\u003e\n" +
+		"			{#each patterns as pattern}\n" +
+		"				\u003cdiv class=\"check-item\"\u003e\n" +
+		"					\u003cdiv class=\"check-header\"\u003e\n" +
+		"						\u003cspan class=\"check-num\"\u003e{pattern.id}\u003c/span\u003e\n" +
+		"						\u003cstrong\u003e{pattern.name}\u003c/strong\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"					\u003cp class=\"check-desc\"\u003e{pattern.description}\u003c/p\u003e\n" +
+		"					\u003ccode\u003e{pattern.example}\u003c/code\u003e\n" +
+		"					\u003cp class=\"check-ref\"\u003eReference: {pattern.reference}\u003c/p\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			{/each}\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eDemo: aria-live Region\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			Click the button to update the live region. Screen readers will announce the change\n" +
+		"			without the user needing to navigate to it.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003cbutton class=\"demo-btn\" onclick={() =\u003e announce('Item added to cart successfully!')}\u003e\n" +
+		"			Add to Cart\n" +
+		"		\u003c/button\u003e\n" +
+		"		\u003cbutton class=\"demo-btn secondary\" onclick={() =\u003e announce('3 items selected')}\u003e\n" +
+		"			Select Items\n" +
+		"		\u003c/button\u003e\n" +
+		"		\u003cdiv class=\"live-region\" aria-live=\"polite\" role=\"status\"\u003e\n" +
+		"			{announcement || 'No announcements yet.'}\n" +
+		"		\u003c/div\u003e\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eDemo: Focus Trap (Modal)\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cp class=\"concept\"\u003e\n" +
+		"			Open the modal below. Focus is trapped inside — Tab cycles through the modal's\n" +
+		"			focusable elements. Press Escape to close.\n" +
+		"		\u003c/p\u003e\n" +
+		"		\u003cbutton class=\"demo-btn\" onclick={openModal}\u003eOpen Modal\u003c/button\u003e\n" +
+		"\n" +
+		"		{#if modalOpen}\n" +
+		"			\u003c!-- svelte-ignore a11y_no_static_element_interactions --\u003e\n" +
+		"			\u003cdiv class=\"modal-backdrop\" onkeydown={handleModalKeydown}\u003e\n" +
+		"				\u003cdiv class=\"modal\" bind:this={modalRef} role=\"dialog\" aria-modal=\"true\" aria-label=\"Example modal dialog\"\u003e\n" +
+		"					\u003ch4\u003eModal Title\u003c/h4\u003e\n" +
+		"					\u003cp\u003eFocus is trapped in this modal. Tab between the input and buttons.\u003c/p\u003e\n" +
+		"					\u003cinput data-focus type=\"text\" placeholder=\"Type something...\" aria-label=\"Example input\" /\u003e\n" +
+		"					\u003cdiv class=\"modal-actions\"\u003e\n" +
+		"						\u003cbutton class=\"demo-btn\" onclick={closeModal}\u003eConfirm\u003c/button\u003e\n" +
+		"						\u003cbutton class=\"demo-btn secondary\" onclick={closeModal}\u003eCancel\u003c/button\u003e\n" +
+		"					\u003c/div\u003e\n" +
+		"				\u003c/div\u003e\n" +
+		"			\u003c/div\u003e\n" +
+		"		{/if}\n" +
+		"	\u003c/div\u003e\n" +
+		"\n" +
+		"	\u003ch3\u003eSkip-to-Content Link\u003c/h3\u003e\n" +
+		"	\u003cdiv class=\"build\"\u003e\n" +
+		"		\u003cpre\u003e{`\u003c!-- Place at the very top of your layout --\u003e\n" +
+		"\u003ca href=\"#main\" class=\"skip-link\"\u003e\n" +
+		"  Skip to main content\n" +
+		"\u003c/a\u003e\n" +
+		"\n" +
+		"\u003cnav\u003e... navigation ...\u003c/nav\u003e\n" +
+		"\n" +
+		"\u003cmain id=\"main\"\u003e\n" +
+		"  ... page content ...\n" +
+		"\u003c/main\u003e";
 </script>
 
 <section class="page">
@@ -160,6 +311,13 @@
   }
 </style>`}</pre>
 	</div>
+
+
+	<details class="having-issues">
+		<summary>Having issues? Here is the complete code</summary>
+		<p>If your version is not working, compare it line-by-line with this reference.</p>
+		<CodeCanvas filename="+page.svelte" code={fullCode} />
+	</details>
 
 	<h3>What you learned</h3>
 	<ul>
@@ -276,5 +434,35 @@
 		display: flex;
 		gap: var(--space-sm);
 		justify-content: flex-end;
+	}
+
+
+	/* ── Having issues section ── */
+	.having-issues {
+		margin-block: var(--space-xl);
+		border: 2px dashed var(--color-warning);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+
+		& > summary {
+			padding: var(--space-md) var(--space-lg);
+			font-weight: 700;
+			font-size: var(--text-base);
+			color: var(--color-warning);
+			background: var(--color-surface-1);
+			cursor: pointer;
+		}
+
+		& > p {
+			padding: var(--space-sm) var(--space-lg);
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: var(--text-sm);
+		}
+	}
+
+	/* === RESPONSIVE BREAKPOINTS === */
+	@media (min-width: 768px) {
+		h1 { font-size: var(--text-2xl); }
 	}
 </style>

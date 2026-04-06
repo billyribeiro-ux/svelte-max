@@ -284,6 +284,27 @@
 			lessons: []
 		},
 		{
+			id: 99,
+			title: 'Module 9B — Remote Functions',
+			hasProject: true,
+			lessons: [
+				{ slug: '9b-1-what-are-remote-functions', title: '9B.1 — What remote functions are' },
+				{ slug: '9b-2-query', title: '9B.2 — query()' },
+				{ slug: '9b-3-query-args', title: '9B.3 — Query with args' },
+				{ slug: '9b-4-query-batch', title: '9B.4 — query.batch()' },
+				{ slug: '9b-5-prerender', title: '9B.5 — prerender remote' },
+				{ slug: '9b-6-form', title: '9B.6 — form()' },
+				{ slug: '9b-7-form-fields', title: '9B.7 — Form fields API' },
+				{ slug: '9b-8-form-validation', title: '9B.8 — Validation + enhance' },
+				{ slug: '9b-9-command', title: '9B.9 — command()' },
+				{ slug: '9b-10-single-flight-server', title: '9B.10 — Single-flight (server)' },
+				{ slug: '9b-11-single-flight-client', title: '9B.11 — Single-flight (client)' },
+				{ slug: '9b-12-async-ssr', title: '9B.12 — Async SSR' },
+				{ slug: '9b-13-fork', title: '9B.13 — fork()' },
+				{ slug: '9b-14-choosing', title: '9B.14 — Choosing the right tool' }
+			]
+		},
+		{
 			id: 13,
 			title: 'Module 13 — SEO',
 			hasProject: true,

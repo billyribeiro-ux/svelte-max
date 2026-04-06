@@ -5,12 +5,18 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	preprocess: vitePreprocess(),
 	compilerOptions: {
-		runes: true
+		runes: true,
+		experimental: {
+			async: true
+		}
 	},
 	kit: {
 		adapter: adapter(),
 		prerender: {
 			handleHttpError: 'warn'
+		},
+		experimental: {
+			remoteFunctions: true
 		}
 	}
 };

@@ -141,6 +141,15 @@
 			href: '/module-15/15-1-what-is-threlte'
 		},
 		{
+			id: 99,
+			title: 'Remote Functions (9B)',
+			summary:
+				'query, form, command, prerender from $app/server — type-safe server functions, single-flight mutations, async SSR.',
+			project: 'Real-Time Data App',
+			status: 'ready',
+			href: '/module-9b/9b-1-what-are-remote-functions'
+		},
+		{
 			id: 13,
 			title: 'SEO',
 			summary:

@@ -161,6 +161,14 @@
     color={hovered ? '#ffcc00' : '#7c5cfc'}
   />
 </T.Mesh>`}</pre>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>@threlte/extras</code> provides high-level components like <code>Text</code>, <code>Environment</code>, and <code>ContactShadows</code>.</li>
+		<li><code>&lt;Text&gt;</code> renders resolution-independent 3D text using SDF fonts via Troika.</li>
+		<li>Pointer events on meshes (<code>onclick</code>, <code>onpointerenter</code>) work through Threlte's raycasting interactivity system.</li>
+		<li>GLTF/GLB models are loaded with <code>useGltf</code> or the <code>&lt;GLTF&gt;</code> component for production 3D assets.</li>
+	</ul>
 </section>
 
 <style>

@@ -79,6 +79,13 @@
 		<li>Methods like <code>add()</code> and <code>remove()</code> encapsulate state mutations cleanly</li>
 		<li>This pattern replaces complex store logic with idiomatic TypeScript classes</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>$state</code> on class fields makes mutations automatically trigger UI updates.</li>
+		<li>Getters like <code>get total()</code> act as derived values that recalculate when fields change.</li>
+		<li>Class instances encapsulate state and methods, replacing complex store logic with idiomatic TypeScript.</li>
+	</ul>
 </section>
 
 <style>

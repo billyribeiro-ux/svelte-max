@@ -103,6 +103,14 @@
 		to consumers who do not use Svelte. The compilation target changes, but the authoring experience
 		stays the same.
 	</p>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Custom elements are browser-native reusable tags built on Shadow DOM, HTML Templates, and the Custom Elements API.</li>
+		<li>Svelte can compile components directly into custom elements that extend <code>HTMLElement</code>.</li>
+		<li>Custom elements are ideal for embedding widgets in non-Svelte environments like CMS platforms or legacy apps.</li>
+		<li>Regular Svelte components are smaller and support SSR; custom elements trade that for framework-agnostic portability.</li>
+	</ul>
 </section>
 
 <style>

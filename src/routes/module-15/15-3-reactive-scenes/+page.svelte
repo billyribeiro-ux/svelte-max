@@ -132,6 +132,14 @@
 
 	<h3>Pattern: Derived 3D Properties</h3>
 	<pre><code>{derivedPatternExample}</code></pre>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>$state</code> variables bind to UI controls and drive 3D object properties reactively.</li>
+		<li><code>$derived</code> computes transformed values (e.g., degrees to radians, hue to hex) for Three.js props.</li>
+		<li>Threlte automatically syncs reactive prop changes to the Three.js scene graph each frame.</li>
+		<li>No manual re-rendering or invalidation is needed — Svelte's reactivity handles it.</li>
+	</ul>
 </section>
 
 <style>

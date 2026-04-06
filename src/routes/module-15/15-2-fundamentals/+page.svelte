@@ -125,6 +125,14 @@
 		<li><code>autoRotate</code> enables automatic camera rotation</li>
 		<li>Touch-friendly — pinch to zoom, drag to orbit on mobile</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Every Threlte scene needs a <code>Canvas</code>, a <code>Camera</code>, and at least one <code>Light</code>.</li>
+		<li><code>PerspectiveCamera</code> mimics human vision; <code>OrthographicCamera</code> removes perspective distortion.</li>
+		<li>Light types (Ambient, Directional, Point, Spot) control illumination and shadow behavior.</li>
+		<li><code>OrbitControls</code> from <code>@threlte/extras</code> adds interactive camera rotation via mouse and touch.</li>
+	</ul>
 </section>
 
 <style>

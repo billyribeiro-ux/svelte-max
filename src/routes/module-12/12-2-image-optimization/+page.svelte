@@ -137,6 +137,14 @@
 			<li>Icon: {loaded.icon ? 'Loaded' : 'Loading...'}</li>
 		</ul>
 	</div>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Explicit <code>width</code> and <code>height</code> attributes prevent CLS by reserving space before images load.</li>
+		<li><code>fetchpriority="high"</code> prioritizes the LCP image; <code>loading="lazy"</code> defers off-screen images.</li>
+		<li><code>srcset</code> and <code>sizes</code> let the browser pick the optimal resolution for each viewport.</li>
+		<li>Use <code>&lt;picture&gt;</code> with AVIF/WebP sources for significant file-size savings over JPEG.</li>
+	</ul>
 </section>
 
 <style>

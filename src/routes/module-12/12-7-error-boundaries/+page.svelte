@@ -135,6 +135,13 @@
 		<li><strong>Log errors</strong> — send error details to your monitoring service in the failed snippet</li>
 		<li><strong>Keep boundaries granular</strong> — wrap individual widgets, not entire pages</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>&lt;svelte:boundary&gt;</code> catches errors in a component subtree and renders a <code>failed</code> snippet instead of crashing the page.</li>
+		<li>The <code>failed</code> snippet receives the <code>error</code> object and a <code>reset</code> function to re-mount the crashed subtree.</li>
+		<li>Wrap third-party components and data-fetching widgets individually for granular error recovery.</li>
+	</ul>
 </section>
 
 <style>

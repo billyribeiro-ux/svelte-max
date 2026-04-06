@@ -137,6 +137,14 @@ npm publish --access public`}</pre>
 			</div>
 		{/if}
 	</div>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Follow semver: major for breaking changes, minor for new features, patch for bug fixes.</li>
+		<li>Avoid <code>$app/*</code> and <code>$env/*</code> imports in library code — they are SvelteKit-only.</li>
+		<li>Use <code>npm publish --dry-run</code> and <code>publint</code> to catch packaging mistakes before publishing.</li>
+		<li>Test your package in a clean project with <code>npm pack</code> to verify it works outside your repo.</li>
+	</ul>
 </section>
 
 <style>

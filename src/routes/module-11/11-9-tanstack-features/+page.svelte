@@ -182,6 +182,13 @@
 		<li><code>getCanPreviousPage()</code> / <code>getCanNextPage()</code> disable buttons at boundaries</li>
 		<li>For large datasets, use <code>manualPagination: true</code> and fetch pages from the server in your <code>load()</code> function</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>getFilteredRowModel</code> and <code>globalFilter</code> add cross-column search with minimal code.</li>
+		<li><code>getPaginationRowModel</code> slices data into pages controlled by <code>previousPage()</code> and <code>nextPage()</code>.</li>
+		<li>For large datasets, <code>manualPagination: true</code> delegates slicing to the server via your <code>load()</code> function.</li>
+	</ul>
 </section>
 
 <style>

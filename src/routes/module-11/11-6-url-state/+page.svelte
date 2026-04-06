@@ -101,6 +101,13 @@ function setFilter(f: string) &#123;
 		<li>Use URL state for anything the user might want to bookmark or share</li>
 		<li>Combine with <code>$derived</code> for computed filtered/sorted lists</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>page.url.searchParams</code> is reactive and drives filter/sort/pagination state from the URL.</li>
+		<li><code>goto('?filter=active')</code> updates the URL without a full page reload.</li>
+		<li>URL state is bookmarkable, shareable, and survives page refreshes, unlike in-memory state.</li>
+	</ul>
 </section>
 
 <style>

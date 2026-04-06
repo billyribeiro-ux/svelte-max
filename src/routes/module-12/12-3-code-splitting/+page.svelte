@@ -116,6 +116,13 @@
 		<li><strong>Preload on hover</strong> — SvelteKit's <code>data-sveltekit-preload-data</code> prefetches on link hover</li>
 		<li><strong>Analyze your bundle</strong> — use <code>vite-plugin-visualizer</code> to find large chunks</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>SvelteKit automatically code-splits at every <code>+page.svelte</code> boundary with zero configuration.</li>
+		<li>Dynamic <code>import()</code> inside <code>{'{#await}'}</code> defers heavy components (charts, editors) until needed.</li>
+		<li><code>data-sveltekit-preload-data</code> prefetches route data on link hover for near-instant navigation.</li>
+	</ul>
 </section>
 
 <style>

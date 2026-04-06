@@ -193,6 +193,13 @@ npx playwright show-report
 npx playwright test --update-snapshots`}</pre>
 		</div>
 	{/if}
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Playwright runs E2E tests in real browsers (Chromium, Firefox, WebKit) against your running SvelteKit app.</li>
+		<li>Role-based selectors like <code>getByRole</code> and <code>getByLabel</code> make tests resilient and verify accessibility.</li>
+		<li>The <code>webServer</code> config option auto-starts your dev server before tests run in CI.</li>
+	</ul>
 </section>
 
 <style>

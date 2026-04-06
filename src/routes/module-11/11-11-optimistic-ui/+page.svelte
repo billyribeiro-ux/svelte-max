@@ -155,6 +155,13 @@
 		<li>On failure, restore the saved state and show a message</li>
 		<li>This pattern works for likes, toggles, inline edits, and any fast-feedback interaction</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Save the previous state before an optimistic update so you can roll back on API failure.</li>
+		<li>A state machine (<code>idle | pending | success | rollback</code>) cleanly tracks async progress.</li>
+		<li>Disabling the UI during pending prevents race conditions from concurrent clicks.</li>
+	</ul>
 </section>
 
 <style>

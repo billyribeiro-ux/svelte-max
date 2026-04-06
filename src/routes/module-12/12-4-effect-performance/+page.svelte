@@ -137,6 +137,13 @@ $effect(() => {
   fetchResults(q);
 });`}</pre>
 	</div>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Return a cleanup function from <code>$effect</code> to debounce expensive operations like API calls.</li>
+		<li><code>untrack()</code> reads a reactive value inside an effect without adding it as a dependency.</li>
+		<li><code>$inspect.trace()</code> logs which dependency triggered a re-run, aiding performance debugging.</li>
+	</ul>
 </section>
 
 <style>

@@ -194,6 +194,13 @@ it('shows loading then data', async () => {
 });`}</pre>
 		</div>
 	{/if}
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Vitest integrates with Vite's transform pipeline, so <code>.svelte.ts</code> runes and TypeScript work without extra config.</li>
+		<li>Test reactive stores by calling their methods and asserting on getter values directly.</li>
+		<li>Mock <code>fetch</code> with <code>vi.fn()</code> to unit-test <code>load</code> functions without a running server.</li>
+	</ul>
 </section>
 
 <style>

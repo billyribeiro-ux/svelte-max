@@ -61,6 +61,13 @@ const user = getContext&lt;User&gt;('user');</code></pre>
 		<li><strong>Context</strong>: User-specific data, request-scoped values, anything that differs per visitor</li>
 		<li><strong>URL state</strong>: Filter/sort params, pagination — anything the user should be able to bookmark or share</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Module-level <code>.svelte.ts</code> state persists across client-side navigations because JS modules are cached.</li>
+		<li>Server-side module state is shared across all requests, creating a critical data-leak risk.</li>
+		<li>Use context for per-user/per-request state, and module state only for client-only globals.</li>
+	</ul>
 </section>
 
 <style>

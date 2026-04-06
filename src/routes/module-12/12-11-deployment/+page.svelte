@@ -150,6 +150,13 @@ npm run preview
 			{/each}
 		</div>
 	</div>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>SvelteKit adapters transform your app for different targets: Node.js, Vercel, Cloudflare, or static hosting.</li>
+		<li>Environment variables use <code>$env/static/private</code> and <code>$env/static/public</code> with a <code>PUBLIC_</code> prefix for client-safe values.</li>
+		<li>Always <code>npm run preview</code> to test the production build locally before deploying.</li>
+	</ul>
 </section>
 
 <style>

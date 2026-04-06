@@ -196,6 +196,13 @@ self.addEventListener('fetch', (event) => {
 		<li><strong>Test with Chrome DevTools</strong> — Application tab shows SW status, cache contents</li>
 		<li><strong>Be careful with caching HTML</strong> — stale HTML can break your app after a deploy</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>SvelteKit auto-registers a service worker when <code>src/service-worker.js</code> exists.</li>
+		<li>The <code>$service-worker</code> module exposes <code>build</code>, <code>files</code>, and <code>version</code> for building caching strategies.</li>
+		<li>Use cache-first for static assets and network-first for API calls to balance freshness with offline support.</li>
+	</ul>
 </section>
 
 <style>

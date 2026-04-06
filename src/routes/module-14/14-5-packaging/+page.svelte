@@ -110,6 +110,14 @@
 		<code>.svelte</code> file. The <code>"types"</code> condition tells TypeScript where to find
 		type declarations. This dual-condition approach ensures both IDE support and optimal compilation.
 	</p>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>@sveltejs/package</code> compiles <code>src/lib</code> into a publishable <code>dist</code> folder with type declarations.</li>
+		<li>The <code>exports</code> map uses <code>"svelte"</code> and <code>"types"</code> conditions for bundler and IDE compatibility.</li>
+		<li>Set <code>"sideEffects": false</code> to enable tree-shaking of unused components.</li>
+		<li>Declare <code>svelte</code> as a <code>peerDependency</code> so consumers use their own version.</li>
+	</ul>
 </section>
 
 <style>

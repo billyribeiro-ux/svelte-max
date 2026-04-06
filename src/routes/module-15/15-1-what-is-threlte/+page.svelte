@@ -89,6 +89,14 @@
 		<li>Props like <code>position</code>, <code>rotation</code>, <code>color</code> are reactive</li>
 		<li>SSR guard required — wrap <code>&lt;Canvas&gt;</code> in <code>{"{"} #if mounted {"}"}</code></li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Threlte is a declarative 3D framework for Svelte built on Three.js.</li>
+		<li><code>&lt;Canvas&gt;</code> creates the WebGL renderer, and <code>&lt;T.*&gt;</code> components map to Three.js classes.</li>
+		<li>Props like <code>position</code>, <code>rotation</code>, and <code>color</code> are reactive and update the scene automatically.</li>
+		<li>Threlte scenes must be client-only — guard with <code>{"{"} #if mounted {"}"}</code> to avoid SSR errors.</li>
+	</ul>
 </section>
 
 <style>

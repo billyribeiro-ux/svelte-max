@@ -220,6 +220,14 @@
 		<li>Decorative gridlines and axis labels use <code>aria-hidden="true"</code>.</li>
 		<li>Focus and hover both highlight bars — no mouse-only interactions.</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Use <code>role="img"</code> and <code>aria-label</code> on SVG charts to convey the key insight to screen readers.</li>
+		<li>Provide a hidden <code>&lt;table&gt;</code> with raw data as a fallback for assistive technologies.</li>
+		<li>Mark decorative elements like gridlines with <code>aria-hidden="true"</code> to reduce screen reader noise.</li>
+		<li>Make interactive elements keyboard-accessible with <code>tabindex="0"</code> and visible focus indicators.</li>
+	</ul>
 </section>
 
 <style>

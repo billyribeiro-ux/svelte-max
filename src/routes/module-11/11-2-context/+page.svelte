@@ -110,6 +110,13 @@
 		<li>Context values can be reactive objects — descendants see updates automatically</li>
 		<li>Use <code>setContext</code>/<code>getContext</code> for maximum compatibility across Svelte 5.x</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>A factory function with a <code>Symbol</code> key creates collision-proof, type-safe context accessors.</li>
+		<li>Context values can be reactive objects with getters so descendants see live updates.</li>
+		<li><code>setContext</code> runs during component initialization; <code>getContext</code> reads from any descendant.</li>
+	</ul>
 </section>
 
 <style>

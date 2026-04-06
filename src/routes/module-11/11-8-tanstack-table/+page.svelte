@@ -140,6 +140,13 @@ const table = createSvelteTable(options);</code></pre>
 		<li>Column defs describe data access, headers, and sizing</li>
 		<li>Sorting is opt-in via <code>getSortedRowModel</code> and sorting state</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>createSvelteTable</code> accepts a reactive <code>$state</code> options object and returns a headless table instance.</li>
+		<li><code>flexRender</code> bridges TanStack's cell renderers to Svelte snippets or strings.</li>
+		<li>Column definitions describe data access via <code>accessorKey</code>, and sorting is opt-in via <code>getSortedRowModel</code>.</li>
+	</ul>
 </section>
 
 <style>

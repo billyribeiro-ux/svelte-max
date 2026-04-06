@@ -176,6 +176,13 @@ function myAttach(element: HTMLElement) {
 // {@attach myAttach}
 // <div {@attach myAttach}>...</div>`}</pre>
 	</div>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Actions (<code>use:name</code>) attach reusable DOM behavior and return <code>update</code>/<code>destroy</code> lifecycle hooks.</li>
+		<li>Common action patterns include <code>clickOutside</code>, <code>tooltip</code>, and <code>IntersectionObserver</code> wrappers.</li>
+		<li>Svelte 5.29+ introduces <code>{'{@attach}'}</code> as a modern alternative that integrates with the component lifecycle.</li>
+	</ul>
 </section>
 
 <style>

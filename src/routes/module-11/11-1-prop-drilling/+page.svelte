@@ -99,6 +99,13 @@
 		<li><code>setContext</code> / <code>getContext</code> skip intermediate layers entirely</li>
 		<li>Context is scoped to the component tree — it won't leak to unrelated components</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Prop drilling passes data through intermediate components that do not use it, creating fragile code.</li>
+		<li><code>setContext</code> and <code>getContext</code> let any descendant read shared state without props.</li>
+		<li>Context is scoped to the component subtree, preventing leakage to unrelated parts of the app.</li>
+	</ul>
 </section>
 
 <style>

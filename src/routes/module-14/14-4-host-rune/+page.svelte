@@ -142,6 +142,14 @@
 		<li>Type the <code>detail</code> property for consumer-side type safety</li>
 		<li>Prefer CustomEvents over callback props for framework-agnostic interop</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>$host()</code> returns a reference to the custom element's host node from inside the component.</li>
+		<li>Use <code>$host().dispatchEvent(new CustomEvent(...))</code> to emit events that cross shadow DOM boundaries.</li>
+		<li>Set <code>bubbles: true</code> and <code>composed: true</code> so events propagate to parent DOM listeners.</li>
+		<li><code>$host()</code> is a compile-time rune with zero runtime cost, available only in custom element components.</li>
+	</ul>
 </section>
 
 <style>

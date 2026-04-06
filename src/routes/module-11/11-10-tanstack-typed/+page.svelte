@@ -187,6 +187,13 @@
 		<li>Click rows to select, then export the typed <code>Member[]</code> as JSON</li>
 		<li>Generic <code>createSvelteTable&lt;Member&gt;</code> ensures type safety throughout</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>VisibilityState</code> controls which columns render, toggled via <code>column.toggleVisibility()</code>.</li>
+		<li><code>RowSelectionState</code> tracks selected rows by index, and <code>getSelectedRowModel()</code> returns fully typed data.</li>
+		<li>Generic <code>createSvelteTable&lt;T&gt;</code> provides end-to-end type safety from column defs to exported results.</li>
+	</ul>
 </section>
 
 <style>

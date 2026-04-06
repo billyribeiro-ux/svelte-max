@@ -102,6 +102,13 @@
 		<li>Use for responsive logic, scroll-based animations, and connectivity detection</li>
 		<li>No need for manual event listeners — Svelte handles it internally</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>svelte/reactivity/window</code> exposes reactive objects like <code>innerWidth</code> and <code>scrollY</code> with a <code>.current</code> property.</li>
+		<li>These values are <code>undefined</code> during SSR, so you must guard access with <code>{'{#if innerWidth}'}</code>.</li>
+		<li>No manual event listeners are needed; Svelte manages resize, scroll, and online/offline tracking internally.</li>
+	</ul>
 </section>
 
 <style>

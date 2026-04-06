@@ -160,6 +160,13 @@
   }
 </style>`}</pre>
 	</div>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>aria-live="polite"</code> regions announce dynamic content changes to screen readers without navigation.</li>
+		<li>Focus trapping in modals uses <code>Tab</code> cycling and <code>Escape</code> to close, managed via <code>role="dialog"</code> and <code>aria-modal</code>.</li>
+		<li>Svelte provides compile-time a11y warnings, but semantic HTML, ARIA labels, and keyboard navigation require deliberate implementation.</li>
+	</ul>
 </section>
 
 <style>

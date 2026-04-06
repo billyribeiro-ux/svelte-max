@@ -141,6 +141,14 @@
 	</p>
 
 	<pre><code>{formUsageExample}</code></pre>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>The options object configures <code>tag</code>, <code>shadow</code>, <code>props</code>, and <code>extend</code> for fine-grained control.</li>
+		<li>Setting <code>shadow: "none"</code> renders into the light DOM without style encapsulation.</li>
+		<li>The <code>props</code> config enables type coercion and attribute reflection for each property.</li>
+		<li>The <code>extend</code> function adds <code>ElementInternals</code> for form participation and ARIA support.</li>
+	</ul>
 </section>
 
 <style>

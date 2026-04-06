@@ -159,6 +159,14 @@
 		<li>Lazy-load heavy models and textures</li>
 		<li>Test on low-end devices — cap pixel ratio and polygon count</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>Reduce draw calls by merging geometries and using instanced meshes for repeated objects.</li>
+		<li>Guard all Threlte content with <code>{"{"} #if mounted {"}"}</code> and provide a meaningful SSR fallback.</li>
+		<li>Respect <code>prefers-reduced-motion</code> by disabling auto-rotation and continuous animations.</li>
+		<li>Dispose Three.js resources on unmount — GPU memory is not garbage-collected automatically.</li>
+	</ul>
 </section>
 
 <style>

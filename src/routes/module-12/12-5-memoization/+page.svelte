@@ -117,6 +117,13 @@
 		React's <code>useMemo</code> behavior but without manually specifying dependencies — Svelte
 		tracks them automatically. The cached value is always consistent and never stale.
 	</p>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>$derived.by()</code> caches expensive computations and only re-runs when tracked inputs change.</li>
+		<li>Changing an unrelated <code>$state</code> value does not trigger re-computation of a derived value.</li>
+		<li>Svelte tracks dependencies automatically, unlike React's <code>useMemo</code> which requires a manual dependency array.</li>
+	</ul>
 </section>
 
 <style>

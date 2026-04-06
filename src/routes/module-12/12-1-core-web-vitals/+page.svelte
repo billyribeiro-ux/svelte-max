@@ -132,6 +132,13 @@
 		less main-thread work, and faster interactions. SvelteKit adds SSR, streaming, and
 		automatic code-splitting — all of which directly improve Core Web Vitals scores.
 	</p>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li>LCP, CLS, and INP are the three Core Web Vitals that measure loading, stability, and responsiveness.</li>
+		<li>Svelte's compile-time approach eliminates virtual DOM overhead, directly improving INP and LCP.</li>
+		<li>SvelteKit's SSR, automatic code-splitting, and streaming further boost all three metrics.</li>
+	</ul>
 </section>
 
 <style>

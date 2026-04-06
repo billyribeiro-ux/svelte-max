@@ -131,6 +131,14 @@ export default config;`}</pre>
 
 	<h3>Usage in Plain HTML</h3>
 	<pre><code>{usageExample}</code></pre>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>&lt;svelte:options customElement="tag-name" /&gt;</code> compiles a Svelte component as a custom element.</li>
+		<li>The <code>compilerOptions.customElement: true</code> flag must be set in <code>svelte.config.js</code>.</li>
+		<li>Each <code>$props()</code> property becomes an observed HTML attribute with automatic reactivity.</li>
+		<li>The compiled output is a standalone class that works in any HTML page without Svelte.</li>
+	</ul>
 </section>
 
 <style>

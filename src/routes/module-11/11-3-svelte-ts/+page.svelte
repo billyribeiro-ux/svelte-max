@@ -51,6 +51,13 @@ export function getCount() &#123; return count; &#125;</code></pre>
 		<li>This replaces the old <code>writable()</code> / <code>readable()</code> store pattern entirely</li>
 		<li>Works with <code>$derived</code> and <code>$effect</code> too</li>
 	</ul>
+
+	<h3>What you learned</h3>
+	<ul>
+		<li><code>.svelte.ts</code> files let you use <code>$state</code> at the module level for shared reactive state.</li>
+		<li>Exported functions that read/write module state keep consumers automatically reactive.</li>
+		<li>This pattern replaces the legacy <code>writable()</code> / <code>readable()</code> store API entirely.</li>
+	</ul>
 </section>
 
 <style>

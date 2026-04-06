@@ -224,31 +224,79 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Compare reactive and non-reactive versions of URL and MediaQuery to see exactly what the wrappers buy you.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Use a plain <code>new URL()</code>.</strong> Replace <code>new SvelteURL()</code>
+			with <code>new URL()</code>. Now mutate <code>url.searchParams.set('q', 'test')</code>
+			from an effect or handler. The <code>url.href</code> display in the template does not
+			update because the native URL object has no reactive tracking — Svelte cannot detect
+			when its properties change.
+		</li>
+		<li>
+			<strong>Use <code>new SvelteURL()</code>.</strong> Switch back to the reactive version.
+			Now <code>url.searchParams.set()</code> triggers updates — the template reading
+			<code>url.href</code> re-renders immediately. Every setter on <code>SvelteURL</code>
+			notifies the reactive graph, and every getter registers a dependency.
+		</li>
+		<li>
+			<strong>Create a <code>MediaQuery</code> for dark mode.</strong> Try
+			<code>const dark = new MediaQuery('(prefers-color-scheme: dark)')</code> and read
+			<code>dark.current</code> in the markup. Toggle your OS dark mode preference and watch
+			the value update in real time — no <code>addEventListener</code> needed.
+		</li>
+		<li>
+			<strong>Read <code>MediaQuery.current</code> inside <code>$derived</code>.</strong>
+			Create <code>const label = $derived(dark.current ? 'Dark' : 'Light')</code>. The
+			derived value recomputes whenever the media query match changes because
+			<code>.current</code> is a reactive read that registers the derivation as a subscriber.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>
-			<code>MediaQuery</code> from <code>svelte/reactivity</code> turns
-			<code>window.matchMedia</code> into a reactive value via <code>.current</code>.
-		</li>
-		<li>
-			It is SSR-safe — during server rendering <code>.current</code> returns a sensible fallback
-			instead of throwing.
-		</li>
-		<li>
-			<code>SvelteURL</code> and <code>SvelteURLSearchParams</code> make the URL API reactive;
-			mutations trigger re-renders of any reader.
-		</li>
-		<li>
-			These classes replace ad-hoc <code>addEventListener('resize', ...)</code> and
-			<code>popstate</code> boilerplate with declarative state.
-		</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		<code>SvelteURL</code> makes URL manipulation reactive. Where a native <code>URL</code>
+		object silently absorbs mutations, <code>SvelteURL</code> wraps every property setter
+		(<code>.pathname</code>, <code>.search</code>, <code>.hash</code>) and every
+		<code>searchParams</code> method to trigger updates on any subscriber reading
+		<code>.href</code>, <code>.search</code>, or <code>.toString()</code>. This eliminates
+		the need to manually reconstruct URL strings whenever a parameter changes.
+	</p>
+
+	<p class="prose">
+		<code>MediaQuery</code> replaces the traditional pattern of
+		<code>window.matchMedia(query).addEventListener('change', handler)</code> with a single
+		reactive class. Construct it with a media query string and read <code>.current</code>
+		anywhere — in templates, in <code>$derived</code>, in <code>$effect</code>. The value
+		updates automatically when the match changes. It is SSR-safe: during server rendering,
+		<code>.current</code> returns a sensible default instead of throwing.
+	</p>
+
+	<p class="prose">
+		Both classes are imported from <code>svelte/reactivity</code> and follow the same
+		philosophy as <code>SvelteMap</code> and <code>SvelteSet</code>: they wrap browser
+		APIs in reactive shells so you can use them declaratively instead of imperatively. No
+		event listeners to add or remove, no cleanup functions to manage, no stale closures to
+		debug. The reactive graph handles synchronization.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-14-reactive-css">2.14 — Reactive CSS</a> — bind reactive values
+		to CSS properties and custom properties with the <code>style:</code> directive.
+	</p>
 </section>
 
 <style>
@@ -394,18 +442,26 @@
 		font-size: 0.95em;
 	}
 
-	ul {
-		margin-block-start: var(--space-md);
-		padding-inline-start: var(--space-lg);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
-		color: var(--color-text-muted);
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-
-	h3 {
-		margin-block-start: var(--space-xl);
-	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues section ── */
 	.having-issues {

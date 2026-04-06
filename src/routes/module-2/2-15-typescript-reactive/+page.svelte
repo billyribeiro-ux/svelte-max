@@ -207,28 +207,82 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Test TypeScript's integration with runes to see how the type system catches bugs at compile time.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Declare <code>$state</code> without a type or initial value.</strong> Try
+			<code>let data = $state()</code>. TypeScript infers the type as <code>undefined</code>,
+			so any later assignment like <code>data = 'hello'</code> fails type checking. When
+			the initial value does not represent the full type, you must annotate explicitly:
+			<code>let data = $state&lt;string | undefined&gt;()</code>.
+		</li>
+		<li>
+			<strong>Use a discriminated union type for state.</strong> The <code>Status</code>
+			type in this lesson is a perfect example: <code>'idle' | 'loading' | 'success' | 'error'</code>.
+			Inside an <code>{`{#if status === 'success'}`}</code> block, TypeScript narrows
+			<code>status</code> to the literal <code>'success'</code>, and the
+			<code>&& result</code> guard narrows <code>result</code> to <code>Result</code>.
+		</li>
+		<li>
+			<strong>Return a wrong type from <code>$derived.by</code>.</strong> Add a branch
+			that returns a number instead of the expected type. TypeScript catches it
+			immediately at the call site — the derived value's inferred type becomes a union
+			that does not match what the template expects. The error appears before you even
+			run the code.
+		</li>
+		<li>
+			<strong>Pass a <code>$state</code> value to a function expecting a plain type.</strong>
+			Pass <code>status</code> to a function typed as <code>(s: Status) => void</code>.
+			It works because the proxy is transparent to the type system — TypeScript sees the
+			declared type, not the proxy wrapper. There is zero runtime cost to this
+			transparency.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>
-			Use <code>$state&lt;T&gt;(initial)</code> when the initial value is narrower than the desired
-			type (e.g., <code>null</code>).
-		</li>
-		<li>
-			<code>$derived</code> infers from its expression — no annotation needed in most cases.
-		</li>
-		<li>Union types model finite state machines exactly and exhaustively.</li>
-		<li>
-			Template <code>{`{#if}`}</code> conditions narrow types inside their branches, eliminating
-			non-null assertions.
-		</li>
-		<li>Zero <code>any</code>. Every assignment is type-checked.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		TypeScript and Svelte runes together provide full compile-time type safety for reactive
+		state. When the initial value of <code>$state</code> does not represent the full type
+		— a common pattern like starting with <code>null</code> and later assigning an object
+		— you annotate explicitly with <code>$state&lt;T | null&gt;(null)</code>. This tells
+		TypeScript the variable can hold either <code>T</code> or <code>null</code>, and the
+		compiler enforces this contract everywhere the variable is used.
+	</p>
+
+	<p class="prose">
+		<code>$derived</code> infers its type from the expression, so it rarely needs a manual
+		annotation. Generics can override the inference when you need a wider type than what
+		the expression produces. Discriminated union types like
+		<code>'idle' | 'loading' | 'success' | 'error'</code> model finite state machines
+		exactly, and TypeScript narrows them inside template <code>{`{#if}`}</code> blocks just
+		as it would in regular TypeScript code.
+	</p>
+
+	<p class="prose">
+		The result is zero <code>any</code>, zero non-null assertions, and zero runtime cost.
+		Every <code>$state</code> assignment is type-checked. Every <code>$derived</code> return
+		type is inferred or verified. Every template branch narrows types automatically. The
+		proxy wrapping that Svelte applies at runtime is invisible to the type system — passing
+		a <code>$state</code> value to a function expecting a plain type works transparently.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-16-decision-tree">2.16 — Decision tree</a> — a flowchart to
+		choose the right rune for every situation.
+	</p>
 </section>
 
 <style>
@@ -351,22 +405,26 @@
 		font-size: 0.95em;
 	}
 
-	ul {
-		margin-block-start: var(--space-md);
-		padding-inline-start: var(--space-lg);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
-		color: var(--color-text-muted);
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-
-	h3 {
-		margin-block-start: var(--space-xl);
-	}
-
-	.build h3 {
-		margin-block-start: 0;
-	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues section ── */
 	.having-issues {

@@ -182,19 +182,78 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Experiment with <code>$state.raw</code> to see exactly where the reactivity boundary lies. Try each change, observe what happens, then revert.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Mutate a field on a <code>$state.raw</code> object.</strong> Try
+			<code>rows[0].score = 100</code> from a button handler. The UI does NOT update
+			because <code>$state.raw</code> skips deep proxying entirely. The mutation succeeds
+			in memory, but Svelte has no way to detect it since there is no proxy intercepting
+			property writes.
+		</li>
+		<li>
+			<strong>Reassign the entire object.</strong> Write
+			<code>rows = [...rows]</code> after the mutation. Now the UI updates because
+			top-level reassignment IS detected by <code>$state.raw</code>. This is the contract:
+			Svelte watches the binding, not the contents.
+		</li>
+		<li>
+			<strong>Push to a <code>$state.raw</code> array.</strong> If you temporarily remove
+			the <code>readonly</code> annotation and try <code>rows.push(newRow)</code>, the UI
+			does NOT update. Array methods like <code>push</code>, <code>splice</code>, and
+			<code>pop</code> are not proxied on raw state — they mutate silently.
+		</li>
+		<li>
+			<strong>Replace the array wholesale <code>data = [...data, newItem]</code>.</strong>
+			This works perfectly. Creating a new array and reassigning the binding triggers the
+			update. This is the intended pattern for <code>$state.raw</code>: treat data as
+			immutable and swap the entire reference when it changes.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$state.raw</code> is reactive at the top level but not deeply proxied.</li>
-		<li>Updates require reassignment — in-place mutations like <code>.push()</code> will not notify.</li>
-		<li>It is the right choice for large datasets you replace atomically.</li>
-		<li>Use TypeScript's <code>readonly</code> to enforce the "swap, don't mutate" contract.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		<code>$state.raw</code> is the performance-oriented alternative to <code>$state</code>
+		for data you never mutate in place. It keeps the top-level binding reactive — Svelte
+		detects when you reassign the variable — but skips the deep proxy wrapping that
+		<code>$state</code> applies to every nested property. This means array methods like
+		<code>.push()</code> and field mutations like <code>obj.name = 'new'</code> are invisible
+		to the reactive system.
+	</p>
+
+	<p class="prose">
+		The ideal use case is large, immutable datasets: paginated API responses, chart data,
+		table rows fetched from a server. You load the data, display it, and when new data
+		arrives you replace the entire reference. The performance win comes from avoiding the
+		cost of wrapping hundreds or thousands of nested objects in Proxy instances that would
+		never be individually mutated anyway.
+	</p>
+
+	<p class="prose">
+		TypeScript's <code>readonly</code> modifier pairs perfectly with <code>$state.raw</code>
+		because it enforces at the type level what the runtime already assumes: you will not
+		mutate individual fields. If you find yourself needing to edit individual rows in place,
+		that is a sign you should use regular <code>$state</code> instead, where deep mutations
+		are fully tracked.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-6-state-snapshot">2.6 — $state.snapshot</a> — strip the proxy
+		wrapper to get a plain JS object for serialization and logging.
+	</p>
 </section>
 
 <style>
@@ -213,10 +272,26 @@
 		margin: 0;
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin: 0;
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.concept {
 		font-size: var(--text-base);
@@ -331,17 +406,6 @@
 		background: var(--color-surface-1);
 		border-left: 3px solid var(--color-brand);
 		border-radius: var(--radius-sm);
-	}
-
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		margin: 0;
-		padding-left: var(--space-lg);
-		color: var(--color-text-muted);
-		font-size: var(--text-sm);
-		line-height: 1.6;
 	}
 
 	@media (min-width: 768px) {

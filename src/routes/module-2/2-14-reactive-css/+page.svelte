@@ -179,30 +179,84 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Test the boundaries of reactive CSS by trying approaches that work and approaches that fail. Observe the differences.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Set a CSS variable in script but do not use <code>style:</code>.</strong>
+			Try declaring <code>const color = 'red'</code> in your script and then using
+			<code>var(--color)</code> in your scoped CSS without a <code>style:--color</code>
+			directive on the element. The CSS variable is never set on the element, so the
+			fallback value (or nothing) is used. The markup does not see script variables
+			unless you bridge them with <code>style:</code>.
+		</li>
+		<li>
+			<strong>Use <code>style:--color={'={value}'}</code>.</strong> Add
+			<code>style:--color={'{colorString}'}</code> to a <code>div</code> and reference
+			<code>var(--color)</code> in the scoped CSS. Svelte sets the CSS custom property
+			as an inline style on the element. Every time the reactive value changes, the
+			custom property updates and the CSS recalculates.
+		</li>
+		<li>
+			<strong>Bind a slider to hue and use <code>style:--hue</code>.</strong> This is
+			exactly what the demo above does. The slider drives <code>h</code>, which feeds
+			into the OKLCH color string via <code>style:background</code>. You get a live
+			color picker with zero imperative DOM code — just reactive bindings flowing into
+			CSS.
+		</li>
+		<li>
+			<strong>Try <code>style:background</code> directly vs <code>style:--bg</code> custom property.</strong>
+			Both work. <code>style:background</code> sets the inline <code>background</code>
+			property directly. <code>style:--bg</code> sets a custom property that your scoped
+			CSS reads with <code>var(--bg)</code>. The custom property approach is more flexible
+			because multiple CSS rules can read the same property, and you can apply fallbacks
+			and calculations in CSS.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>
-			Object class bindings (<code>{'class={{ dark: l > 60 }}'}</code>) toggle classes
-			declaratively — no <code>classList</code> calls.
-		</li>
-		<li>
-			Array class bindings let you mix static strings and conditional classes in one expression.
-		</li>
-		<li>
-			<code>style:property={'{value}'}</code> binds reactive values to CSS properties, including
-			custom properties like <code>--brand-hue</code>.
-		</li>
-		<li>
-			Combining scoped CSS with reactive custom properties gives you skinnable components with zero
-			imperative DOM work.
-		</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		The <code>style:</code> directive sets inline styles reactively on an element. It works
+		with standard CSS properties like <code>style:background</code> and with custom
+		properties like <code>style:--brand-hue</code>. When the reactive value driving the
+		directive changes, Svelte updates the inline style immediately. This bridges the gap
+		between script-side reactive state and CSS without manual DOM manipulation or string
+		concatenation.
+	</p>
+
+	<p class="prose">
+		Custom properties are the more powerful pattern because they let scoped CSS read
+		reactive values without any inline style duplication. Set
+		<code>style:--card-accent={'="oklch(...)"'}</code> on a wrapper element, and every
+		descendant can read <code>var(--card-accent)</code> in its styles. This is how you
+		build skinnable, themeable components: the parent passes design tokens through custom
+		properties, and the child's scoped CSS consumes them.
+	</p>
+
+	<p class="prose">
+		Combined with OKLCH color functions and reactive bindings, these tools give you live
+		design tools directly in the browser. Drag a slider, watch the color change everywhere.
+		No JavaScript color manipulation library needed — the browser's CSS engine handles the
+		color math, and Svelte handles the reactivity. Object and array class bindings round
+		out the picture by toggling classes declaratively based on reactive conditions.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-15-typescript-reactive">2.15 — TypeScript + reactivity</a> — full
+		type safety with runes, discriminated unions, and generic state.
+	</p>
 </section>
 
 <style>
@@ -327,18 +381,26 @@
 		font-family: var(--font-mono);
 	}
 
-	ul {
-		margin-block-start: var(--space-md);
-		padding-inline-start: var(--space-lg);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
-		color: var(--color-text-muted);
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-
-	h3 {
-		margin-block-start: var(--space-xl);
-	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.hint {
 		font-size: var(--text-sm);

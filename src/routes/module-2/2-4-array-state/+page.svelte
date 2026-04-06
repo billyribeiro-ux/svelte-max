@@ -195,20 +195,79 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		The best way to internalize how array reactivity works is to deliberately break things and watch what happens. Try each experiment below, observe the result, then undo it.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Push to a non-<code>$state</code> array.</strong> Declare a plain
+			<code>let items: string[] = ['a', 'b']</code> without <code>$state</code>, then call
+			<code>items.push('c')</code> from a button. The UI never updates because Svelte has no
+			proxy to intercept the mutation. Only arrays wrapped in <code>$state</code> get the
+			deep-reactive treatment.
+		</li>
+		<li>
+			<strong>Use <code>items[idx] = newItem</code> direct assignment.</strong> Replace the
+			second tag with <code>tags[1] = 'replaced'</code>. It works — the proxy intercepts
+			indexed writes just like it intercepts method calls. Direct index assignment is a
+			perfectly valid way to update a single element in a reactive array.
+		</li>
+		<li>
+			<strong>Forget the key in <code>{`{#each items as item}`}</code>.</strong> Remove the
+			<code>(tag)</code> key expression from the each block. Now add a few tags, then delete
+			one from the middle. You may see animations glitch or the wrong item disappear.
+			Without a key, Svelte reuses DOM nodes by index, so reordering breaks identity.
+		</li>
+		<li>
+			<strong>Spread into a new array <code>items = [...items, newItem]</code>.</strong> Replace
+			the <code>tags.push(value)</code> call with <code>tags = [...tags, value]</code>. It
+			works because reassignment is always detected. The spread approach creates a brand-new
+			array each time, which is less efficient than <code>.push()</code> for large lists but
+			equally correct.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Arrays in <code>$state</code> are deep-reactive — <code>push</code>, <code>splice</code>, and index assignment all update the UI.</li>
-		<li>Reassigning with <code>.filter()</code> or <code>.map()</code> also works and is often clearer.</li>
-		<li><code>.some()</code> is the idiomatic duplicate check before adding to a list.</li>
-		<li>Keyed <code>{`{#each}`}</code> blocks keep DOM nodes stable as items come and go.</li>
-		<li>Array destructuring like <code>[first, ...rest]</code> pairs naturally with reactive lists.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		Arrays wrapped in <code>$state</code> are deeply reactive through Svelte's proxy system.
+		Every mutating method you already know — <code>push</code>, <code>pop</code>,
+		<code>splice</code>, <code>shift</code>, <code>unshift</code> — triggers a UI update
+		automatically. You do not need to replace the entire array to notify the framework, though
+		reassignment with <code>filter</code> or <code>map</code> works too because Svelte
+		detects top-level reassignment as well as deep mutations.
+	</p>
+
+	<p class="prose">
+		Keyed <code>{`{#each}`}</code> blocks are critical for maintaining DOM identity when items
+		move, arrive, or leave. Without a key, Svelte maps items to DOM nodes by index, which
+		breaks animations and causes stale state in nested components. The key should be a stable,
+		unique identifier — a database ID, a slug, or even the item itself if the values are
+		unique strings.
+	</p>
+
+	<p class="prose">
+		Methods like <code>.filter()</code> and <code>.map()</code> return new arrays, so they
+		trigger updates through reassignment rather than mutation. Meanwhile, <code>.some()</code>
+		is the idiomatic way to check for duplicates before inserting, and array destructuring
+		like <code>const [first, ...rest] = tags</code> pairs naturally with reactive lists to
+		extract portions of the data without mutation.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-5-state-raw">2.5 — $state.raw</a> — skip deep proxying for large,
+		immutable datasets you replace wholesale.
+	</p>
 </section>
 
 <style>
@@ -401,19 +460,26 @@
 		color: var(--color-text-muted);
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin-top: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-
-	ul:not(.tag-list) {
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
-		padding-left: var(--space-md);
-		color: var(--color-text-muted);
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
 		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	@media (min-width: 768px) {
 		.demo {

@@ -148,20 +148,79 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Push <code>$effect</code> beyond its intended boundaries to understand the rules. Try each experiment, observe the result, then undo it.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Write to <code>$state</code> inside <code>$effect</code>.</strong> Add
+			<code>unread = unread + 1</code> inside the effect body. This creates an infinite
+			loop: the effect runs, writes to state, which triggers the effect to run again, which
+			writes to state again. Svelte detects this and throws a warning. Never write to
+			reactive state inside an effect — use <code>$derived</code> for computed values.
+		</li>
+		<li>
+			<strong>Read state you do not depend on.</strong> Add <code>console.log(siteName)</code>
+			inside the effect even though the effect's purpose is only to set
+			<code>document.title</code>. The effect re-runs whenever <code>siteName</code> changes
+			because all reactive reads inside an effect are tracked — there is no way to exclude
+			one. Every read creates a dependency.
+		</li>
+		<li>
+			<strong>Return nothing from an effect that starts a timer.</strong> Replace the
+			effect body with <code>setInterval(() => console.log('tick'), 1000)</code> and do
+			not return a cleanup function. Navigate away from the page — the timer keeps firing
+			in the background because nothing clears it. The interval leaks on component destroy.
+		</li>
+		<li>
+			<strong>Return a cleanup function.</strong> Change the effect to
+			<code>const id = setInterval(...); return () => clearInterval(id)</code>. Now
+			navigate away — the timer stops immediately. The cleanup runs on re-run and on
+			destroy, preventing resource leaks.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$effect</code> runs after the DOM updates and re-runs when its reactive reads change.</li>
-		<li>Dependencies are tracked automatically — you never list them.</li>
-		<li>Effects are the right place for <code>document</code>, <code>window</code>, fetch, and logging.</li>
-		<li><code>$effect</code> is browser-only, so it's SSR-safe.</li>
-		<li>Never assign to state inside an effect — use <code>$derived</code> instead.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		<code>$effect</code> is the rune for side effects — anything that reaches outside the
+		component's reactive graph to touch the DOM, the network, timers, or browser APIs. It
+		runs after the DOM updates and re-runs whenever any reactive value read inside it
+		changes. Svelte tracks those dependencies automatically, so you never declare them in
+		an array the way React's <code>useEffect</code> requires.
+	</p>
+
+	<p class="prose">
+		Effects only run in the browser, never during server-side rendering, which makes them
+		safe for accessing <code>document</code>, <code>window</code>, <code>localStorage</code>,
+		and other browser-only APIs. This is a deliberate design choice: side effects are
+		inherently tied to the client environment, and running them on the server would be
+		meaningless or harmful.
+	</p>
+
+	<p class="prose">
+		The most important rule is to never write to reactive state inside an effect. Writing
+		to state triggers the effect to re-run, creating an infinite loop. If you need a value
+		that is computed from other state, use <code>$derived</code> instead. Effects are for
+		synchronizing the outside world with your reactive state, not for computing new state.
+		When an effect allocates long-lived resources like timers or event listeners, return a
+		cleanup function to release them.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-10-effect-pre">2.10 — $effect.pre</a> — run logic before the DOM
+		updates to snapshot layout values you need to preserve.
+	</p>
 </section>
 
 <style>
@@ -180,10 +239,26 @@
 		margin: 0;
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin: 0;
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.concept {
 		font-size: var(--text-base);
@@ -304,15 +379,6 @@
 		font-size: var(--text-sm);
 		color: var(--color-brand);
 		overflow-x: auto;
-	}
-
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
 	}
 
 	@media (min-width: 768px) {

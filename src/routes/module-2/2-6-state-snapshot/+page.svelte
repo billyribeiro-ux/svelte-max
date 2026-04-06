@@ -212,19 +212,79 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Try these experiments to understand exactly when you need <code>$state.snapshot</code> and what happens when you skip it.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Pass a <code>$state</code> proxy to <code>JSON.stringify</code>.</strong>
+			Try <code>console.log(JSON.stringify(form))</code> directly. It works in most cases
+			because <code>JSON.stringify</code> reads properties through the proxy. However, some
+			devtools display the Proxy wrapper in the console, and structured-clone algorithms may
+			behave unexpectedly with proxied objects.
+		</li>
+		<li>
+			<strong>Pass a <code>$state</code> proxy to a third-party library that checks <code>typeof</code>.</strong>
+			Some libraries perform identity checks or use <code>Object.getPrototypeOf</code> and
+			may see unexpected behavior with a Proxy. The proxy is transparent for most operations,
+			but edge cases exist in serialization libraries, deep-equality checkers, and immutability
+			utilities.
+		</li>
+		<li>
+			<strong>Take a snapshot and mutate IT.</strong> Call
+			<code>const snap = $state.snapshot(form); snap.name = 'changed'</code>. The original
+			<code>form</code> state is completely unaffected because the snapshot is a deep clone.
+			It has no connection back to the reactive source — mutations to the clone are invisible
+			to Svelte.
+		</li>
+		<li>
+			<strong>Compare <code>$state.snapshot(a) === a</code>.</strong> This is always
+			<code>false</code> because snapshot creates a brand-new plain object. It is not the
+			same reference — it is a deep copy with all Proxy wrappers stripped away. Use deep
+			equality checks if you need to compare snapshots.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$state.snapshot</code> returns a deep, plain-object clone of reactive state.</li>
-		<li>Use it before serializing, logging, or sending state across a network boundary.</li>
-		<li>The snapshot is a one-shot copy — it does not stay in sync with the source.</li>
-		<li>Most application code never needs it; reach for it at integration boundaries.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		<code>$state.snapshot(value)</code> creates a plain JavaScript clone of reactive state
+		with every Proxy wrapper stripped away. The result is a regular object (or array, or
+		primitive) that you can safely pass to <code>JSON.stringify</code>, send in a
+		<code>fetch</code> body, store in <code>localStorage</code>, or hand to any third-party
+		library that expects plain data. It is the escape hatch from Svelte's reactive system.
+	</p>
+
+	<p class="prose">
+		The snapshot is a point-in-time deep copy. It does not stay in sync with the source
+		state — if you take a snapshot and then modify the original, the snapshot still reflects
+		the old values. This makes it perfect for "freeze and send" patterns: preview a form
+		payload before submitting, log the current state for debugging, or diff the current
+		state against a previously saved version.
+	</p>
+
+	<p class="prose">
+		Most day-to-day Svelte code never needs <code>$state.snapshot</code> because the proxy
+		is transparent for reading and rendering. You reach for it specifically at integration
+		boundaries — the edges where reactive state meets non-reactive systems like network
+		APIs, browser storage, or libraries that perform their own object inspection. If you
+		find yourself using it everywhere, that is a sign you may be over-thinking the proxy.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-7-derived">2.7 — $derived</a> — compute values automatically from
+		reactive state with zero manual syncing.
+	</p>
 </section>
 
 <style>
@@ -243,10 +303,26 @@
 		margin: 0;
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin: 0;
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	h4 {
 		font-size: var(--text-sm);
@@ -408,17 +484,6 @@
 		font-size: var(--text-xs);
 		color: var(--color-text-muted);
 		margin: 0;
-	}
-
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		margin: 0;
-		padding-left: var(--space-lg);
-		color: var(--color-text-muted);
-		font-size: var(--text-sm);
-		line-height: 1.6;
 	}
 
 	@media (min-width: 768px) {

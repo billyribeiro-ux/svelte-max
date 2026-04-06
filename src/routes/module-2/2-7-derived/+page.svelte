@@ -211,19 +211,81 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Deliberately misuse <code>$derived</code> to understand its rules. Try each experiment, observe the behavior, then undo it.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Put a <code>fetch()</code> inside <code>$derived</code>.</strong> Try
+			<code>const data = $derived(fetch('/api'))</code>. Svelte warns because derivations
+			must be pure — no side effects, no async operations. A <code>fetch</code> is a side
+			effect that belongs in <code>$effect</code>, not in a computation that should return
+			a synchronous value.
+		</li>
+		<li>
+			<strong>Write to state inside <code>$derived</code>.</strong> Try adding
+			<code>count = items.length</code> inside a derived expression where <code>count</code>
+			is <code>$state</code>. This creates an infinite loop: writing to state triggers a
+			re-derive, which writes to state again, which triggers another re-derive. Derivations
+			must be read-only.
+		</li>
+		<li>
+			<strong>Read a derived value twice.</strong> Add
+			<code>console.log(subtotal, subtotal)</code> in the template. Check the console — the
+			computation only runs once. Derived values are memoized: Svelte caches the result and
+			only recomputes when an input actually changes, no matter how many times you read it.
+		</li>
+		<li>
+			<strong>Chain 5 derived values.</strong> Create
+			<code>const a = $derived(subtotal * 2)</code>,
+			<code>const b = $derived(a + tax)</code>, and so on. Each derived only recomputes if
+			its specific inputs changed. If you change a single item's quantity, only the
+			derivations in the dependency chain recompute — the rest are untouched.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$derived(expr)</code> memoizes a pure computation of reactive inputs.</li>
-		<li>Derivations are synchronous — read them like any other value.</li>
-		<li>Chained derivations (<code>tax</code> from <code>subtotal</code>) compose cleanly.</li>
-		<li>Use <code>$derived</code> for values, <code>$effect</code> for side effects.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		<code>$derived(expr)</code> creates a value that automatically recalculates whenever any
+		reactive dependency used in the expression changes. It is pure computation: no side
+		effects, no network calls, no DOM writes. The rule is simple — if you are computing a
+		value from other state, use <code>$derived</code>; if you are causing a side effect,
+		use <code>$effect</code>. This separation keeps the reactive graph predictable and
+		prevents the cascading update bugs that plague imperative state management.
+	</p>
+
+	<p class="prose">
+		Derivations are synchronous and memoized. Reading the same derived value ten times in
+		one render cycle costs nothing because the result is cached. Svelte only recomputes
+		when one of the tracked dependencies actually changes. This makes chains of derivations
+		efficient: <code>subtotal</code> feeds <code>tax</code>, which feeds
+		<code>total</code>, and changing a single item's quantity only recomputes the values in
+		that specific dependency chain.
+	</p>
+
+	<p class="prose">
+		Chained derivations compose cleanly because each one declares its own dependency set
+		implicitly through the reactive reads in its expression. There are no dependency arrays
+		to maintain, no stale closure bugs, and no manual memoization. You write plain
+		JavaScript expressions and Svelte handles the rest. When the expression is too complex
+		for a single line, use <code>$derived.by</code> to get a full function body.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-8-derived-by">2.8 — $derived.by</a> — use a function body for
+		multi-step derivations with branching, loops, and intermediate variables.
+	</p>
 </section>
 
 <style>
@@ -242,10 +304,26 @@
 		margin: 0;
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin: 0;
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.concept {
 		font-size: var(--text-base);
@@ -395,17 +473,6 @@
 		font-size: var(--text-lg);
 		font-weight: 700;
 		color: var(--color-text);
-	}
-
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		margin: 0;
-		padding-left: var(--space-lg);
-		color: var(--color-text-muted);
-		font-size: var(--text-sm);
-		line-height: 1.6;
 	}
 
 	.lines {

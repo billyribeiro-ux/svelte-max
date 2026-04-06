@@ -306,19 +306,80 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Push <code>$derived.by</code> to its limits to understand when you need it versus plain <code>$derived</code>. Try each experiment, then undo it.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Use <code>$derived</code> for multi-line logic with <code>if</code> statements.</strong>
+			Try writing <code>const visible = $derived(if (category !== 'all') ...)</code>. You get
+			a syntax error because <code>$derived</code> only accepts a single expression — no
+			statements, no blocks, no variable declarations. That is exactly why
+			<code>$derived.by</code> exists.
+		</li>
+		<li>
+			<strong>Use <code>$derived.by(() => {'{ ... }'})</code> with the same logic.</strong>
+			Wrap the filter-sort-paginate pipeline in a callback function. It works because
+			<code>$derived.by</code> gives you a full function body where you can declare
+			intermediate variables, use <code>if</code>/<code>switch</code>/loops, and return
+			the final result.
+		</li>
+		<li>
+			<strong>Return different types from different branches.</strong> Add a branch that
+			returns a string instead of the expected object. TypeScript infers the union of all
+			return types and flags any mismatch in the template where you try to access
+			properties that don't exist on every branch.
+		</li>
+		<li>
+			<strong>Forget to <code>return</code> in the callback.</strong> Remove the
+			<code>return</code> statement from <code>$derived.by</code>. The derived value
+			becomes <code>undefined</code> and the template crashes trying to read
+			<code>.items</code> on <code>undefined</code>. Always return explicitly from the
+			callback.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$derived.by</code> gives you a function body for multi-step derivations.</li>
-		<li>Chained filter → sort → paginate is the canonical use case.</li>
-		<li>Clamp dependent values (like the current page) <em>inside</em> the derivation to stay pure.</li>
-		<li>Returning an object lets one derivation expose several computed fields at once.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		<code>$derived.by</code> is the block-body counterpart to <code>$derived</code>. Where
+		<code>$derived(expr)</code> accepts only a single expression, <code>$derived.by</code>
+		takes a callback function, giving you a full function body with intermediate variables,
+		conditionals, loops, and early returns. The semantics are identical: pure, memoized,
+		synchronous. The only difference is the syntax shape.
+	</p>
+
+	<p class="prose">
+		The canonical use case is chained data transforms — filter, then sort, then paginate —
+		where each step needs its own variable. Because the entire pipeline lives inside one
+		derivation, all the intermediate state is local and cannot leak. You can even compute
+		dependent values like clamping the current page to the total page count right inside the
+		same function, avoiding the need for a separate <code>$effect</code> to synchronize
+		them.
+	</p>
+
+	<p class="prose">
+		Returning an object from <code>$derived.by</code> lets one derivation expose several
+		computed fields at once — the filtered items, the total count, the clamped page number.
+		This is more efficient than creating multiple separate derivations that each repeat the
+		filter step. The same memoization guarantees apply: the callback only re-runs when one
+		of its reactive dependencies changes, and the result is cached between reads.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-9-effect">2.9 — $effect</a> — run side effects that synchronize
+		with the DOM and the outside world.
+	</p>
 </section>
 
 <style>
@@ -337,10 +398,26 @@
 		margin: 0;
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin: 0;
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	h4 {
 		font-size: var(--text-base);
@@ -490,17 +567,6 @@
 	.pager button:disabled {
 		opacity: 0.4;
 		cursor: not-allowed;
-	}
-
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		margin: 0;
-		padding-left: var(--space-lg);
-		color: var(--color-text-muted);
-		font-size: var(--text-sm);
-		line-height: 1.6;
 	}
 
 	@media (min-width: 768px) {

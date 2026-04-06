@@ -330,21 +330,82 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Use the wrong rune on purpose to see the exact symptoms. These experiments build your instinct for choosing correctly.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Use <code>$effect</code> for a computation.</strong> Write
+			<code>$effect(() => {'{ total = subtotal + tax }'}) </code> instead of
+			<code>$derived</code>. It "works" in the sense that <code>total</code> updates, but
+			it wastes a render cycle — the effect runs after the DOM updates with the stale
+			value, then writes the new value, causing a second render. <code>$derived</code>
+			computes synchronously before the first render.
+		</li>
+		<li>
+			<strong>Use <code>$derived</code> for a side effect (fetch).</strong> Write
+			<code>const data = $derived(fetch('/api'))</code>. Svelte warns because derivations
+			must be pure — no network calls, no DOM writes, no timers. A <code>fetch</code> is
+			a side effect that belongs in <code>$effect</code>, not in a computation.
+		</li>
+		<li>
+			<strong>Use <code>$state</code> for a value computed from other state.</strong> Write
+			<code>let total = $state(subtotal + tax)</code>. The initial value is correct, but
+			when <code>subtotal</code> or <code>tax</code> changes, <code>total</code> does not
+			update — it is just a static initial value. You have created a sync bug. Use
+			<code>$derived</code> instead.
+		</li>
+		<li>
+			<strong>Follow the decision tree.</strong> Does it change? Use <code>$state</code>.
+			Is it computed from state? Use <code>$derived</code>. Is it a side effect? Use
+			<code>$effect</code>. Never use a more complex rune when a simpler one works. The
+			tree is: constant → <code>const</code>, changes → <code>$state</code>, computed →
+			<code>$derived</code>, side effect → <code>$effect</code>.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$state</code> for reactive values that change over time.</li>
-		<li><code>$state.raw</code> for large datasets replaced wholesale — avoids deep proxy cost.</li>
-		<li><code>$state.snapshot</code> to get a plain JS copy for serialization (API calls, localStorage).</li>
-		<li><code>$derived</code> for single-expression computed values; <code>$derived.by</code> for multi-step logic.</li>
-		<li><code>$effect</code> for DOM / external side effects after render; <code>$effect.pre</code> for before render.</li>
-		<li>Choosing the right rune avoids unnecessary reactivity overhead and subtle bugs.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		The decision tree for choosing a rune is straightforward: if a value never changes, use
+		a plain <code>const</code>. If it changes over time due to user interaction or external
+		events, use <code>$state</code>. If it is computed from other reactive state, use
+		<code>$derived</code> (or <code>$derived.by</code> for multi-step logic). If it causes
+		a side effect — touching the DOM, making a network call, starting a timer — use
+		<code>$effect</code>. Never use a more complex rune when a simpler one works.
+	</p>
+
+	<p class="prose">
+		Using the wrong rune creates specific, predictable bugs. <code>$effect</code> for
+		computations wastes a render cycle. <code>$derived</code> for side effects triggers
+		warnings and may run more often than you expect. <code>$state</code> for computed
+		values creates sync bugs where the value falls out of date. Each rune has a single
+		responsibility, and respecting that boundary keeps your code efficient and correct.
+	</p>
+
+	<p class="prose">
+		For specialized cases, the variants help: <code>$state.raw</code> skips deep proxying
+		for large immutable datasets you replace wholesale. <code>$state.snapshot</code> strips
+		the proxy wrapper for serialization boundaries. <code>$effect.pre</code> runs before
+		the DOM updates for layout measurement. These are not everyday tools — they are
+		precision instruments for specific situations. When in doubt, start with the simplest
+		rune and upgrade only when you hit a real limitation.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-3/3-1-props">Module 3</a> — component props, events, slots, and the
+		composition patterns that make Svelte components reusable.
+	</p>
 </section>
 
 <style>
@@ -382,20 +443,26 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.tree {
 		display: flex;

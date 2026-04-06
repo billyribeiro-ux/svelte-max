@@ -229,32 +229,81 @@
 		<button type="button" class="reset" onclick={reset}>Reset</button>
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Swap between native collections and Svelte's reactive versions to see exactly where the reactivity boundary lies.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Use a plain <code>new Map()</code> with <code>$state</code>.</strong> Replace
+			<code>new SvelteMap()</code> with <code>new Map()</code>. Click a cell — the map
+			updates in memory but the UI stays frozen. Svelte's proxy cannot intercept
+			<code>.set()</code> or <code>.has()</code> on native Map instances because those
+			methods are internal to the Map implementation.
+		</li>
+		<li>
+			<strong>Use <code>new SvelteMap()</code> instead.</strong> Switch back to
+			<code>SvelteMap</code>. Now <code>.set()</code>, <code>.delete()</code>, and
+			<code>.clear()</code> all trigger updates because <code>SvelteMap</code> wraps every
+			method to notify the reactive graph. The API is identical — it is a drop-in
+			replacement.
+		</li>
+		<li>
+			<strong>Iterate a <code>SvelteMap</code> in <code>{`{#each}`}</code>.</strong> Use
+			<code>[...board.entries()]</code> or <code>board.keys()</code> in an each block.
+			Iteration is tracked — when the map changes, the each block re-renders. You need to
+			spread into an array because <code>{`{#each}`}</code> expects an iterable.
+		</li>
+		<li>
+			<strong>Check <code>.has()</code> in a derived.</strong> Create
+			<code>const hasCenter = $derived(board.has(4))</code>. This recomputes whenever the
+			map changes because <code>.has()</code> is a tracked read. Any method that reads from
+			a <code>SvelteMap</code> or <code>SvelteSet</code> registers a dependency.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>
-			Native <code>Map</code> and <code>Set</code> inside <code>$state</code> don't notify — their
-			mutation methods bypass the proxy.
-		</li>
-		<li>
-			<code>SvelteMap</code> and <code>SvelteSet</code> from <code>svelte/reactivity</code> expose
-			the same API and plug into the reactive graph.
-		</li>
-		<li>
-			Every read (<code>.get</code>, <code>.has</code>, <code>.size</code>, iteration) registers a
-			dependency.
-		</li>
-		<li>
-			Values stored inside aren't deeply reactive — wrap them in <code>$state</code> if you need
-			field-level updates.
-		</li>
-		<li>Great fit for keyed lookups, caches, and sets of unique IDs.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		<code>SvelteMap</code> and <code>SvelteSet</code> from <code>svelte/reactivity</code>
+		are reactive wrappers around the native <code>Map</code> and <code>Set</code> APIs. They
+		exist because Svelte's proxy system cannot intercept methods on native collections —
+		<code>.set()</code>, <code>.get()</code>, <code>.has()</code>, and <code>.size</code>
+		are all internal to the Map/Set implementation and invisible to a Proxy handler. The
+		Svelte versions wrap every method to notify the reactive graph.
+	</p>
+
+	<p class="prose">
+		Every read operation on a <code>SvelteMap</code> or <code>SvelteSet</code> registers a
+		dependency: <code>.get()</code>, <code>.has()</code>, <code>.size</code>, and iteration
+		all subscribe the calling context (template, <code>$derived</code>, or
+		<code>$effect</code>) to future changes. Every write operation —
+		<code>.set()</code>, <code>.delete()</code>, <code>.clear()</code>, <code>.add()</code>
+		— triggers updates to all subscribers. The API is identical to the native versions, so
+		migration is a one-line import change.
+	</p>
+
+	<p class="prose">
+		Use <code>SvelteMap</code> when you need O(1) key-based lookups — game boards, caches,
+		lookup tables, configuration registries. Use <code>SvelteSet</code> for collections of
+		unique values — selected IDs, active tags, permission sets. Import both from
+		<code>svelte/reactivity</code> and use them anywhere you would normally use
+		<code>Map</code> or <code>Set</code> in reactive code.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-13-reactive-url-media">2.13 — SvelteURL and MediaQuery</a> —
+		reactive wrappers for URL manipulation and media query matching.
+	</p>
 </section>
 
 <style>
@@ -273,10 +322,26 @@
 		margin: 0;
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin: 0;
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.concept {
 		font-size: var(--text-base);
@@ -370,15 +435,6 @@
 
 	.reset:hover {
 		background: var(--color-surface);
-	}
-
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
 	}
 
 	@media (min-width: 768px) {

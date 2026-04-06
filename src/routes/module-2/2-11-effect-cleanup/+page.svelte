@@ -179,26 +179,80 @@
 		keeps running — CPU never drops. Uncomment the cleanup and repeat — CPU returns to idle immediately.
 	</p>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Deliberately leak resources and then fix them to build an instinct for cleanup. Try each experiment, observe the leak, then restore the cleanup.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Start a <code>setInterval</code> without cleanup.</strong> Comment out the
+			<code>return () => clearInterval(id)</code> line, start the timer, navigate away,
+			then come back. Open DevTools and watch — the old interval is still firing. Navigate
+			away five more times and you have five intervals stacking on top of each other, all
+			consuming CPU.
+		</li>
+		<li>
+			<strong>Add a return function that calls <code>clearInterval</code>.</strong>
+			Uncomment the cleanup. Now start the timer and navigate away — the timer stops
+			immediately. Come back, start it again, navigate away — still clean. A single
+			interval, properly cleared, every time.
+		</li>
+		<li>
+			<strong><code>addEventListener</code> without cleanup.</strong> Add
+			<code>window.addEventListener('resize', handler)</code> inside an effect with no
+			cleanup return. Every time the effect re-runs (because a dependency changed), a new
+			listener stacks on top of the old one. Resize the window and you see the handler
+			fire multiple times per resize event.
+		</li>
+		<li>
+			<strong>Return cleanup that calls <code>removeEventListener</code>.</strong> Return
+			<code>() => window.removeEventListener('resize', handler)</code> from the effect.
+			Now each re-run removes the old listener before adding the new one. Resize the
+			window — the handler fires exactly once. Clean.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Return a function from <code>$effect</code> to register cleanup logic.</li>
-		<li>Cleanup runs before the effect re-runs <em>and</em> when the component is destroyed.</li>
-		<li>
-			Any long-lived resource — <code>setInterval</code>, <code>addEventListener</code>, sockets,
-			observers — needs cleanup.
-		</li>
-		<li>
-			If you forget the cleanup, switching to another page leaves the interval running — you can
-			verify this by doing it and watching the tab's CPU.
-		</li>
-		<li>DevTools Performance and Memory panels will surface leaks caused by missing cleanups.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		Every <code>$effect</code> that allocates a long-lived resource MUST return a cleanup
+		function. This is the single most important pattern in effect-based programming.
+		Timers, event listeners, WebSocket connections, IntersectionObservers, ResizeObservers
+		— anything that persists beyond a single function call needs explicit teardown. The
+		cleanup function you return is called in two situations: before the effect re-runs
+		(because a dependency changed) and when the component is destroyed.
+	</p>
+
+	<p class="prose">
+		Without cleanup, resources stack. Each time the effect re-runs, it creates a new
+		interval or listener without removing the old one. Five re-runs means five intervals
+		firing simultaneously. Navigating away means those intervals keep running in the
+		background, consuming CPU and memory. This is a leak, and it is one of the most
+		common bugs in reactive UI code. DevTools Performance and Memory panels will surface
+		these leaks if you know where to look.
+	</p>
+
+	<p class="prose">
+		The cleanup pattern is always the same: allocate the resource, return a function that
+		releases it. <code>setInterval</code> pairs with <code>clearInterval</code>.
+		<code>addEventListener</code> pairs with <code>removeEventListener</code>.
+		<code>new WebSocket()</code> pairs with <code>socket.close()</code>. Build this as a
+		reflex: if you create something persistent in an effect, you return its destructor.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-12-reactive-map-set">2.12 — SvelteMap and SvelteSet</a> — reactive
+		wrappers for Map and Set that plug into the dependency graph.
+	</p>
 </section>
 
 <style>
@@ -217,10 +271,26 @@
 		margin: 0;
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin: 0;
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.concept {
 		font-size: var(--text-base);
@@ -321,15 +391,6 @@
 		color: var(--color-text-muted);
 		text-align: center;
 		max-inline-size: 36rem;
-	}
-
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
 	}
 
 	@media (min-width: 768px) {

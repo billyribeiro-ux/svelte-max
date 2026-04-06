@@ -176,25 +176,80 @@
 		<button type="button" onclick={prepend}>Prepend 3 items</button>
 	</div>
 
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Experiment with the timing difference between <code>$effect</code> and <code>$effect.pre</code> to understand when each fires.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Read DOM dimensions inside <code>$effect</code> (not <code>.pre</code>).</strong>
+			Log <code>listEl.scrollHeight</code> inside a regular <code>$effect</code>. You get
+			the UPDATED dimensions — the new items are already in the DOM when
+			<code>$effect</code> runs. This is the normal timing: effects fire after the DOM
+			updates.
+		</li>
+		<li>
+			<strong>Read DOM dimensions inside <code>$effect.pre</code>.</strong> Log
+			<code>listEl.scrollHeight</code> inside <code>$effect.pre</code>. You get the
+			BEFORE-UPDATE dimensions — the old DOM is still intact. This is the entire purpose
+			of <code>$effect.pre</code>: capturing layout measurements before they change.
+		</li>
+		<li>
+			<strong>Use <code>$effect.pre</code> to snapshot scroll position.</strong> Capture
+			<code>scrollTop</code> and <code>scrollHeight</code> in the pre-effect, then restore
+			the scroll position in a follow-up <code>$effect</code> by computing the delta. The
+			user sees no jump because you compensated for the new content that was inserted above
+			their viewport.
+		</li>
+		<li>
+			<strong>Try <code>$effect.pre</code> in a server context.</strong> Like
+			<code>$effect</code>, <code>$effect.pre</code> only runs in the browser. During SSR,
+			neither effect type executes. This is safe because DOM measurement is inherently a
+			client-side operation — there is no DOM on the server to measure.
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$effect</code> runs after the DOM updates; <code>$effect.pre</code> runs before.</li>
-		<li>
-			Use <code>$effect.pre</code> to snapshot layout values that the imminent update will
-			invalidate.
-		</li>
-		<li>Pair it with a regular <code>$effect</code> to apply corrections after the new DOM lands.</li>
-		<li>Scroll preservation in prepend-style lists is the canonical example.</li>
-		<li>
-			Reach for <code>$effect.pre</code> rarely — most effects belong in plain <code>$effect</code>.
-		</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		<code>$effect.pre</code> runs before the DOM updates, giving you one last chance to
+		read the old layout before Svelte applies the new markup. Regular <code>$effect</code>
+		runs after the DOM updates, when the new layout is already painted. The timing
+		difference is the entire reason <code>$effect.pre</code> exists — it lets you snapshot
+		measurements that the imminent update will invalidate.
+	</p>
+
+	<p class="prose">
+		The classic use case is scroll preservation in prepend-style lists, like a chat log
+		where new messages arrive at the top. Without <code>$effect.pre</code>, inserting items
+		above the viewport pushes the content the user was reading downward. By capturing
+		<code>scrollHeight</code> and <code>scrollTop</code> before the DOM updates and
+		restoring them after, you keep the viewport locked on the same content the user was
+		looking at.
+	</p>
+
+	<p class="prose">
+		<code>$effect.pre</code> follows the same cleanup pattern as <code>$effect</code> —
+		return a function to clean up resources. It is also browser-only, just like
+		<code>$effect</code>. Most of the time you want regular <code>$effect</code>; reach
+		for <code>$effect.pre</code> only when you genuinely need the pre-mutation snapshot.
+		If you find yourself using it frequently, reconsider whether a different approach
+		(like CSS scroll-anchoring) might be simpler.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-11-effect-cleanup">2.11 — Effect cleanup</a> — return a cleanup
+		function to prevent resource leaks from timers, listeners, and subscriptions.
+	</p>
 </section>
 
 <style>
@@ -213,10 +268,26 @@
 		margin: 0;
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin: 0;
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.concept {
 		font-size: var(--text-base);
@@ -284,15 +355,6 @@
 
 	button:hover {
 		background: var(--color-brand-dim);
-	}
-
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
 	}
 
 	@media (min-width: 768px) {

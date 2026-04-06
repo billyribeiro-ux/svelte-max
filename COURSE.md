@@ -165,25 +165,17 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 4. **Module 4 — Control Flow & Special Elements** ✅ shipped — see expanded detail below (Lessons 4.1–4.12, Dynamic Product Listing)
 5. **Module 5 — Events & Interaction** ✅ shipped — see expanded detail below (Lessons 5.1–5.12, Interactive Form with Live Validation)
 6. **Module 6 — Styling Mastery** ✅ shipped — see expanded detail below (Lessons 6.1–6.18, Animated Landing Page)
-7. **Module 8 — SvelteKit Routing & Layouts** ✅ shipped — see expanded detail below (Lessons 8.1–8.14, Multi-Page Portfolio Site)
-8. **Module 9A — Data Loading (load)** ✅ shipped — see expanded detail below (Lessons 9A.1–9A.10, Weather Dashboard)
-9. **Module 10 — API Routes & Forms** ✅ shipped — see expanded detail below (Lessons 10.1–10.9, CRUD Note-Taking App)
-10. **Module 13 — SEO** ✅ shipped — see expanded detail below (Lessons 13.1–13.14, SEO-Optimized Content Site)
-5. **Module 5 — Events & Interaction** — typed events, `on()`, bindings, accessibility (Lessons 5.1–5.12, Validated Form)
-6. **Module 6 — Styling Mastery** — full PE7 architecture, transitions, Tween/Spring (Lessons 6.1–6.18, Animated Landing Page)
-7. **Module 7 — GSAP Integration** — timelines, ScrollTrigger, actions, `{@attach}` (Lessons 7.1–7.14, Marketing Page)
-8. **Module 8 — SvelteKit Routing & Layouts** — SSR, hydration, shallow routing, snapshots (Lessons 8.1–8.14, Portfolio Site)
-9. **Module 9A — Data Loading (load)** — typed load, streaming, SSG (Lessons 9A.1–9A.10, Weather Dashboard)
-10. **Module 9B — Remote Functions** — query/form/command/prerender, single-flight mutations (Lessons 9B.1–9B.14, Real-Time App)
-11. **Module 10 — API Routes & Forms** — `+server.ts`, form actions, auth (Lessons 10.1–10.9, CRUD Notes)
-12. **Module 11 — State Management at Scale** — `createContext`, `.svelte.ts`, TanStack Table (Lessons 11.1–11.11, Admin Dashboard)
-13. **Module 12 — Performance & Production** — Core Web Vitals, error boundaries, testing, service workers (Lessons 12.1–12.12)
-14. **Module 13 — SEO** — structured data, E-E-A-T, INP, AI Overviews (Lessons 13.1–13.14)
-15. **Module 14 — Custom Elements & Library Publishing** — `<svelte:options customElement>`, `@sveltejs/package` (Lessons 14.1–14.6)
-16. **Module 15 — 3D & Immersive with Threlte** — Three.js via Threlte (Lessons 15.1–15.5)
-17. **Capstone — PE7 Flagship Project** — surgical-reveal chunk system across every skill
-
-See the original curriculum briefing for full per-lesson content, mini-build descriptions, reveal-system tables, and version pinning (svelte@5.55.x, kit@2.55.x, vite@7, TypeScript strict, pnpm 9+). That briefing is the authoritative specification.
+7. **Module 7 — GSAP Integration** ✅ shipped — timelines, ScrollTrigger, actions, attachments (Lessons 7.1–7.14, Marketing Page)
+8. **Module 8 — SvelteKit Routing & Layouts** ✅ shipped — see expanded detail below (Lessons 8.1–8.14, Multi-Page Portfolio Site)
+9. **Module 9A — Data Loading (load)** ✅ shipped — see expanded detail below (Lessons 9A.1–9A.10, Weather Dashboard)
+10. **Module 9B — Remote Functions** ✅ shipped — query/form/command/prerender, single-flight mutations (Lessons 9B.1–9B.14, Real-Time Data App)
+11. **Module 10 — API Routes & Forms** ✅ shipped — see expanded detail below (Lessons 10.1–10.9, CRUD Note-Taking App)
+12. **Module 11 — State Management at Scale** ✅ shipped — context, .svelte.ts, TanStack Table (Lessons 11.1–11.11, Admin Dashboard)
+13. **Module 12 — Performance & Production** ✅ shipped — Core Web Vitals, error boundaries, testing, service workers (Lessons 12.1–12.12, Production App)
+14. **Module 13 — SEO** ✅ shipped — see expanded detail below (Lessons 13.1–13.14, SEO-Optimized Content Site)
+15. **Module 14 — Custom Elements & Library Publishing** ✅ shipped — `<svelte:options customElement>`, `@sveltejs/package` (Lessons 14.1–14.6, Library + CE Suite)
+16. **Module 15 — 3D & Immersive with Threlte** ✅ shipped — Three.js via Threlte (Lessons 15.1–15.5, Immersive Landing)
+17. **Capstone — PE7 Flagship Project** ✅ shipped — surgical-reveal chunk system across every skill
 
 ---
 
@@ -361,6 +353,183 @@ See the original curriculum briefing for full per-lesson content, mini-build des
 
 ---
 
+## Module 1 — The Foundation (expanded)
+
+**Goal**: Student builds their first compiled Svelte component with TypeScript strict mode and PE7 CSS from the very first lesson.
+**Concepts**: Svelte compilation, project scaffolding, `<script>` / `<style>` / markup blocks, TypeScript primitives, `@layer` & tokens, fluid typography, scoped styles, interfaces, template expressions.
+
+- **1.1 — Hello compiled**. What Svelte compiles to — no virtual DOM. The student runs `pnpm dev` and sees output.
+- **1.2 — Project setup**. Scaffolding with `sv create`, `pnpm`, folder structure walkthrough.
+- **1.3 — Three blocks**. `<script lang="ts">`, markup, `<style>` — the anatomy of every `.svelte` file.
+- **1.4 — TS primitives**. `string`, `number`, `boolean`, `null`, `undefined` — typed from day one.
+- **1.5 — @layer & tokens**. Establishing the PE7 `@layer` stack and global token system in `app.css`.
+- **1.6 — Fluid typography**. `clamp()` for type scale, `--text-*` tokens.
+- **1.7 — Scoping**. How Svelte scopes `<style>` to the component — no leaks, no BEM needed.
+- **1.8 — Interfaces**. TypeScript `interface` for structuring component data.
+- **1.9 — Expressions**. `{variable}`, `{expression}` in markup — binding data to the DOM.
+- **Module 1 Project — Personal Portfolio Card**. A single-page portfolio card component demonstrating every concept from the module. OKLCH personality: teal.
+
+---
+
+## Module 2 — Reactivity (expanded)
+
+**Goal**: Student masters every Svelte 5 rune and reactive primitive.
+**Concepts**: `$state`, `$state.raw`, `$state.snapshot`, `$derived`, `$derived.by`, `$effect`, `$effect.pre`, effect cleanup, `SvelteMap`/`SvelteSet`, `MediaQuery`, reactive CSS, typed state.
+
+- **2.1 — What state is**. Reactivity as a concept — data changes, UI updates automatically.
+- **2.2 — Primitive `$state`**. `let count = $state(0)` — the simplest reactive value.
+- **2.3 — Object `$state`**. Deep reactivity on objects — nested property changes trigger updates.
+- **2.4 — Array `$state`**. Reactive arrays — push, splice, reassign all tracked.
+- **2.5 — `$state.raw`**. Non-deep reactive state for performance-sensitive large objects.
+- **2.6 — `$state.snapshot`**. Extracting a plain object from reactive state for API calls or logging.
+- **2.7 — `$derived`**. Pure computed values that auto-update when dependencies change.
+- **2.8 — `$derived.by`**. Multi-statement derived values with a function body.
+- **2.9 — `$effect`**. Side effects that run after DOM updates.
+- **2.10 — `$effect.pre`**. Side effects that run before DOM updates.
+- **2.11 — Effect cleanup**. Returning a cleanup function from `$effect` — subscriptions, timers, listeners.
+- **2.12 — SvelteMap/Set**. Reactive `Map` and `Set` from `svelte/reactivity`.
+- **2.13 — URL & MediaQuery**. Reactive `MediaQuery` and URL primitives from `svelte/reactivity`.
+- **2.14 — Reactive CSS**. Driving CSS custom properties from reactive state.
+- **2.15 — Typed state**. Generics with `$state<T>()`, ensuring type safety across the reactive graph.
+- **Module 2 Project — Interactive Dashboard**. A multi-widget dashboard exercising every rune and reactive primitive. OKLCH personality: amber.
+
+---
+
+## Module 7 — GSAP Integration (expanded)
+
+**Goal**: Student integrates GSAP with Svelte's lifecycle for production animation work.
+**Concepts**: GSAP core API, timelines, `bind:this`, `$effect` bridge, cleanup, stagger, ScrollTrigger, `use:` actions, `{@attach}` attachments.
+
+- **7.1 — What GSAP is**. The GreenSock Animation Platform — why it exists alongside CSS transitions and Svelte's built-in animation.
+- **7.2 — Installing**. `pnpm add gsap` and importing correctly in a Svelte component.
+- **7.3 — to/from/fromTo**. `gsap.to()`, `gsap.from()`, `gsap.fromTo()` — the three core tweens.
+- **7.4 — Timelines**. `gsap.timeline()` for sequencing multiple animations with labels and offsets.
+- **7.5 — bind:this**. Getting a DOM reference in Svelte to pass to GSAP.
+- **7.6 — $effect bridge**. Running GSAP animations inside `$effect` so they react to state changes.
+- **7.7 — Cleanup**. Killing tweens and timelines in effect cleanup to prevent memory leaks.
+- **7.8 — Stagger**. `stagger` property for animating lists of elements with offset delays.
+- **7.9 — ScrollTrigger**. `ScrollTrigger.create()` for scroll-driven animations — pin, scrub, snap.
+- **7.10 — ScrollTrigger + nav**. Combining ScrollTrigger with navigation state for active-section highlighting.
+- **7.11 — use: actions**. Encapsulating GSAP logic in reusable Svelte actions via `use:gsapFade`.
+- **7.12 — Attachments**. Using `{@attach}` for declarative GSAP integration on elements.
+- **7.13 — Scroll reveal**. A production scroll-reveal pattern combining ScrollTrigger + stagger + actions.
+- **7.14 — GSAP + Svelte together**. When to use GSAP vs Svelte transitions vs CSS — decision framework.
+- **Module 7 Project — Marketing Page**. A full marketing landing page with GSAP-powered hero animation, scroll-triggered feature reveals, staggered testimonial cards, and smooth section transitions. OKLCH personality: magenta.
+
+---
+
+## Module 9B — Remote Functions (expanded)
+
+**Goal**: Student masters SvelteKit's remote function API for type-safe client-server communication without manual fetch.
+**Concepts**: Remote query functions, remote form functions, remote command functions, prerender compatibility, single-flight mutations, simulated demos.
+
+- **9B.1 — What remote functions are**. Server functions callable from the client with full type safety — no manual `fetch`.
+- **9B.2 — Remote query functions**. Reading data from the server via typed query functions.
+- **9B.3 — Query parameters**. Passing typed arguments to remote queries.
+- **9B.4 — Remote form functions**. Progressive-enhancement-friendly form submissions via remote functions.
+- **9B.5 — Form validation**. Server-side validation with typed error returns in remote form functions.
+- **9B.6 — Remote command functions**. Imperative mutations that don't need a form — button clicks, toggles.
+- **9B.7 — Single-flight mutations**. Deduplicating concurrent mutations automatically.
+- **9B.8 — Optimistic updates**. Updating the UI before the server responds, rolling back on failure.
+- **9B.9 — Error handling**. Typed error responses and client-side error narrowing.
+- **9B.10 — Prerender compatibility**. Making remote functions work with prerendered pages.
+- **9B.11 — Streaming responses**. Returning streamed data from remote functions.
+- **9B.12 — Combining with load**. Using remote functions alongside traditional load functions.
+- **9B.13 — Testing remote functions**. Unit testing remote function logic with Vitest.
+- **9B.14 — Production patterns**. Real-world patterns: auth-gated remotes, rate limiting, cache invalidation.
+- **Module 9B Project — Real-Time Data App**. A data-driven application using remote functions for all server communication, with optimistic UI, streaming updates, and full type safety. All demos simulated. OKLCH personality: cyan.
+
+---
+
+## Module 11 — State Management at Scale (expanded)
+
+**Goal**: Student manages complex application state across deeply nested component trees and data-heavy interfaces.
+**Concepts**: Prop drilling problem, `createContext`/`getContext`, `.svelte.ts` modules, shared reactive state, reactive classes, URL state, reactive window, TanStack Table, optimistic UI.
+
+- **11.1 — Prop drilling**. The problem — passing state through 5+ levels of components. Why it breaks.
+- **11.2 — Context**. `createContext()` and `getContext()` — providing and consuming values through the tree without props.
+- **11.3 — .svelte.ts**. Reactive modules — `.svelte.ts` files that export reactive state usable anywhere.
+- **11.4 — Shared state**. Building a typed shared state module in `$lib/state/` with `$state` in a `.svelte.ts` file.
+- **11.5 — Reactive classes**. Using `$state` inside ES6 classes for encapsulated reactive logic.
+- **11.6 — URL state**. Syncing state with URL search params for shareable, bookmarkable UI state.
+- **11.7 — Reactive window**. `SvelteURLSearchParams` and reactive window dimensions from `svelte/reactivity`.
+- **11.8 — TanStack Table setup**. Installing `@tanstack/svelte-table`, defining column defs, creating the table instance.
+- **11.9 — TanStack Table features**. Sorting, filtering, pagination — all reactive, all typed.
+- **11.10 — TanStack Table customization**. Custom cell renderers, row selection, column visibility.
+- **11.11 — Optimistic UI**. Updating the UI before server confirmation, handling rollbacks on failure.
+- **Module 11 Project — Admin Dashboard**. A data-intensive admin interface with context-driven theme, shared auth state, TanStack Table with sorting/filtering/pagination, URL-synced filters, and optimistic mutations. OKLCH personality: deep purple.
+
+---
+
+## Module 12 — Performance & Production (expanded)
+
+**Goal**: Student ships production-quality applications with optimized performance, comprehensive testing, and robust error handling.
+**Concepts**: Core Web Vitals, image optimization, code splitting, effect performance, memoization, actions, error boundaries, accessibility, Vitest, Playwright, deployment, service workers.
+
+- **12.1 — Core Web Vitals**. LCP, CLS, INP — what they measure, target thresholds, how to diagnose.
+- **12.2 — Image optimization**. `@sveltejs/enhanced-img`, responsive images, lazy loading, format selection.
+- **12.3 — Code splitting**. Dynamic `import()`, route-level splitting, component lazy loading.
+- **12.4 — Effect performance**. Avoiding unnecessary `$effect` runs, batching, fine-grained reactivity.
+- **12.5 — Memoization**. Caching expensive computations with `$derived` and manual memoization patterns.
+- **12.6 — Actions for performance**. Using `use:` actions for DOM-heavy operations outside Svelte's reactivity.
+- **12.7 — Error boundaries**. `<svelte:boundary>` for graceful degradation — catching render errors without crashing the app.
+- **12.8 — Accessibility**. `a11y` compile warnings, ARIA patterns, focus management, screen reader testing.
+- **12.9 — Vitest**. Unit testing Svelte components and utility functions with Vitest.
+- **12.10 — Playwright**. End-to-end testing SvelteKit routes, forms, and navigation flows.
+- **12.11 — Deployment**. Adapter selection (`adapter-auto`, `adapter-node`, `adapter-static`, `adapter-vercel`), environment config, build optimization.
+- **12.12 — Service workers**. `src/service-worker.ts`, offline support, cache strategies, background sync.
+- **Module 12 Project — Production App**. A performance-optimized application with error boundaries, full test suite (Vitest + Playwright), Lighthouse scores above 95, and deployment-ready configuration. OKLCH personality: taupe.
+
+---
+
+## Module 14 — Custom Elements & Library Publishing (expanded)
+
+**Goal**: Student creates framework-agnostic custom elements from Svelte components and publishes a component library.
+**Concepts**: `<svelte:options customElement>`, shadow DOM, attributes vs properties, `@sveltejs/package`, `exports` map, publishing.
+
+- **14.1 — What custom elements are**. Web Components standard, `customElements.define()`, why Svelte is ideal for building them.
+- **14.2 — `<svelte:options customElement>`**. The compiler flag that turns a Svelte component into a custom element.
+- **14.3 — Shadow DOM and styling**. How styles work inside shadow DOM, CSS custom properties as the styling API.
+- **14.4 — Attributes and properties**. Mapping between HTML attributes (strings) and component props (typed), `reflect`.
+- **14.5 — Events from custom elements**. Dispatching `CustomEvent` from a Svelte custom element for framework-agnostic communication.
+- **14.6 — `@sveltejs/package`**. Packaging a component library with proper `exports` map, TypeScript declarations, and `svelte` field in `package.json`.
+- **Module 14 Project — Library + CE Suite**. A published component library containing both standard Svelte components and custom element variants, with full TypeScript types and documentation. OKLCH personality: warm sand.
+
+---
+
+## Module 15 — 3D & Immersive with Threlte (expanded)
+
+**Goal**: Student renders interactive 3D scenes in a SvelteKit application using Threlte.
+**Concepts**: Three.js fundamentals via Threlte's declarative API, `<Canvas>`, `<T>`, lighting, materials, camera control.
+
+- **15.1 — What Threlte is**. Three.js wrapped in Svelte components — declarative 3D in `.svelte` files.
+- **15.2 — Scene setup**. `<Canvas>`, `<T.PerspectiveCamera>`, `<T.AmbientLight>`, `<T.DirectionalLight>` — the minimal scene.
+- **15.3 — Meshes and materials**. `<T.Mesh>`, `<T.BoxGeometry>`, `<T.MeshStandardMaterial>` — rendering 3D objects.
+- **15.4 — Interactivity**. Click, hover, and pointer events on 3D objects via Threlte's event system.
+- **15.5 — Animation loop**. `useFrame()` for per-frame updates, integrating with Svelte's reactive state.
+- **Module 15 Project — Immersive Landing**. A landing page with an interactive 3D hero scene — rotating geometry, hover effects, scroll-driven camera movement. OKLCH personality: deep indigo.
+
+---
+
+## Capstone — PE7 Flagship Project (expanded)
+
+**Goal**: Student composes every skill from every module into a single production-grade SvelteKit application.
+**Concepts**: Server loader + form actions, component composition, Svelte transitions, Tween, Spring, GSAP timelines, shallow routing, SEO with JSON-LD, CartStore via reactive classes, error boundaries.
+
+- Integrates server loaders and form actions (Modules 9A, 10) for data flow.
+- Builds a full component library (Module 3) with typed props, snippets, and composition.
+- Applies Svelte transitions and Spring/Tween animations (Module 6) throughout.
+- Adds GSAP-powered scroll reveals and timelines (Module 7) for hero and feature sections.
+- Uses shallow routing (Module 8) for modal-based product previews.
+- Implements SEO with `<svelte:head>`, JSON-LD, OG tags, sitemap (Module 13).
+- Manages cart state via a reactive `CartStore` class (Module 11) with context.
+- Wraps critical sections in `<svelte:boundary>` error boundaries (Module 12).
+- Ships with Vitest + Playwright test coverage (Module 12).
+- Full PE7 CSS architecture, mobile-first, fluid everything.
+- **Capstone Project — PE7 Flagship**. The most advanced application in the course — an e-commerce-style storefront proving mastery of every module. OKLCH personality: hot pink.
+
+---
+
 ## Version Reference
 
 | Package | Version | Notes |
@@ -378,3 +547,23 @@ See the original curriculum briefing for full per-lesson content, mini-build des
 | vitest | Latest | Unit testing |
 | @playwright/test | Latest | E2E testing |
 | pnpm | 9.x+ | Package manager — always |
+
+---
+
+## What This Course Produces
+
+A student who completes all 17 modules and the capstone can:
+
+- **Build from scratch** — scaffold a SvelteKit project, configure TypeScript strict mode, establish a PE7 CSS architecture, and ship a production-ready application.
+- **Think in reactivity** — use every Svelte 5 rune (`$state`, `$derived`, `$effect` and variants) correctly, understanding when each is appropriate and how the reactive graph works.
+- **Compose component systems** — design typed, reusable component libraries with `$props()`, `$bindable()`, snippets, and CSS custom property APIs.
+- **Handle every interaction** — wire typed DOM events, keyboard accessibility, touch/pointer support, debounce/throttle, and focus management.
+- **Style with intention** — apply the full PE7 layer stack, OKLCH color, fluid typography, container queries, logical properties, and per-page color personalities without any utility framework.
+- **Animate professionally** — use Svelte transitions, Tween, Spring, `animate:flip`, and GSAP (timelines, ScrollTrigger, stagger) with proper lifecycle cleanup and reduced-motion respect.
+- **Architect full-stack routes** — implement SSR, SSG, CSR, and hybrid rendering; nested layouts; dynamic routes; shallow routing; snapshots; view transitions.
+- **Load and mutate data** — write typed load functions, streaming responses, form actions, `use:enhance`, remote functions, and optimistic UI patterns.
+- **Manage state at scale** — use context, `.svelte.ts` modules, reactive classes, URL state, and TanStack Table for data-heavy interfaces.
+- **Ship production quality** — optimize Core Web Vitals, implement error boundaries, write Vitest and Playwright tests, configure deployment adapters, and add service workers.
+- **Optimize for discovery** — implement SEO with `<svelte:head>`, JSON-LD structured data, Open Graph, sitemaps, and AI Overview optimization.
+- **Extend the platform** — build custom elements from Svelte components, publish typed libraries with `@sveltejs/package`, and render 3D scenes with Threlte.
+- **Prove it all** — deliver a capstone e-commerce storefront that integrates every skill into one cohesive, tested, accessible, performant application.

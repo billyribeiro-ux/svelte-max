@@ -158,19 +158,26 @@
 		{/each}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Shadow the outer variable name in the inner each.</strong> If the outer loop uses <code>as item</code> and the inner loop also uses <code>as item</code>, the inner variable silently shadows the outer one. Inside the inner block you lose access to the outer item entirely, which leads to subtle data bugs.</li>
+		<li><strong>Access the outer loop's index inside the inner loop.</strong> This works as long as you give each index a distinct name -- <code>{'as category, ci'}</code> on the outer and <code>{'as product, pi'}</code> on the inner. If both use <code>i</code>, the inner <code>i</code> shadows the outer one and you lose track of the outer position.</li>
+		<li><strong>Forget the key on the inner each block.</strong> The same identity problems from lesson 4.4 apply at every nesting level. If the inner array changes, Svelte will patch by position within each category, causing input state, focus, and animations to drift to the wrong product.</li>
+		<li><strong>Nest three levels deep.</strong> It works, but the template becomes hard to read and reason about. If you find yourself at three or more nesting levels, consider flattening the data structure or extracting the inner loops into their own child components.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Nested <code>{'{#each}'}</code> blocks handle arrays of arrays.</li>
-		<li>Type each level — <code>Category</code> outside, <code>Product</code> inside.</li>
-		<li>Use keys at every level for correct reconciliation.</li>
-		<li>Hoist expensive work out of inner loops when possible.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Nested <code>{'{#each}'}</code> blocks let you iterate arrays of arrays -- the natural shape for hierarchical data like categories containing products, departments containing teams, or folders containing files. Each level of nesting introduces its own scope with its own iteration variable, and you can destructure at every level independently. The key rule is the same at every depth: provide a unique, stable key for any list that may change.</p>
+	<p class="prose">Variable shadowing is the most common trap with nested loops. If both the outer and inner <code>as</code> clauses use the same variable name, the inner one silently wins, and you lose access to the outer item without any compiler warning. The fix is simple: give each level a distinct, descriptive name -- <code>category</code> for the outer loop, <code>product</code> for the inner one -- so the relationship between data and template is always clear.</p>
+	<p class="prose">Performance-wise, keep nesting to two levels whenever possible. A three-deep nested each block with 10 items at each level produces 1,000 DOM nodes, and every re-render of the outermost array re-evaluates the entire tree. If your inner loops are expensive, extract them into child components so Svelte can skip re-rendering subtrees whose props have not changed.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-6-key-block">4.6 — {'{#key}'} block</a></p>
 </section>
 
 <style>
@@ -203,18 +210,6 @@
 		border-radius: var(--radius-xs);
 	}
 
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 
 	.category {
 		display: flex;
@@ -293,6 +288,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

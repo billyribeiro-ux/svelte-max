@@ -153,20 +153,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Use top-level <code>await</code> in the <code>&lt;script&gt;</code> block.</strong> This will error because Svelte component scripts are not async modules. Top-level await is only valid in ES modules loaded by a bundler that supports it. In Svelte, async work belongs inside functions, <code>$effect</code> callbacks, or SvelteKit's <code>load</code> functions.</li>
+		<li><strong>Await inside a <code>$effect</code> callback.</strong> Effects can call async functions and await inside them. The effect runs, kicks off the async operation, and the state updates reactively when the promise resolves. This pattern works but requires manual cleanup to avoid stale closures if the effect re-runs before the previous promise settles.</li>
+		<li><strong>Forget error handling entirely -- no <code>try/catch</code>.</strong> The promise rejects with an unhandled rejection, which shows up as a console error and potentially crashes your page in strict environments. Always wrap <code>await</code> calls in <code>try/catch</code> or attach a <code>.catch()</code> handler to every promise.</li>
+		<li><strong>Start two fetches in rapid succession without cancellation.</strong> The slower fetch resolves after the faster one and overwrites the result, causing the UI to flash and settle on stale data. This is a race condition -- fix it with <code>AbortController</code> or a sequence counter that ignores out-of-order responses.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Promises represent a value that will exist later</li>
-		<li><code>async</code> functions always return a <code>Promise</code></li>
-		<li><code>await</code> suspends execution until the promise settles</li>
-		<li>Wrap <code>await</code> in <code>try/catch</code> to handle rejections</li>
-		<li>Manual loading/error state works but gets verbose — 4.8 has a better way</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Promises are JavaScript's standard abstraction for values that will exist in the future. An <code>async</code> function always returns a <code>Promise</code>, and <code>await</code> pauses execution inside that function until the promise settles. This lets you write asynchronous code in a top-to-bottom style that reads like synchronous code, eliminating the deeply nested callbacks that plagued earlier JavaScript.</p>
+	<p class="prose">In a Svelte component, async operations typically live inside event handlers, <code>$effect</code> callbacks, or SvelteKit's <code>load</code> functions. The pattern shown here -- separate <code>$state</code> variables for <code>loading</code>, <code>error</code>, and <code>data</code> -- is the manual approach. It works, but it requires you to manage three pieces of state for every async operation, reset them in the right order, and handle every edge case yourself.</p>
+	<p class="prose">Error handling and race conditions are the two traps that catch every developer eventually. Always wrap <code>await</code> in <code>try/catch</code> so rejected promises surface as user-visible error messages rather than silent console errors. For race conditions, use <code>AbortController</code> to cancel in-flight requests when a new one starts, or maintain a sequence counter and ignore results from superseded requests. In the next lesson, Svelte's <code>{'{#await}'}</code> block replaces most of this boilerplate with a single declarative construct.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-8-await-block">4.8 — {'{#await}'} block</a></p>
 </section>
 
 <style>
@@ -197,20 +203,6 @@
 		background: var(--color-surface-2);
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
-	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
 	}
 	button {
 		align-self: flex-start;
@@ -299,6 +291,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

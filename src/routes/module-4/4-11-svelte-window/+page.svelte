@@ -137,20 +137,26 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Use <code>window.addEventListener</code> directly instead of <code>&lt;svelte:window&gt;</code>.</strong> It works, but you must manually remove the listener in an <code>onDestroy</code> or <code>$effect</code> cleanup function. Forget the cleanup and you have a memory leak that persists across navigations and accumulates duplicate listeners.</li>
+		<li><strong>Use <code>&lt;svelte:window onresize={'{handler}'} /&gt;</code> instead.</strong> Svelte wires up the listener on mount and removes it automatically when the component is destroyed. No cleanup code, no leak risk, and the declarative syntax makes it immediately obvious which global events the component cares about.</li>
+		<li><strong>Add <code>bind:innerWidth</code> to track the viewport width reactively.</strong> Svelte keeps the bound variable in sync with the window's actual width on every resize event. Use it to implement responsive logic in JavaScript -- like switching between a mobile menu and a desktop nav -- without media queries.</li>
+		<li><strong>Add <code>bind:scrollY</code> to track the scroll position.</strong> The value updates continuously as the user scrolls, giving you a reactive number you can use for parallax effects, sticky headers, scroll-to-top buttons, or progress indicators. Combine it with <code>$derived</code> to compute values like "user has scrolled past the hero section."</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>&lt;svelte:window&gt;</code> attaches listeners and bindings to <code>window</code></li>
-		<li>Svelte auto-cleans listeners on unmount — no manual teardown</li>
-		<li><code>bind:innerWidth</code> and <code>bind:scrollY</code> stay reactive as the user interacts</li>
-		<li><code>&lt;svelte:document&gt;</code> exposes <code>visibilitychange</code>, <code>activeElement</code></li>
-		<li><code>&lt;svelte:body&gt;</code> handles <code>mouseenter</code> / <code>mouseleave</code></li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>&lt;svelte:window&gt;</code> is Svelte's declarative interface to the global <code>window</code> object. It lets you attach event listeners and property bindings directly in your template markup, and Svelte handles the lifecycle automatically: listeners are added on mount and removed on unmount, with no manual cleanup code required. This eliminates an entire class of memory-leak bugs that plague vanilla JavaScript applications.</p>
+	<p class="prose">Property bindings like <code>bind:innerWidth</code> and <code>bind:scrollY</code> turn window properties into reactive state variables. Every time the browser fires a resize or scroll event, Svelte updates the bound variable, which in turn triggers any dependent <code>$derived</code> computations and template updates. This reactive pipeline lets you build scroll-driven animations, responsive layout switches, and viewport-aware components with just a few lines of declarative code.</p>
+	<p class="prose">Svelte provides two companion elements: <code>&lt;svelte:document&gt;</code> for document-level events like <code>visibilitychange</code> and bindings like <code>activeElement</code>, and <code>&lt;svelte:body&gt;</code> for body-level events like <code>mouseenter</code> and <code>mouseleave</code> that do not bubble to window. Together, these three special elements give you complete, SSR-safe access to the browser's global objects without ever calling <code>addEventListener</code> directly.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-12-svelte-element">4.12 — &lt;svelte:element&gt;</a></p>
 </section>
 
 <style>
@@ -181,20 +187,6 @@
 		background: var(--color-surface-2);
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
-	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
 	}
 	.hint {
 		font-size: var(--text-sm);
@@ -303,6 +295,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

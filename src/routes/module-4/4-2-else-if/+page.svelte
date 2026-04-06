@@ -96,19 +96,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Put <code>{'{:else if}'}</code> before <code>{'{#if}'}</code>.</strong> Svelte will throw a parse error because continuation tags like <code>{'{:else if}'}</code> and <code>{'{:else}'}</code> can only appear inside an already-opened <code>{'{#if}'}</code> block. The compiler needs the opening tag to establish context.</li>
+		<li><strong>Omit the <code>{'{:else}'}</code> fallback entirely.</strong> When none of your explicit conditions match, nothing renders at all -- the user sees a blank space. This is a common bug in state machines: forgetting the default branch means unhandled states produce invisible failures.</li>
+		<li><strong>Write two conditions that are both true at the same time.</strong> Only the first matching branch renders because Svelte evaluates top-down and stops at the first truthy condition. This is identical to how JavaScript <code>if/else if</code> chains work, so order your branches from most specific to least specific.</li>
+		<li><strong>Use a discriminated union type and check each variant.</strong> TypeScript narrows the type inside each branch, so <code>status === 'loading'</code> guarantees the variable is <code>'loading'</code> within that block. This is how you get compile-time exhaustiveness checking when you add a new state to your union later.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>{':else if'}</code> chains inside one <code>{'{#if}'}</code> block.</li>
-		<li>Branches are evaluated top-down; only the first match renders.</li>
-		<li>A literal union type like <code>'idle' | 'loading' | 'error' | 'success'</code> pairs perfectly with an <code>{'{:else if}'}</code> chain.</li>
-		<li><code>{':else'}</code> is the fallback when no branch matches.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>{'{:else if}'}</code> and <code>{'{:else}'}</code> tags chain multiple conditions inside a single <code>{'{#if}'}</code> block, giving you the template equivalent of a JavaScript <code>if/else if/else</code> statement. Svelte evaluates each branch top-down and renders only the first one whose expression is truthy, then skips the rest. This first-match-wins behavior is critical to understand: if two conditions could both be true, only the one listed higher in the chain takes effect.</p>
+	<p class="prose">Always include a final <code>{'{:else}'}</code> branch as a safety net. Without it, any state you forgot to handle silently produces an empty template -- no error, no warning, just a blank gap in your UI. In production code, the <code>{'{:else}'}</code> branch is your exhaustiveness guard, the place where you render a sensible default or log a warning about an unexpected state.</p>
+	<p class="prose">This pattern maps perfectly onto TypeScript's discriminated unions. When your state variable is typed as <code>'idle' | 'loading' | 'error' | 'success'</code>, each <code>{'{:else if}'}</code> branch narrows the type, and TypeScript can verify at compile time that you have handled every variant. Combining Svelte's template branching with TypeScript's type narrowing gives you a fully type-safe state machine directly in your markup.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-3-each">4.3 — {'{#each}'} with destructuring</a></p>
 </section>
 
 <style>
@@ -141,18 +148,6 @@
 		border-radius: var(--radius-xs);
 	}
 
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 
 	.controls {
 		display: flex;
@@ -219,6 +214,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

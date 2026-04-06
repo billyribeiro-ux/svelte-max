@@ -116,19 +116,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Pass a non-promise value to <code>{'{#await}'}</code>.</strong> Svelte handles it gracefully: the value is treated as an already-resolved promise, so the <code>{'{:then}'}</code> branch renders immediately with that value. The pending branch is skipped entirely, which can be useful for synchronous fallbacks.</li>
+		<li><strong>Reassign the promise variable to a new <code>fetch()</code> call.</strong> Svelte detects the new promise reference, stops tracking the old one, and switches back to the pending branch while the new promise is in flight. This is how you implement "refresh" buttons -- just reassign the promise and the UI resets automatically.</li>
+		<li><strong>Forget the <code>{'{:catch}'}</code> block entirely.</strong> If the promise rejects, nothing renders -- the UI goes blank with no error message and no console warning. Always include a <code>{'{:catch}'}</code> branch so users see what went wrong and can take action, like retrying the request.</li>
+		<li><strong>Resolve the promise with <code>undefined</code>.</strong> The <code>{'{:then}'}</code> branch renders, but the bound value is <code>undefined</code>. If your template tries to access properties on it, you will get a runtime error. Guard against this by checking the value before rendering its fields.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>{`{#await}`}</code> replaces three state variables with one</li>
-		<li>Three branches: pending, <code>{`{:then}`}</code>, <code>{`{:catch}`}</code></li>
-		<li>Reassigning the promise re-runs the block</li>
-		<li>Short form: <code>{`{#await promise then value}`}</code> skips pending</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>{'{#await}'}</code> block is Svelte's declarative async state machine. It takes a single promise and provides three branches -- pending, fulfilled (<code>{'{:then}'}</code>), and rejected (<code>{'{:catch}'}</code>) -- that correspond exactly to the three states of a JavaScript promise. This replaces the manual pattern of managing separate <code>loading</code>, <code>data</code>, and <code>error</code> state variables with a single reactive expression.</p>
+	<p class="prose">Reassigning the promise variable is the key interaction pattern. When you write <code>promise = fetchUser()</code>, Svelte detects the new reference, drops the old promise (any pending resolution is ignored), and re-enters the pending branch while the new promise is in flight. This makes refresh buttons, retry logic, and parameter-dependent fetches trivially simple -- just assign a new promise and the template handles the rest.</p>
+	<p class="prose">There is also a short form: <code>{'{#await promise then value}'}</code>, which skips the pending branch entirely and renders nothing until the promise resolves. Use this for fast operations where showing a loading spinner would cause distracting flicker. For anything that takes more than a few hundred milliseconds, always include the full three-branch form so users get immediate visual feedback that something is happening.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-9-catch-errors">4.9 — {'{:catch}'} and typed errors</a></p>
 </section>
 
 <style>
@@ -159,20 +166,6 @@
 		background: var(--color-surface-2);
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
-	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
 	}
 	button {
 		align-self: flex-start;
@@ -257,6 +250,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

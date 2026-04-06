@@ -176,19 +176,26 @@
 		If you can't guarantee uniqueness, add a unique field to your data model.
 	</p>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Remove the key entirely, then sort or shuffle the list.</strong> Type notes into a few inputs, then click Shuffle. The text stays in the original DOM positions while the data moves around it, because Svelte patches by index when there is no key. This is the single most common each-block bug.</li>
+		<li><strong>Use the array index as the key: <code>{'(i)'}</code>.</strong> This produces the exact same broken behavior as no key at all, because the index always maps position zero to position zero regardless of which data item lives there. Index keys are a no-op for identity tracking.</li>
+		<li><strong>Use a unique ID as the key: <code>{'(task.id)'}</code>.</strong> Now shuffle the list and watch the input text travel with its task. Svelte matches each DOM node to its data item by identity, so reorders move nodes instead of mutating them. Animations, focus, and local state all survive intact.</li>
+		<li><strong>Introduce duplicate keys by giving two items the same <code>id</code>.</strong> Svelte will warn in development because duplicate keys break its identity tracking. The last item with a given key wins, and the earlier one becomes a ghost node that may render stale data or disappear entirely.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Default each blocks match by position, not identity.</li>
-		<li>Add <code>{'(item.id)'}</code> to key by a stable identifier.</li>
-		<li>Keys are essential when list items hold local state (inputs, focus, animations).</li>
-		<li>Keys unlock efficient move-based updates on reorders.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Keys are the mechanism that tells Svelte which DOM node belongs to which data item. Without keys, Svelte uses positional matching: element zero in the array maps to DOM node zero, element one to node one, and so on. This works for static, never-changing lists, but the moment you sort, filter, or reorder, positional matching causes Svelte to patch existing nodes with new data rather than moving them. Any local state -- typed input values, focus, scroll position, running animations -- stays attached to the wrong node.</p>
+	<p class="prose">Providing a key expression like <code>{'(task.id)'}</code> switches Svelte to identity-based reconciliation. Now each DOM node is tagged with a stable identifier, and when the array changes shape, Svelte can diff by identity: it knows which nodes to move, which to add, and which to remove. This is the same algorithm React uses with its <code>key</code> prop, and the rules are identical -- keys must be unique within the list and stable across re-renders.</p>
+	<p class="prose">Choosing a good key matters. Never use the array index, because it changes on every reorder and is semantically identical to having no key. Use a database ID, a UUID generated at creation time, or a composite of immutable fields. If your data truly has no stable identity, add one before it enters the component. The small cost of generating a <code>crypto.randomUUID()</code> on creation pays for itself immediately in correct, efficient DOM updates.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-5-each-nested">4.5 — Nested {'{#each}'}</a></p>
 </section>
 
 <style>
@@ -221,18 +228,6 @@
 		border-radius: var(--radius-xs);
 	}
 
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 
 	.note {
 		font-size: var(--text-sm);
@@ -344,6 +339,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

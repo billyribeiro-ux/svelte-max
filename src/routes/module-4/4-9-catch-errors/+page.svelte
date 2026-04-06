@@ -116,19 +116,26 @@
 		{/await}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Throw a non-Error object, like <code>throw 'something broke'</code>.</strong> The <code>{'{:catch err}'}</code> block receives whatever was thrown -- in this case a plain string. Calling <code>err.message</code> will fail because strings have no <code>message</code> property. This is why you must always narrow before accessing Error-specific fields.</li>
+		<li><strong>Reject with a string instead of an Error: <code>Promise.reject('oops')</code>.</strong> The error parameter in <code>{'{:catch err}'}</code> is the string <code>'oops'</code>, not an Error instance. If your template assumes <code>err instanceof Error</code>, the fallback branch triggers and you see "Unknown error" instead of the actual message.</li>
+		<li><strong>Type the error parameter and narrow with <code>instanceof</code>.</strong> In the <code>{'{:catch}'}</code> block, check <code>err instanceof Error</code> before accessing <code>err.message</code>. For non-Error values, convert them with <code>String(err)</code>. This pattern guarantees type safety regardless of what upstream code throws.</li>
+		<li><strong>Implement a retry button by reassigning the promise.</strong> When the user clicks Retry, assign <code>promise = fetchRandomUser()</code> to re-trigger the entire <code>{'{#await}'}</code> block from the pending state. This is the idiomatic Svelte pattern for error recovery -- no state resets, no flags, just a fresh promise.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Caught values are <code>unknown</code> in strict TS — narrow with <code>instanceof Error</code></li>
-		<li><code>{`{:catch err}`}</code> exposes the thrown value to the template</li>
-		<li>Retry buttons give users agency when things fail</li>
-		<li>Assigning a new promise re-runs the entire await block</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>{'{:catch err}'}</code> branch receives the rejection value of the promise, which in JavaScript can be literally anything -- an Error instance, a string, a number, an object, or even <code>undefined</code>. In strict TypeScript, caught values are typed as <code>unknown</code>, which forces you to narrow the type before accessing any properties. The canonical pattern is <code>err instanceof Error ? err.message : String(err)</code>, which handles both proper Error instances and the unpredictable values that third-party libraries and network stacks sometimes throw.</p>
+	<p class="prose">Building a good error UI means giving users agency. A bare error message is frustrating; a retry button transforms frustration into a one-click recovery. The Svelte pattern is elegant: reassigning the promise variable from inside the <code>{'{:catch}'}</code> block kicks the entire <code>{'{#await}'}</code> back to the pending state, re-fetches the data, and renders the result or a new error. No manual state resets, no loading flags -- just a fresh promise.</p>
+	<p class="prose">Always show user-friendly error messages rather than raw exception text. Map network errors to "Could not reach the server," validation errors to specific field feedback, and unknown errors to a generic "Something went wrong" with a retry option. Log the raw error to the console or a monitoring service for debugging, but never expose stack traces or internal details to end users.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-10-promise-types">4.10 — Promise&lt;T&gt; return types</a></p>
 </section>
 
 <style>
@@ -159,20 +166,6 @@
 		background: var(--color-surface-2);
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
-	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
 	}
 	.hint {
 		font-size: var(--text-sm);
@@ -263,6 +256,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

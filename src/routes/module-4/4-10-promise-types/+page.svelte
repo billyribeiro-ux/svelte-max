@@ -154,19 +154,26 @@
 		{/await}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Type a promise as <code>Promise&lt;string&gt;</code> but resolve with a number.</strong> TypeScript catches this at compile time with a type mismatch error. The explicit return type acts as a contract: anything that awaits this promise is guaranteed to receive a string, and the compiler enforces that guarantee at the definition site.</li>
+		<li><strong>Use a generic async function and check the inferred return type.</strong> When you write <code>async function load&lt;T&gt;(url: string): Promise&lt;T&gt;</code>, TypeScript infers the resolved type as <code>T</code> wherever you call the function. Hover over the call site in your editor to confirm the type flows through the generic correctly.</li>
+		<li><strong>Use <code>{'{#await}'}</code> with a typed promise and inspect the <code>{'{:then}'}</code> value.</strong> Svelte's template type checker infers the resolved type from the promise, so <code>{'{:then payload}'}</code> gives <code>payload</code> the correct type. Try accessing a property that does not exist -- your editor will underline it immediately.</li>
+		<li><strong>Chain promises with <code>.then()</code> and check how each step infers the next type.</strong> Each <code>.then()</code> callback transforms the type: <code>Promise&lt;Response&gt;</code> becomes <code>Promise&lt;string&gt;</code> after <code>.then(r =&gt; r.text())</code>. TypeScript tracks every transformation through the chain, ensuring end-to-end type safety.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Every async function returns <code>Promise&lt;T&gt;</code></li>
-		<li>Explicit return types make intent clear and catch bugs at the boundary</li>
-		<li>Strict TypeScript forbids <code>any</code> — type every layer</li>
-		<li>Well-typed promises make <code>{`{#await}`}</code> blocks fully type-safe in the template</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Every <code>async</code> function in TypeScript returns a <code>Promise&lt;T&gt;</code>, where <code>T</code> is the type of the value you get when you <code>await</code> the result. Typing this return type explicitly -- <code>async function loadProfile(id: number): Promise&lt;ProfilePayload&gt;</code> -- turns the function signature into a contract that both the implementation and every call site must satisfy. If the implementation returns the wrong shape, TypeScript catches it at the definition; if a caller misuses the resolved value, TypeScript catches it at the call site.</p>
+	<p class="prose">Explicit promise types are especially valuable in Svelte templates because the <code>{'{#await}'}</code> block infers the resolved type from the promise. When your promise is typed as <code>Promise&lt;ProfilePayload&gt;</code>, the <code>{'{:then payload}'}</code> binding gives <code>payload</code> the full <code>ProfilePayload</code> type, including autocomplete for nested fields like <code>payload.user.name</code> and <code>payload.stats.followers</code>. This makes templates fully type-safe without any extra annotations.</p>
+	<p class="prose">The discipline of typing every async boundary eliminates the most dangerous type in TypeScript: <code>any</code>. Untyped <code>fetch</code> responses default to <code>any</code>, which silently disables all type checking downstream. Always cast the parsed JSON to a known interface -- <code>const data = await res.json() as ProfilePayload</code> -- or use a runtime validation library like Zod to parse and validate at the boundary. Typed promises, typed responses, and typed templates form a chain of guarantees from the server to the DOM.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-11-svelte-window">4.11 — &lt;svelte:window&gt;</a></p>
 </section>
 
 <style>
@@ -197,20 +204,6 @@
 		background: var(--color-surface-2);
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
-	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
 	}
 	button {
 		align-self: flex-start;
@@ -308,6 +301,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

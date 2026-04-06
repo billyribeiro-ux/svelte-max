@@ -90,19 +90,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Pass a non-array value like a string or number to <code>{'{#each}'}</code>.</strong> Svelte expects an iterable, so a plain number will crash at runtime with a "not iterable" error. Strings technically work because they are iterable, but you will get one iteration per character -- almost certainly not what you intended.</li>
+		<li><strong>Mutate the array inside the <code>{'{#each}'}</code> body.</strong> Pushing to the array while iterating it can cause an infinite loop or duplicate renders. Always create a new array reference outside the template and assign it back to the reactive variable to trigger a clean re-render.</li>
+		<li><strong>Use the array index as the key expression.</strong> When you reorder or filter items, index-based keys cause Svelte to patch DOM nodes by position rather than identity. Input values, focus, and animations will appear to "jump" to the wrong item because the key no longer represents the data.</li>
+		<li><strong>Destructure directly in the each clause: <code>{'{#each items as { name, price }}'}</code>.</strong> This works perfectly and is the idiomatic pattern for accessing specific fields. It keeps your template cleaner by avoiding <code>item.name</code> and <code>item.price</code> everywhere inside the block body.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>{'{#each array as item}'}</code> renders its body once per element.</li>
-		<li>Inline destructuring: <code>{'{#each contacts as { name, email }}'}</code>.</li>
-		<li>Second parameter is the zero-based index: <code>{'as item, i'}</code>.</li>
-		<li>The body has full access to component scope — great for calling handlers.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>{'{#each}'}</code> block is Svelte's iteration primitive. It takes any array (or iterable) and renders its body once per element, binding each element to a local variable via the <code>as</code> clause. The block body is a full template with access to everything in the component's scope, so you can call functions, reference other state, and compose nested components freely inside the loop.</p>
+	<p class="prose">Inline destructuring is one of the most productive patterns in Svelte templates. Writing <code>{'{#each contacts as { id, name, email }}'}</code> pulls fields out at the iteration boundary, eliminating repetitive <code>contact.name</code> references throughout the block. You can also grab the zero-based index as a second parameter -- <code>{'{#each items as item, i}'}</code> -- which is useful for numbering rows, applying alternating styles, or detecting the first and last items.</p>
+	<p class="prose">For any list that will change over time -- items added, removed, reordered, or filtered -- always provide a keyed expression like <code>(item.id)</code>. Keys tell Svelte which DOM node belongs to which data item, enabling efficient move-based updates instead of destructive patch-by-position reconciliation. Without keys, Svelte defaults to index-based matching, which works for static lists but breaks the moment the list changes shape.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-4-each-keyed">4.4 — {'{#each}'} with keys</a></p>
 </section>
 
 <style>
@@ -135,18 +142,6 @@
 		border-radius: var(--radius-xs);
 	}
 
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 
 	.grid {
 		display: grid;
@@ -228,6 +223,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

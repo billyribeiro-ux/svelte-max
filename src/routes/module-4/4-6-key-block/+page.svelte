@@ -134,19 +134,26 @@
 		content switchers with smooth animations.
 	</p>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Change the key expression and watch the block rebuild.</strong> Every time the expression produces a new value, Svelte destroys all DOM nodes inside the block and recreates them from scratch. This is fundamentally different from reactive updates, which patch existing nodes in place.</li>
+		<li><strong>Use a static value as the key, like <code>{'{#key 42}'}</code>.</strong> Because the key never changes, the block is created once and never torn down. This effectively disables the <code>{'{#key}'}</code> behavior entirely, making it equivalent to having no key block at all.</li>
+		<li><strong>Wrap a component in <code>{'{#key}'}</code> and change the key.</strong> The component's entire lifecycle restarts: <code>onMount</code> fires again, local <code>$state</code> resets to its initial value, and any running effects are cleaned up and re-established. This is the canonical way to "reset" a component without adding a reset prop.</li>
+		<li><strong>Use <code>{'{#key}'}</code> with a CSS animation or Svelte transition.</strong> The entry animation replays on every key change because the element is brand new each time. This is the pattern behind content switchers, image carousels, and notification toasts that animate in on every update.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>{'{#key expr}'}</code> destroys and recreates its block on change.</li>
-		<li>Useful for resetting state and retriggering entrance animations.</li>
-		<li>Prefer normal reactivity unless full tear-down is required.</li>
-		<li>Respect <code>prefers-reduced-motion</code> when keying animations.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>{'{#key expression}'}</code> block is Svelte's escape hatch for when normal reactivity is not enough. It watches a single expression, and every time that expression produces a new value, it destroys everything inside the block and recreates it from scratch. This is a full tear-down and rebuild: DOM nodes are removed and re-inserted, component instances are unmounted and remounted, and all local state resets to its initial values.</p>
+	<p class="prose">The most common use cases are resetting component state and replaying entrance animations. If you have a form component that needs to reset when the user switches between records, wrapping it in <code>{'{#key record.id}'}</code> is far cleaner than adding a <code>reset()</code> method and threading it through props. For animations, wrapping an element in a key block means every value change triggers a fresh mount, which re-runs any CSS <code>animation</code> or Svelte <code>transition:</code> directive from the beginning.</p>
+	<p class="prose">Use <code>{'{#key}'}</code> sparingly. It is a heavy operation compared to reactive prop updates, because it discards and rebuilds the entire subtree rather than patching individual values. For most UI updates, normal reactivity through <code>$state</code> and <code>$derived</code> is faster and more efficient. Reserve key blocks for situations where you genuinely need a fresh start: resetting form state, replaying animations, or working with third-party libraries that cannot handle in-place updates.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-7-async-await">4.7 — Promises and async/await</a></p>
 </section>
 
 <style>
@@ -179,18 +186,6 @@
 		border-radius: var(--radius-xs);
 	}
 
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 
 	.controls {
 		display: flex;
@@ -282,6 +277,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

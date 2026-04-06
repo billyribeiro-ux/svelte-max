@@ -158,19 +158,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Forget the closing <code>{'{/if}'}</code> tag.</strong> Svelte will throw a parse error at compile time because every block-level construct must be explicitly closed. The compiler needs that closing tag to know where the conditional markup ends and normal markup resumes.</li>
+		<li><strong>Use <code>=</code> instead of <code>===</code> in your condition.</strong> A single equals sign is assignment, not comparison, and Svelte will either error or produce surprising behavior from loose equality coercion. Always use strict equality so <code>0 === ''</code> is <code>false</code> rather than silently coercing types.</li>
+		<li><strong>Check a <code>$state</code> boolean in your <code>{'{#if}'}</code> block.</strong> The UI toggles reactively because Svelte tracks the read inside the template. Change the boolean from a button handler and watch the conditional block appear and disappear without any manual DOM manipulation.</li>
+		<li><strong>Check a plain <code>let</code> variable instead of <code>$state</code>.</strong> The initial render works, but reassigning the variable later does nothing visible because Svelte has no way to know the value changed. This demonstrates that <code>{'{#if}'}</code> is reactive only when its expression reads reactive state.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>{'{#if expr}'}</code> renders when <code>expr</code> is truthy.</li>
-		<li>Falsy values: <code>''</code>, <code>0</code>, <code>null</code>, <code>undefined</code>, <code>NaN</code>, <code>false</code>.</li>
-		<li>Prefer <code>===</code> and <code>!==</code> for comparisons.</li>
-		<li>Boolean operators <code>&&</code>, <code>||</code>, <code>!</code> combine conditions.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>{'{#if}'}</code> block is Svelte's primary tool for conditional rendering. Unlike CSS-based visibility toggling or JavaScript's <code>display: none</code> approach, Svelte's <code>{'{#if}'}</code> is a compile-time construct that physically adds and removes DOM nodes. When the condition becomes falsy, Svelte destroys the enclosed elements entirely; when it becomes truthy again, it recreates them from scratch. This means component lifecycle hooks re-run, animations replay, and local state resets on every toggle.</p>
+	<p class="prose">JavaScript's truthiness rules are the engine behind every <code>{'{#if}'}</code> evaluation. Six values are falsy -- <code>''</code>, <code>0</code>, <code>null</code>, <code>undefined</code>, <code>NaN</code>, and <code>false</code> -- and everything else is truthy, including empty arrays and empty objects. Because these rules can surprise you (an empty array is truthy!), prefer explicit comparisons with <code>===</code> and <code>!==</code> rather than relying on implicit coercion. Combine conditions with <code>&&</code>, <code>||</code>, and <code>!</code> to express complex logic directly in the template.</p>
+	<p class="prose">Conditional blocks are reactive by default when their expressions read from <code>$state</code> or <code>$derived</code> values. Svelte's compiler instruments every read inside the template, so any change to the underlying state automatically re-evaluates the condition and updates the DOM. This is the foundation for building dynamic interfaces: declare your state, describe your conditions, and let the compiler handle the rest.</p>
+	<p class="next">Next lesson: <a href="/module-4/4-2-else-if">4.2 — {'{:else if}'} and {'{:else}'}</a></p>
 </section>
 
 <style>
@@ -203,18 +210,6 @@
 		border-radius: var(--radius-xs);
 	}
 
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 
 	.field {
 		display: flex;
@@ -270,8 +265,6 @@
 		margin: 0;
 	}
 
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
-
 	/* ── Having issues section ── */
 	.having-issues {
 		margin-block: var(--space-xl);
@@ -295,6 +288,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

@@ -116,19 +116,26 @@
 		<code>allowed.includes(level)</code> before rendering.
 	</p>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Try each of these experiments in your own code. Breaking things is how you build a mental model of what Svelte actually enforces versus what it merely prefers.</p>
+	<ol class="experiments">
+		<li><strong>Pass an invalid tag name like <code>'notarealtag'</code>.</strong> Svelte renders a generic element with that name, which the browser treats as an unknown inline element with no special semantics. It will not crash, but it will not behave like any standard HTML element either -- no default styles, no accessibility role, no browser behavior.</li>
+		<li><strong>Pass <code>null</code> or <code>undefined</code> as the tag name.</strong> Svelte renders nothing at all -- the element and all its children are omitted from the DOM. This is useful as a conditional rendering escape hatch: set the tag to <code>null</code> when you want the element to disappear entirely.</li>
+		<li><strong>Change the tag name dynamically and inspect the DOM.</strong> Svelte destroys the old element and creates a new one with the new tag name. This is a full teardown, not a mutation -- the previous element is removed and a fresh one is inserted, so any local state (like input values) resets on every tag change.</li>
+		<li><strong>Pass attributes and event handlers to the dynamic element.</strong> They apply to whatever tag is currently rendered. A <code>class</code>, <code>onclick</code>, or <code>aria-label</code> attribute works the same whether the element is an <code>h1</code>, a <code>div</code>, or a <code>button</code>. This makes <code>&lt;svelte:element&gt;</code> ideal for building polymorphic "as" props.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>&lt;svelte:element this={`{...}`}&gt;</code> picks the tag name at runtime</li>
-		<li>Ideal for polymorphic components: any heading level, any wrapper tag</li>
-		<li><code>&lt;svelte:options&gt;</code> sets per-component compiler flags</li>
-		<li>DOM inspection confirms the tag — the actual element type changes</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>&lt;svelte:element this={'{tag}'}&gt;</code> renders a DOM element whose tag name is determined at runtime. Instead of hardcoding <code>&lt;h1&gt;</code> or <code>&lt;div&gt;</code>, you pass a string variable and Svelte creates the corresponding element. This is the foundation for polymorphic components -- components that let the consumer decide the rendered element, like a <code>Heading</code> component that accepts a <code>level</code> prop and renders the appropriate <code>h1</code> through <code>h6</code> tag.</p>
+	<p class="prose">When the tag name changes, Svelte performs a full destroy-and-recreate cycle, not an in-place mutation. The old element is removed from the DOM and a new one with the new tag is inserted. All attributes, event listeners, and children are reattached to the new element. This behavior means that dynamic tag changes are heavier than normal prop updates, so avoid rapidly toggling between tags in tight loops or animations.</p>
+	<p class="prose">Security is a critical concern with dynamic elements. Never pass user-controlled strings directly to the <code>this</code> attribute, because an attacker could inject dangerous tag names. Always validate against a strict allowlist of permitted tags -- <code>const allowed = ['h1','h2','h3','h4','h5','h6'] as const</code> -- and check membership before rendering. Combined with <code>&lt;svelte:options&gt;</code> for setting per-component compiler flags like <code>runes={'{true}'}</code>, these special elements give you fine-grained control over both what Svelte renders and how it compiles.</p>
+	<p class="next">Next lesson: <a href="/module-4/project">Module 4 project</a></p>
 </section>
 
 <style>
@@ -159,20 +166,6 @@
 		background: var(--color-surface-2);
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
-	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
 	}
 	.hint {
 		font-size: var(--text-sm);
@@ -275,6 +268,17 @@
 			font-size: var(--text-sm);
 		}
 	}
+
+	.prose {
+		color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.experiments {
+		max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
+	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 	@media (min-width: 480px) {

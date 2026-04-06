@@ -252,14 +252,14 @@
 	</p>
 	<CodeCanvas filename="ternaries" code={stepTernaryCode} />
 
-	<h3>Step 3 — {@const} for local calculations</h3>
+	<h3>Step 3 — {'{@const}'} for local calculations</h3>
 	<p class="step-text">
 		<code>{'{@const}'}</code> lets you compute a value right where you use it, inside an
 		<code>{'{#if}'}</code> or <code>{'{#each}'}</code> block. It keeps your script block clean.
 	</p>
 	<CodeCanvas filename="@const" code={stepConstCode} />
 
-	<h3>Step 4 — {@html} and the XSS danger</h3>
+	<h3>Step 4 — {'{@html}'} and the XSS danger</h3>
 	<p class="step-text">
 		<code>{'{@html}'}</code> renders raw HTML without escaping. It is safe only when YOU control the
 		HTML string. Never pass user input, API responses, or URL parameters to it without sanitization.
@@ -310,7 +310,7 @@
 	</article>
 
 	<div class="build">
-		<h2 class="danger-heading">Danger zone: {@html} and XSS</h2>
+		<h2 class="danger-heading">Danger zone: {'{@html}'} and XSS</h2>
 
 		<p class="danger-desc">
 			<strong>Safe HTML you control:</strong>

@@ -155,6 +155,45 @@ h1 {
 		replaces an entire stack of <code>@media</code> breakpoints for typography.
 	</p>
 
+	<!-- Mental model table -->
+	<h2>The PE7 type scale</h2>
+
+	<p class="concept">
+		The PE7 design system defines exactly seven fluid text tokens. Each one is a CSS custom property
+		stored in <code>src/app.css</code> inside <code>@layer tokens</code>. You never write
+		<code>clamp()</code> by hand — you reference the token name and the browser does the math. Here
+		is the complete scale with the actual <code>clamp()</code> values:
+	</p>
+
+	<table class="type-table">
+		<thead>
+			<tr>
+				<th>Token</th>
+				<th>clamp() value</th>
+				<th>Min (px)</th>
+				<th>Max (px)</th>
+				<th>Use case</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td><code>--text-xs</code></td><td><code>clamp(0.75rem, 1.5vw, 0.875rem)</code></td><td>12</td><td>14</td><td>Labels, captions, fine print</td></tr>
+			<tr><td><code>--text-sm</code></td><td><code>clamp(0.875rem, 2vw, 1rem)</code></td><td>14</td><td>16</td><td>Body secondary, metadata</td></tr>
+			<tr><td><code>--text-base</code></td><td><code>clamp(1rem, 2.5vw, 1.125rem)</code></td><td>16</td><td>18</td><td>Body text (default)</td></tr>
+			<tr><td><code>--text-lg</code></td><td><code>clamp(1.125rem, 3vw, 1.5rem)</code></td><td>18</td><td>24</td><td>Lead paragraphs, subtitles</td></tr>
+			<tr><td><code>--text-xl</code></td><td><code>clamp(1.5rem, 4vw, 2rem)</code></td><td>24</td><td>32</td><td>Section headings (h3)</td></tr>
+			<tr><td><code>--text-2xl</code></td><td><code>clamp(2rem, 5vw, 3rem)</code></td><td>32</td><td>48</td><td>Page headings (h2)</td></tr>
+			<tr><td><code>--text-hero</code></td><td><code>clamp(2.5rem, 8vw, 5rem)</code></td><td>40</td><td>80</td><td>Hero headlines (h1)</td></tr>
+		</tbody>
+	</table>
+
+	<p class="concept">
+		Notice the pattern: as you go up the scale, the <code>vw</code> multiplier increases — hero text
+		grows faster than body text when the viewport widens. But the safety rails keep everything
+		readable at both extremes. This is intentional. Headlines should be dramatic on desktop but still
+		fit on a phone. Body text should barely change — readability is more important than drama at
+		small sizes.
+	</p>
+
 	<!-- ③ The complete code -->
 	<h2>The complete code</h2>
 	<CodeCanvas filename="+page.svelte" code={fullFileCode} />
@@ -260,6 +299,41 @@ h1 {
 		</div>
 	</div>
 
+	<!-- Break it on purpose -->
+	<h2>Break it on purpose</h2>
+
+	<p class="concept">
+		Understanding breaks builds confidence. Try each experiment, observe the result, then undo.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Remove the minimum from a clamp.</strong> Change
+			<code>--text-hero: clamp(2.5rem, 8vw, 5rem)</code> to <code>--text-hero: min(8vw, 5rem)</code>.
+			Now resize to 320px — the hero text shrinks to about 25px (8% of 320). Unreadable. The
+			minimum exists to prevent this.
+		</li>
+		<li>
+			<strong>Remove the maximum.</strong> Change to <code>--text-hero: max(2.5rem, 8vw)</code>.
+			Now open the page on an ultrawide monitor (or stretch your browser to 2560px) — the text
+			balloons to 204px. The maximum exists to prevent this.
+		</li>
+		<li>
+			<strong>Use <code>px</code> instead of <code>rem</code> for the bounds.</strong> Change
+			<code>clamp(2.5rem, 8vw, 5rem)</code> to <code>clamp(40px, 8vw, 80px)</code>. It looks
+			the same initially. But now change the browser's default font size to 20px (Settings →
+			Appearance → Font size). The <code>rem</code> version scales up. The <code>px</code>
+			version does not. Using <code>rem</code> respects the user's font size preference —
+			an accessibility requirement.
+		</li>
+		<li>
+			<strong>Use only <code>vw</code> with no clamp at all.</strong> Set
+			<code>font-size: 5vw</code> on a heading. Resize the browser. The text scales linearly —
+			no floor, no ceiling. At 320px it is 16px (small). At 1920px it is 96px (absurd). This
+			is why raw <code>vw</code> is never acceptable for production typography.
+		</li>
+	</ol>
+
 	<!-- HAVING ISSUES? COMPLETE CODE -->
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
@@ -270,14 +344,34 @@ h1 {
 	</details>
 
 	<!-- ⑨ What you learned -->
-	<h3>What you learned</h3>
-	<ul class="learned">
-		<li><code>clamp()</code> takes exactly three arguments: min, preferred, max.</li>
-		<li>The preferred value mixes <code>rem</code> + <code>vw</code> so it scales with the viewport.</li>
-		<li>PE7 tokens (<code>--text-xs</code> through <code>--text-hero</code>) are pre-clamped — just use them.</li>
-		<li>Fluid type eliminates the majority of typography media queries.</li>
-		<li>Never use a raw <code>vw</code> value without min/max bounds.</li>
-	</ul>
+	<h2>What you learned</h2>
+
+	<p class="concept">
+		Fluid typography replaces the traditional breakpoint approach to responsive text. Instead of
+		writing <code>@media (min-width: 768px) {'{'} h1 {'{'} font-size: 3rem; {'}'} {'}'}</code>,
+		you write one <code>clamp()</code> that handles every viewport width in a single declaration.
+		The three arguments — minimum, preferred, maximum — define a smooth curve between a floor and
+		a ceiling. The preferred value (in <code>vw</code> units) makes text grow proportionally with
+		the viewport. The minimum prevents unreadable text on small screens. The maximum prevents
+		absurd text on large screens.
+	</p>
+
+	<p class="concept">
+		The PE7 type scale provides seven pre-built fluid tokens: <code>--text-xs</code> through
+		<code>--text-hero</code>. Each token is a <code>clamp()</code> expression stored as a CSS
+		custom property in <code>src/app.css</code>. You reference the token name —
+		<code>font-size: var(--text-lg)</code> — and the browser resolves the <code>clamp()</code>
+		at every viewport width. You never need to write <code>clamp()</code> by hand unless you
+		need a size outside the scale.
+	</p>
+
+	<p class="concept">
+		Always use <code>rem</code> for the minimum and maximum bounds, never <code>px</code>.
+		<code>rem</code> respects the user's browser font-size preference — an accessibility
+		requirement. And never use raw <code>vw</code> without <code>clamp()</code> bounds.
+		A bare <code>5vw</code> has no floor and no ceiling, making text unreadable on small screens
+		and absurdly large on wide ones.
+	</p>
 
 	<!-- ⑩ Next steps -->
 	<p class="next">
@@ -292,6 +386,59 @@ h1 {
 		display: flex;                       /* vertical stack */
 		flex-direction: column;              /* top to bottom */
 		gap: var(--space-md);                /* consistent spacing between sections */
+	}
+
+	/* ── Type scale table ── */
+	.type-table {
+		inline-size: 100%;
+		max-inline-size: 72ch;
+		border-collapse: collapse;
+		margin-block: var(--space-md);
+		font-size: var(--text-sm);
+
+		& th {
+			background: var(--color-surface-2);
+			color: var(--color-text);
+			font-weight: 700;
+			text-align: start;
+			padding: var(--space-xs) var(--space-sm);
+			border-block-end: 2px solid var(--color-border);
+			white-space: nowrap;
+		}
+
+		& td {
+			padding: var(--space-xs) var(--space-sm);
+			border-block-end: 1px solid var(--color-border);
+			color: var(--color-text);
+			vertical-align: top;
+		}
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.85em;
+			color: var(--color-brand);
+		}
+	}
+
+	/* ── Break-it experiments ── */
+	.experiments {
+		max-inline-size: 68ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
+		line-height: 1.6;
+
+		& strong { color: var(--color-text); }
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
 
 	/* ── Learning objectives ─────────────────────────────── */
@@ -428,16 +575,6 @@ h1 {
 		font-size: var(--text-sm);           /* smaller explanatory text */
 		color: var(--color-text-muted);      /* secondary color */
 		margin-block: 0.5rem;                /* space above and below */
-	}
-
-	/* ── Learned list ────────────────────────────────────── */
-	.learned {
-		padding-inline-start: 1.25rem;       /* indent bullets */
-		color: var(--color-text-muted);      /* secondary color */
-
-		& li {
-			margin-block: 0.25rem;             /* gap between items */
-		}
 	}
 
 	/* ── Next link ────────────────────────────────────────── */

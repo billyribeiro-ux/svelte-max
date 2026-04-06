@@ -28,6 +28,43 @@
 		</div>
 	</div>
 
+	<h3>When to bind vs when to callback</h3>
+	<div class="comparison">
+		<p>
+			<strong>Bind (<code>$bindable</code>):</strong> When the child IS the editor of the value
+			(TextField, Select, Slider). The child owns the UI for editing; the parent owns the source of truth.
+		</p>
+		<p>
+			<strong>Callback prop:</strong> When the child NOTIFIES the parent of an event
+			(Button click, item selection). The child doesn't own the value — it reports what happened.
+		</p>
+
+		<table class="compare-table">
+			<thead>
+				<tr>
+					<th>Pattern</th>
+					<th>When</th>
+					<th>Example</th>
+					<th>Module ref</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>$bindable</code></td>
+					<td>Child edits the value</td>
+					<td>TextField, Slider, Select</td>
+					<td>3.5</td>
+				</tr>
+				<tr>
+					<td>Callback prop</td>
+					<td>Child reports an event</td>
+					<td>Button onclick, list onselect</td>
+					<td>3.3</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>$bindable()</code> lets a child write back to a parent-owned piece of state.</li>
@@ -104,6 +141,48 @@
 		color: var(--color-text-muted);
 		line-height: 1.6;
 		margin: 0;
+	}
+
+	.comparison {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+		margin-block: var(--space-md);
+		padding: var(--space-md);
+		background: var(--color-surface-1);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+	}
+
+	.comparison p {
+		margin: 0;
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		line-height: 1.6;
+	}
+
+	.compare-table {
+		inline-size: 100%;
+		border-collapse: collapse;
+		font-size: var(--text-sm);
+		margin-block-start: var(--space-sm);
+	}
+
+	.compare-table th,
+	.compare-table td {
+		padding: var(--space-sm) var(--space-md);
+		text-align: start;
+		border-block-end: 1px solid var(--color-border);
+	}
+
+	.compare-table th {
+		font-weight: 600;
+		color: var(--color-text);
+		background: var(--color-surface-2);
+	}
+
+	.compare-table td {
+		color: var(--color-text-muted);
 	}
 
 	@media (min-width: 768px) {

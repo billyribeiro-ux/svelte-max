@@ -163,6 +163,14 @@
 				Next
 			</button>
 		</div>
+
+		<aside class="server-note">
+			<strong>Server-side pagination.</strong> This demo uses client-side pagination — all data is
+			in memory. For datasets with thousands of rows, implement server-side pagination: your
+			<code>load()</code> function accepts a <code>page</code> param, fetches only that page from
+			the API, and TanStack Table's <code>manualPagination: true</code> option tells it not to
+			slice the data itself.
+		</aside>
 	</div>
 
 	<h3>Key Takeaways</h3>
@@ -172,6 +180,7 @@
 		<li>Pagination state is managed via <code>initialState.pagination</code></li>
 		<li><code>table.previousPage()</code> / <code>table.nextPage()</code> handle navigation</li>
 		<li><code>getCanPreviousPage()</code> / <code>getCanNextPage()</code> disable buttons at boundaries</li>
+		<li>For large datasets, use <code>manualPagination: true</code> and fetch pages from the server in your <code>load()</code> function</li>
 	</ul>
 </section>
 
@@ -270,5 +279,17 @@
 	.page-info {
 		font-size: 0.9em;
 		color: var(--color-text-muted);
+	}
+	.server-note {
+		border-left: 4px solid var(--color-warning);
+		background: var(--color-surface-2);
+		padding: var(--space-md) var(--space-lg);
+		border-radius: var(--radius-md);
+		font-size: 0.9em;
+		line-height: 1.6;
+		color: var(--color-text-muted);
+	}
+	.server-note strong {
+		color: var(--color-text);
 	}
 </style>

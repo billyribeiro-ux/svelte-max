@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fly, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
+	import { prefersReducedMotion } from 'svelte/motion';
 
 	interface Card {
 		id: number;
@@ -47,8 +48,10 @@
 				{#each cards as card, i (card.id)}
 					<div
 						class="card"
-						in:fly={{ y: 30, delay: i * 80, duration: 500, easing: cubicOut }}
-						out:fade={{ duration: 200 }}
+						in:fly={prefersReducedMotion.current
+							? { y: 0, delay: 0, duration: 150 }
+							: { y: 30, delay: i * 80, duration: 500, easing: cubicOut }}
+						out:fade={{ duration: prefersReducedMotion.current ? 150 : 200 }}
 					>
 						<h4>{card.title}</h4>
 						<p>{card.description}</p>
@@ -64,6 +67,7 @@
 		<li>Capture the index in <code>{'{#each items as item, i}'}</code>.</li>
 		<li>Keep each item keyed so re-mounts retrigger the transition.</li>
 		<li>Separate <code>in:</code> and <code>out:</code> directives for entrance vs. exit.</li>
+		<li>Stagger <strong>must</strong> respect <code>prefersReducedMotion</code> — repeated delayed motion is a vestibular trigger. When reduced motion is active, drop delays and use short fades instead.</li>
 	</ul>
 </section>
 

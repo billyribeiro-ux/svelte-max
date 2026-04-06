@@ -92,6 +92,14 @@
     </details>
   </div>
 
+  <p class="concept">
+    <strong>Where tokens live.</strong> These tokens are CSS custom properties defined in
+    <code>src/app.css</code> inside <code>@layer tokens {'{'} :root {'{'} ... {'}'} {'}'}</code>. The
+    <code>clamp(min, preferred, max)</code> function makes them fluid:
+    <code>--text-lg: clamp(1.125rem, 3vw, 1.5rem)</code> means the font size grows with the viewport
+    but never drops below 1.125rem or exceeds 1.5rem.
+  </p>
+
   <h3>What you learned</h3>
   <ul>
     <li>Tokens are the contract — consumers never reference raw values.</li>

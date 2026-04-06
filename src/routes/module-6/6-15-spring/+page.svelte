@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { Spring, prefersReducedMotion } from 'svelte/motion';
 
-	const x = new Spring(0, { stiffness: 0.1, damping: 0.4 });
-	const y = new Spring(0, { stiffness: 0.1, damping: 0.4 });
+	// When reduced motion is active on initial render, spring should snap instantly.
+	const reducedOnMount = prefersReducedMotion.current;
+	const x = new Spring(0, { stiffness: 0.1, damping: 0.4, ...(reducedOnMount && { hard: true }) });
+	const y = new Spring(0, { stiffness: 0.1, damping: 0.4, ...(reducedOnMount && { hard: true }) });
 
 	let rawX = $state(0);
 	let rawY = $state(0);

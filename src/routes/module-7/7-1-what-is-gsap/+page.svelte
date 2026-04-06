@@ -92,6 +92,7 @@
     <li>There are 4 layers of web animation: CSS transitions, CSS keyframes, Svelte transitions, and GSAP.</li>
     <li>Use the simplest layer that gets the job done — reach for GSAP when you need timelines, scroll effects, or fine-grained control.</li>
     <li>GSAP and Svelte transitions complement each other rather than compete.</li>
+    <li>Always check <code>prefersReducedMotion.current</code> before running GSAP animations. Module 7 project demonstrates the full pattern. In production, wrap every GSAP animation in an <code>if (!prefersReducedMotion.current)</code> guard.</li>
   </ul>
 </section>
 

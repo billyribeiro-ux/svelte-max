@@ -61,6 +61,14 @@
 		</ul>
 	</div>
 
+	<p class="concept">
+		<strong>Security in production.</strong> (1) <code>httpOnly: true</code> prevents JavaScript from
+		reading the cookie — protects against XSS. (2) <code>secure: true</code> ensures the cookie only
+		travels over HTTPS. (3) <code>sameSite: 'lax'</code> blocks cross-site request forgery.
+		(4) Set <code>maxAge</code> to limit session lifetime. This demo skips the password — real auth
+		uses bcrypt hashing and never stores plaintext.
+	</p>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Session cookies hold opaque tokens, not user data.</li>

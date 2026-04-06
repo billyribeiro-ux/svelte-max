@@ -50,6 +50,7 @@ $effect(() => \{
     <li><code>gsap.to(target, vars)</code> is the fundamental tween method.</li>
     <li>All GSAP calls must be inside <code>$effect</code> for SSR safety.</li>
     <li>Properties like <code>x</code>, <code>y</code>, <code>scale</code>, <code>rotation</code>, and <code>opacity</code> are GSAP shorthand for CSS transforms.</li>
+    <li>Always check <code>prefersReducedMotion.current</code> before running GSAP animations. Module 7 project demonstrates the full pattern. In production, wrap every GSAP animation in an <code>if (!prefersReducedMotion.current)</code> guard.</li>
   </ul>
 </section>
 

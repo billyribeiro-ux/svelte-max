@@ -25,6 +25,45 @@
 	function clear(): void {
 		query = '';
 	}
+
+	// --- Throttle ---
+	function throttle<T extends (...args: any[]) => void>(fn: T, ms: number): T {
+		let lastCall = 0;
+		let timer: ReturnType<typeof setTimeout> | null = null;
+		return ((...args: any[]) => {
+			const now = Date.now();
+			const remaining = ms - (now - lastCall);
+			if (remaining <= 0) {
+				if (timer) { clearTimeout(timer); timer = null; }
+				lastCall = now;
+				fn(...args);
+			} else if (!timer) {
+				timer = setTimeout(() => {
+					lastCall = Date.now();
+					timer = null;
+					fn(...args);
+				}, remaining);
+			}
+		}) as T;
+	}
+
+	let rawClicks = $state(0);
+	let throttledClicks = $state(0);
+	const THROTTLE_MS = 500;
+
+	const handleThrottledClick = throttle(() => {
+		throttledClicks += 1;
+	}, THROTTLE_MS);
+
+	function onRapidClick(): void {
+		rawClicks += 1;
+		handleThrottledClick();
+	}
+
+	function resetThrottle(): void {
+		rawClicks = 0;
+		throttledClicks = 0;
+	}
 </script>
 
 <section class="page">
@@ -67,11 +106,45 @@
 		</div>
 	</div>
 
+	<h3>Throttle Demo</h3>
+	<div class="build">
+		<p class="build-desc">
+			Click the button as fast as you can. The <strong>throttled handler</strong> fires at most
+			once every {THROTTLE_MS}ms, no matter how many raw clicks happen.
+		</p>
+
+		<button type="button" class="rapid-btn" onclick={onRapidClick}>
+			Click rapidly!
+		</button>
+
+		<div class="row">
+			<div class="stat">
+				<span class="k">Raw clicks</span>
+				<span class="v">{rawClicks}</span>
+			</div>
+			<div class="stat">
+				<span class="k">Throttled fires</span>
+				<span class="v brand">{throttledClicks}</span>
+			</div>
+			<div class="stat">
+				<span class="k">Throttle window</span>
+				<span class="v">{THROTTLE_MS}ms</span>
+			</div>
+		</div>
+
+		<div class="status">
+			<button type="button" class="clear" onclick={resetThrottle}>Reset</button>
+		</div>
+	</div>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Use <code>$effect</code> + <code>setTimeout</code> + a cleanup for debounce.</li>
 		<li>Return <code>() =&gt; clearTimeout(handle)</code> so stale timers never fire.</li>
 		<li>Debounce for typing; throttle for continuous streams like scroll.</li>
+		<li><strong>Debounce</strong> waits until input is idle for N ms, then fires once.</li>
+		<li><strong>Throttle</strong> fires at most once every N ms, regardless of input frequency.</li>
+		<li>Throttle is ideal for scroll, resize, or rapid-click handlers where you need periodic updates, not just the final value.</li>
 	</ul>
 </section>
 
@@ -208,6 +281,31 @@
 		font-size: var(--text-sm);
 		cursor: pointer;
 		min-block-size: 36px;
+	}
+	.build-desc {
+		margin: 0;
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		line-height: 1.6;
+	}
+	.build-desc strong {
+		color: var(--color-text);
+	}
+	.rapid-btn {
+		align-self: flex-start;
+		background: var(--color-brand);
+		color: var(--color-surface);
+		border: none;
+		border-radius: var(--radius-md);
+		padding: var(--space-sm) var(--space-lg);
+		font-size: var(--text-base);
+		font-weight: 600;
+		cursor: pointer;
+		min-block-size: 44px;
+		transition: transform 0.1s ease;
+	}
+	.rapid-btn:active {
+		transform: scale(0.96);
 	}
 	@media (min-width: 768px) {
 		h1 {

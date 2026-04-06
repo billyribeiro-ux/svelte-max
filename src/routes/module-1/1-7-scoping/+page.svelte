@@ -39,6 +39,13 @@
 		protection applies across files automatically.
 	</p>
 
+	<h2>When <code>:global()</code> IS correct</h2>
+	<ul class="learned">
+		<li><strong>Injected HTML</strong> — content from <code>{'{@html}'}</code> or a markdown renderer has no Svelte hash classes, so <code>:global()</code> inside a scoped wrapper is the only way to style it.</li>
+		<li><strong>SVG internals</strong> — dynamically created or third-party SVG elements (e.g., D3-generated paths) bypass Svelte's compiler, so scoped selectors won't match them.</li>
+		<li><strong>Third-party library DOM</strong> — when your component wraps a library that creates its own DOM (rich-text editors, map tiles, date pickers), <code>:global()</code> scoped to a wrapper class keeps styles targeted without leaking.</li>
+	</ul>
+
 	<h2>What you learned</h2>
 	<ul class="learned">
 		<li>Svelte hashes every class in a component's <code>&lt;style&gt;</code> block at compile time.</li>

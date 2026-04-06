@@ -80,6 +80,15 @@ export const getPost = prerender(
 		</div>
 	</div>
 
+	<h3>When to prerender vs query</h3>
+	<p class="concept">
+		<strong>Prerender</strong> when data changes rarely — site config, navigation structure,
+		documentation index. <strong>Query at runtime</strong> when data changes per request — user-specific
+		content, real-time dashboards. Use <code>dynamic: true</code> for data that USUALLY doesn't change
+		but CAN — for example, a product catalog that you prerender at build time but fall back to the
+		server on cache miss for newly added items.
+	</p>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>prerender</code> runs queries at build time, embedding results in the bundle</li>

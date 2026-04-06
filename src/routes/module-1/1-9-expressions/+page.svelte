@@ -20,6 +20,9 @@
 			'Advanced analytics'
 		]
 	};
+
+	const safeHtml = '<em>This is safe</em> because you wrote it';
+	const dangerousInput = '<img src=x onerror="alert(document.cookie)">';
 </script>
 
 <section class="page">
@@ -75,12 +78,33 @@
 		<button class="cta" type="button">Start free trial</button>
 	</article>
 
+	<div class="build">
+		<h2 class="danger-heading">Danger zone: {'@html'} and XSS</h2>
+
+		<p class="danger-desc">
+			<strong>Safe HTML you control:</strong>
+		</p>
+		<div class="html-output">{@html safeHtml}</div>
+
+		<p class="danger-desc">
+			<strong>Malicious input (shown as text so you can SEE the attack vector):</strong>
+		</p>
+		<pre class="xss-example"><code>{dangerousInput}</code></pre>
+
+		<aside class="danger-note">
+			Never pass user input to <code>{'{@html}'}</code>. If you must render HTML from an API,
+			sanitize it with <strong>DOMPurify</strong> first.
+		</aside>
+	</div>
+
 	<h2>What you learned</h2>
 	<ul class="learned">
 		<li>Anything inside <code>&#123;&#125;</code> is a real JS expression.</li>
 		<li>Use ternaries inline for small conditional text.</li>
 		<li><code>&#123;@const&#125;</code> scopes a computed value to the block it lives in.</li>
 		<li><code>&#123;@html&#125;</code> exists, but never hand it untrusted strings.</li>
+		<li>An XSS payload like <code>&lt;img onerror="..."&gt;</code> executes arbitrary JS if rendered via <code>&#123;@html&#125;</code>.</li>
+		<li>Use <strong>DOMPurify</strong> to sanitize any HTML from untrusted sources before rendering.</li>
 	</ul>
 </section>
 
@@ -206,6 +230,57 @@
 		& li {
 			margin-block: 0.25rem;
 		}
+	}
+
+	.build {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: 1rem;
+		padding: 1.5rem;
+		margin-block: 2rem;
+		max-inline-size: 40rem;
+	}
+
+	.danger-heading {
+		font-size: var(--text-lg);
+		margin: 0;
+		color: var(--color-text);
+	}
+
+	.danger-desc {
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: var(--text-base);
+	}
+
+	.html-output {
+		padding: 0.75rem 1rem;
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: 0.5rem;
+		font-size: var(--text-base);
+	}
+
+	.xss-example {
+		margin: 0;
+		padding: 0.75rem 1rem;
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: 0.5rem;
+		overflow-x: auto;
+	}
+
+	.danger-note {
+		border-left: 4px solid var(--color-brand);
+		background: var(--color-surface);
+		padding: 0.75rem 1rem;
+		border-radius: 0.5rem;
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		line-height: 1.6;
 	}
 
 	@media (min-width: 768px) {

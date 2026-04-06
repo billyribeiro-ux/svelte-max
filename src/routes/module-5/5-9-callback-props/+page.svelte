@@ -78,6 +78,13 @@
 		{/each}
 	</div>
 
+	<p class="concept">
+		<strong>Component interface.</strong> When you extract this pattern to a real component file, the
+		interface looks like: <code>interface Props {'{'} onselect?: (item: Item) =&gt; void; children: Snippet {'}'}</code>.
+		The <code>?</code> makes the callback optional — the component checks <code>onselect?.(selected)</code>
+		before calling.
+	</p>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Components declare callback props with typed signatures.</li>

@@ -112,6 +112,23 @@
 		</div>
 	</div>
 
+	<h3>Modern Formats</h3>
+	<div class="build">
+		<p class="concept">
+			WebP is ~25% smaller than JPEG at equivalent quality; AVIF is ~50% smaller. Use
+			<code>&lt;picture&gt;</code> with <code>&lt;source&gt;</code> for format fallback:
+		</p>
+		<pre>{`<picture>
+  <source srcset="hero.avif" type="image/avif">
+  <source srcset="hero.webp" type="image/webp">
+  <img src="hero.jpg" alt="Hero" width="800" height="400">
+</picture>`}</pre>
+		<p class="concept">
+			Serve the smallest format the browser supports. The browser picks the first
+			<code>&lt;source&gt;</code> it understands, falling back to the <code>&lt;img&gt;</code>.
+		</p>
+	</div>
+
 	<h3>Load Status</h3>
 	<div class="build">
 		<ul>

@@ -135,6 +135,18 @@
 &#125;</code></pre>
 	</div>
 
+	<h3>Concurrent clicks</h3>
+	<div class="build">
+		<p class="concept">
+			What if the user clicks twice before the first request resolves? Options:
+			(1) Disable the button during pending (simplest),
+			(2) Queue requests,
+			(3) Cancel the first request.
+			This demo uses option 1 — the button is <code>disabled</code> while
+			<code>status === 'pending'</code>.
+		</p>
+	</div>
+
 	<h3>Key Takeaways</h3>
 	<ul>
 		<li>Save previous state before the optimistic update so you can roll back</li>

@@ -51,6 +51,16 @@
 		</dl>
 	</article>
 
+	<div class="build">
+		<h3>Verify your setup</h3>
+		<ul>
+			<li>Open a terminal and run: <code>pnpm -v</code> (should show 9+).</li>
+			<li>Run: <code>node -v</code> (should show 22+).</li>
+			<li>Run: <code>pnpm dev</code> (should show a Vite dev server URL like <code>http://localhost:5173</code>).</li>
+			<li>Open <code>tsconfig.json</code> and confirm <code>strict: true</code>.</li>
+		</ul>
+	</div>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>pnpm gives you fast, deduplicated installs.</li>

@@ -73,6 +73,14 @@
 		</div>
 	</div>
 
+	<h3>What if your data has no stable ID?</h3>
+	<p class="concept">
+		Options: (1) Generate one on creation (<code>crypto.randomUUID()</code>),
+		(2) Use a composite key (<code>{`\${item.name}-\${item.date}`}</code>),
+		(3) NEVER use the array index as a key — it defeats the purpose entirely.
+		If you can't guarantee uniqueness, add a unique field to your data model.
+	</p>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Default each blocks match by position, not identity.</li>

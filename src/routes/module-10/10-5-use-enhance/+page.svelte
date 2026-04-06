@@ -55,6 +55,14 @@
 		the default behavior (update <code>form</code>, invalidate, reset the form).
 	</p>
 
+	<p class="concept">
+		<strong>Cancel and result branches.</strong> The <code>use:enhance</code> callback receives
+		<code>{'{ cancel }'}</code> — call it to abort submission. The inner callback receives
+		<code>{'{ result }'}</code> with <code>result.type</code> being <code>'success'</code>,
+		<code>'failure'</code>, <code>'redirect'</code>, or <code>'error'</code>. Check
+		<code>result.type</code> to handle each case differently.
+	</p>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>use:enhance</code> turns a native POST form into an AJAX submit with zero extra code.</li>

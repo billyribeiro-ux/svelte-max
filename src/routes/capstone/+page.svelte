@@ -196,6 +196,54 @@
 	function renderStars(rating: number): string {
 		return '\u2605'.repeat(rating) + '\u2606'.repeat(5 - rating);
 	}
+
+	// -- Module 14: Custom Element pattern showcase --
+	const customElementCode = `\u003csvelte:options customElement="pe7-button" /\u003e
+
+\u003cscript lang="ts"\u003e
+  // Props become observed attributes on the custom element.
+  // Strings map directly; booleans/numbers are auto-coerced.
+  interface Props {
+    variant?: 'primary' | 'secondary' | 'ghost';
+    size?: 'sm' | 'md' | 'lg';
+    disabled?: boolean;
+  }
+
+  let { variant = 'primary', size = 'md', disabled = false }: Props = $props();
+\u003c/script\u003e
+
+\u003c!-- Shadow DOM encapsulates styles: no CSS leakage in or out --\u003e
+\u003cbutton class="btn {variant} {size}" {disabled}\u003e
+  \u003cslot /\u003e
+\u003c/button\u003e
+
+\u003c!-- Usage in plain HTML (no Svelte needed): --\u003e
+\u003c!-- \u003cpe7-button variant="secondary" size="lg"\u003eClick me\u003c/pe7-button\u003e --\u003e`;
+
+	// -- Module 15: Threlte 3D teaser --
+	const threlteCode = `\u003cscript\u003e
+  import { Canvas, T } from '@threlte/core';
+  import { OrbitControls } from '@threlte/extras';
+
+  let mounted = $state(false);
+
+  // SSR guard — WebGL only works in the browser
+  $effect(() => { mounted = true; });
+\u003c/script\u003e
+
+{#if mounted}
+  \u003cCanvas\u003e
+    \u003cT.PerspectiveCamera makeDefault position={[5, 5, 5]} /\u003e
+    \u003cOrbitControls /\u003e
+    \u003cT.DirectionalLight position={[3, 10, 7]} intensity={1.2} /\u003e
+    \u003cT.AmbientLight intensity={0.4} /\u003e
+
+    \u003cT.Mesh\u003e
+      \u003cT.BoxGeometry args={[1, 1, 1]} /\u003e
+      \u003cT.MeshStandardMaterial color="#e040a0" /\u003e
+    \u003c/T.Mesh\u003e
+  \u003c/Canvas\u003e
+{/if}`;
 </script>
 
 <!-- Keyboard shortcut — Module 4.11 -->
@@ -507,6 +555,37 @@
 		</div>
 	{/if}
 
+	<!-- ============ CUSTOM ELEMENT PATTERN (Module 14) ============ -->
+	<section class="custom-element-section" aria-labelledby="ce-heading">
+		<h2 id="ce-heading" class="section-title">Custom Element Pattern</h2>
+		<p class="ce-intro">
+			Svelte components can be compiled to native custom elements with a single directive.
+			The Button component below could ship as <code>&lt;pe7-button&gt;</code> — usable
+			in any HTML page, React app, or CMS without a Svelte runtime.
+		</p>
+		<pre class="code-block">{customElementCode}</pre>
+		<p class="ce-note">
+			<strong>Note:</strong> Shadow DOM encapsulation means styles inside the custom element
+			don't leak out, and external styles don't leak in. Prop-to-attribute mapping is automatic
+			for string props; use <code>reflect</code> in the options for attribute reflection.
+		</p>
+	</section>
+
+	<!-- ============ 3D WITH THRELTE (Module 15) ============ -->
+	<section class="threlte-section" aria-labelledby="threlte-heading">
+		<h2 id="threlte-heading" class="section-title">3D with Threlte</h2>
+		<p class="threlte-intro">
+			Threlte brings Three.js into Svelte's declarative world. A hero 3D scene would use
+			<code>&lt;Canvas&gt;</code> with nested <code>&lt;T.Mesh&gt;</code> components — all
+			reactive, all composable. Below is what a minimal scene looks like in code, plus an
+			SSR guard via <code>{'{#if mounted}'}</code>.
+		</p>
+		<pre class="code-block">{threlteCode}</pre>
+		<div class="threlte-placeholder" aria-label="Placeholder for 3D scene">
+			<span class="threlte-placeholder-text">3D Scene would render here (requires WebGL)</span>
+		</div>
+	</section>
+
 	<!-- ============ FOOTER ============ -->
 	<footer class="capstone-footer">
 		<h2 class="footer-title">Built With</h2>
@@ -515,7 +594,8 @@
 			Tween &middot; Spring &middot; GSAP ScrollTrigger &middot; form actions &middot;
 			use:enhance &middot; {'<svelte:boundary>'} &middot; shallow routing &middot;
 			{'<svelte:head>'} + JSON-LD &middot; per-page OKLCH personality &middot;
-			shared CartStore &middot; prefersReducedMotion &middot; typed throughout
+			shared CartStore &middot; prefersReducedMotion &middot; typed throughout &middot;
+			Custom element patterns (Module 14) &middot; Threlte 3D concepts (Module 15)
 		</p>
 	</footer>
 </div>
@@ -1037,6 +1117,62 @@
 		display: flex;
 		gap: var(--space-sm);
 		margin-block-start: var(--space-sm);
+	}
+
+	/* ============ CUSTOM ELEMENT (Module 14) ============ */
+	.custom-element-section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.ce-intro,
+	.ce-note,
+	.threlte-intro {
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		line-height: 1.6;
+		max-inline-size: 65ch;
+	}
+
+	.ce-note strong {
+		color: var(--color-text);
+	}
+
+	.code-block {
+		background: var(--color-surface-2);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		padding: var(--space-md);
+		font-family: var(--font-mono);
+		font-size: var(--text-xs);
+		overflow-x: auto;
+		line-height: 1.6;
+		color: var(--color-text);
+		white-space: pre;
+	}
+
+	/* ============ THRELTE (Module 15) ============ */
+	.threlte-section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.threlte-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-block-size: 14rem;
+		border-radius: var(--radius-lg);
+		background: linear-gradient(135deg, oklch(30% 0.12 280), oklch(20% 0.10 340));
+		border: 1px solid var(--color-border);
+	}
+
+	.threlte-placeholder-text {
+		font-size: var(--text-sm);
+		color: oklch(80% 0.05 280);
+		font-style: italic;
 	}
 
 	/* ============ FOOTER ============ */

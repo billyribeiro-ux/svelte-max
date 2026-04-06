@@ -79,6 +79,7 @@ gsap.fromTo(el,
     <li><code>gsap.from()</code> tweens from the specified values back to the current state — great for entrance animations.</li>
     <li><code>gsap.fromTo()</code> gives full control over both the start and end states.</li>
     <li>GSAP ships with many easing functions: <code>power3.out</code>, <code>bounce.out</code>, <code>elastic.out</code>, and more.</li>
+    <li>Always check <code>prefersReducedMotion.current</code> before running GSAP animations. Module 7 project demonstrates the full pattern. In production, wrap every GSAP animation in an <code>if (!prefersReducedMotion.current)</code> guard.</li>
   </ul>
 </section>
 

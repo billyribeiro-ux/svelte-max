@@ -47,12 +47,14 @@
 
 <dialog
   bind:this={dialogEl}
+  aria-modal="true"
+  aria-labelledby="modal-title"
   onclick={handleBackdrop}
   onkeydown={handleKey}
   onclose={() => { if (open) close(); }}
 >
   <header class="modal-header">
-    <h2>{title}</h2>
+    <h2 id="modal-title">{title}</h2>
     <button type="button" class="close" aria-label="Close" onclick={close}>×</button>
   </header>
   <div class="modal-body">

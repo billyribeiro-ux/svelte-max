@@ -33,7 +33,10 @@
 		<strong>Concept.</strong> A closure is a function that captures variables from its surrounding scope. When
 		you define an arrow handler inside <code>{'{#each}'}</code>, each iteration gets its own closure over the
 		current item — so clicking one row never affects another. In Svelte this just works: no stale-closure
-		bugs from the React world.
+		bugs from the React world. Why no stale closures in Svelte? Because <code>$state</code> returns a
+		reactive proxy, not a plain value. When you close over <code>items</code> inside an
+		<code>{'{#each}'}</code> handler, you're closing over the proxy — which always reflects the current
+		state. React closures capture a snapshot; Svelte closures capture a live reference.
 	</p>
 
 	<div class="build">

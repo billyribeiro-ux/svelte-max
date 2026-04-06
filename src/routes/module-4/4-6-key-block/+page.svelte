@@ -52,6 +52,14 @@
 		</p>
 	</div>
 
+	<h3>Combining {'{#key}'} with transitions</h3>
+	<p class="concept">
+		In Module 6, you'll combine <code>{'{#key}'}</code> with Svelte transitions. The pattern:
+		<code>{'{#key id}<div transition:fly>{content}</div>{/key}'}</code> — every key change tears
+		down and recreates the element, triggering the entrance transition fresh. This is how you build
+		content switchers with smooth animations.
+	</p>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>{'{#key expr}'}</code> destroys and recreates its block on change.</li>

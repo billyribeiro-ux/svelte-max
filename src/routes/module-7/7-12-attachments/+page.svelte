@@ -38,6 +38,8 @@
 
 <section class="page">
   <h1>7.12 — Attachments</h1>
+  <aside class="disclaimer"><strong>Experimental:</strong> <code>{'{@attach}'}</code> was introduced in Svelte 5.29 and may change. For production code today, use <code>use:</code> actions. This lesson teaches the concept so you're ready when it stabilizes.</aside>
+
   <p class="concept"><strong>Concept.</strong> Svelte 5.29 introduced the experimental <code>{'{@attach}'}</code> directive as a modern replacement for <code>use:</code> actions. While <code>{'{@attach}'}</code> provides a more declarative API with better TypeScript support, <code>use:</code> actions remain the stable, production-ready approach. Here we teach both.</p>
 
   <div class="build">
@@ -131,4 +133,16 @@ function gsapPulse(element: Element) \{
   .compare-col { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); }
   .compare-col h4 { margin: 0 0 var(--space-sm); color: var(--color-text); }
   .compare-list { font-size: var(--text-sm); }
+
+  .disclaimer {
+    border-left: 4px solid var(--color-warning);
+    background: var(--color-surface-2);
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-md);
+  }
+  .disclaimer strong { color: var(--color-text); }
 </style>

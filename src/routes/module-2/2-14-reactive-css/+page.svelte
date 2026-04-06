@@ -62,6 +62,21 @@
 		<button type="button" class="reset" onclick={reset}>Reset to defaults</button>
 	</div>
 
+	<div class="build stack">
+		<h2>Custom property bridge: <code>style:--custom</code></h2>
+		<p class="hint">
+			The <code>style:--card-accent</code> directive passes a reactive OKLCH string into scoped CSS.
+			The card reads it with <code>var(--card-accent)</code> — no inline style stringification needed.
+		</p>
+		<div
+			class="accent-card"
+			style:--card-accent="oklch({l}% {c} {h})"
+		>
+			<span class="accent-title">Accent card</span>
+			<code>style:--card-accent="oklch({l}% {c} {h})"</code>
+		</div>
+	</div>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>
@@ -215,5 +230,34 @@
 
 	h3 {
 		margin-block-start: var(--space-xl);
+	}
+
+	.hint {
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		margin: 0;
+	}
+
+	.accent-card {
+		padding: var(--space-lg);
+		border-radius: var(--radius-md);
+		border: 3px solid var(--card-accent, var(--color-brand));
+		background: color-mix(in oklch, var(--card-accent, var(--color-brand)) 8%, var(--color-surface));
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+		transition: border-color var(--dur-fast) var(--ease-out),
+			background var(--dur-fast) var(--ease-out);
+	}
+
+	.accent-title {
+		font-weight: 700;
+		font-size: var(--text-lg);
+		color: var(--color-text);
+	}
+
+	.accent-card code {
+		font-size: var(--text-sm);
+		opacity: 0.8;
 	}
 </style>

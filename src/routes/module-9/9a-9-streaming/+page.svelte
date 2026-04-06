@@ -35,12 +35,20 @@
 		</p>
 	</div>
 
+	<h3>When to stream</h3>
+	<p class="concept">
+		Stream when your page has both fast and slow data. Render the fast parts immediately (header,
+		navigation, above-the-fold content) and stream the slow parts (analytics, historical comparisons,
+		AI-generated summaries). The user sees useful content in &lt;1s instead of waiting 3s for everything.
+	</p>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Return a non-awaited Promise to enable streaming</li>
 		<li>Use <code>{'{#await}'}</code> blocks to render placeholders</li>
 		<li>Fast data feels instant; slow data streams in when ready</li>
 		<li>Only use streaming when a page has a clear fast/slow split</li>
+		<li>Best candidates for streaming: analytics panels, AI-generated text, historical comparisons — anything slow that isn't above the fold</li>
 	</ul>
 </section>
 

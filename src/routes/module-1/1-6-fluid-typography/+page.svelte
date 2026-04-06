@@ -38,6 +38,12 @@
 		{/each}
 	</div>
 
+	<p class="concept">
+		<strong>Why min and max bounds?</strong> Without them, <code>2.5vw</code> alone would shrink text to
+		unreadable sizes on 320px screens and bloat it on ultrawide monitors. The clamp bounds are safety
+		rails: the min ensures readability, the max prevents absurdity.
+	</p>
+
 	<h2>What you learned</h2>
 	<ul class="learned">
 		<li><code>clamp()</code> takes exactly three arguments: min, preferred, max.</li>

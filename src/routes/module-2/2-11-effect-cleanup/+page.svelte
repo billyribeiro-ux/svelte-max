@@ -72,6 +72,13 @@
 		</p>
 	</div>
 
+	<h3>Prove it</h3>
+	<p class="concept">
+		To see a leak: comment out the cleanup <code>return () =&gt; clearInterval(id)</code>, start the
+		timer, navigate to another page, then check DevTools &rarr; Performance &rarr; Memory. The timer
+		keeps running — CPU never drops. Uncomment the cleanup and repeat — CPU returns to idle immediately.
+	</p>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Return a function from <code>$effect</code> to register cleanup logic.</li>

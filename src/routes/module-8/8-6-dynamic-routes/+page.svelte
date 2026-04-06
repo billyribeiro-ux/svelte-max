@@ -78,6 +78,18 @@
 		</p>
 	</div>
 
+	<h3>Matcher function example</h3>
+	<div class="build">
+		<pre><code>{`// src/params/integer.ts
+export function match(param: string): boolean {
+  return /^\\d+$/.test(param);
+}`}</code></pre>
+		<p class="hint">
+			Use matchers in route folders: <code>[id=integer]</code> — SvelteKit only matches if the param
+			passes the matcher. If it doesn't match, SvelteKit falls through to the next route or returns a 404.
+		</p>
+	</div>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li>Square brackets in folder names create dynamic URL parameters.</li>

@@ -69,6 +69,11 @@
     --btn-bg: var(--color-brand);
     --btn-border: var(--color-brand);
   }
+  /*
+    These OKLCH values are not global tokens — they're per-instance overrides
+    demonstrating the CSS custom property bridge. In production, you might
+    derive these from a theme configuration.
+  */
   .btn-brand-teal {
     --btn-bg: oklch(66% 0.13 190);
     --btn-border: oklch(56% 0.13 190);

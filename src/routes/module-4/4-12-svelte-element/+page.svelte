@@ -44,6 +44,14 @@
 		</p>
 	</div>
 
+	<h3>Security</h3>
+	<p class="concept">
+		Never pass user-controlled strings to <code>&lt;svelte:element this={'{userInput}'}&gt;</code>.
+		An attacker could inject <code>script</code> as the tag name. Always validate against an
+		allowlist: <code>const allowed = ['h1','h2','h3','h4','h5','h6'] as const;</code> and check
+		<code>allowed.includes(level)</code> before rendering.
+	</p>
+
 	<h3>What you learned</h3>
 	<ul>
 		<li><code>&lt;svelte:element this={`{...}`}&gt;</code> picks the tag name at runtime</li>

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { prefersReducedMotion } from 'svelte/motion';
+
 	let startX = $state(0);
 	let deltaX = $state(0);
 	let dragging = $state(false);
@@ -26,6 +28,16 @@
 		const target = e.currentTarget as HTMLElement;
 		target.releasePointerCapture(e.pointerId);
 		dragging = false;
+		if (prefersReducedMotion.current) {
+			// Skip animated translateX — instantly reveal or hide
+			if (deltaX < -REVEAL_THRESHOLD) {
+				revealed = true;
+			} else {
+				revealed = false;
+			}
+			deltaX = revealed ? -140 : 0;
+			return;
+		}
 		if (deltaX < -REVEAL_THRESHOLD) {
 			revealed = true;
 			deltaX = -140;
@@ -83,6 +95,9 @@
 		<div class="controls">
 			<button type="button" class="btn" onclick={reset}>Reset</button>
 			<span class="state">revealed: <code>{revealed}</code></span>
+			<span class="pill" class:active={prefersReducedMotion.current}>
+				Reduced motion: {prefersReducedMotion.current ? 'on' : 'off'}
+			</span>
 		</div>
 	</div>
 
@@ -91,6 +106,7 @@
 		<li>Prefer pointer events over touch events — they unify input types.</li>
 		<li><code>setPointerCapture</code> ensures you keep getting events during a drag.</li>
 		<li>Minimum 44px touch targets for WCAG compliance.</li>
+		<li>Respect <code>prefersReducedMotion</code> — skip animated transitions when the user prefers reduced motion.</li>
 	</ul>
 </section>
 
@@ -222,6 +238,19 @@
 	.state {
 		font-size: var(--text-xs);
 		color: var(--color-text-muted);
+	}
+	.pill {
+		font-size: var(--text-xs);
+		padding: var(--space-xs) var(--space-sm);
+		border-radius: var(--radius-full);
+		background: var(--color-surface-2);
+		border: 1px solid var(--color-border);
+		color: var(--color-text-muted);
+	}
+	.pill.active {
+		background: var(--color-warning);
+		color: var(--color-surface);
+		border-color: var(--color-warning);
 	}
 	@media (min-width: 768px) {
 		h1 {

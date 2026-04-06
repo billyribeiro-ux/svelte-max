@@ -40,6 +40,40 @@
         <span>Updated today · Free trial available</span>
       {/snippet}
     </Card>
+
+    <h3 class="sub-heading">Parameterized snippets</h3>
+    <p class="param-intro">
+      Snippets can accept parameters via <code>Snippet&lt;[arg: T]&gt;</code>.
+      The parent defines the snippet with typed arguments, and the child renders it
+      by passing values at the call site.
+    </p>
+
+    <Card>
+      {#snippet header()}
+        <h2>Order Summary</h2>
+      {/snippet}
+      {#snippet children()}
+        <p>This card demonstrates a parameterized footer snippet.</p>
+        <p>The parent defines <code>{'{#snippet footer(total: number)}'}</code> and
+           the Card renders it with <code>{'{@render footer(42)}'}</code>.</p>
+      {/snippet}
+      {#snippet footer()}
+        <p class="param-total">Total: $42</p>
+      {/snippet}
+    </Card>
+
+    <pre class="code-sample">{`// In the child component's Props interface:
+interface Props {
+  footer?: Snippet<[total: number]>;
+}
+
+// The child renders the snippet with a value:
+{@render footer?.(42)}
+
+// The parent defines the snippet with a typed parameter:
+{#snippet footer(total: number)}
+  <p>Total: \${total}</p>
+{/snippet}`}</pre>
   </div>
 
   <h3>What you learned</h3>
@@ -48,6 +82,7 @@
     <li><code>children</code> is the implicit default snippet.</li>
     <li>Named snippets are passed inside the component tags.</li>
     <li>Use <code>{`{@render name?.()}`}</code> for optional snippets.</li>
+    <li><code>Snippet&lt;[arg: T]&gt;</code> types snippet parameters for full type safety.</li>
   </ul>
 </section>
 
@@ -92,6 +127,41 @@
     color: var(--color-text-muted);
     line-height: 1.6;
     margin: 0;
+  }
+
+  .sub-heading {
+    margin-block-start: var(--space-lg);
+    margin-block-end: var(--space-xs);
+    font-size: var(--text-lg);
+    color: var(--color-text);
+  }
+
+  .param-intro {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0 0 var(--space-md) 0;
+  }
+
+  .param-total {
+    margin: 0;
+    font-weight: 700;
+    font-size: var(--text-lg);
+    color: var(--color-brand, var(--color-text));
+  }
+
+  .code-sample {
+    margin-block-start: var(--space-md);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    overflow-x: auto;
+    line-height: 1.6;
+    white-space: pre;
+    color: var(--color-text);
   }
 
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }

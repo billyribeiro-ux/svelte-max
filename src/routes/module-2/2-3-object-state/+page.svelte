@@ -199,20 +199,84 @@
 		</aside>
 	</div>
 
+	<!-- ═══ BREAK IT ON PURPOSE ═══ -->
+
+	<h2>Break it on purpose</h2>
+
+	<p class="prose">
+		Deep reactivity is powerful but has boundaries. These experiments reveal them.
+	</p>
+
+	<ol class="experiments">
+		<li>
+			<strong>Reassign the entire object instead of mutating a field.</strong> Write
+			<code>settings = {'{'} ...settings, displayName: 'New' {'}'}</code>. It works —
+			the proxy detects the top-level reassignment. But it is less efficient than
+			<code>settings.displayName = 'New'</code> because every derived value that reads
+			ANY field re-evaluates, not just the ones reading <code>displayName</code>. Deep
+			reactivity tracks per-field; reassignment triggers everything.
+		</li>
+		<li>
+			<strong>Store a <code>Date</code> in <code>$state</code> and call
+			<code>date.setHours(12)</code>.</strong> The mutation WILL be detected because
+			<code>$state</code> proxies all property writes. But <code>Date</code> methods
+			like <code>setHours</code> mutate internally — the proxy intercepts the underlying
+			property changes. This works but can be surprising.
+		</li>
+		<li>
+			<strong>Assign the object to a plain variable and mutate THAT.</strong>
+			<code>const copy = settings; copy.displayName = 'Changed'</code>. Surprise: this
+			UPDATES the UI. Why? Because <code>copy</code> is a reference to the SAME proxy.
+			There is no clone. If you need a detached copy, use
+			<code>$state.snapshot(settings)</code>.
+		</li>
+		<li>
+			<strong>Nest an object 3 levels deep and mutate the innermost field.</strong>
+			Deep reactivity is recursive — even <code>settings.prefs.display.fontSize = 18</code>
+			triggers an update. But at some depth, you should ask: should this be a separate
+			<code>$state</code> variable instead of a nested field?
+		</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Objects in <code>$state</code> are deep-reactive — mutate nested fields directly.</li>
-		<li>Type object state with an <code>interface</code> and a generic parameter.</li>
-		<li><code>bind:value</code>, <code>bind:checked</code>, and <code>bind:group</code> all write back into the object.</li>
-		<li>Grouping related fields into an object scales cleanly as the form grows.</li>
-		<li>Deep reactivity is great for UI; <code>$state.raw</code> exists for huge payloads.</li>
-	</ul>
+	<!-- ═══ WHAT YOU LEARNED ═══ -->
+
+	<h2>What you learned</h2>
+
+	<p class="prose">
+		Objects in <code>$state</code> are deep-reactive by default. When you write
+		<code>let settings = $state&lt;Settings&gt;({'{...}'})</code>, Svelte wraps the entire
+		object tree in proxies — not just the top level. Mutating
+		<code>settings.displayName = 'Billy'</code> triggers updates for any markup that reads
+		<code>settings.displayName</code>, without affecting markup that reads other fields.
+		This granularity is what makes deep reactivity efficient for UI forms.
+	</p>
+
+	<p class="prose">
+		Type your object state with an <code>interface</code> and pass it as a generic:
+		<code>$state&lt;Settings&gt;({'{...}'})</code>. This gives you autocomplete on every
+		field, catches typos at compile time, and makes refactoring safe — change the interface
+		and TypeScript highlights every file that needs updating.
+	</p>
+
+	<p class="prose">
+		Deep reactivity is the right default for most UI state — forms, settings panels,
+		user profiles. When you have large datasets (thousands of rows) that you replace
+		wholesale rather than mutate field by field, reach for <code>$state.raw()</code>
+		instead (lesson 2.5). The trade-off is simple: deep reactivity tracks individual
+		fields; <code>$state.raw</code> only detects top-level reassignment.
+	</p>
+
+	<p class="next">
+		<strong>Next:</strong>
+		<a href="/module-2/2-4-array-state">2.4 — Array $state</a> — reactive arrays with
+		push, filter, map, and keyed iteration.
+	</p>
 </section>
 
 <style>
@@ -369,19 +433,26 @@
 		}
 	}
 
-	h3 {
-		font-size: var(--text-lg);
-		margin-top: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
-
-	ul {
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
-		padding-left: var(--space-md);
-		color: var(--color-text-muted);
+		gap: var(--space-md);
+		padding-inline-start: var(--space-lg);
+		color: var(--color-text);
 		line-height: 1.6;
+		& strong { color: var(--color-text); }
+		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
 	}
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	@media (min-width: 768px) {
 		.demo {

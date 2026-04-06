@@ -313,6 +313,8 @@
 		cursor: pointer;
 		text-align: start;
 		min-block-size: 160px;
+		/* view-transition-class — groups cards so they share a single View Transition animation rule */
+		view-transition-class: card;
 		transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 
 		&:hover {

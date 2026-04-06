@@ -62,6 +62,13 @@
 </div>
 
 <style>
+	/* @property — typed custom property that can be animated via CSS transitions */
+	@property --ring-progress {
+		syntax: '<percentage>';
+		inherits: false;
+		initial-value: 0%;
+	}
+
 	.ring-wrap {
 		position: relative;
 		display: inline-flex;

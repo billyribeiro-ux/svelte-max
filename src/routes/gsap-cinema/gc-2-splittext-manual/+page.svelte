@@ -221,7 +221,8 @@
 		max-inline-size: 65ch;
 		line-height: 1.6;
 		margin: 0;
-		text-wrap: balance;
+		/* text-wrap: pretty — prevents typographic orphans (single word on last line) for subtitle text */
+		text-wrap: pretty;
 
 		& strong { color: var(--color-text); }
 	}

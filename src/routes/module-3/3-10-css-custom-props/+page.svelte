@@ -113,6 +113,13 @@
     flex-wrap: wrap;
   }
 
+  /* @scope — CSS scoping at-rule for variant isolation, styles only apply within each brand wrapper */
+  @scope (.btn-brand-teal) {
+    :scope {
+      --btn-text: oklch(100% 0 0);
+    }
+  }
+
   .btn-brand-default {
     --btn-bg: var(--color-brand);
     --btn-border: var(--color-brand);

@@ -32,8 +32,10 @@
 	.stat-card {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
-		background: var(--card-bg, var(--color-surface-1));
+		/* lh unit — line-height-relative unit, keeps vertical rhythm tied to text */
+		gap: 0.5lh;
+		/* light-dark() — resolves to first value in light mode, second in dark */
+		background: light-dark(var(--color-surface-1), oklch(22% 0.02 270));
 		border: 1px solid var(--card-border, var(--color-border));
 		border-radius: var(--radius-lg);
 		padding: var(--space-md) var(--space-lg);

@@ -234,6 +234,16 @@
     }
   }
 
+  /* Container style() queries — respond to a custom property value for variant styling */
+  @container style(--variant: compact) {
+    .stat-card {
+      padding: var(--space-sm);
+    }
+    .value {
+      font-size: var(--text-lg);
+    }
+  }
+
   .note {
     margin: 0;
     font-size: var(--text-sm);

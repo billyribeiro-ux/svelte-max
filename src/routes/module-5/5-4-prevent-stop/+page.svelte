@@ -259,6 +259,20 @@
 		flex-direction: column;
 		gap: var(--space-sm);
 		z-index: 10;
+		/* Smooth entry transition */
+		opacity: 1;
+		transform: translateY(0);
+		transition:
+			opacity var(--dur-fast) var(--ease-out),
+			transform var(--dur-fast) var(--ease-out);
+	}
+
+	/* @starting-style — entry animation when panel goes from display:none to visible */
+	@starting-style {
+		.panel {
+			opacity: 0;
+			transform: translateY(-0.5rem);
+		}
 	}
 	.panel-title {
 		margin: 0;

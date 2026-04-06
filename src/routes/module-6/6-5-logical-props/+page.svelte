@@ -219,6 +219,8 @@
     color: var(--color-text-muted);
     font-size: var(--text-sm);
     text-align: start;
+    /* lh unit — line-height-relative unit, spacing stays proportional to text rhythm */
+    margin-block-start: 0.25lh;
   }
   .close {
     flex-shrink: 0;

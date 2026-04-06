@@ -267,6 +267,13 @@
     overflow-x: auto;
     margin: 0;
   }
+
+  /* @scope — CSS scoping at-rule, limits styles to .nav subtree but excludes .external links */
+  @scope (.nav) to (.external) {
+    a {
+      font-weight: 600;
+    }
+  }
   pre code {
     background: transparent;
     padding: 0;

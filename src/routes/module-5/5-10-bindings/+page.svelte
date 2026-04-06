@@ -273,6 +273,9 @@
 		margin: 0;
 		font-size: var(--text-xs);
 		color: var(--color-text-muted);
+		/* anchor() positioning — anchor the dimension display for tooltip-style readouts */
+		anchor-name: --dimension-readout;
+		position-anchor: --dimension-readout;
 	}
 	@media (min-width: 768px) {
 		h1 {

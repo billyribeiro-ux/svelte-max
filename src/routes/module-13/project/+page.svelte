@@ -515,6 +515,8 @@
 		margin: 0;
 		line-height: 1.7;
 		color: var(--color-text);
+		/* text-wrap: pretty — prevents typographic orphans in article body paragraphs */
+		text-wrap: pretty;
 	}
 	.body a {
 		color: var(--color-brand);

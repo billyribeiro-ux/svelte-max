@@ -124,6 +124,13 @@
 </section>
 
 <style>
+	/* @property — typed custom property for the interactive slider demo */
+	@property --demo-progress {
+		syntax: '<percentage>';
+		inherits: false;
+		initial-value: 0%;
+	}
+
 	.page {
 		display: flex;
 		flex-direction: column;

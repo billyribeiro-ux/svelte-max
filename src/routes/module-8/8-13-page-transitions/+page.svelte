@@ -131,6 +131,8 @@
 	}
 	h1 {
 		view-transition-name: lesson-title;
+		/* view-transition-class — groups headings so they share a single View Transition animation rule */
+		view-transition-class: heading;
 	}
 	.concept {
 		font-size: var(--text-base);

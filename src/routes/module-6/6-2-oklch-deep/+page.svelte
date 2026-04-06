@@ -229,7 +229,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--color-border);
+    /* light-dark() — theme-aware border that adapts to light/dark mode automatically */
+    border: 1px solid light-dark(oklch(88% 0.02 270), oklch(30% 0.02 270));
   }
   .preview code {
     background: rgb(0 0 0 / 0.5);

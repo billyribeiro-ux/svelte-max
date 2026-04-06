@@ -32,7 +32,8 @@
     display: flex;
     flex-direction: column;
     background: var(--color-surface-1);
-    border: 1px solid var(--color-border);
+    /* light-dark() — theme-aware color function, first value for light mode, second for dark */
+    border: 1px solid light-dark(var(--color-border), oklch(30% 0.02 270));
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     color: var(--color-text);

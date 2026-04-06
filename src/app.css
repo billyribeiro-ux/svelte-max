@@ -1,5 +1,12 @@
 @layer reset, tokens, base, layout, components, animations;
 
+/* @property — typed CSS custom properties that can be animated via CSS transitions */
+@property --accent-hue {
+	syntax: '<number>';
+	inherits: true;
+	initial-value: 270;
+}
+
 @layer reset {
 	*,
 	*::before,
@@ -45,6 +52,13 @@
 	h5,
 	h6 {
 		overflow-wrap: break-word;
+		/* text-wrap: pretty — prevents typographic orphans (single word on last line) */
+		text-wrap: pretty;
+	}
+
+	p {
+		/* lh unit — line-height-relative unit for rhythm-consistent spacing */
+		margin-block: 0.5lh;
 	}
 
 	#root,
@@ -120,6 +134,12 @@
 		--shadow-sm: 0 1px 3px oklch(0% 0 0 / 0.08);
 		--shadow-md: 0 4px 12px oklch(0% 0 0 / 0.1);
 		--shadow-lg: 0 8px 32px oklch(0% 0 0 / 0.12);
+
+		/* light-dark() — theme-aware color function, resolves to first value in light mode, second in dark */
+		--color-canvas: light-dark(oklch(99% 0.005 270), oklch(12% 0.02 270));
+
+		/* round() — CSS math function that rounds values to a given interval */
+		--space-grid: round(nearest, 1rem, 0.25rem);
 	}
 
 	@media (prefers-color-scheme: dark) {
@@ -135,6 +155,11 @@
 }
 
 @layer base {
+	/* color-scheme — tells the browser which color schemes the page supports for form controls, scrollbars, etc. */
+	:root {
+		color-scheme: light dark;
+	}
+
 	body {
 		background: var(--color-surface);
 		color: var(--color-text);

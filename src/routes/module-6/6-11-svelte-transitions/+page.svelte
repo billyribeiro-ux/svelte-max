@@ -207,6 +207,8 @@
 		flex-direction: column;
 		gap: var(--space-sm);
 		min-height: 60px;
+		/* interpolate-size: allow-keywords — enables animating to/from keyword sizes like 'auto' alongside Svelte transitions */
+		interpolate-size: allow-keywords;
 	}
 	.toast {
 		display: flex;

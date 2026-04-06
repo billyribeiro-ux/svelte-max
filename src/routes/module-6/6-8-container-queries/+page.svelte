@@ -230,6 +230,14 @@
     .content h4 { font-size: var(--text-lg); }
   }
 
+  /* Container style() queries — respond to a custom property value on the container, not just size */
+  @container style(--variant: compact) {
+    .widget {
+      padding: var(--space-sm);
+      gap: var(--space-xs);
+    }
+  }
+
   @media (min-width: 768px) {
     h1 { font-size: var(--text-2xl); }
   }

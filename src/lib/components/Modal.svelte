@@ -72,6 +72,22 @@
     background: var(--color-surface);
     color: var(--color-text);
     box-shadow: var(--shadow-lg);
+    /* Smooth entry transition for dialog open */
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out),
+      overlay var(--dur-base) var(--ease-out) allow-discrete,
+      display var(--dur-base) var(--ease-out) allow-discrete;
+  }
+
+  /* @starting-style — entry animation when dialog goes from display:none to visible */
+  @starting-style {
+    dialog[open] {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
   }
 
   dialog::backdrop {

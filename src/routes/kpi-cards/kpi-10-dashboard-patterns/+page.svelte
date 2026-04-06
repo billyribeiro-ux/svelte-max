@@ -285,6 +285,19 @@
 		gap: var(--space-md);
 	}
 
+	/* interpolate-size: allow-keywords — enables animating to/from keyword sizes like 'auto' */
+	.build {
+		interpolate-size: allow-keywords;
+	}
+
+	/* @starting-style — entry animation for skeleton-to-content transitions */
+	@starting-style {
+		.skeleton-card {
+			opacity: 0;
+			transform: scale(0.97);
+		}
+	}
+
 	/* ── Skeleton ── */
 	.skeleton-card {
 		display: flex;
@@ -294,6 +307,12 @@
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
+		/* Smooth entry from @starting-style */
+		opacity: 1;
+		transform: scale(1);
+		transition:
+			opacity var(--dur-base) var(--ease-out),
+			transform var(--dur-base) var(--ease-out);
 	}
 
 	.skeleton-line {

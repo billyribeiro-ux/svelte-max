@@ -295,6 +295,8 @@
 		gap: var(--space-sm);
 	}
 	.micro-btn {
+		/* anchor() positioning — makes each button an anchor for feedback labels */
+		anchor-name: --micro-btn;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -320,6 +322,8 @@
 		color: var(--color-text-muted);
 		text-align: center;
 		font-weight: 600;
+		/* anchor() positioning — label is positioned relative to its button anchor */
+		position-anchor: --micro-btn;
 	}
 
 	/* ── Checkmark draw ── */

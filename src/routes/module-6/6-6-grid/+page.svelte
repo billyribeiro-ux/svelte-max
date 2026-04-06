@@ -178,7 +178,8 @@
   .grid {
     --grid-min: 16rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(var(--grid-min), 1fr));
+    /* round() — CSS math function that snaps the min column width to the nearest 1rem increment */
+    grid-template-columns: repeat(auto-fit, minmax(round(nearest, var(--grid-min), 1rem), 1fr));
     gap: var(--space-md);
   }
   .card {

@@ -243,6 +243,20 @@
 		gap: var(--space-md);
 	}
 
+	/* @scope — CSS scoping at-rule, card styles only apply within .dashboard-layout */
+	@scope (.dashboard-layout) {
+		.filter-pill {
+			font-variant-numeric: tabular-nums;
+		}
+	}
+
+	/* Container style() queries — cards respond to parent's --variant custom property */
+	@container style(--variant: compact) {
+		.kpi-row {
+			gap: var(--space-sm);
+		}
+	}
+
 	.dash-main {
 		grid-area: main;
 	}

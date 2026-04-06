@@ -265,6 +265,13 @@
 		100% { transform: translate(6%, 10%) scale(1.1); }
 	}
 
+	/* @property — typed custom property that can be animated via CSS transitions for gradient position */
+	@property --gradient-pos {
+		syntax: '<percentage>';
+		inherits: false;
+		initial-value: 0%;
+	}
+
 	/* OKLCH gradient overlay */
 	.gradient-overlay {
 		position: absolute;

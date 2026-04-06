@@ -313,6 +313,8 @@ h1 {
 		line-height: 1.6;                    /* comfortable reading */
 		border-inline-start: 4px solid var(--color-brand); /* left accent bar */
 		padding-inline-start: 1rem;          /* space after the bar */
+		/* lh unit — line-height-relative unit, margin stays proportional to text line height */
+		margin-block: 1lh;
 	}
 
 	/* ── Concept paragraph ───────────────────────────────── */

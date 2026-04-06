@@ -469,6 +469,8 @@
 	h1 {
 		margin: 0;
 		view-transition-name: portfolio-title;
+		/* view-transition-class — groups elements so they share a single View Transition animation rule */
+		view-transition-class: heading;
 		color: var(--color-brand);
 	}
 	.tagline {

@@ -212,6 +212,8 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-sm);
+		/* interpolate-size: allow-keywords — enables animating to/from 'auto' height for accordion items */
+		interpolate-size: allow-keywords;
 	}
 	.row {
 		background: var(--color-surface-2);
@@ -249,6 +251,9 @@
 		font-size: var(--text-sm);
 		color: var(--color-text-muted);
 		border-block-start: 1px solid var(--color-border);
+		/* With interpolate-size: allow-keywords on .accordion, height can animate to/from auto */
+		height: auto;
+		transition: height var(--dur-base) var(--ease-out);
 	}
 	.state {
 		margin: 0;

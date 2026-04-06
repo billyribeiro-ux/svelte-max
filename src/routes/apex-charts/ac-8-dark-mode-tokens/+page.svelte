@@ -344,7 +344,8 @@ source:  {manualOverride !== null ? 'manual override' : 'OS preference'}</code><
 	.token-pre {
 		margin: 0;
 		padding: var(--space-md);
-		background: var(--color-surface-2);
+		/* light-dark() — theme-aware color function, resolves automatically based on color-scheme */
+		background: light-dark(oklch(96% 0.005 270), oklch(18% 0.02 270));
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
 		font-family: var(--font-mono);

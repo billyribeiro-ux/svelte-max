@@ -485,6 +485,8 @@
 
 	.chart-wrapper {
 		position: relative;
+		/* anchor() positioning — CSS anchor positioning for tooltips/popovers */
+		anchor-name: --chart-area;
 	}
 	svg {
 		display: block;
@@ -492,6 +494,8 @@
 	}
 	.tooltip {
 		position: fixed;
+		/* anchor() — CSS Anchor Positioning pairs this tooltip with --chart-area */
+		position-anchor: --chart-area;
 		background: var(--color-surface);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);

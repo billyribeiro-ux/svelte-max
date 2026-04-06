@@ -517,6 +517,8 @@
 		color: var(--color-text-muted);
 		line-height: 1.7;
 		margin: 0;
+		/* text-wrap: pretty — prevents typographic orphans in narrative paragraphs */
+		text-wrap: pretty;
 	}
 
 	svg {

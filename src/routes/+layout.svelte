@@ -17,6 +17,7 @@
 		id: number;
 		title: string;
 		hasProject: boolean;
+		routePrefix?: string;
 		lessons: readonly Lesson[];
 	}
 
@@ -281,6 +282,7 @@
 			id: 17,
 			title: 'Data Visualization',
 			hasProject: true,
+			routePrefix: 'data-viz',
 			lessons: [
 				{ slug: 'dv-1-svg-fundamentals', title: 'DV.1 — SVG in Svelte' },
 				{ slug: 'dv-2-bar-chart', title: 'DV.2 — Bar chart' },
@@ -295,9 +297,84 @@
 			]
 		},
 		{
+			id: 18,
+			title: 'GSAP Cinema',
+			hasProject: true,
+			routePrefix: 'gsap-cinema',
+			lessons: [
+				{ slug: 'gc-1-advanced-easing', title: 'GC.1 — Custom easing' },
+				{ slug: 'gc-2-splittext-manual', title: 'GC.2 — Text animation' },
+				{ slug: 'gc-3-svg-path-drawing', title: 'GC.3 — SVG path drawing' },
+				{ slug: 'gc-4-parallax-layers', title: 'GC.4 — Parallax layers' },
+				{ slug: 'gc-5-scene-transitions', title: 'GC.5 — Scene choreography' },
+				{ slug: 'gc-6-video-hero', title: 'GC.6 — Cinematic video hero' },
+				{ slug: 'gc-7-stagger-choreography', title: 'GC.7 — Stagger choreography' },
+				{ slug: 'gc-8-scroll-storytelling', title: 'GC.8 — Scroll storytelling' },
+				{ slug: 'gc-9-page-transitions', title: 'GC.9 — Page transitions' },
+				{ slug: 'gc-10-3d-transforms', title: 'GC.10 — 3D transforms' },
+				{ slug: 'gc-11-responsive-cinema', title: 'GC.11 — Responsive cinema' },
+				{ slug: 'gc-12-performance-a11y', title: 'GC.12 — Performance & a11y' }
+			]
+		},
+		{
+			id: 19,
+			title: 'ApexCharts',
+			hasProject: true,
+			routePrefix: 'apex-charts',
+			lessons: [
+				{ slug: 'ac-1-installing-apex', title: 'AC.1 — Installing ApexCharts' },
+				{ slug: 'ac-2-bar-column', title: 'AC.2 — Bar & column' },
+				{ slug: 'ac-3-line-area', title: 'AC.3 — Line & area' },
+				{ slug: 'ac-4-donut-radial', title: 'AC.4 — Donut & radial' },
+				{ slug: 'ac-5-heatmap-treemap', title: 'AC.5 — Heatmap & treemap' },
+				{ slug: 'ac-6-realtime-state', title: 'AC.6 — Real-time updates' },
+				{ slug: 'ac-7-animated-transitions', title: 'AC.7 — Chart animations' },
+				{ slug: 'ac-8-dark-mode-tokens', title: 'AC.8 — Dark mode + tokens' },
+				{ slug: 'ac-9-responsive-charts', title: 'AC.9 — Responsive charts' },
+				{ slug: 'ac-10-composite-dashboard', title: 'AC.10 — Multi-chart dashboard' }
+			]
+		},
+		{
+			id: 20,
+			title: 'KPI Dashboard',
+			hasProject: true,
+			routePrefix: 'kpi-cards',
+			lessons: [
+				{ slug: 'kpi-1-anatomy', title: 'KPI.1 — Anatomy of a KPI card' },
+				{ slug: 'kpi-2-simple-stat', title: 'KPI.2 — Simple stat card' },
+				{ slug: 'kpi-3-trend-arrows', title: 'KPI.3 — Trend arrows' },
+				{ slug: 'kpi-4-sparkline', title: 'KPI.4 — Sparkline' },
+				{ slug: 'kpi-5-progress-ring', title: 'KPI.5 — Progress ring' },
+				{ slug: 'kpi-6-animated-counter', title: 'KPI.6 — Animated counter' },
+				{ slug: 'kpi-7-full-kpi-card', title: 'KPI.7 — Full KPI card' },
+				{ slug: 'kpi-8-realtime-simulation', title: 'KPI.8 — Real-time data' },
+				{ slug: 'kpi-9-responsive-grid', title: 'KPI.9 — Dashboard grid' },
+				{ slug: 'kpi-10-dashboard-patterns', title: 'KPI.10 — DE patterns' }
+			]
+		},
+		{
+			id: 21,
+			title: 'SVG & Icon Animation',
+			hasProject: true,
+			routePrefix: 'svg-icons',
+			lessons: [
+				{ slug: 'si-1-svg-anatomy', title: 'SI.1 — SVG anatomy' },
+				{ slug: 'si-2-path-drawing', title: 'SI.2 — Path drawing' },
+				{ slug: 'si-3-icon-systems', title: 'SI.3 — Icon systems' },
+				{ slug: 'si-4-morphing', title: 'SI.4 — Shape morphing' },
+				{ slug: 'si-5-line-art', title: 'SI.5 — Line art' },
+				{ slug: 'si-6-loading-spinners', title: 'SI.6 — Spinners & progress' },
+				{ slug: 'si-7-micro-interactions', title: 'SI.7 — Micro-interactions' },
+				{ slug: 'si-8-interactive-svg', title: 'SI.8 — Interactive SVG' },
+				{ slug: 'si-9-lottie-from-scratch', title: 'SI.9 — Lottie from scratch' },
+				{ slug: 'si-10-performance-a11y', title: 'SI.10 — SVG perf & a11y' }
+			]
+		},
+		{
 			id: 16,
 			title: 'Capstone — PE7 Flagship',
 			hasProject: true,
+			routePrefix: 'capstone',
 			lessons: []
 		},
 		{
@@ -353,11 +430,11 @@
 				<p class="nav-heading">{m.title}</p>
 				<ul>
 					{#each m.lessons as lesson (lesson.slug)}
-						<li><a href="/module-{m.id}/{lesson.slug}">{lesson.title}</a></li>
+						<li><a href="/{m.routePrefix ?? `module-${m.id}`}/{lesson.slug}">{lesson.title}</a></li>
 					{/each}
 					{#if m.hasProject}
 						<li>
-							<a href="/module-{m.id}/project" class="project-link">
+							<a href="/{m.routePrefix ?? `module-${m.id}`}/project" class="project-link">
 								→ Module {m.id} Project
 							</a>
 						</li>

@@ -459,11 +459,7 @@
 		font-size: var(--text-sm);
 	}
 
-	.chart-note {
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-		margin: 0;
-	}
+
 
 	/* ── Having issues section ── */
 	.having-issues {

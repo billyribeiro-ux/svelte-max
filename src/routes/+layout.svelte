@@ -23,6 +23,26 @@
 
 	const modules: readonly Module[] = [
 		{
+			id: 0,
+			title: 'Module 0 — Zero to Hero Setup',
+			hasProject: true,
+			lessons: [
+				{ slug: '0-1-what-is-terminal', title: '0.1 — What the Terminal is' },
+				{ slug: '0-2-terminal-commands', title: '0.2 — Terminal commands' },
+				{ slug: '0-3-paths-and-navigation', title: '0.3 — Paths & navigation' },
+				{ slug: '0-4-installing-homebrew', title: '0.4 — Installing Homebrew' },
+				{ slug: '0-5-installing-node', title: '0.5 — Installing Node.js' },
+				{ slug: '0-6-pnpm-deep-dive', title: '0.6 — pnpm deep dive' },
+				{ slug: '0-7-creating-a-project', title: '0.7 — Creating a SvelteKit project' },
+				{ slug: '0-8-folder-structure', title: '0.8 — Folder structure & dev server' },
+				{ slug: '0-9-what-is-git', title: '0.9 — What Git is' },
+				{ slug: '0-10-git-basics', title: '0.10 — Git basics' },
+				{ slug: '0-11-github', title: '0.11 — GitHub' },
+				{ slug: '0-12-branches', title: '0.12 — Branches & PRs' },
+				{ slug: '0-13-professional-git', title: '0.13 — Professional Git (PE7 way)' }
+			]
+		},
+		{
 			id: 1,
 			title: 'Module 1 — Foundation',
 			hasProject: true,

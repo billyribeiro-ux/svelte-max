@@ -246,19 +246,26 @@
 </T.Mesh>`}</pre>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment explores an extras component limitation. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Set the <code>{'<Text>'}</code> component's <code>font</code> prop to a nonexistent URL.</strong> The text disappears or falls back to a default system font (depending on the Troika version). SDF text requires a font file (WOFF, TTF, or OTF) to generate the signed distance field. Without a valid font, the component has no glyph data to render.</li>
+		<li><strong>Remove the <code>onclick</code> handler from a mesh and try clicking it.</strong> Nothing happens because Threlte's interactivity system only raycasts against meshes that have event handlers attached. Meshes without event props are excluded from the raycast for performance. This is an optimisation: only interactive meshes pay the cost of hit testing.</li>
+		<li><strong>Set the <code>{'<Text>'}</code> content to an extremely long string (1000+ characters).</strong> The text renders but performance may degrade because Troika must generate SDF glyphs for every character. For large text content, consider limiting the visible text or using HTML overlays instead of 3D text. Three-dimensional text is best for short labels and headings, not paragraphs.</li>
+		<li><strong>Add <code>{'<ContactShadows>'}</code> without any meshes that have <code>castShadow</code> set.</strong> The contact shadows component renders but appears as a uniform dark circle because it uses a separate rendering pass that captures shadow-casting geometry. Without any shadow casters, the result is a flat blob that does not correspond to any object shapes in the scene.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>@threlte/extras</code> provides high-level components like <code>Text</code>, <code>Environment</code>, and <code>ContactShadows</code>.</li>
-		<li><code>&lt;Text&gt;</code> renders resolution-independent 3D text using SDF fonts via Troika.</li>
-		<li>Pointer events on meshes (<code>onclick</code>, <code>onpointerenter</code>) work through Threlte's raycasting interactivity system.</li>
-		<li>GLTF/GLB models are loaded with <code>useGltf</code> or the <code>&lt;GLTF&gt;</code> component for production 3D assets.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>@threlte/extras</code> extends Threlte with high-level components that go beyond basic geometry. The <code>{'<Text>'}</code> component renders resolution-independent 3D text using Troika's SDF (Signed Distance Field) approach, which means text stays crisp at any zoom level. It requires a font file URL and supports reactive <code>text</code>, <code>fontSize</code>, <code>color</code>, and anchor props. Use it for labels, headings, and HUD elements in 3D scenes.</p>
+	<p class="prose">Pointer interactivity on 3D meshes works through Threlte's raycasting system. Adding <code>onclick</code>, <code>onpointerenter</code>, or <code>onpointerleave</code> props to a <code>{'<T.Mesh>'}</code> enables hit testing via raycasting from the mouse position into the 3D scene. Only meshes with event handlers are included in the raycast, which is an important performance optimisation. The click handler receives the Three.js intersection event, giving you access to the hit point, face normal, and distance.</p>
+	<p class="prose"><code>{'<Environment>'}</code> creates image-based lighting for realistic reflections and ambient illumination, while <code>{'<ContactShadows>'}</code> renders soft ground shadows without requiring shadow map configuration. For production 3D assets, the <code>useGltf</code> hook or <code>{'<GLTF>'}</code> component loads GLTF/GLB models asynchronously. The pattern is the same as loading images: provide a URL, await the asset, and place the loaded scene in the component tree.</p>
+	<p class="next">Next, you will learn performance strategies for 3D scenes: SSR fallbacks, reduced motion, lazy loading, and GPU resource management.</p>
 </section>
 
 <style>
@@ -266,8 +273,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 
 	.canvas-container {

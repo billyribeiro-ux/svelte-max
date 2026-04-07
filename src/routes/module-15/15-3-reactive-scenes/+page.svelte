@@ -250,19 +250,26 @@
 	<pre><code>{derivedPatternExample}</code></pre>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment shows how reactivity flows between Svelte and Three.js. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Pass <code>rotationDeg</code> directly to <code>rotation.y</code> without converting to radians.</strong> The mesh rotates 57 times faster than expected because Three.js interprets the value as radians, not degrees. At 360 degrees, the mesh has made roughly 57 full rotations (360 / 2pi). This demonstrates why <code>$derived</code> is essential for unit conversion between human-friendly UI values and Three.js's radian-based system.</li>
+		<li><strong>Pass the raw <code>hue</code> number directly to the material's <code>color</code> prop instead of the hex string.</strong> Three.js interprets a number as a hex integer, so <code>270</code> becomes a near-black color (<code>#00010e</code>). The mesh turns dark regardless of the slider position. Three.js materials need hex strings, not HSL hue numbers, proving the necessity of the <code>hueToHex</code> conversion in the <code>$derived</code> chain.</li>
+		<li><strong>Replace <code>scale={[scale, scale, scale]}</code> with <code>scale={scale}</code> (a single number).</strong> Threlte actually supports this shorthand, applying uniform scale across all three axes. But if you pass <code>scale={[scale, 1, 1]}</code>, the mesh stretches only along the X axis, creating a non-uniform deformation. This shows how the scale vector gives you independent control over each dimension.</li>
+		<li><strong>Set the <code>metalness</code> slider to 1.0 and <code>roughness</code> to 0.0 simultaneously.</strong> The mesh becomes a perfect mirror, reflecting the environment (or appearing very dark if no environment map is present). Physically-based materials at full metalness and zero roughness reflect only their surroundings. Without an <code>{'<Environment>'}</code> component, there is nothing to reflect, so the mesh looks nearly black.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$state</code> variables bind to UI controls and drive 3D object properties reactively.</li>
-		<li><code>$derived</code> computes transformed values (e.g., degrees to radians, hue to hex) for Three.js props.</li>
-		<li>Threlte automatically syncs reactive prop changes to the Three.js scene graph each frame.</li>
-		<li>No manual re-rendering or invalidation is needed — Svelte's reactivity handles it.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Threlte's core power comes from Svelte's reactivity system driving Three.js object properties. You bind <code>$state</code> variables to UI controls (sliders, inputs, buttons) and use <code>$derived</code> to compute the values Three.js needs. When state updates, Threlte automatically syncs the new prop values to the Three.js scene graph and triggers a re-render. No manual invalidation, no explicit render calls, no animation loop management.</p>
+	<p class="prose">The <code>$derived</code> rune is essential for bridging the gap between human-friendly UI values and Three.js's internal formats. Rotation in degrees must be converted to radians. Hue as a 0-360 number must be converted to a hex color string. Scale as a single number must be spread into a three-element vector. Each of these transformations is a pure function in a <code>$derived</code> expression, which means Svelte recomputes them only when their dependencies change.</p>
+	<p class="prose">The product configurator pattern demonstrated in this lesson is directly applicable to real-world use cases: color pickers for customisable products, rotation controls for 3D model viewers, and scale adjustments for architectural visualisations. The combination of reactive sliders, derived transformations, and Threlte's automatic scene updates creates a smooth, 60fps interactive experience with minimal code.</p>
+	<p class="next">Next, you will learn how <code>@threlte/extras</code> provides high-level components like 3D text, environment lighting, and pointer interactivity.</p>
 </section>
 
 <style>
@@ -270,8 +277,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 
 	.canvas-container {

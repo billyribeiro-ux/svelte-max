@@ -196,19 +196,26 @@
 	</p>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment reveals a packaging pitfall that causes consumer-side failures. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>"types"</code> condition from the <code>exports</code> map.</strong> TypeScript consumers lose type information for your package. Their IDE shows <code>any</code> types instead of the component's actual props interface, and <code>tsc --noEmit</code> may report "could not find a declaration file" errors. The <code>"types"</code> condition is essential for TypeScript compatibility.</li>
+		<li><strong>Move <code>svelte</code> from <code>peerDependencies</code> to <code>dependencies</code>.</strong> Now your package bundles its own copy of Svelte. If the consumer also installs Svelte (which they must, since they are building a Svelte app), there are two Svelte runtimes in the bundle. This doubles the bundle size and causes subtle bugs because the two runtimes maintain separate reactivity graphs.</li>
+		<li><strong>Set <code>"files": ["src", "dist"]</code> instead of just <code>["dist"]</code>.</strong> The published tarball now includes your raw source code, increasing the package size and potentially exposing internal implementation details. The <code>"files"</code> field should include only the build output that consumers need.</li>
+		<li><strong>Remove <code>"sideEffects": false</code> from package.json.</strong> Bundlers like Vite and webpack cannot safely tree-shake unused exports from your package. If a consumer imports one component, the bundler includes all components because it cannot guarantee that the others do not have side effects (global CSS, module-level code).</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>@sveltejs/package</code> compiles <code>src/lib</code> into a publishable <code>dist</code> folder with type declarations.</li>
-		<li>The <code>exports</code> map uses <code>"svelte"</code> and <code>"types"</code> conditions for bundler and IDE compatibility.</li>
-		<li>Set <code>"sideEffects": false</code> to enable tree-shaking of unused components.</li>
-		<li>Declare <code>svelte</code> as a <code>peerDependency</code> so consumers use their own version.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>@sveltejs/package</code> is the standard tool for building Svelte component libraries. It reads every file in <code>src/lib/</code>, preprocesses Svelte files, transpiles TypeScript to JavaScript, generates <code>.d.ts</code> type declarations, and outputs a clean <code>dist/</code> folder ready for npm publishing. The folder structure in <code>dist/</code> mirrors <code>src/lib/</code>, so your exports map can point directly to the output files.</p>
+	<p class="prose">The <code>exports</code> field in <code>package.json</code> is a conditions map that tells bundlers and TypeScript where to find each entry point. The <code>"svelte"</code> condition points to the raw <code>.svelte</code> file (so Svelte-aware tools compile it with the consumer's Svelte version), and the <code>"types"</code> condition points to the <code>.d.ts</code> declaration file for IDE support and type checking. This dual-condition approach ensures both optimal compilation and full TypeScript compatibility.</p>
+	<p class="prose">Two package.json fields are critical for library consumers: <code>"sideEffects": false</code> enables aggressive tree-shaking so bundlers can safely drop unused components, and <code>"peerDependencies"</code> with Svelte listed ensures consumers use their own Svelte version rather than bundling a duplicate. The <code>"files"</code> field should include only <code>["dist"]</code> to keep the published tarball clean and small.</p>
+	<p class="next">Next, you will learn the publishing workflow, semver discipline, and the pre-publish checklist for releasing a Svelte package to npm.</p>
 </section>
 
 <style>
@@ -216,8 +223,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 
 	.field-btn {

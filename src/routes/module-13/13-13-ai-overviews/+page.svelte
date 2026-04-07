@@ -145,19 +145,26 @@ options can matter. Browser support is something to keep in mind too.`;
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment shows how content style affects AI Overview citation potential. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Replace the direct-answer lede with hedging language like "It depends on your use case."</strong> The "After" column loses its clarity advantage. AI Overviews prefer content that makes a definitive statement first and qualifies it later. Leading with uncertainty makes the content harder for an LLM to extract a citable fact from, reducing the chance of being selected as a source.</li>
+		<li><strong>Remove the bulleted facts list and merge everything into a single paragraph.</strong> The structured format disappears, making it harder for Gemini to identify discrete, citable claims. AI systems parse lists and structured content more reliably than dense paragraphs. The loss of visual and semantic structure weakens both human readability and machine extractability.</li>
+		<li><strong>Remove the FAQ section entirely.</strong> Without explicit question-and-answer pairs, the page loses its most direct match for the queries AI Overviews are designed to answer. FAQPage schema gives crawlers a machine-readable Q&amp;A contract, and the visible FAQ provides the matching human-readable content that validates the schema.</li>
+		<li><strong>Replace specific facts (dates, version numbers, browser names) with vague statements like "most browsers support it."</strong> Vague claims cannot be verified, which makes them low-value for citation. AI Overviews prioritise sources with specific, verifiable data because they need to present accurate information to users. Precision in claims is a key signal for source selection.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>AI Overviews reward direct answers and clear structure.</li>
-		<li>Hedging language is a weak signal for LLM citation.</li>
-		<li>FAQPage schema gives crawlers an explicit Q&amp;A contract.</li>
-		<li>Strong E-E-A-T flows into AI Overview source selection.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Google AI Overviews, powered by Gemini, synthesise answers from multiple web sources and display them at the top of search results. Being cited as a source in an AI Overview drives significant traffic and establishes authority. The key to citation is writing content that an LLM can confidently extract and attribute: lead with a direct, unambiguous answer, follow with verifiable facts, and close with structured Q&amp;A pairs that match the FAQPage schema.</p>
+	<p class="prose">Hedging language like "it depends" or "in some cases" is a weak signal for AI citation because it introduces uncertainty that the model cannot resolve. Direct statements backed by specific data (dates, version numbers, measurable outcomes) are much stronger candidates. The before-and-after comparison in this lesson demonstrates the difference: the "wishy-washy" version would rarely be cited, while the structured, fact-rich version gives Gemini everything it needs to extract and attribute a confident answer.</p>
+	<p class="prose">Strong E-E-A-T signals compound the effect. AI Overviews do not just select the most structured content; they also weight the authoritativeness and trustworthiness of the source. A page with clear authorship, correct structured data, and a history of accurate, well-cited content is more likely to be selected as an AI Overview source than an anonymous page with the same information. The combination of content quality, structure, and trust is what makes a page visible in the generative search era.</p>
+	<p class="next">Next, you will learn how hreflang tags and international SEO make your site discoverable across languages and regions.</p>
 </section>
 
 <style>
@@ -276,20 +283,9 @@ options can matter. Browser support is something to keep in mind too.`;
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

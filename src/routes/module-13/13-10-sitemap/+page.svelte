@@ -120,22 +120,26 @@ export const GET: RequestHandler = () => {
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment shows how sitemap misconfiguration affects crawling. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Change the <code>content-type</code> header to <code>text/plain</code> instead of <code>application/xml</code>.</strong> Crawlers that strictly validate the content type may reject the sitemap. Google is lenient and will usually parse it anyway, but other search engines and validation tools will flag the incorrect MIME type as an error.</li>
+		<li><strong>Use relative URLs in the <code>{'<loc>'}</code> elements instead of absolute URLs.</strong> The sitemap specification requires absolute URLs including the protocol and domain. Relative paths violate the spec, and crawlers may not resolve them correctly, especially when the sitemap is discovered through robots.txt which itself lives at a different path.</li>
+		<li><strong>Add a URL to the sitemap that returns a 404 status code.</strong> Google will attempt to crawl the URL, receive a 404, and mark it as an error in Search Console. Over time, sitemaps with many broken URLs lose credibility, and Google may crawl the sitemap less frequently, delaying the discovery of genuinely new pages.</li>
+		<li><strong>Remove the <code>{'<lastmod>'}</code> element from all URL entries.</strong> Crawlers lose the signal for when content was last updated. Without <code>lastmod</code>, Google must re-crawl every URL to check for changes instead of prioritising recently modified pages. This wastes crawl budget and delays the indexing of fresh content.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>
-			<code>+server.ts</code> can emit XML by setting
-			<code>content-type: application/xml</code>.
-		</li>
-		<li>Prerendering turns the endpoint into a static file at build time.</li>
-		<li>Real apps enumerate URLs from data sources, not hard-coded arrays.</li>
-		<li>Production sitemaps live at <code>/sitemap.xml</code>, not under a module folder.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">A sitemap is an XML file that lists every URL you want search engines to index, along with optional metadata like <code>lastmod</code> (the date of last modification), <code>changefreq</code> (how often the page changes), and <code>priority</code> (relative importance within your site). In SvelteKit, you serve it from a <code>+server.ts</code> endpoint with <code>content-type: application/xml</code>, and the endpoint can dynamically enumerate URLs from your routes, database, or CMS at build time or request time.</p>
+	<p class="prose">The <code>lastmod</code> field is the most valuable piece of sitemap metadata because it tells crawlers which pages have changed recently. This allows search engines to prioritise re-crawling updated content instead of wasting crawl budget on unchanged pages. In real applications, the URL list comes from a data source (CMS, database, or filesystem scan), not a hard-coded array, and <code>lastmod</code> is derived from the actual modification timestamp of each page's content.</p>
+	<p class="prose">Prerendering with <code>export const prerender = true</code> is ideal for sites with a known set of URLs at build time. The sitemap becomes a static XML file served directly by the CDN. For dynamic sites where content changes frequently between deploys, omit prerendering and let the endpoint generate the sitemap on each request. In production, the sitemap lives at <code>/sitemap.xml</code> and is referenced from <code>robots.txt</code> so crawlers can discover it automatically.</p>
+	<p class="next">Next, you will learn how Core Web Vitals (LCP, CLS, INP) affect your search rankings and how Svelte helps you hit the targets.</p>
 </section>
 
 <style>
@@ -187,20 +191,9 @@ export const GET: RequestHandler = () => {
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre {
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);

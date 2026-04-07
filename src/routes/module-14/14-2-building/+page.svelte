@@ -279,19 +279,26 @@ export default config;`}</pre>
 	<pre><code>{usageExample}</code></pre>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment reveals a custom element compilation detail. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>{'<svelte:options customElement="my-counter" />'}</code> but keep <code>compilerOptions.customElement: true</code>.</strong> The component compiles as a regular Svelte component, not a custom element. Without the <code>customElement</code> option on the component itself, the compiler has no tag name to register, and <code>customElements.define()</code> is never called.</li>
+		<li><strong>Use a camelCase prop name like <code>initialCount</code> and try to set it via an HTML attribute.</strong> The attribute name is lowercased to <code>initialcount</code> because HTML attributes are case-insensitive. If you write <code>{'<my-counter initialCount="5">'}</code>, the browser sees <code>initialcount</code>, which may not match your prop name. Always use lowercase or kebab-case attribute names.</li>
+		<li><strong>Try to pass a JavaScript array as an attribute value in plain HTML.</strong> The attribute is always a string, so <code>items="[1,2,3]"</code> arrives as the literal string <code>"[1,2,3]"</code>, not a JavaScript array. Without the <code>props</code> configuration for type coercion, the component receives a string and likely breaks.</li>
+		<li><strong>Remove <code>compilerOptions.customElement: true</code> from <code>svelte.config.js</code> but keep the <code>{'<svelte:options>'}</code> directive.</strong> The compiler ignores the <code>customElement</code> option on the component because the global flag is not set. The component compiles as a regular Svelte component, and the tag name is treated as an unknown option that produces a warning.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>&lt;svelte:options customElement="tag-name" /&gt;</code> compiles a Svelte component as a custom element.</li>
-		<li>The <code>compilerOptions.customElement: true</code> flag must be set in <code>svelte.config.js</code>.</li>
-		<li>Each <code>$props()</code> property becomes an observed HTML attribute with automatic reactivity.</li>
-		<li>The compiled output is a standalone class that works in any HTML page without Svelte.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Building a Svelte custom element requires two pieces: the <code>{'<svelte:options customElement="tag-name" />'}</code> directive on the component file, and the <code>compilerOptions.customElement: true</code> flag in <code>svelte.config.js</code>. At build time, the Svelte compiler emits a class extending <code>HTMLElement</code> that calls <code>customElements.define()</code> with the specified tag name. The generated class creates a Shadow DOM root, injects scoped styles, and wires up reactive props.</p>
+	<p class="prose">Every <code>$props()</code> property automatically becomes an observed HTML attribute. When a consumer sets an attribute on the element (either in HTML or via <code>setAttribute()</code>), the <code>attributeChangedCallback</code> fires and triggers Svelte's reactivity system. Attribute names are lowercased by the browser, so a prop named <code>initialCount</code> becomes the attribute <code>initialcount</code>. Only string values pass through attributes natively; complex types require the <code>props</code> configuration for type coercion.</p>
+	<p class="prose">The compiled output is a standalone JavaScript file that works in any HTML page without Svelte installed. You import it with a <code>{'<script type="module">'}</code> tag, and the custom element self-registers. This makes Svelte custom elements ideal for distributing interactive widgets to non-Svelte consumers: embed a counter, a date picker, or a data table in WordPress, Shopify, or a static HTML page with a single script import.</p>
+	<p class="next">Next, you will learn the lifecycle callbacks and the advanced options object for fine-grained control over shadow DOM, type coercion, and form participation.</p>
 </section>
 
 <style>
@@ -299,8 +306,9 @@ export default config;`}</pre>
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 
 	.toggle-btn {

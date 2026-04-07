@@ -89,19 +89,26 @@
   </div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment reveals how <code>{'<svelte:head>'}</code> interacts with SSR and client navigation. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Remove the entire <code>{'<svelte:head>'}</code> block.</strong> The browser tab shows a generic title (often the URL path), and the meta description disappears from the page source. Search engines receive a page with no explicit title or description, which means they will auto-generate both from the body content, often poorly.</li>
+		<li><strong>Place the <code>{'<title>'}</code> tag outside of <code>{'<svelte:head>'}</code>, directly in the markup body.</strong> The title renders as visible text on the page instead of setting the browser tab. Svelte does not magically move head-level tags; <code>{'<svelte:head>'}</code> is the only mechanism that injects into the document <code>{'<head>'}</code>.</li>
+		<li><strong>Bind the title to <code>$state</code> but initialise it as an empty string.</strong> The browser tab shows only the separator text (<code> — svelte-max</code>). An empty title is worse than no title at all because it signals to crawlers that the page was generated but has no meaningful content label.</li>
+		<li><strong>Add two separate <code>{'<svelte:head>'}</code> blocks in the same component, each with a different <code>{'<title>'}</code>.</strong> The last one wins because the browser uses the final title tag it encounters. This demonstrates that while multiple <code>{'<svelte:head>'}</code> blocks are valid Svelte, duplicate tags within them create unpredictable results.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li><code>{'<svelte:head>'}</code> injects children into the document head.</li>
-    <li>It runs on the server (SSR) and updates on client navigation.</li>
-    <li>Runes-driven state inside it is fully reactive.</li>
-    <li>You can inject title, meta, link, and JSON-LD script tags.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>{'<svelte:head>'}</code> is SvelteKit's bridge between component logic and the document <code>{'<head>'}</code>. It renders its children into <code>{'<head>'}</code> during server-side rendering, which means search engine crawlers and social media scrapers see the correct title, meta description, and structured data on the very first response, before any JavaScript executes on the client.</p>
+	<p class="prose">On client-side navigation, <code>{'<svelte:head>'}</code> updates the existing head tags reactively. When a user navigates from one page to another within a SvelteKit app, the title and meta tags swap seamlessly without a full page reload. Because Svelte runes work inside <code>{'<svelte:head>'}</code>, you can bind a <code>$state</code> variable to the title and watch the browser tab update in real time as the user types.</p>
+	<p class="prose">The practical pattern is to place one <code>{'<svelte:head>'}</code> block per page component, containing the page title, meta description, Open Graph tags, canonical link, and any JSON-LD structured data. Layout components can also contribute head tags (for site-wide defaults), but page-level tags take precedence because they render later in the component tree.</p>
+	<p class="next">Next, you will learn how to craft effective title tags and meta descriptions that maximise click-through from search results.</p>
 </section>
 
 <style>
@@ -117,8 +124,9 @@
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   pre code { background: transparent; padding: 0; }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 

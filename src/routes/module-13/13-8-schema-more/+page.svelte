@@ -284,20 +284,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment shows how schema validation affects rich results. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>offers</code> field from the Product schema.</strong> Google's Rich Results Test will report a warning because price and availability are required for the Product rich result. Without <code>offers</code>, the product cannot display price information in SERPs, which is the primary reason to use Product schema in the first place.</li>
+		<li><strong>Change the FAQPage <code>mainEntity</code> to contain a single question with an empty <code>text</code> answer.</strong> Google requires non-empty answers for FAQ rich results. An empty answer causes the entire FAQ block to be ignored, and the expandable Q&amp;A section beneath your search result disappears. Every question must have a substantive answer.</li>
+		<li><strong>Set the Organization <code>sameAs</code> array to contain URLs that do not actually belong to the organisation.</strong> The <code>sameAs</code> field tells Google which social profiles and external pages belong to the same entity. Incorrect URLs may confuse the Knowledge Graph and associate your organisation with the wrong social accounts or entities.</li>
+		<li><strong>Remove the TypeScript interfaces and use plain <code>any</code>-typed objects.</strong> The schemas still work at runtime, but you lose compile-time validation. A typo in a field name (e.g., <code>prce</code> instead of <code>price</code>) would slip through silently and produce invalid structured data that Google ignores without any browser-side error.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Product schema powers rich result cards with price and rating.</li>
-		<li>FAQPage can render Q&amp;A directly under your search result.</li>
-		<li>Organization schema feeds Google Knowledge Panels.</li>
-		<li>Multiple JSON-LD blocks can live on one page — one per schema type.</li>
-		<li>Typed interfaces keep schema objects honest at compile time.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Product schema is the backbone of e-commerce SEO. It powers rich result cards that display price, currency, availability, and aggregate ratings directly in search results. The <code>offers</code> field with an Offer type is required for price display, and <code>aggregateRating</code> with <code>ratingValue</code> and <code>reviewCount</code> enables the star-rating snippet that dramatically improves click-through rate on product pages.</p>
+	<p class="prose">FAQPage schema allows Google to render expandable question-and-answer pairs directly beneath your search result, potentially doubling the vertical space your listing occupies in the SERP. Each question needs a <code>name</code> and an <code>acceptedAnswer</code> with non-empty <code>text</code>. The content must match what is visible on the page. Organization schema feeds Google's Knowledge Panel with company name, logo, URL, and social profiles via the <code>sameAs</code> array, helping search engines build an authoritative entity profile.</p>
+	<p class="prose">TypeScript interfaces are not just a developer convenience here; they are a correctness tool. Schema.org has strict field names and nested type requirements, and a single typo produces silently invalid JSON-LD that Google ignores. Defining interfaces like <code>ProductSchema</code>, <code>FaqSchema</code>, and <code>OrganizationSchema</code> catches errors at compile time, long before they reach a crawler. Multiple JSON-LD blocks can coexist on a single page, one per schema type, all injected via separate <code>{'@html'}</code> expressions in <code>{'<svelte:head>'}</code>.</p>
+	<p class="next">Next, you will learn how to serve a <code>robots.txt</code> file from a SvelteKit endpoint to control crawler access.</p>
 </section>
 
 <style>
@@ -347,20 +353,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre {
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);

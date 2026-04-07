@@ -172,22 +172,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment shows how hreflang misconfiguration affects international search. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>x-default</code> entry from the tags array.</strong> Without a fallback, users in regions not covered by any hreflang tag may be shown no result at all, or Google may pick an arbitrary variant. The <code>x-default</code> hreflang is the safety net that ensures every user has a landing page regardless of their locale.</li>
+		<li><strong>Remove the self-referencing hreflang tag (the one pointing to the current page's own locale).</strong> The hreflang specification requires that every page lists itself among the variants. If a page omits its own self-reference, Google may interpret the incomplete set as an error and ignore all hreflang annotations on that page.</li>
+		<li><strong>Add a hreflang tag pointing to a URL that does not exist (returns 404).</strong> Google attempts to crawl the target URL, discovers a 404, and flags a hreflang error in Search Console. Over time, repeated broken hreflang targets cause Google to lose confidence in the entire hreflang set, potentially ignoring all variant annotations.</li>
+		<li><strong>Use language-only codes like <code>en</code> instead of language-region codes like <code>en-US</code>.</strong> This is valid but less precise. Google may serve the English variant to users in any English-speaking region (US, UK, Australia, India) instead of distinguishing between them. For sites with regional content differences (spelling, pricing, legal terms), the region qualifier is essential.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>hreflang</code> tags enumerate every language/region variant.</li>
-		<li>Always include <code>x-default</code> as the fallback URL.</li>
-		<li>Each variant page lists every variant, including itself.</li>
-		<li>
-			The <code>{'<html lang>'}</code> attribute complements hreflang for accessibility
-			and search.
-		</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">International SEO with hreflang tags tells Google which language and region versions of a page exist so it can serve the right version to the right user. Each variant page emits a set of <code>{'<link rel="alternate" hreflang="..." href="...">'}</code> tags listing every variant including itself plus an <code>x-default</code> fallback. In SvelteKit, these tags are injected into <code>{'<svelte:head>'}</code> using an <code>{'{#each}'}</code> block over a derived tags array.</p>
+	<p class="prose">The hreflang system is bidirectional: every page in the set must reference every other page, including itself. If the English page lists the German page but the German page does not list the English page back, Google may discard the annotation. This bidirectional requirement makes hreflang one of the most error-prone SEO features. Automating the tag generation from a shared locales array (as this lesson demonstrates) eliminates the risk of asymmetric references.</p>
+	<p class="prose">The <code>{'<html lang>'}</code> attribute complements hreflang by telling browsers and screen readers the language of the current page's content. SvelteKit sets this via <code>src/app.html</code> for static configurations or dynamically via <code>document.documentElement.lang</code> in an <code>$effect</code> for multi-language apps. Together, hreflang and the lang attribute ensure that search engines index the correct variant, browsers apply the right text rendering rules, and assistive technologies use the correct pronunciation engine.</p>
+	<p class="next">Next, you will apply everything from this module in the SEO project to build a fully optimised page with all the meta tags, structured data, and performance practices covered in Module 13.</p>
 </section>
 
 <style>
@@ -272,20 +276,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre {
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);

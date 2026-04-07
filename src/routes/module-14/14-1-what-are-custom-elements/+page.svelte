@@ -174,19 +174,26 @@
 	</p>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment clarifies a Web Components boundary. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Try to use a custom element tag name without a hyphen, like <code>counter</code>.</strong> The browser throws an error because the Web Components spec requires at least one hyphen in the tag name. This prevents collisions with current and future HTML elements, which are all single-word names. The hyphen is what makes <code>my-counter</code> valid but <code>counter</code> invalid.</li>
+		<li><strong>Try to SSR a page that contains a custom element.</strong> The server-side render fails or produces empty output because custom elements require a browser DOM to function. Unlike regular Svelte components, custom elements cannot be rendered to HTML on the server, which is why SSR support is listed as a trade-off in the comparison table.</li>
+		<li><strong>Pass a JavaScript object as an attribute to a custom element in plain HTML.</strong> The attribute value is always a string, so the object becomes <code>"[object Object]"</code>. Custom elements receive all attribute values as strings and must coerce them to the desired type. This is a fundamental limitation of the HTML attribute system that does not exist in regular Svelte props.</li>
+		<li><strong>Inspect the Shadow DOM of a custom element in the browser's Elements panel.</strong> The component's internal markup is hidden inside a shadow root. External CSS cannot reach it, and external JavaScript cannot query its internal elements with <code>document.querySelector</code>. This demonstrates Shadow DOM encapsulation, which is both the primary benefit and the primary constraint of custom elements.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Custom elements are browser-native reusable tags built on Shadow DOM, HTML Templates, and the Custom Elements API.</li>
-		<li>Svelte can compile components directly into custom elements that extend <code>HTMLElement</code>.</li>
-		<li>Custom elements are ideal for embedding widgets in non-Svelte environments like CMS platforms or legacy apps.</li>
-		<li>Regular Svelte components are smaller and support SSR; custom elements trade that for framework-agnostic portability.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Custom Elements are part of the Web Components standard, a set of browser-native APIs that let you define your own HTML tags. Combined with Shadow DOM for style encapsulation and HTML Templates for markup, they create framework-agnostic, reusable UI components that work anywhere HTML works. The Custom Elements API registers new tags via <code>customElements.define()</code>, and each tag must contain at least one hyphen to avoid collisions with built-in HTML elements.</p>
+	<p class="prose">Svelte can compile components directly into custom elements, producing a self-contained class that extends <code>HTMLElement</code>. This is ideal for embedding widgets in non-Svelte environments: CMS platforms like WordPress, static marketing pages, legacy jQuery applications, or any context where you cannot control the build pipeline. The compiled output registers itself with the browser and renders inside a Shadow DOM root, fully encapsulated from the host page's styles.</p>
+	<p class="prose">The trade-off is clear: regular Svelte components are smaller, faster, and support SSR because they share the Svelte runtime and render to HTML on the server. Custom elements are client-only, carry a larger bundle (standalone runtime), and pass props as string attributes requiring type coercion. Choose regular Svelte components when building a Svelte app, and choose custom elements when shipping a component to consumers who do not use Svelte. The authoring experience is identical in both cases.</p>
+	<p class="next">Next, you will learn how to build a custom element from a Svelte component using the <code>customElement</code> compiler option.</p>
 </section>
 
 <style>
@@ -194,8 +201,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.tab-bar { display: flex; gap: var(--space-xs); }
 	.tab {
 		padding: var(--space-xs) var(--space-md);

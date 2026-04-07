@@ -135,19 +135,26 @@
   </div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment shows how Open Graph and Twitter Card tags affect social sharing. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>og:image</code> meta tag entirely.</strong> When you share the link on Slack or Facebook, the card renders without a visual preview. Most platforms fall back to a text-only card that looks broken and gets significantly fewer clicks. The image is the dominant element of a share card.</li>
+		<li><strong>Set <code>og:image</code> to a broken URL like <code>https://example.com/404.png</code>.</strong> Social platforms attempt to fetch the image and fail, often caching the failure for hours or days. A broken OG image is worse than no image because the cache makes it hard to fix retroactively.</li>
+		<li><strong>Remove all <code>twitter:</code> meta tags and keep only the <code>og:</code> tags.</strong> X (Twitter) falls back to Open Graph tags when Twitter Card tags are absent, so the card still renders. However, you lose the ability to specify <code>twitter:card</code> type (e.g., <code>summary_large_image</code> vs <code>summary</code>), which controls the card layout on that platform.</li>
+		<li><strong>Set <code>og:type</code> to an invalid value like <code>"page"</code> instead of <code>"article"</code>.</strong> Facebook's crawler ignores unrecognised types and defaults to <code>"website"</code>, which means you lose any type-specific rendering features. Valid types include <code>article</code>, <code>website</code>, <code>product</code>, and <code>profile</code>.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Open Graph powers rich share cards on Facebook, LinkedIn, Slack, Discord.</li>
-    <li>Twitter Cards mirror OG but use the <code>twitter:</code> prefix.</li>
-    <li>og:image should be 1200×630 for summary_large_image.</li>
-    <li>Validate with opengraph.xyz or the platform-specific debuggers.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">Open Graph tags control how your page appears when shared on Facebook, LinkedIn, Slack, Discord, and many other platforms. The four essential tags are <code>og:title</code>, <code>og:description</code>, <code>og:image</code>, and <code>og:url</code>. The image should be 1200 by 630 pixels for the <code>summary_large_image</code> card format, which dominates the visual space in a social feed and drives the highest engagement.</p>
+	<p class="prose">Twitter Cards use a parallel set of tags with the <code>twitter:</code> prefix. When Twitter Card tags are absent, X falls back to Open Graph tags, so you can often get away with just OG tags. However, the <code>twitter:card</code> meta tag controls the card layout and has no OG equivalent. Setting it to <code>summary_large_image</code> ensures the large image format on X, while omitting it may result in a small thumbnail.</p>
+	<p class="prose">In SvelteKit, all of these tags live inside <code>{'<svelte:head>'}</code> and can be driven by reactive state or page data. The OG preview builder in this lesson demonstrates how to bind form inputs to the meta tag values, giving content authors a real-time preview of exactly how their page will look when shared. For production apps, always validate with platform-specific debuggers like Facebook's Sharing Debugger or opengraph.xyz.</p>
+	<p class="next">Next, you will learn how canonical URLs prevent duplicate-content ranking splits between URL variations.</p>
 </section>
 
 <style>
@@ -166,8 +173,9 @@
   .og-desc { font-size: var(--text-sm); color: var(--color-text-muted); line-height: 1.4; }
   .hint { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 

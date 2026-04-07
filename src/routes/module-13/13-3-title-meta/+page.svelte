@@ -111,19 +111,26 @@
   </div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment shows how title and description choices affect SERP appearance. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Set the title to a 120-character string and watch the SERP preview.</strong> Google truncates titles at roughly 60 characters (or 600 pixels), so the excess is replaced with an ellipsis. The most important keywords at the end are lost, proving why front-loading matters more than stuffing keywords at the tail.</li>
+		<li><strong>Set the meta description to a single word like <code>"SEO"</code>.</strong> The SERP preview looks barren and unprofessional. Google may decide to ignore it entirely and generate its own snippet from the page body, which means you lose control of the message a searcher sees before clicking.</li>
+		<li><strong>Use the exact same title and description on this page and another page.</strong> Both pages now compete for the same search query with identical SERP cards. Google may choose to display only one, effectively de-indexing the other. Unique titles and descriptions per page are how you differentiate pages in the index.</li>
+		<li><strong>Remove the <code>$derived</code> character counters and type beyond the limits without feedback.</strong> Without real-time validation, it is easy to write titles and descriptions that exceed the recommended lengths. The SERP preview still clips them, but the author has no warning during editing, showing why reactive length validation is a practical SEO tool.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Title tags should be 50–60 chars, front-loaded, brand at the end.</li>
-    <li>Meta descriptions should be 120–160 chars and persuasive.</li>
-    <li>Both render in the SERP card — treat them like ad copy.</li>
-    <li>Every page needs a unique title and description.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>{'<title>'}</code> tag is the single most impactful on-page SEO element. Best practice is to keep it between 50 and 60 characters, front-load the most important keywords, and place the brand name at the end after a separator. Google uses the title as the primary clickable headline in search results, so every character counts. A well-crafted title acts like ad copy: it must be specific, compelling, and accurate.</p>
+	<p class="prose">The meta description serves a different purpose. It does not directly affect ranking, but it is the snippet shown beneath the title in search results. Keeping it between 120 and 160 characters ensures it displays fully without truncation. A persuasive description with a clear call to action can dramatically increase click-through rate, which is an indirect ranking signal. Think of it as the elevator pitch for the page.</p>
+	<p class="prose">In SvelteKit, both values live inside <code>{'<svelte:head>'}</code> and can be driven by reactive state. The SERP preview builder in this lesson demonstrates how <code>$state</code> and <code>$derived</code> create a real-time editing experience with character-count validation. This pattern is directly reusable in CMS admin panels or blog editors where content authors need immediate feedback on their SEO metadata.</p>
+	<p class="next">Next, you will learn how Open Graph and Twitter Card meta tags create rich share cards when your pages are posted on social platforms.</p>
 </section>
 
 <style>
@@ -142,8 +149,9 @@
   .serp-title { color: oklch(35% 0.2 265); font-size: var(--text-lg); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
   .serp-desc { color: oklch(40% 0 0); font-size: var(--text-sm); line-height: 1.5; }
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 

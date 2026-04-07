@@ -147,19 +147,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment simulates a Core Web Vitals regression. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Add a synchronous <code>for</code> loop that blocks the main thread for 3 seconds in the component’s script.</strong> LCP degrades because the browser cannot paint the largest contentful element until the blocking script finishes. INP also suffers because no user interaction can be processed while the main thread is occupied. This demonstrates why long tasks are the primary enemy of both metrics.</li>
+		<li><strong>Remove the <code>width</code> and <code>height</code> attributes (or aspect-ratio CSS) from an image element.</strong> Without explicit dimensions, the browser does not know how much space to reserve. When the image loads, surrounding content shifts downward, producing a CLS spike. Setting explicit dimensions or using CSS <code>aspect-ratio</code> eliminates layout shift entirely.</li>
+		<li><strong>Load a large unoptimised hero image (2MB+) without a <code>fetchpriority="high"</code> or preload hint.</strong> LCP balloons because the browser discovers the image late in the loading waterfall and must download a massive file. Preloading the hero image and serving a properly sized, compressed format (WebP or AVIF) is the most impactful LCP optimisation.</li>
+		<li><strong>Inject a banner element at the top of the page after a 2-second delay using <code>setTimeout</code>.</strong> The late-injected element pushes all content downward, causing a large CLS score. Late-loading banners, cookie notices, and ad slots are the most common real-world CLS offenders. Reserve space for them in the initial layout to prevent shift.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>LCP, CLS, and INP are the three Core Web Vitals.</li>
-		<li>Each has a "good" threshold you should aim for.</li>
-		<li>Svelte’s architecture naturally supports all three.</li>
-		<li>INP replaced FID in 2024 — use INP going forward.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Core Web Vitals are Google’s three primary performance signals for search ranking: LCP (Largest Contentful Paint, target 2.5 seconds or less), CLS (Cumulative Layout Shift, target 0.1 or less), and INP (Interaction to Next Paint, target 200 milliseconds or less, which replaced FID in March 2024). Each metric measures a different dimension of user experience: loading speed, visual stability, and responsiveness to input.</p>
+	<p class="prose">Svelte’s compiled, zero-runtime architecture provides a strong foundation for all three metrics. Small bundle sizes mean faster LCP because there is less JavaScript to parse and execute before the page can paint. Fine-grained reactivity through runes means shorter main-thread tasks and better INP because updates touch only the DOM nodes that changed. And Svelte’s component-scoped styles encourage explicit sizing, which helps prevent CLS.</p>
+	<p class="prose">Monitoring is essential because performance regressions often happen gradually. The <code>web-vitals</code> library can capture real user measurements and send them to an analytics endpoint. Chrome DevTools Lighthouse provides lab-based audits. Google Search Console’s Core Web Vitals report shows field data aggregated from real Chrome users. The combination of lab and field data gives you both the ability to diagnose issues locally and verify that fixes improve the experience for actual visitors.</p>
+	<p class="next">Next, you will learn how E-E-A-T (Experience, Expertise, Authoritativeness, Trust) signals affect how Google evaluates content quality.</p>
 </section>
 
 <style>
@@ -258,20 +265,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);

@@ -280,19 +280,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment demonstrates a 3D performance anti-pattern. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>prefers-reduced-motion</code> check and let the animation run unconditionally.</strong> Users who have enabled reduced motion in their OS settings now see continuous rotation that they cannot stop. This can cause motion sickness or discomfort for users with vestibular disorders. The media query check is not a nice-to-have; it is an accessibility requirement.</li>
+		<li><strong>Replace the single torus knot with 500 individual <code>{'<T.Mesh>'}</code> components in a loop.</strong> The frame rate drops dramatically because each mesh is a separate draw call. The GPU can handle millions of triangles but struggles with thousands of individual draw calls. This is why instanced meshes (one draw call for many copies) and geometry merging are essential for scenes with repeated objects.</li>
+		<li><strong>Remove the <code>{'{:else}'}</code> fallback from the <code>{'{#if mounted}'}</code> block.</strong> During SSR and before hydration, the page shows nothing where the 3D scene should be. Users on slow connections see a blank gap until JavaScript loads and mounts the canvas. A meaningful fallback (placeholder image, descriptive text) ensures the page is useful before the 3D content appears.</li>
+		<li><strong>Set <code>renderer.setPixelRatio(window.devicePixelRatio)</code> without capping it.</strong> On a high-DPI display (3x or 4x pixel ratio), the renderer draws 9 to 16 times more pixels than a 1x display. The GPU load spikes, battery drains faster on mobile, and the frame rate may drop. Capping the pixel ratio at 2 provides sharp rendering without the performance penalty of rendering at full native resolution.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Reduce draw calls by merging geometries and using instanced meshes for repeated objects.</li>
-		<li>Guard all Threlte content with <code>{"{"} #if mounted {"}"}</code> and provide a meaningful SSR fallback.</li>
-		<li>Respect <code>prefers-reduced-motion</code> by disabling auto-rotation and continuous animations.</li>
-		<li>Dispose Three.js resources on unmount — GPU memory is not garbage-collected automatically.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">3D scenes are expensive by nature. Every frame involves geometry processing, material shading, and rasterization across potentially millions of pixels. The primary performance lever is reducing draw calls: merge geometries when objects share the same material, use instanced meshes for repeated objects, and enable frustum culling (on by default) so objects outside the camera's view are skipped. Level of Detail (LOD) switches to simpler geometry at distance, and lazy loading defers heavy assets until they are visible.</p>
+	<p class="prose">Server-side rendering compatibility requires guarding all Threlte content with an <code>{'{#if mounted}'}</code> block because WebGL cannot run on the server. The fallback shown during SSR and pre-hydration should be meaningful: a static preview image, a descriptive paragraph, or a skeleton placeholder. This ensures the page is useful and accessible before JavaScript loads. For routes that are entirely 3D, setting <code>export const ssr = false</code> in the page's <code>+page.ts</code> is an alternative.</p>
+	<p class="prose">Respecting <code>prefers-reduced-motion</code> is an accessibility requirement, not a feature toggle. Check the media query with <code>window.matchMedia</code> and disable auto-rotation, particle effects, and camera transitions when the user prefers reduced motion. The scene can remain interactive (click, drag, zoom) but should not animate continuously. Finally, always dispose Three.js resources on component unmount because GPU memory is not garbage-collected. Threlte handles disposal for components in its tree, but manually created objects must be disposed explicitly.</p>
+	<p class="next">Next, you will apply everything from this module in the Threlte project to build a complete interactive 3D scene with performance best practices.</p>
 </section>
 
 <style>
@@ -300,8 +307,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 
 	.canvas-container {

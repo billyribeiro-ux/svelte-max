@@ -242,19 +242,26 @@ npm publish --access public`}</pre>
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment simulates a publishing mistake. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Import <code>$app/environment</code> in a library component.</strong> The library compiles fine in your SvelteKit project, but consumers who install it from npm get a "Cannot resolve <code>$app/environment</code>" error because <code>$app/*</code> modules are SvelteKit-only virtual imports. Library code must use <code>esm-env</code> for environment checks instead.</li>
+		<li><strong>Bump the version by a patch (0.0.X) when you have actually renamed a prop.</strong> Consumers who update get a breaking change they did not expect. Their code passes a prop name that no longer exists, causing silent failures or runtime errors. This is why semver discipline matters: renaming a prop is a major (X.0.0) change, not a patch.</li>
+		<li><strong>Run <code>npm publish</code> without running <code>svelte-package</code> first.</strong> The <code>dist/</code> folder is stale or missing. Consumers install the package and get either an outdated version or missing files. The <code>prepublishOnly</code> script should run <code>svelte-package</code> automatically, but forgetting to configure it leads to this exact mistake.</li>
+		<li><strong>Skip <code>npm publish --dry-run</code> and publish directly.</strong> You miss that the tarball includes a 50MB test fixture directory or a <code>.env</code> file with secrets. The dry run lists every file that will be published, giving you a chance to catch mistakes before they become permanent. Once published, an npm version cannot be unpublished after 72 hours.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Follow semver: major for breaking changes, minor for new features, patch for bug fixes.</li>
-		<li>Avoid <code>$app/*</code> and <code>$env/*</code> imports in library code — they are SvelteKit-only.</li>
-		<li>Use <code>npm publish --dry-run</code> and <code>publint</code> to catch packaging mistakes before publishing.</li>
-		<li>Test your package in a clean project with <code>npm pack</code> to verify it works outside your repo.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Publishing a Svelte library to npm requires semver discipline and a pre-publish checklist. Major versions (X.0.0) signal breaking changes like renamed props, removed components, or dropped Svelte version support. Minor versions (0.X.0) add new features like additional components or optional props. Patch versions (0.0.X) fix bugs without changing the API surface. Misclassifying a breaking change as a patch erodes consumer trust and causes unexpected build failures.</p>
+	<p class="prose">Library code must avoid SvelteKit-specific imports (<code>$app/*</code>, <code>$env/*</code>) because they only exist inside a SvelteKit project. Consumers of your npm package may use Vite, Rollup, or another bundler that does not provide these virtual modules. Use <code>esm-env</code> for <code>BROWSER</code> and <code>DEV</code> checks instead. Run <code>publint</code> to catch common packaging mistakes, and test the package in a clean project with <code>npm pack</code> followed by <code>npm install ./tarball.tgz</code> to verify it works outside your monorepo.</p>
+	<p class="prose">The publishing workflow is: build with <code>svelte-package</code>, review with <code>npm publish --dry-run</code>, verify the tarball contents, and publish with <code>npm publish --access public</code> for scoped packages. Automate the build step with a <code>prepublishOnly</code> script. For monorepos and teams, consider <code>changesets</code> for automated version management and changelogs. The interactive checklist in this lesson codifies every step so nothing is forgotten.</p>
+	<p class="next">Next, you will apply everything from this module in the custom elements project to build and package a complete Svelte component library.</p>
 </section>
 
 <style>
@@ -262,8 +269,9 @@ npm publish --access public`}</pre>
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 
 	.semver-row {

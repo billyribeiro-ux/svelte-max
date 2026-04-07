@@ -159,25 +159,26 @@
   </div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment reveals a JSON-LD integration subtlety. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Remove the backslash from <code>{closeTagEscaped}</code> in the template literal so it reads <code>{closeTagRaw}</code>.</strong> The HTML parser encounters a literal closing script tag inside the JSON-LD string, which prematurely terminates the script element. Everything after it becomes raw text in the page body, breaking both the structured data and potentially the page layout.</li>
+		<li><strong>Replace <code>{'{@html jsonLdScript}'}</code> with a regular Svelte expression <code>{'{jsonLdScript}'}</code>.</strong> Svelte HTML-escapes the output, turning angle brackets into <code>&amp;lt;</code> and <code>&amp;gt;</code>. The browser sees escaped text instead of a script tag, so the JSON-LD is never parsed by search engines. The <code>@html</code> directive is required because you need raw, unescaped HTML in the head.</li>
+		<li><strong>Add a user-controlled <code>$state</code> field to the schema object (e.g., from an input).</strong> Now untrusted user input flows into <code>@html</code>, creating an XSS vulnerability. This is why <code>@html</code> for JSON-LD is only safe when the schema object is fully controlled by the developer with no user data flowing in.</li>
+		<li><strong>Change the <code>@context</code> value from <code>"https://schema.org"</code> to something else.</strong> Google's structured data validator will report that the schema context is unrecognised. Without the correct context, the JSON-LD block is just opaque JSON that search engines cannot interpret against the Schema.org vocabulary.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>JSON-LD is the preferred structured-data format for modern SEO.</li>
-    <li>It lives in <code>{headTag}</code> inside a script tag — non-invasive.</li>
-    <li>
-      Inject it via <code>{'{@html}'}</code> inside <code>{svelteHeadTag}</code>, safe because the
-      source object is trusted.
-    </li>
-    <li>
-      Write the closing <code>{closeTagEscaped}</code> with a backslash to survive any stringified
-      values.
-    </li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">JSON-LD (JSON for Linked Data) is the preferred structured-data format for modern search engines. It wraps Schema.org vocabulary inside a <code>{openTag}</code> tag that lives in the document <code>{headTag}</code>, completely separated from your HTML markup. This non-invasive approach means you can add, modify, or remove structured data without touching a single line of your visible page content.</p>
+	<p class="prose">In SvelteKit, you build the JSON-LD as a typed TypeScript object, serialise it with <code>JSON.stringify</code>, wrap it in a script tag template literal, and inject it into <code>{svelteHeadTag}</code> using <code>{'{@html}'}</code>. The critical detail is escaping the closing script tag in the template literal: writing <code>{closeTagEscaped}</code> with a backslash prevents the HTML parser from prematurely closing the script element if the string <code>{closeTagRaw}</code> ever appears inside a JSON value.</p>
+	<p class="prose">The <code>@html</code> directive is one of the few places in Svelte where it is justified, because the input is a fully controlled schema object with no user data flowing in. Using <code>@html</code> with untrusted input would create an XSS vulnerability. The type-safe pattern of defining the schema as a TypeScript interface, populating it from trusted sources, and serialising it once keeps both the structured data and the page secure.</p>
+	<p class="next">Next, you will learn how to use the Article and BreadcrumbList schemas to make blog posts look premium in search results.</p>
 </section>
 
 <style>
@@ -191,8 +192,9 @@
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
   pre code { background: transparent; padding: 0; }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
 
 

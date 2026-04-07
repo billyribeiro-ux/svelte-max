@@ -301,19 +301,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment reveals a custom event boundary issue. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>composed: true</code> from the CustomEvent options.</strong> The event fires but stays trapped inside the shadow root. Parent DOM listeners never receive it because non-composed events do not cross shadow DOM boundaries. The event log in the simulation stays empty, demonstrating that <code>composed: true</code> is essential for inter-component communication.</li>
+		<li><strong>Remove <code>bubbles: true</code> from the CustomEvent options.</strong> The event dispatches on the host element but does not bubble up the DOM tree. A listener on a parent <code>{'<div>'}</code> never receives it. Without bubbling, only listeners attached directly to the custom element instance can hear the event, which limits the flexibility of event delegation patterns.</li>
+		<li><strong>Try to use <code>$host()</code> in a regular Svelte component that is not compiled as a custom element.</strong> The compiler throws an error because <code>$host()</code> is only valid inside components with the <code>customElement</code> option set. It is a compile-time rune that resolves to the host element reference, and that reference does not exist in regular component mode.</li>
+		<li><strong>Dispatch a CustomEvent without a <code>detail</code> payload and try to read <code>event.detail</code> in the listener.</strong> The <code>detail</code> property is <code>null</code> (the default), not <code>undefined</code>. If the consumer expects a typed payload and does not check for null, it will throw a runtime error when accessing properties on the detail object. Always include a detail payload or document that it may be null.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$host()</code> returns a reference to the custom element's host node from inside the component.</li>
-		<li>Use <code>$host().dispatchEvent(new CustomEvent(...))</code> to emit events that cross shadow DOM boundaries.</li>
-		<li>Set <code>bubbles: true</code> and <code>composed: true</code> so events propagate to parent DOM listeners.</li>
-		<li><code>$host()</code> is a compile-time rune with zero runtime cost, available only in custom element components.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>$host()</code> rune gives custom element components a reference to their host <code>HTMLElement</code> node. Its primary use case is dispatching <code>CustomEvent</code> instances that bubble out of the shadow DOM so consumers can listen with standard <code>addEventListener</code> calls. The rune is resolved at compile time with zero runtime cost, making it as efficient as a direct property access.</p>
+	<p class="prose">For events to reach parent DOM listeners, two flags are essential: <code>bubbles: true</code> makes the event propagate up the DOM tree, and <code>composed: true</code> allows it to cross shadow DOM boundaries. Without both flags, the event stays trapped inside the shadow root or on the host element, invisible to the outside world. The <code>detail</code> property carries a typed payload that consumers can access from <code>event.detail</code>.</p>
+	<p class="prose">This event-dispatch pattern replaces Svelte's callback-prop pattern for framework-agnostic communication. A React, Angular, or vanilla JavaScript consumer listens for custom events the same way they listen for native events like <code>click</code> or <code>input</code>. The stepper example in this lesson demonstrates the complete flow: the component dispatches <code>increment</code> and <code>decrement</code> events with value payloads, and any parent page can react without knowing that Svelte is involved.</p>
+	<p class="next">Next, you will learn how to package a Svelte component library for npm using <code>@sveltejs/package</code>.</p>
 </section>
 
 <style>
@@ -321,8 +328,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 
 	.stepper-demo {

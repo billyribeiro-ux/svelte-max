@@ -271,19 +271,26 @@
   </div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment exposes a schema validation or rendering issue. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>author</code> field from the Article schema object.</strong> Google's Rich Results Test will flag the missing required field, and the article will not be eligible for rich result features like author attribution in SERPs. The <code>author</code> field with a Person type is mandatory for Article schema validation.</li>
+		<li><strong>Set <code>datePublished</code> to an invalid format like <code>"March 12, 2026"</code> instead of ISO 8601.</strong> Schema.org date fields require ISO 8601 format (YYYY-MM-DD). Google silently ignores invalid dates, so your article loses its publication date signal in search results and may appear less fresh than competitors with valid dates.</li>
+		<li><strong>Scramble the <code>position</code> numbers in the BreadcrumbList (e.g., 3, 1, 2 instead of 1, 2, 3).</strong> Google uses the position numbers to determine the breadcrumb order. Scrambled positions produce a nonsensical breadcrumb trail in SERPs, even though the visible UI may look correct because it renders from the array order, not the position field.</li>
+		<li><strong>Make the visible breadcrumb UI show different text than the BreadcrumbList schema names.</strong> Google may detect the inconsistency between the visible content and the structured data and penalise or ignore the schema. The structured data must faithfully represent what the user actually sees on the page.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-  <h3>What you learned</h3>
-  <ul>
-    <li>Article schema gives blog posts headline, author, dates, image, publisher.</li>
-    <li>BreadcrumbList uses position-numbered ListItems to describe hierarchy.</li>
-    <li>Both can live in the same <code>{'<head>'}</code> as separate JSON-LD blocks.</li>
-    <li>The visible breadcrumb UI should mirror the schema, not diverge from it.</li>
-  </ul>
+	<h2>What you learned</h2>
+	<p class="prose">The Article schema is one of the most widely used structured data types, powering rich results for blog posts, news articles, and tutorials. Its key fields include <code>headline</code>, <code>author</code> (a Person with name and URL), <code>datePublished</code> and <code>dateModified</code> in ISO 8601 format, <code>image</code>, and <code>publisher</code> (an Organization). Together these fields give search engines everything they need to display an attribution-rich result with author, date, and publication info.</p>
+	<p class="prose">BreadcrumbList is a complementary schema that describes your site's navigation hierarchy using position-numbered <code>ListItem</code> entries. Google renders these as a breadcrumb trail beneath the page title in search results, replacing the raw URL. Each item needs a sequential <code>position</code>, a human-readable <code>name</code>, and an absolute <code>item</code> URL. The visible breadcrumb UI on the page should exactly mirror the schema data to avoid consistency penalties.</p>
+	<p class="prose">A single page can contain multiple JSON-LD script blocks, one per schema type. The Article and BreadcrumbList schemas are injected separately into <code>{'<svelte:head>'}</code> using <code>{'@html'}</code>. This modular approach keeps each schema object focused and makes it easy to conditionally include schemas based on page type. For example, a blog post gets both Article and BreadcrumbList, while a category page might get only BreadcrumbList and ItemList.</p>
+	<p class="next">Next, you will learn how Product, FAQ, and Organization schemas power rich results for e-commerce, knowledge panels, and Q&amp;A sections.</p>
 </section>
 
 <style>
@@ -306,8 +313,9 @@
   code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-xs); margin: 0; max-height: 420px; }
   pre code { background: transparent; padding: 0; font-size: inherit; }
-  h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-  ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+  .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   @media (min-width: 768px) {
     h1 { font-size: var(--text-2xl); }
     .json-grid { grid-template-columns: 1fr 1fr; }

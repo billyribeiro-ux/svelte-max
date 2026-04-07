@@ -205,19 +205,26 @@
 	</ul>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Each experiment demonstrates how camera and light settings affect the 3D scene. Revert after every change.</p>
+	<ol class="experiments">
+		<li><strong>Set both light intensities to zero using the sliders.</strong> The scene goes completely dark. All physically-based materials require light to be visible. This demonstrates that unlike CSS where elements have inherent color, 3D materials only reflect the light that hits them. Zero light means zero visibility regardless of the material color.</li>
+		<li><strong>Move the <code>{'<OrbitControls>'}</code> outside the camera component (make it a sibling instead of a child).</strong> The controls no longer attach to the camera. Threlte uses the parent-child relationship to determine which camera the controls should manipulate. As a sibling, OrbitControls has no camera reference and either errors or does nothing.</li>
+		<li><strong>Remove the <code>makeDefault</code> prop from the <code>PerspectiveCamera</code>.</strong> The scene renders blank because no camera is designated as the default. Threlte needs to know which camera to use for rendering when multiple cameras might exist in the scene. Without <code>makeDefault</code>, the renderer has no viewpoint.</li>
+		<li><strong>Set the camera <code>fov</code> (field of view) to an extreme value like 150.</strong> The scene becomes severely fish-eyed with extreme barrel distortion. Objects at the edges of the viewport are stretched dramatically. Typical FOV values range from 35 (telephoto, flat look) to 75 (wide angle). Values above 90 produce unrealistic distortion that most users find disorienting.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Every Threlte scene needs a <code>Canvas</code>, a <code>Camera</code>, and at least one <code>Light</code>.</li>
-		<li><code>PerspectiveCamera</code> mimics human vision; <code>OrthographicCamera</code> removes perspective distortion.</li>
-		<li>Light types (Ambient, Directional, Point, Spot) control illumination and shadow behavior.</li>
-		<li><code>OrbitControls</code> from <code>@threlte/extras</code> adds interactive camera rotation via mouse and touch.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Every Threlte scene requires three foundational elements: a <code>Canvas</code> (the WebGL renderer), a <code>Camera</code> (the viewpoint), and at least one <code>Light</code> (illumination). The <code>PerspectiveCamera</code> mimics human vision with foreshortening and is used for most 3D scenes. The <code>OrthographicCamera</code> removes perspective distortion and is ideal for 2D-style or technical views. The <code>makeDefault</code> prop tells Threlte which camera to use for rendering.</p>
+	<p class="prose">Light types serve different purposes. <code>AmbientLight</code> provides uniform illumination from all directions without casting shadows, acting as a fill light. <code>DirectionalLight</code> simulates parallel rays like sunlight and casts sharp shadows. <code>PointLight</code> emits from a single point in all directions like a light bulb, and <code>SpotLight</code> creates a cone-shaped beam like a flashlight. Combining ambient and directional lights is the most common setup for general 3D scenes.</p>
+	<p class="prose"><code>OrbitControls</code> from <code>@threlte/extras</code> adds mouse and touch-driven camera interaction. It must be nested inside the camera component it controls, establishing the parent-child relationship Threlte uses for attachment. The <code>enableDamping</code> prop adds smooth deceleration when the user releases the mouse, and <code>autoRotate</code> enables continuous camera rotation. OrbitControls is touch-friendly by default, supporting pinch-to-zoom and drag-to-orbit on mobile devices.</p>
+	<p class="next">Next, you will learn how Svelte's reactivity system drives 3D object properties for real-time scene updates.</p>
 </section>
 
 <style>
@@ -225,8 +232,9 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.canvas-container {
 		width: 100%;
 		height: 350px;

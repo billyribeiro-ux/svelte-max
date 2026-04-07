@@ -101,20 +101,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Trend indicators are small but carry outsized meaning. Break them to see how quickly context is lost.</p>
+	<ol class="experiments">
+		<li><strong>Set all trend directions to <code>"up"</code> regardless of the actual data.</strong> Error Rate and Latency will show green up arrows, implying improvement when the metric is actually getting worse. This proves that the component shows direction — the developer must choose whether "up" means good or bad for each metric.</li>
+		<li><strong>Remove the <code>aria-label</code> from the TrendArrow component.</strong> Screen readers will either skip the trend entirely or announce meaningless SVG path data. The aria-label is the only way assistive technologies know the trend says "Up 12.4%".</li>
+		<li><strong>Change both <code>--color-success</code> and <code>--color-error</code> to the same color.</strong> Users can no longer distinguish good from bad trends at a glance. Color-coding is the primary signal — without it, users must read the percent and mentally determine direction.</li>
+		<li><strong>Remove the <code>TrendArrow</code> from inside the <code>StatCard</code> footer and place it outside the card.</strong> The visual association between the stat value and its trend is broken. Trend indicators must be spatially close to the value they describe to be instantly understood.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>TrendArrow</code> renders an inline SVG arrow with color-coded direction (up/down/neutral).</li>
-		<li>The <code>aria-label</code> gives screen readers a textual description of the trend.</li>
-		<li>OKLCH color tokens (<code>--color-success</code>, <code>--color-error</code>) keep the palette perceptually uniform.</li>
-		<li>Snippets let you compose <code>TrendArrow</code> inside <code>StatCard</code>'s footer slot.</li>
-		<li>Context matters: "down" is good for error rate but bad for revenue — the component shows direction, the developer chooses meaning.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>TrendArrow</code> component renders an inline SVG arrow with color-coded direction: green for up, red for down, gray for neutral. OKLCH color tokens (<code>--color-success</code>, <code>--color-error</code>) keep the palette perceptually uniform so that trend indicators have consistent visual weight across different hues.</p>
+	<p class="prose">Context is everything with trend indicators. A "down" arrow is good for error rate but bad for revenue — the component deliberately only shows direction and magnitude, leaving the semantic interpretation to the developer who knows the domain. The <code>aria-label</code> provides screen readers with a textual description like "Up 12.4%" that conveys both direction and magnitude.</p>
+	<p class="prose">Svelte's snippet system lets you compose <code>TrendArrow</code> inside <code>StatCard</code>'s footer slot, creating a rich card from simple primitives. This composition pattern — small typed components assembled into larger ones — is the core architecture for everything that follows in the KPI track.</p>
+	<p class="next">Next lesson: KPI.4 adds embedded sparklines to show trend shape at a glance.</p>
 </section>
 
 <style>
@@ -157,20 +163,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.trend-grid {
 		display: grid;

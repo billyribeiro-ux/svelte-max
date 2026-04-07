@@ -182,20 +182,26 @@
 		<ApexChart options={chartOptions} height="320px" />
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">The ApexChart wrapper handles SSR safety and reactive updates. Break each concern to understand why the wrapper exists.</p>
+	<ol class="experiments">
+		<li><strong>Replace the dynamic <code>import('apexcharts')</code> with a static top-level <code>import ApexCharts from 'apexcharts'</code>.</strong> The page crashes during server-side rendering because ApexCharts accesses <code>window</code> and <code>document</code> at import time. The dynamic import inside <code>$effect</code> is the SSR safety mechanism.</li>
+		<li><strong>Remove the second <code>$effect</code> that calls <code>updateOptions</code>.</strong> Toggle between Bar and Line. The chart no longer responds to state changes because the initial render is correct but subsequent option changes are ignored. The second effect is the reactive bridge.</li>
+		<li><strong>Pass an OKLCH color string like <code>oklch(65% 0.22 270)</code> directly to the <code>colors</code> array.</strong> The chart renders with a fallback color (usually black) because ApexCharts cannot parse OKLCH. The PE7 hex palette exists specifically because of this library limitation.</li>
+		<li><strong>Remove <code>background: 'transparent'</code> from the chart options.</strong> ApexCharts fills the chart area with its own background color, which clashes with your dark theme surface. Transparent background lets the parent container's styling show through.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>ApexCharts abstracts SVG rendering so you declare <em>data</em>, not shapes.</li>
-		<li>A dynamic <code>import()</code> inside <code>$effect</code> keeps the wrapper SSR-safe.</li>
-		<li>Changing the <code>chart.type</code> property switches the visualization without re-mounting.</li>
-		<li>The PE7 hex palette (<code>#7c5cfc</code>, etc.) is derived from OKLCH but passed as hex because ApexCharts doesn't parse OKLCH natively.</li>
-		<li>Trade-off awareness: ApexCharts = speed; raw SVG = control. Choose per project.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">ApexCharts abstracts SVG rendering so you declare data and configuration rather than drawing shapes manually. The trade-off is clear: ApexCharts gives you speed and built-in features like tooltips, legends, and responsiveness, while raw SVG gives you pixel-level control for custom visualizations. Choose based on the project requirements.</p>
+	<p class="prose">The wrapper component solves the SSR problem with a dynamic <code>import()</code> inside <code>$effect</code>, which only runs in the browser. A second <code>$effect</code> watches for option changes and calls <code>updateOptions</code> on the chart instance, creating a reactive bridge between Svelte's state system and the imperative ApexCharts API.</p>
+	<p class="prose">The PE7 hex palette (<code>#7c5cfc</code>, <code>#3ba676</code>, etc.) is derived from OKLCH values but passed as hex strings because ApexCharts does not parse OKLCH natively. This is a common pattern when integrating modern CSS color systems with third-party libraries that only understand legacy formats.</p>
+	<p class="next">Next up: AC.2 explores bar and column chart variants including grouped, stacked, and 100% stacked layouts.</p>
 </section>
 
 <style>
@@ -217,12 +223,6 @@
 	h2 {
 		text-wrap: balance;
 		margin-block: var(--space-lg) var(--space-sm);
-	}
-
-	h3 {
-		text-wrap: balance;
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
 	}
 
 	code {
@@ -281,16 +281,9 @@
 		& strong { color: var(--color-text); }
 	}
 
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues ── */
 	.having-issues {

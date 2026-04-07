@@ -284,20 +284,26 @@
 		<ApexChart options={treemapOptions} height="340px" />
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Heatmaps and treemaps encode data in two dimensions simultaneously. Break the encoding layers to understand what each contributes.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>colorScale.ranges</code> configuration from the heatmap.</strong> ApexCharts falls back to a default single-color gradient that lacks the discrete Low/Moderate/Medium/High/Critical bands. The five-band color scale is what makes the heatmap scannable at a glance.</li>
+		<li><strong>Set all treemap <code>fillColor</code> values to the same color.</strong> The treemap still encodes budget size through tile area, but the secondary metric (utilization percentage) disappears entirely. This shows how treemaps can encode two independent variables: size and color.</li>
+		<li><strong>Replace the deterministic <code>Math.sin</code> jitter with <code>Math.random()</code>.</strong> Reload the page multiple times. The heatmap pattern changes on every reload, making it impossible to debug or discuss specific patterns. Deterministic pseudo-randomness creates realistic data that is reproducible.</li>
+		<li><strong>Remove <code>distributed: true</code> from the treemap options.</strong> All tiles collapse to a single color from the first color in the palette. The <code>distributed</code> flag is required for per-tile custom colors.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Heatmaps use <code>colorScale.ranges</code> to map value ranges to discrete color bands.</li>
-		<li>Each heatmap series is a row (day), and each <code>x/y</code> point is a cell (hour/value).</li>
-		<li>Treemap tile size encodes a primary metric; <code>fillColor</code> encodes a secondary metric.</li>
-		<li><code>distributed: true</code> lets each treemap tile have its own color.</li>
-		<li>Deterministic pseudo-random data (using <code>Math.sin</code> seeded by index) creates realistic patterns without actual randomness.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Heatmaps use <code>colorScale.ranges</code> to map value ranges to discrete color bands. Each heatmap series represents a row (day of the week), and each <code>x/y</code> point within that series is a cell encoding hour and server load percentage. The five-band color scale from Low to Critical makes patterns like peak business hours and weekend lulls immediately visible.</p>
+	<p class="prose">Treemaps encode hierarchical data as nested rectangles where tile size represents the primary metric (budget amount) and tile color encodes a secondary metric (utilization percentage). The <code>distributed: true</code> flag enables per-tile custom colors through the <code>fillColor</code> property. Without it, all tiles share a single color and the secondary encoding is lost.</p>
+	<p class="prose">Deterministic pseudo-random data generated with <code>Math.sin</code> seeded by index creates realistic patterns that are reproducible across page loads. This is essential for development, testing, and documentation where you need consistent visual output without connecting to a real data source.</p>
+	<p class="next">Next up: AC.6 builds a real-time streaming chart with <code>$state</code> and <code>setInterval</code>.</p>
 </section>
 
 <style>
@@ -314,12 +320,6 @@
 
 	h1 {
 		text-wrap: balance;
-	}
-
-	h3 {
-		text-wrap: balance;
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
 	}
 
 	h4 {
@@ -368,16 +368,9 @@
 		margin-inline-start: var(--space-xs);
 	}
 
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues ── */
 	.having-issues {

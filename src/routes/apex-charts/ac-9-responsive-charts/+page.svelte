@@ -206,20 +206,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Responsive charts must adapt to container width, not just viewport size. Break the responsive logic to understand why container queries matter.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>bind:clientWidth</code> and hardcode <code>narrowWidth</code> to <code>600</code>.</strong> The narrow container renders with wide-layout options (horizontal labels, visible legend) even though it is only 300px wide. Labels overflow and overlap. This demonstrates why the chart options must be derived from actual container width.</li>
+		<li><strong>Keep <code>dataLabels.enabled: true</code> for the narrow container.</strong> The data labels crowd and overlap because there is not enough horizontal space for both bars and labels at 300px width. Hiding labels below a width threshold is a readability requirement, not a preference.</li>
+		<li><strong>Remove the <code>rotate: -45</code> label rotation for narrow widths.</strong> Category labels (React, Svelte, Vue...) overlap horizontally and become illegible. Rotation is the standard solution for fitting text in tight horizontal spaces.</li>
+		<li><strong>Use ApexCharts' built-in <code>responsive[]</code> array instead of <code>bind:clientWidth</code>.</strong> Resize the slider container. The chart does not adapt because ApexCharts' responsive breakpoints are viewport-based, not container-based. The slider container's width has no effect on viewport-based breakpoints.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>bind:clientWidth</code> gives container-level responsiveness — not just viewport breakpoints.</li>
-		<li>Deriving chart options from container width lets the same chart adapt in sidebars, grids, and modals.</li>
-		<li>Narrow charts should rotate labels, hide legends, and reduce tick count for readability.</li>
-		<li><code>distributed: true</code> on bars gives each bar its own color from the palette.</li>
-		<li>ApexCharts' built-in <code>responsive[]</code> is viewport-based — use <code>bind:clientWidth</code> for component-level control.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Svelte's <code>bind:clientWidth</code> gives container-level responsiveness rather than viewport breakpoints. Deriving chart options from the container width lets the same chart component adapt gracefully whether it is placed in a full-width layout, a sidebar, a modal, or a resizable dashboard panel. This is component-level responsiveness.</p>
+	<p class="prose">Narrow charts need several adaptations for readability: labels should rotate to avoid overlap, legends should hide to save vertical space, tick counts should decrease to prevent crowding, and data labels should be disabled when bars are too narrow to accommodate text. The <code>distributed: true</code> flag gives each bar its own color from the palette, which helps identification when the legend is hidden.</p>
+	<p class="prose">ApexCharts' built-in <code>responsive[]</code> configuration array uses viewport-based breakpoints, which do not respond to container size changes. For charts inside resizable panels, sidebars, or CSS Grid layouts, <code>bind:clientWidth</code> combined with <code>$derived</code> options is the correct approach.</p>
+	<p class="next">Next up: AC.10 composes a multi-chart dashboard with cross-chart filtering and PNG export.</p>
 </section>
 
 <style>
@@ -236,12 +242,6 @@
 
 	h1 {
 		text-wrap: balance;
-	}
-
-	h3 {
-		text-wrap: balance;
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
 	}
 
 	h4 {
@@ -317,16 +317,9 @@
 		margin: 0;
 	}
 
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues ── */
 	.having-issues {

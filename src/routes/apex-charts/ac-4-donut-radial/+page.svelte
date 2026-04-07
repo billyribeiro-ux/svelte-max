@@ -247,20 +247,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Donut and radial bar charts have different data formats and configuration quirks compared to bar and line charts. Break them to learn the differences.</p>
+	<ol class="experiments">
+		<li><strong>Change the <code>series</code> from a flat array <code>[65, 18, 8, 5, 4]</code> to the object format used by bar charts (with <code>name</code> and <code>data</code> keys).</strong> The chart breaks or renders incorrectly because pie and donut charts expect a flat number array, not the named-series object format used by bar and line charts.</li>
+		<li><strong>Add 15 more slices to the pie chart with small values like 1% each.</strong> The chart becomes an illegible mess of tiny slivers with overlapping labels. This demonstrates the golden rule: limit pie and donut charts to 5-7 slices maximum.</li>
+		<li><strong>Set the donut <code>size</code> to <code>'95%'</code> instead of <code>'60%'</code>.</strong> The donut hole becomes so large that the arcs are paper-thin and nearly invisible. The center label also overwhelms the chart. The 60% sweet spot balances arc visibility with label space.</li>
+		<li><strong>Remove the <code>total</code> configuration from the radial bar's <code>dataLabels</code>.</strong> The center of the radial bar gauge becomes empty, losing the summary "Average: 78%" label that gives context to the individual ring values.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Pie/donut <code>series</code> is a flat number array — not the object format used by bar/line charts.</li>
-		<li>Donut center labels (<code>plotOptions.pie.donut.labels</code>) display summary data inside the hole.</li>
-		<li>Switching <code>chart.type</code> between <code>'donut'</code> and <code>'pie'</code> toggles the hole.</li>
-		<li>Radial bars encode a single percentage per ring — ideal for KPI dashboards.</li>
-		<li>Keep pie/donut slices to 5-7 maximum; beyond that, use a bar chart for readability.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Pie and donut chart <code>series</code> is a flat number array, not the <code>{'{ name, data }'}</code> object format used by bar and line charts. The <code>labels</code> array maps each value to its display name. Switching <code>chart.type</code> between <code>'donut'</code> and <code>'pie'</code> toggles the center hole, and the donut center labels configured through <code>plotOptions.pie.donut.labels</code> display summary data inside that hole.</p>
+	<p class="prose">Radial bars (circular gauges) encode a single percentage per ring, making them ideal for KPI dashboards where you want to show progress toward targets like "78% of sales goal reached." The <code>total</code> label in the center provides aggregate context. The <code>track</code> configuration styles the unfilled portion of each ring.</p>
+	<p class="prose">The golden rule for pie and donut charts is to limit slices to 5-7 maximum. Beyond that threshold, small slices become visually indistinguishable and labels overlap. When you have more categories, switch to a bar chart which handles many categories gracefully.</p>
+	<p class="next">Next up: AC.5 introduces heatmaps and treemaps for two-dimensional data encoding.</p>
 </section>
 
 <style>
@@ -276,12 +282,6 @@
 
 	h1 {
 		text-wrap: balance;
-	}
-
-	h3 {
-		text-wrap: balance;
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
 	}
 
 	h4 {
@@ -352,16 +352,9 @@
 		}
 	}
 
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues ── */
 	.having-issues {

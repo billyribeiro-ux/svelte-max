@@ -118,20 +118,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Dashboard layouts must work from phone to ultrawide. Break the grid to see what makes it resilient.</p>
+	<ol class="experiments">
+		<li><strong>Replace <code>auto-fill</code> with a fixed column count like <code>repeat(4, 1fr)</code> in the KPI row.</strong> On mobile, four columns will squeeze each card to an unreadable width. <code>auto-fill</code> with <code>minmax()</code> is what allows the grid to wrap cards to fewer columns at narrow widths.</li>
+		<li><strong>Remove the named <code>grid-template-areas</code> and use line-based placement instead.</strong> The layout still works but becomes much harder to read and maintain. Named areas make the dashboard structure self-documenting — you can see "header, kpi-row, main, activity" at a glance.</li>
+		<li><strong>Remove the 768px media query that changes the grid to a two-column layout.</strong> The activity sidebar will remain stacked below the main content even on wide screens, wasting horizontal space. Breakpoint-driven area rearrangement is how dashboards utilize available width.</li>
+		<li><strong>Remove <code>animate:flip</code> from the KPI card wrappers.</strong> If you add sorting or filtering logic later, cards will jump to new positions instead of sliding smoothly. The flip animation provides visual continuity during reordering, helping users track which card went where.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>CSS Grid <code>auto-fill</code> + <code>minmax(220px, 1fr)</code> creates a fluid KPI row that adapts to any width.</li>
-		<li>Named grid areas (<code>header</code>, <code>kpi-row</code>, <code>main</code>, <code>activity</code>) make the layout readable and easy to rearrange at breakpoints.</li>
-		<li>At 768px the activity sidebar slides beside the main content; at 1024px the KPI row locks to 4 columns.</li>
-		<li>Container queries can make individual cards responsive to their own width rather than the viewport.</li>
-		<li>A well-structured grid layout reflows naturally without JavaScript.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">CSS Grid with <code>auto-fill</code> and <code>minmax(220px, 1fr)</code> creates a fluid KPI row that adapts to any container width. Cards wrap to fewer columns on narrow screens and expand to fill available space on wide ones — all without JavaScript. Named grid areas like <code>header</code>, <code>kpi-row</code>, <code>main</code>, and <code>activity</code> make the layout self-documenting and easy to rearrange at breakpoints.</p>
+	<p class="prose">At 768px, the grid switches to a two-column layout where the activity sidebar sits beside the main content. At 1024px, the KPI row locks to four equal columns. These breakpoint-driven area rearrangements are the standard pattern for professional dashboards that must work from mobile to ultrawide monitors.</p>
+	<p class="prose">Svelte's <code>animate:flip</code> directive provides smooth reordering animations when cards are sorted or filtered. Container queries enable card-level responsiveness independent of the viewport, allowing individual cards to adapt their layout based on how much space they actually have rather than the screen width.</p>
+	<p class="next">Next lesson: KPI.10 covers production dashboard patterns — loading states, error handling, and keyboard navigation.</p>
 </section>
 
 <style>
@@ -174,20 +180,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.hint {
 		font-size: var(--text-sm);

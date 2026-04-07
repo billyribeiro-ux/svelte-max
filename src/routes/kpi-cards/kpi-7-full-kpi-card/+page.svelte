@@ -111,20 +111,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">The full KPI card is a composition of five sub-components. Toggle them to understand the value of each layer.</p>
+	<ol class="experiments">
+		<li><strong>Uncheck all three toggles (Sparkline, Progress Ring, Trend Arrow).</strong> The card reduces to just a label and a number — the same as a basic StatCard. Each additional component adds a layer of context: trend direction, temporal shape, and target proximity.</li>
+		<li><strong>Set <code>previousValue</code> equal to <code>value</code> in one of the metrics.</strong> The trend arrow will show 0.0% change with a neutral direction. The derived <code>TrendInfo</code> handles this edge case correctly — division by the previous value produces zero, and the direction logic maps zero change to "neutral".</li>
+		<li><strong>Set a metric's <code>target</code> to a very small value like <code>1</code>.</strong> The progress ring will show as completely full (or overflowing), which misrepresents the data. Target values must be meaningful — a ring at 100% tells the user the goal is met, even if the actual value is far above it.</li>
+		<li><strong>Pass an empty <code>history</code> array to a metric.</strong> The sparkline will either vanish or render incorrectly. The KpiCard should guard against edge cases like empty arrays, but this experiment reveals whether the current implementation handles them gracefully.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>KpiCard</code> composes five sub-components: <code>AnimatedCounter</code>, <code>TrendArrow</code>, <code>Sparkline</code>, <code>ProgressRing</code>, and a card shell.</li>
-		<li><code>$derived</code> computes <code>TrendInfo</code> (direction, delta, percent) from <code>metric.value</code> and <code>metric.previousValue</code>.</li>
-		<li>Boolean props (<code>showSparkline</code>, <code>showProgress</code>, <code>showTrend</code>) let consumers configure which parts to render.</li>
-		<li>Small, typed primitives assembled into a rich UI is the hallmark of a PE7 composition pattern.</li>
-		<li>Each sub-component is independently testable and reusable outside of the card.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>KpiCard</code> component composes five sub-components — <code>AnimatedCounter</code>, <code>TrendArrow</code>, <code>Sparkline</code>, <code>ProgressRing</code>, and a card shell — into a single cohesive unit. Each sub-component handles one concern and is independently testable and reusable outside the card.</p>
+	<p class="prose">The <code>$derived</code> rune computes <code>TrendInfo</code> from <code>metric.value</code> and <code>metric.previousValue</code>, calculating direction, delta, and percent change. Boolean props like <code>showSparkline</code>, <code>showProgress</code>, and <code>showTrend</code> let consumers configure which parts to render, creating a flexible component that adapts to different dashboard contexts.</p>
+	<p class="prose">This composition pattern — small, typed primitives assembled into a rich UI — is the hallmark of professional component architecture. Rather than building one monolithic card component, you build five simple ones and compose them. When requirements change, you swap or extend individual pieces without touching the others.</p>
+	<p class="next">Next lesson: KPI.8 connects these cards to a real-time data simulation with reactive stores.</p>
 </section>
 
 <style>
@@ -167,20 +173,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.toggles {
 		display: flex;

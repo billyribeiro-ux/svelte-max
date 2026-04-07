@@ -107,20 +107,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Progress rings use a clever SVG trick with dash arrays. Break the math to see how it works under the hood.</p>
+	<ol class="experiments">
+		<li><strong>Set <code>stroke-dasharray</code> to half the circumference instead of the full value.</strong> The ring will draw a partial track that repeats in a dashed pattern instead of showing a clean arc. The dasharray must equal the full circumference so that a single dash covers the entire ring.</li>
+		<li><strong>Set <code>stroke-dashoffset</code> to <code>0</code> regardless of the value.</strong> The ring will always show as 100% full. The offset is what hides the portion of the stroke that should not be visible — setting it to zero means nothing is hidden.</li>
+		<li><strong>Remove the <code>transform="rotate(-90)"</code> from the foreground circle.</strong> The arc will start drawing from the 3 o'clock position instead of 12 o'clock. SVG circles start their stroke at the rightmost point by default, and the rotation corrects this to match conventional progress indicators.</li>
+		<li><strong>Pass a value greater than 100 (e.g., <code>150</code>).</strong> The arc will wrap past its starting point, creating an overlapping visual artifact. Production components should clamp the value between 0 and 100 to prevent this.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Two SVG <code>&lt;circle&gt;</code> elements create the ring: a background track and a foreground arc.</li>
-		<li><code>stroke-dasharray</code> sets the full circumference; <code>stroke-dashoffset</code> controls how much arc is visible.</li>
-		<li><code>Tween</code> from <code>svelte/motion</code> smoothly interpolates the offset value.</li>
-		<li><code>prefersReducedMotion.current</code> lets you set <code>duration: 0</code> to skip animation for users who prefer it.</li>
-		<li>A reactive slider bound to the <code>value</code> prop shows how the ring animates on every change.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">A progress ring is built from two SVG <code>&lt;circle&gt;</code> elements: a background track drawn at full opacity and a foreground arc whose visible length is controlled by the <code>stroke-dasharray</code> and <code>stroke-dashoffset</code> properties. The dasharray equals the full circumference, and the offset hides the undrawn portion.</p>
+	<p class="prose">The <code>Tween</code> class from <code>svelte/motion</code> smoothly interpolates the dashoffset value, creating fluid arc animations when the percentage changes. When <code>prefersReducedMotion.current</code> is true, the tween duration drops to zero so the ring updates instantly — this is not optional for accessibility.</p>
+	<p class="prose">A reactive slider bound to the <code>value</code> prop demonstrates the ring's real-time responsiveness. Every slider change triggers the tween, and the arc smoothly grows or shrinks. This same binding pattern works with any reactive data source — API responses, WebSocket messages, or derived computations.</p>
+	<p class="next">Next lesson: KPI.6 builds an animated number counter with locale-aware formatting.</p>
 </section>
 
 <style>
@@ -170,20 +176,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.ring-row {
 		display: flex;

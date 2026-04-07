@@ -153,20 +153,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Understanding the anatomy means knowing what each region does when it is missing. Remove them one at a time.</p>
+	<ol class="experiments">
+		<li><strong>Remove the label region entirely.</strong> The card becomes a meaningless number — 142ms of what? The label is the single most important element because it tells the reader which metric they are looking at.</li>
+		<li><strong>Remove the unit from the value display.</strong> "142" could be milliseconds, seconds, or errors per hour. Units eliminate ambiguity and are essential for any metric that is not a pure count or percentage.</li>
+		<li><strong>Replace the <code>&lt;article&gt;</code> wrapper with a plain <code>&lt;div&gt;</code>.</strong> Visually nothing changes, but screen readers lose the semantic landmark. The <code>&lt;article&gt;</code> element signals that this is a self-contained piece of content, making it discoverable in assistive technology navigation.</li>
+		<li><strong>Remove the sparkline region and observe the card.</strong> The card still shows the current value and trend, but you lose all temporal context. Without the sparkline, you cannot tell whether the current value is part of a steady trend or a sudden spike.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>A KPI card has five functional regions: label, value+unit, trend, sparkline, and footer.</li>
-		<li>The <code>KpiMetric</code> interface models the data shape needed for a full card.</li>
-		<li><code>TrendInfo</code> is derived from current and previous values: direction, delta, and percent.</li>
-		<li>Semantic HTML (<code>&lt;article&gt;</code>, <code>&lt;dl&gt;</code>/<code>&lt;dt&gt;</code>/<code>&lt;dd&gt;</code>) makes cards accessible to screen readers.</li>
-		<li>Each region can be independently styled and composed from smaller Svelte components.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">A well-designed KPI card has five functional regions: a label that names the metric, a value with its unit as the visual anchor, a trend delta showing direction and magnitude of change, a sparkline for temporal context, and a footer with target or secondary information. Each region serves a distinct purpose and removing any one degrades the card's usefulness.</p>
+	<p class="prose">The <code>KpiMetric</code> interface models the data shape needed for a full card, while <code>TrendInfo</code> is derived from current and previous values. This separation of raw data from computed presentation values is a pattern that scales — the same interface works whether the data comes from a REST API, WebSocket, or mock store.</p>
+	<p class="prose">Semantic HTML matters for accessibility. Wrapping cards in <code>&lt;article&gt;</code> and pairing labels with values using <code>&lt;dl&gt;</code>/<code>&lt;dt&gt;</code>/<code>&lt;dd&gt;</code> gives screen readers meaningful structure. Each region can be independently styled and composed from smaller Svelte components, enabling mix-and-match assembly in later lessons.</p>
+	<p class="next">Next lesson: KPI.2 builds a reusable StatCard component with locale-aware number formatting.</p>
 </section>
 
 <style>
@@ -204,20 +210,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Anatomy card ── */
 	.anatomy-card {

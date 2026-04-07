@@ -296,20 +296,26 @@
 		<ApexChart options={areaOptions} height="300px" />
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Chart animation involves two independent layers: GSAP for entrance choreography and ApexCharts for internal data drawing. Break each layer to understand their relationship.</p>
+	<ol class="experiments">
+		<li><strong>Set <code>animateGradually.delay</code> to <code>0</code> on the bar chart.</strong> All bars appear simultaneously instead of the staggered left-to-right reveal. The delay value controls the perception of data building up sequentially, which helps users scan the chart from left to right.</li>
+		<li><strong>Remove the <code>opacity: 0</code> and <code>transform: translateY(40px)</code> from the <code>.chart-entrance</code> CSS.</strong> The charts are visible immediately on page load, and GSAP has nothing to animate. The CSS initial state is what creates the "hidden until scrolled" effect that GSAP then reverses.</li>
+		<li><strong>Change <code>ScrollTrigger.once: true</code> to <code>once: false</code>.</strong> The entrance animation replays every time the chart scrolls in and out of the viewport. This is distracting on a page with multiple charts and wastes the user's time on repeat visits.</li>
+		<li><strong>Set <code>chart.animations.enabled: false</code> on all three charts.</strong> The data appears fully rendered instantly with no draw-in effect. Combined with the GSAP entrance, the chart container fades in containing a fully static chart. The internal animation is what makes the data feel like it is loading fresh.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>animateGradually</code> staggers bar/column rendering — each bar appears with a delay.</li>
-		<li><code>dynamicAnimation</code> smoothly transitions when data changes (e.g., filtering).</li>
-		<li>GSAP <code>ScrollTrigger</code> controls <em>when</em> the chart container becomes visible.</li>
-		<li>Two animation layers: GSAP for entrance, ApexCharts for internal data drawing.</li>
-		<li><code>prefers-reduced-motion</code> should disable GSAP transitions while keeping charts readable.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">ApexCharts provides built-in animation through three mechanisms: <code>chart.animations.speed</code> controls overall draw-in duration, <code>animateGradually</code> staggers bar and column rendering so each element appears with a delay, and <code>dynamicAnimation</code> smoothly transitions data when it changes through filtering or updates.</p>
+	<p class="prose">For page-level choreography, GSAP with ScrollTrigger controls when chart containers become visible by animating them from opacity zero and a vertical offset to their final position. The two animation layers complement each other: GSAP controls when the chart appears in the viewport, while ApexCharts controls how the data draws itself internally. The <code>once: true</code> setting ensures the entrance animation plays only on the first scroll encounter.</p>
+	<p class="prose"><code>prefers-reduced-motion</code> must disable the GSAP entrance animations while keeping charts rendered statically. The <code>.no-motion</code> class override resets opacity and transform to their final values, ensuring the chart content is always accessible regardless of motion preference.</p>
+	<p class="next">Next up: AC.8 integrates dark mode and PE7 design tokens with ApexCharts' theming system.</p>
 </section>
 
 <style>
@@ -326,12 +332,6 @@
 
 	h1 {
 		text-wrap: balance;
-	}
-
-	h3 {
-		text-wrap: balance;
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
 	}
 
 	h4 {
@@ -380,16 +380,9 @@
 		margin: 0;
 	}
 
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues ── */
 	.having-issues {

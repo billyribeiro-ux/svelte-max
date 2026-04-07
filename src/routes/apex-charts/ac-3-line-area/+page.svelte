@@ -197,20 +197,26 @@
 		<ApexChart options={lineOptions} height="300px" />
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Line and area charts have configuration options that subtly change how data is perceived. Break each to understand the visual impact.</p>
+	<ol class="experiments">
+		<li><strong>Change <code>fill.gradient.opacityFrom</code> from <code>0.45</code> to <code>1.0</code> on the area chart.</strong> The gradient fill becomes opaque, completely obscuring the series behind it. The opacity ramp from brand color to transparent is what makes stacked area charts readable when series overlap.</li>
+		<li><strong>Switch the curve type to <code>'stepline'</code> and look at the traffic data.</strong> The smooth trends become jagged staircases. Stepline curves are designed for data that changes in discrete jumps (pricing tiers, version releases), not continuous measurements like traffic.</li>
+		<li><strong>Remove the <code>markers: {'{ size: 4 }'}</code> setting from the line chart.</strong> The data points become invisible and users cannot tell where actual measurements occurred versus where the line is interpolated. Markers anchor the eye to real data.</li>
+		<li><strong>Delete the <code>yaxis.labels.formatter</code> function.</strong> The y-axis fills with raw numbers like <code>42100</code> instead of clean <code>42K</code> labels. On a small chart, these long numbers overlap and become illegible.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Area charts use <code>fill.type: 'gradient'</code> with opacity ramp for visual depth.</li>
-		<li><code>stroke.curve</code> accepts <code>'smooth'</code>, <code>'straight'</code>, and <code>'stepline'</code> — each conveys different data character.</li>
-		<li>Multi-series charts overlay multiple datasets for trend comparison.</li>
-		<li>The same data renders as both area and line — only <code>chart.type</code> and fill config differ.</li>
-		<li>Y-axis formatters (<code>val => '30K'</code>) keep labels clean on large-number datasets.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Area charts use <code>fill.type: 'gradient'</code> with an opacity ramp from the brand color down to transparent. This gradient fill adds visual weight to the area under the line, making it easier to perceive volume and compare series magnitudes. Without the opacity ramp, overlapping series become unreadable.</p>
+	<p class="prose">The <code>stroke.curve</code> property accepts <code>'smooth'</code>, <code>'straight'</code>, and <code>'stepline'</code>. Each conveys different data character: smooth rounds corners for a polished look, straight draws point-to-point for precision, and stepline shows discrete jumps suitable for pricing tiers or staged rollouts. Multi-series charts overlay multiple datasets on the same axes for direct trend comparison.</p>
+	<p class="prose">The same traffic dataset renders as both an area chart and a line chart. The only differences are <code>chart.type</code>, the fill configuration, and marker visibility. Y-axis formatters convert raw numbers into compact strings like <code>30K</code> to keep labels clean at any container size.</p>
+	<p class="next">Next up: AC.4 covers donut, pie, and radial bar charts for part-to-whole and KPI visualization.</p>
 </section>
 
 <style>
@@ -226,12 +232,6 @@
 
 	h1 {
 		text-wrap: balance;
-	}
-
-	h3 {
-		text-wrap: balance;
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
 	}
 
 	h4 {
@@ -289,16 +289,9 @@
 		}
 	}
 
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues ── */
 	.having-issues {

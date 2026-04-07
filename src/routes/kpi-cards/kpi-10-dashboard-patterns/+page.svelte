@@ -149,20 +149,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Production dashboard patterns handle the unhappy paths. Break them to see what users experience when things go wrong.</p>
+	<ol class="experiments">
+		<li><strong>Enable the Loading toggle and remove the skeleton card shimmer animation.</strong> The loading state becomes a static gray block with no visual indication that something is happening. The shimmer animation communicates "loading in progress" — without it, users assume the dashboard is broken or frozen.</li>
+		<li><strong>Enable the Error toggle and remove the Retry button from error cards.</strong> Users see a failure message with no way to recover. Actionable error states with a retry mechanism are what separate professional dashboards from amateur ones — never show an error without offering a next step.</li>
+		<li><strong>Remove <code>role="region"</code> and <code>aria-label</code> from the KPI grid container.</strong> Screen reader users lose the ability to navigate directly to the KPI section using landmark navigation. ARIA landmarks create a table of contents for assistive technologies.</li>
+		<li><strong>Remove the filter bar's <code>role="toolbar"</code> and its <code>aria-label</code>.</strong> Keyboard users lose the semantic grouping of filter controls. The toolbar role tells assistive technologies that these controls operate as a unit, enabling efficient navigation with arrow keys.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Loading skeletons per card keep the layout stable while data loads — no cumulative layout shift.</li>
-		<li>Per-card error states isolate failures: one bad API call does not blank the entire dashboard.</li>
-		<li>Empty states with actionable hints guide users toward resolution instead of showing a blank screen.</li>
-		<li>Global filters propagate through the store to every subscribed component automatically.</li>
-		<li>ARIA landmarks (<code>role="region"</code>, <code>role="toolbar"</code>) and labels make the dashboard keyboard-navigable and screen-reader friendly.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Loading skeletons rendered per card maintain layout stability while data loads, preventing cumulative layout shift. The shimmer animation communicates active loading — static placeholders look broken. Per-card error states isolate failures so that one bad API call does not blank the entire dashboard.</p>
+	<p class="prose">Empty states with actionable hints guide users toward resolution instead of presenting a blank screen. Global filters propagate through the reactive store to every subscribed component automatically, ensuring that environment and time-range selections affect all cards simultaneously without prop drilling.</p>
+	<p class="prose">ARIA landmarks (<code>role="region"</code>, <code>role="toolbar"</code>) and labels make the dashboard keyboard-navigable and screen-reader friendly. These invisible structural elements create a navigation map for assistive technologies, making complex dashboards as accessible as simple web pages.</p>
+	<p class="next">You have completed the KPI cards track. Apply these patterns in the project lesson to build a production-quality dashboard.</p>
 </section>
 
 <style>
@@ -205,20 +211,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.toggles {
 		display: flex;

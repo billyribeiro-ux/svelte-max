@@ -229,20 +229,26 @@ source:  {manualOverride !== null ? 'manual override' : 'OS preference'}</code><
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Theme integration between CSS custom properties and ApexCharts involves timing and reactive resolution. Break the bridge to understand each piece.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>setTimeout</code> delay in the <code>$effect</code> and call <code>resolveColors()</code> synchronously.</strong> Toggle the theme rapidly. The chart occasionally renders with stale colors from the previous theme because the CSS custom properties have not settled yet. The 50ms delay is the timing bridge between CSS and JavaScript.</li>
+		<li><strong>Hardcode <code>theme.mode</code> to <code>'dark'</code> regardless of the actual theme state.</strong> Switch to light mode. The chart's internal tooltip, legend text, and axis labels use dark-mode colors on a light background, creating an unreadable contrast. The mode must track the actual theme.</li>
+		<li><strong>Remove the <code>manualOverride</code> layer and drive <code>isDark</code> directly from <code>prefersDark.current</code>.</strong> The "Switch to Light/Dark" button stops working because there is no override mechanism. The manual override pattern lets users choose their preference independent of OS settings.</li>
+		<li><strong>Delete the <code>$derived</code> wrapper on <code>chartOptions</code> and make it a plain object.</strong> Toggle the theme. The chart does not update because the options object was computed once at initialization and never recomputed. <code>$derived</code> is what makes the options reactive to theme changes.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>getComputedStyle</code> reads CSS custom property values at runtime for chart libraries.</li>
-		<li>Svelte's <code>MediaQuery</code> from <code>svelte/reactivity</code> provides a reactive <code>.current</code> boolean.</li>
-		<li>A manual override layered on top of OS preference gives users explicit control.</li>
-		<li><code>$derived</code> chart options automatically recompute when the resolved theme changes.</li>
-		<li>A small <code>setTimeout</code> after theme change lets CSS custom properties settle before reading.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>getComputedStyle(document.documentElement).getPropertyValue()</code> reads CSS custom property values at runtime, bridging the gap between your design token system and chart libraries that only accept string color values. Svelte's <code>MediaQuery</code> from <code>svelte/reactivity</code> provides a reactive <code>.current</code> boolean that tracks <code>prefers-color-scheme: dark</code> in real time.</p>
+	<p class="prose">A manual override layered on top of the OS preference gives users explicit control over their theme. When the override is <code>null</code>, the system preference takes effect. When it is a boolean, the manual choice wins. This two-layer approach is the standard pattern for theme switching in production applications. A small <code>setTimeout</code> after theme changes lets CSS custom properties settle before JavaScript reads them.</p>
+	<p class="prose"><code>$derived</code> chart options automatically recompute when the resolved theme object changes. Without this reactive wrapper, the chart options would be computed once at initialization and never update, leaving the chart frozen in its original theme regardless of user interaction.</p>
+	<p class="next">Next up: AC.9 builds responsive chart patterns that adapt to container width, not just viewport size.</p>
 </section>
 
 <style>
@@ -258,12 +264,6 @@ source:  {manualOverride !== null ? 'manual override' : 'OS preference'}</code><
 
 	h1 {
 		text-wrap: balance;
-	}
-
-	h3 {
-		text-wrap: balance;
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
 	}
 
 	h4 {
@@ -361,16 +361,9 @@ source:  {manualOverride !== null ? 'manual override' : 'OS preference'}</code><
 		}
 	}
 
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues ── */
 	.having-issues {

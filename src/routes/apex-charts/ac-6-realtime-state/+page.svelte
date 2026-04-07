@@ -196,20 +196,26 @@
 		<ApexChart options={chartOptions} height="320px" />
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Real-time charts involve timing, memory management, and reactive data flow. Break each mechanism to understand the consequences.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>return () => clearInterval(id)</code> cleanup from the <code>$effect</code>.</strong> Toggle the Pause and Resume button several times. Each resume creates a new interval without clearing the old one, causing the chart to update faster and faster as intervals stack up. The cleanup function is the memory leak prevention mechanism.</li>
+		<li><strong>Change <code>series.slice(-(WINDOW_SIZE - 1))</code> to just <code>series</code> (no slicing).</strong> The array grows unboundedly as new points are added every second. After a few minutes the chart becomes sluggish because ApexCharts is rendering thousands of points. The sliding window keeps memory constant.</li>
+		<li><strong>Disable <code>dynamicAnimation</code> by setting <code>enabled: false</code> in the chart animations config.</strong> New data points appear with a jarring snap instead of the smooth slide-in transition. Dynamic animation is what makes real-time charts feel fluid rather than jumpy.</li>
+		<li><strong>Replace <code>$state.raw</code> with regular <code>$state</code> for the series array.</strong> The chart still works, but Svelte now creates deep proxies for every data point in the array. For large arrays updated every second, <code>$state.raw</code> avoids this overhead by treating the array as opaque.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>$state</code> arrays drive ApexCharts reactivity — mutate the array, the chart updates.</li>
-		<li>Sliding window: <code>series.slice(-(N-1))</code> keeps exactly N points and discards the oldest.</li>
-		<li><code>$effect</code> cleanup (<code>return () =&gt; clearInterval(id)</code>) prevents memory leaks on unmount or dependency change.</li>
-		<li>ApexCharts <code>dynamicAnimation</code> smoothly transitions between data states without a full re-render.</li>
-		<li>Toggling a <code>$state</code> boolean re-runs the <code>$effect</code>, starting or stopping the interval cleanly.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>$state</code> arrays drive ApexCharts reactivity: replace the array reference with a new array containing the updated data, and the chart automatically re-renders. The sliding window pattern (<code>series.slice(-(N-1))</code>) keeps exactly N points and discards the oldest, preventing unbounded memory growth that would degrade performance over time.</p>
+	<p class="prose">The <code>$effect</code> cleanup function (<code>return () => clearInterval(id)</code>) is essential for preventing memory leaks. Without it, toggling the running state stacks intervals that never get cleared. ApexCharts' <code>dynamicAnimation</code> configuration smoothly transitions between data states without a full re-render, creating the fluid slide-in effect that makes real-time charts visually appealing.</p>
+	<p class="prose">Using <code>$state.raw</code> instead of <code>$state</code> for the series array avoids Svelte creating deep proxies for every data point. Since the entire array is replaced wholesale on each tick rather than mutated, deep reactivity tracking adds overhead with no benefit. This is a key optimization for high-frequency data updates.</p>
+	<p class="next">Next up: AC.7 choreographs chart entrance animations with GSAP ScrollTrigger and ApexCharts' built-in animation system.</p>
 </section>
 
 <style>
@@ -226,12 +232,6 @@
 
 	h1 {
 		text-wrap: balance;
-	}
-
-	h3 {
-		text-wrap: balance;
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
 	}
 
 	h4 {
@@ -331,16 +331,9 @@
 		}
 	}
 
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues ── */
 	.having-issues {

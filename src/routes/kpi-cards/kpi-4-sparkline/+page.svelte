@@ -103,20 +103,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Sparklines are deceptively simple. Their power comes from careful normalization and sizing. Break both.</p>
+	<ol class="experiments">
+		<li><strong>Pass an array where all values are identical (e.g., <code>[50, 50, 50, 50]</code>).</strong> The sparkline will render as a flat horizontal line at the vertical center. The min/max normalization handles this gracefully because the range defaults to 1 when min equals max, avoiding a division by zero.</li>
+		<li><strong>Remove the <code>aria-hidden="true"</code> attribute from the sparkline SVG.</strong> Screen readers will attempt to describe the SVG's polyline coordinates, producing meaningless output like "polyline 0,20 12,15 24,8". The attribute correctly marks the sparkline as decorative since the adjacent stat value provides the accessible meaning.</li>
+		<li><strong>Pass an empty array <code>[]</code> as the data prop.</strong> The sparkline will render nothing or throw an error because there are no points to normalize. Real-world components need guards for empty or single-element arrays.</li>
+		<li><strong>Remove the gradient fill path and keep only the stroke line.</strong> The sparkline loses visual weight and becomes harder to scan at small sizes. The filled area beneath the line is what makes sparklines readable at 60 by 20 pixels — the shape is more perceptible than the line alone.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>A sparkline uses SVG <code>&lt;polyline&gt;</code> with normalized (min/max) coordinates — no axes or labels needed.</li>
-		<li><code>$derived</code> recomputes the point string whenever <code>data</code> changes reactively.</li>
-		<li>A gradient <code>&lt;path&gt;</code> fill beneath the line adds visual weight without clutter.</li>
-		<li><code>aria-hidden="true"</code> marks the sparkline as decorative — the adjacent stat value provides the accessible meaning.</li>
-		<li>Composing <code>Sparkline</code> inside <code>StatCard</code>'s snippet footer creates a complete metric card.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">A sparkline is a tiny inline chart built from an SVG <code>&lt;polyline&gt;</code> with normalized coordinates. Min/max scaling via <code>$derived</code> maps any data range to the available pixel height, so the same component works whether values range from 0 to 1 or from 10,000 to 50,000.</p>
+	<p class="prose">The gradient fill path beneath the stroke line adds visual weight that makes the shape perceptible at small sizes. At 60 by 20 pixels, a bare line is almost invisible — the filled area is what gives sparklines their distinctive readability. Edward Tufte's original concept emphasized that sparklines communicate trend through shape, not precision.</p>
+	<p class="prose">Marking the sparkline with <code>aria-hidden="true"</code> is correct because the adjacent stat value provides the accessible meaning. Composing <code>Sparkline</code> inside <code>StatCard</code>'s snippet footer creates a complete metric card from two independent, reusable components.</p>
+	<p class="next">Next lesson: KPI.5 builds an SVG circular progress ring with animated transitions.</p>
 </section>
 
 <style>
@@ -159,20 +165,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.sparkline-grid {
 		display: grid;

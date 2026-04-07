@@ -132,20 +132,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Real-time simulations involve timers, state mutation, and memory management. Break each to understand the failure modes.</p>
+	<ol class="experiments">
+		<li><strong>Remove the cleanup function from the <code>$effect</code> (delete <code>return () => clearInterval(id)</code>).</strong> Navigate away from the page and back. Each visit creates a new interval without clearing the old one. Metrics will update at double speed, then triple, accumulating intervals until the browser tab slows to a crawl.</li>
+		<li><strong>Remove the windowing logic that limits the history array to the last 20 points.</strong> Let the simulation run for several minutes. The history array will grow unboundedly, consuming more memory with each tick and eventually slowing down sparkline rendering as thousands of points accumulate.</li>
+		<li><strong>Set the <code>setInterval</code> delay to <code>10</code> milliseconds instead of <code>2000</code>.</strong> The dashboard will update 100 times per second, causing the UI to stutter as Svelte processes rapid state mutations. This reveals why tick rates must be tuned to match both the data source and the rendering budget.</li>
+		<li><strong>Create a second instance of the dashboard store instead of importing the shared singleton.</strong> The two instances will tick independently with different random values. The KPI cards connected to each instance will show different data, demonstrating why a single shared store is essential for dashboard consistency.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>A <code>.svelte.ts</code> module can export reactive classes with <code>$state</code> fields that drive UI updates across components.</li>
-		<li><code>$effect</code> with <code>setInterval</code> creates periodic ticks; the returned cleanup function prevents memory leaks.</li>
-		<li>Gaussian noise on each <code>tick()</code> creates realistic-looking metric fluctuation.</li>
-		<li>Windowing data arrays (keeping the last N points) prevents unbounded memory growth.</li>
-		<li>A single store instance shared across components keeps the entire dashboard in sync.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">A <code>.svelte.ts</code> module can export reactive classes with <code>$state</code> fields that drive UI updates across any number of consuming components. The dashboard store encapsulates all metric data, tick logic, and history windowing in a single class, and every component that imports it sees the same live data.</p>
+	<p class="prose">The <code>$effect</code> rune with <code>setInterval</code> creates periodic ticks, and the returned cleanup function is critical — it calls <code>clearInterval</code> when the effect re-runs or the component unmounts. Without cleanup, intervals accumulate and cause increasingly erratic behavior and memory leaks.</p>
+	<p class="prose">Gaussian noise on each <code>tick()</code> creates realistic metric fluctuation, and windowing the history array to the last N points prevents unbounded memory growth. These two patterns — realistic simulation and bounded data structures — are the foundation of any real-time dashboard, whether the data comes from a mock store or a live WebSocket connection.</p>
+	<p class="next">Next lesson: KPI.9 builds the responsive CSS Grid layout for a complete dashboard.</p>
 </section>
 
 <style>
@@ -188,20 +194,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.controls {
 		display: flex;

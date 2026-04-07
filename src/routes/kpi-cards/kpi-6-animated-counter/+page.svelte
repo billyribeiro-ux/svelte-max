@@ -135,20 +135,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Animated counters combine tweening, formatting, and scroll detection. Each layer can break independently.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>font-variant-numeric: tabular-nums</code> from the counter value CSS.</strong> Watch the counter animate — digits will jitter horizontally because proportional numerals have different widths (1 is narrow, 0 is wide). Tabular nums force all digits to the same width, preventing layout shift during animation.</li>
+		<li><strong>Change the tween easing from <code>cubicOut</code> to a linear function.</strong> The counter will animate at constant speed instead of decelerating. The result feels mechanical and unnatural. CubicOut creates the perception of momentum — fast start, gradual stop — which matches human expectations for counting.</li>
+		<li><strong>Remove the <code>IntersectionObserver</code> and start the counter immediately.</strong> The scroll-triggered counter will count up before the user ever sees it. By the time they scroll down, the animation has finished and they see only the final number. The observer ensures the animation plays when it matters.</li>
+		<li><strong>Format a large number like <code>2500000</code> with <code>maximumFractionDigits: 0</code> and no compact notation.</strong> The counter will show "2,500,000" — seven digits plus commas. Compact notation ("2.5M") is far more scannable in dashboard contexts where space is limited.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>Tween</code> from <code>svelte/motion</code> smoothly interpolates between numeric values with configurable easing.</li>
-		<li><code>Intl.NumberFormat</code> handles locale-aware formatting: currency, percentages, compact notation ("2.5M").</li>
-		<li><code>IntersectionObserver</code> triggers the count animation only when the element scrolls into view.</li>
-		<li><code>prefersReducedMotion</code> lets you set <code>duration: 0</code> so the value snaps instantly for users who need it.</li>
-		<li><code>font-variant-numeric: tabular-nums</code> prevents layout shift as digits change.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>Tween</code> class from <code>svelte/motion</code> smoothly interpolates between numeric values with configurable easing and duration. Combined with <code>Intl.NumberFormat</code>, the tweened value is formatted on every frame — producing smoothly rolling counters with locale-aware currency, percentage, or compact notation.</p>
+	<p class="prose"><code>IntersectionObserver</code> triggers the count animation only when the element scrolls into view, ensuring the user sees the animation play. The <code>prefersReducedMotion</code> check sets duration to zero so the value appears instantly for users who have requested reduced motion in their operating system.</p>
+	<p class="prose">The CSS property <code>font-variant-numeric: tabular-nums</code> is essential for any animated number display. It forces all digits to the same width, preventing horizontal jitter as digits change during the tween. Without it, the counter shifts left and right as narrow digits (like 1) alternate with wide digits (like 0).</p>
+	<p class="next">Next lesson: KPI.7 composes all sub-components into a full KPI card.</p>
 </section>
 
 <style>
@@ -191,20 +197,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.counter-grid {
 		display: grid;

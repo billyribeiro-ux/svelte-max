@@ -355,20 +355,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">A multi-chart dashboard coordinates data flow, filtering, and layout across several chart instances. Break the coordination to understand the architecture.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>dataPointSelection</code> event handler from the bar chart options.</strong> Clicking a bar does nothing. The line, donut, and radial charts remain static because the cross-chart filter is never triggered. The event handler is the entry point for the entire interaction flow.</li>
+		<li><strong>Change <code>filteredProducts</code> to always return the full <code>products</code> array regardless of <code>selectedProduct</code>.</strong> Clicking a bar in the revenue chart updates the filter badge text, but the line and donut charts never change. The <code>$derived</code> chain from filter state to filtered data to chart options is what makes cross-chart interaction work.</li>
+		<li><strong>Replace the <code>$derived</code> on <code>lineOptions</code> with a plain object.</strong> The line chart renders correctly on initial load but never responds to filter changes. <code>$derived</code> is the reactive glue that recomputes chart options whenever upstream state changes.</li>
+		<li><strong>Change the grid to <code>grid-template-columns: 1fr 1fr 1fr 1fr</code> (four columns).</strong> Each chart becomes too narrow to display labels and legends properly. The 2x2 grid is a deliberate compromise between information density and readability at typical dashboard widths.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Shared <code>$state</code> variables act as a cross-chart data layer — filter one, update all.</li>
-		<li>ApexCharts <code>dataPointSelection</code> event enables click-to-filter interactions.</li>
-		<li><code>$derived</code> chart options automatically recompute when the filter state changes.</li>
-		<li><code>chart.dataURI()</code> exports any chart as a PNG for reports and sharing.</li>
-		<li>A 2x2 grid layout with responsive fallback to single column works for most dashboard needs.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Shared <code>$state</code> variables act as a cross-chart data layer. The <code>selectedProduct</code> state is set by clicking a bar in the revenue chart through the <code>dataPointSelection</code> event, and all downstream charts derive their options from the filtered data. This pattern turns independent charts into a coordinated dashboard without a separate state management library.</p>
+	<p class="prose"><code>$derived</code> chart options automatically recompute when the filter state changes, creating a reactive chain: user click sets filter state, filter state drives <code>filteredProducts</code>, filtered products drive each chart's options, and ApexCharts re-renders with the new data. The <code>chart.dataURI()</code> method exports any chart instance as a PNG, which is useful for embedding charts in reports, emails, and presentations.</p>
+	<p class="prose">A 2x2 grid layout with a responsive fallback to a single column works for most dashboard needs. The grid provides enough space for each chart to display labels, legends, and tooltips clearly, while the single-column fallback ensures mobile usability without horizontal scrolling.</p>
+	<p class="next">You have completed the Apex Charts module. You now have a full toolkit for building production-ready chart dashboards with Svelte 5.</p>
 </section>
 
 <style>
@@ -384,12 +390,6 @@
 
 	h1 {
 		text-wrap: balance;
-	}
-
-	h3 {
-		text-wrap: balance;
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
 	}
 
 	h4 {
@@ -469,16 +469,9 @@
 		box-shadow: var(--shadow-sm);
 	}
 
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ── Having issues ── */
 	.having-issues {

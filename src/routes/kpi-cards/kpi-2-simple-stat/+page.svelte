@@ -85,20 +85,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">The StatCard component is intentionally simple. Break it to learn what each piece contributes.</p>
+	<ol class="experiments">
+		<li><strong>Pass a string like <code>"abc"</code> as the <code>value</code> prop.</strong> <code>Intl.NumberFormat</code> will produce <code>NaN</code> in the output. The component trusts its TypeScript interface — runtime validation is your responsibility if the data source is unreliable.</li>
+		<li><strong>Remove the <code>--card-bg</code> and <code>--card-border</code> custom properties from the themed cards.</strong> They will fall back to the component's default styling. This demonstrates how CSS custom properties create a theming API without requiring additional props or class manipulation.</li>
+		<li><strong>Delete the <code>&lt;dt&gt;</code> element and put the label in a <code>&lt;span&gt;</code> instead.</strong> Visually identical, but screen readers lose the label-value association. The <code>&lt;dt&gt;</code>/<code>&lt;dd&gt;</code> pattern creates an explicit semantic link between the metric name and its value.</li>
+		<li><strong>Replace <code>Intl.NumberFormat</code> with a plain <code>.toString()</code> call.</strong> Large numbers like 284930 will display without commas, making them hard to read at a glance. Locale-aware formatting is a small detail that massively improves scannability in dashboards.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>StatCard</code> accepts <code>label</code>, <code>value</code>, <code>unit</code>, and an optional snippet for footer content.</li>
-		<li><code>Intl.NumberFormat</code> formats numbers with locale-aware commas and decimals automatically.</li>
-		<li>CSS custom properties (<code>--card-bg</code>, <code>--card-border</code>) let parent context override the card theme without prop drilling.</li>
-		<li>Semantic <code>&lt;dt&gt;</code>/<code>&lt;dd&gt;</code> pairs give screen readers meaningful label-value associations.</li>
-		<li>A component's scoped styles define sensible defaults; consumers override via custom properties.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>StatCard</code> component accepts <code>label</code>, <code>value</code>, <code>unit</code>, and an optional snippet for footer content. This minimal API covers the vast majority of single-metric display needs. <code>Intl.NumberFormat</code> handles locale-aware formatting automatically — commas for thousands, proper decimal handling — without any manual string manipulation.</p>
+	<p class="prose">CSS custom properties like <code>--card-bg</code> and <code>--card-border</code> create a theming API that lets parent context override the card's appearance without prop drilling. The component defines sensible defaults in its scoped styles, and consumers override only what they need by setting custom properties on a wrapper element.</p>
+	<p class="prose">Semantic HTML with <code>&lt;dt&gt;</code>/<code>&lt;dd&gt;</code> pairs gives screen readers meaningful label-value associations. This is invisible to sighted users but essential for assistive technologies to convey which number belongs to which metric name.</p>
+	<p class="next">Next lesson: KPI.3 adds trend arrows and percent-change deltas to communicate direction.</p>
 </section>
 
 <style>
@@ -141,20 +147,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.card-row {
 		display: grid;

@@ -282,20 +282,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">This animation orchestrates multiple SVG elements from a single progress value. Break the coordination to understand how the timeline architecture works.</p>
+	<ol class="experiments">
+		<li><strong>Change the rocket's lift threshold from <code>0.3</code> to <code>0.0</code> in <code>rocketY</code>.</strong> The rocket starts moving immediately instead of waiting for the flame to ignite first. This shows how time-window mapping creates the choreographic sequencing without any explicit delay or callback system.</li>
+		<li><strong>Remove <code>cancelAnimationFrame(rafId)</code> from the <code>onMount</code> cleanup function.</strong> Navigate away from the page and back. The old animation loop continues running in the background, creating a memory leak and potentially conflicting with the new instance.</li>
+		<li><strong>Replace <code>requestAnimationFrame</code> with <code>setInterval(animate, 16)</code>.</strong> The animation becomes choppy and inconsistent because <code>setInterval</code> does not synchronize with the browser's repaint cycle. The timestamp parameter from rAF is what enables smooth, jank-free playback.</li>
+		<li><strong>Delete the <code>reducedMotion</code> branch that shows a static final frame.</strong> Users who have requested reduced motion see the full animation playing, which can cause vestibular discomfort. The static fallback is the accessibility contract for complex animations.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>A single master progress value (0&ndash;1) can orchestrate arbitrarily complex multi-element animations via <code>$derived</code>.</li>
-		<li><code>requestAnimationFrame</code> provides smooth 60fps playback with precise time tracking.</li>
-		<li>Each element maps the global progress to its own timing window — e.g. flame ignites at 15%, rocket lifts at 30%.</li>
-		<li>Play/Pause/Restart + scrubber gives full timeline control — the same interaction model as Lottie players.</li>
-		<li><code>prefersReducedMotion</code> shows the final frame statically, avoiding animation entirely for users who need it.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">A single master progress value ranging from 0 to 1 can orchestrate arbitrarily complex multi-element animations via <code>$derived</code>. Each element maps the global progress to its own timing window: the flame ignites at 15% progress, smoke appears at 20%, and the rocket lifts off at 30%. This approach avoids the complexity of callback chains or explicit delay timers.</p>
+	<p class="prose"><code>requestAnimationFrame</code> provides smooth 60fps playback with precise timestamp-based time tracking. The RAF callback receives a high-resolution timestamp that lets you compute exact progress regardless of frame rate fluctuations. Play, Pause, Restart controls and a timeline scrubber give full playback control that is indistinguishable from Lottie player exports.</p>
+	<p class="prose">For users who prefer reduced motion, the entire animation is skipped in favor of a static final frame. This is not a degraded experience; it is a complete alternative presentation that communicates the same information without motion.</p>
+	<p class="next">Next up: SI.10 covers SVG animation performance optimization and accessibility best practices.</p>
 </section>
 
 <style>
@@ -333,20 +339,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.rocket-canvas {
 		width: 100%;

@@ -184,19 +184,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">3D CSS transforms require a precise chain of properties from parent to child. Break any link and the 3D effect collapses to flat 2D.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>perspective: 1000px</code> from <code>.flip-stage</code>.</strong> The card rotation still happens but looks completely flat — like a 2D scale squeeze rather than a 3D flip. Without perspective, there is no vanishing point and no foreshortening, so the Z-axis becomes invisible.</li>
+		<li><strong>Remove <code>backface-visibility: hidden</code> from <code>.flip-face</code>.</strong> Both the front and back face remain visible at all times. When the card flips to 180 degrees, you see the front face mirrored behind the back face, creating a confusing double-image instead of a clean reveal.</li>
+		<li><strong>Remove <code>transform-style: preserve-3d</code> from <code>.flip-card</code>.</strong> The browser flattens the card's children into 2D space. The back face's <code>rotateY(180deg)</code> stops working because the parent no longer maintains a 3D context — both faces render on top of each other in the same plane.</li>
+		<li><strong>Change the carousel <code>translateZ(220px)</code> to <code>translateZ(0)</code>.</strong> All five cards stack on top of each other at the center of the carousel because there is no radial offset. The <code>rotateY</code> values still rotate them but without <code>translateZ</code> pushing them outward, the circle has zero radius.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>perspective</code> on a parent establishes a 3D rendering context with vanishing point depth.</li>
-		<li><code>transform-style: preserve-3d</code> allows children to exist in 3D space rather than being flattened.</li>
-		<li><code>backface-visibility: hidden</code> hides the mirrored back of a rotated element — essential for card flips.</li>
-		<li>A 3D carousel positions items around a circle with <code>rotateY(n * 72deg) translateZ(radius)</code> and rotates the container.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">CSS 3D transforms require a three-part setup: <code>perspective</code> on an ancestor creates the vanishing point, <code>transform-style: preserve-3d</code> on the container keeps children in 3D space rather than flattening them, and <code>backface-visibility: hidden</code> on each face hides the mirrored reverse side during rotation. Missing any one of these properties causes the 3D illusion to fail silently — the browser just renders everything flat without any error.</p>
+	<p class="prose">The card flip uses GSAP to animate <code>rotationY</code> from 0 to 180 degrees. Because each face is absolutely positioned and the back face is pre-rotated 180 degrees, exactly one face is visible at any given rotation angle. GSAP's <code>power2.inOut</code> ease creates a natural acceleration-deceleration curve that mimics the physics of a real card turning in someone's hand.</p>
+	<p class="prose">The 3D carousel positions five cards around a circle using the formula <code>rotateY(i * 72deg) translateZ(220px)</code>. Each card faces outward from the center at 72-degree intervals (360 / 5). Rotating the container itself brings each card to the front in turn. GSAP animates a proxy object's rotation value and updates Svelte state on each frame via <code>onUpdate</code>, letting the template reactively compute which card is currently facing forward using modular arithmetic on the rotation angle.</p>
+	<p class="next">Next lesson: responsive cinema patterns that adapt to every viewport.</p>
 </section>
 
 <style>
@@ -234,19 +241,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	.section-title {

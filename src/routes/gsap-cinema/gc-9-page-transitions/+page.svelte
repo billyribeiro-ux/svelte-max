@@ -222,19 +222,26 @@
 		{/if}
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">View Transitions depend on precise pairing between old and new DOM elements. Break the pairing and the cross-fade morphing degrades to a simple cut.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>view-transition-name</code> from the gallery cards but keep it on the expanded view.</strong> The browser cannot find a matching old-state element, so it falls back to a full-page cross-fade instead of the smooth morph between the card and expanded view. The card-specific animation vanishes.</li>
+		<li><strong>Give two cards the same <code>view-transition-name</code> value.</strong> The browser throws a console error because <code>view-transition-name</code> must be unique within a document at transition time. Duplicate names break the entire transition and it falls back to an instant swap.</li>
+		<li><strong>Remove the <code>if (!document.startViewTransition)</code> guard.</strong> The code crashes in browsers that do not support the View Transitions API (like Firefox as of early 2025) because <code>startViewTransition</code> is undefined. The feature-detection guard is not optional.</li>
+		<li><strong>Remove <code>noScroll: true</code> from the <code>goto()</code> calls.</strong> SvelteKit scrolls to the top on every navigation, which fights against the View Transition's positional morph. The expanded card jumps to the top of the page instead of expanding in place from the clicked card's position.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>document.startViewTransition()</code> captures a snapshot and cross-fades to the new DOM state.</li>
-		<li>SvelteKit's <code>onNavigate</code> hook is the integration point for View Transitions.</li>
-		<li>The <code>view-transition-name</code> CSS property pairs old and new elements for morphing.</li>
-		<li>Always feature-detect <code>startViewTransition</code> — browsers without it fall back to instant swap.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The View Transitions API captures a bitmap snapshot of the old DOM state, swaps in the new DOM, then cross-fades between the two using browser-generated <code>::view-transition-old</code> and <code>::view-transition-new</code> pseudo-elements. SvelteKit's <code>onNavigate</code> hook is the integration point: you wrap the navigation's resolve/complete callbacks inside <code>document.startViewTransition()</code> so the browser snapshots before the route change and reveals the new page with the transition.</p>
+	<p class="prose">The <code>view-transition-name</code> CSS property is the pairing mechanism. When the old page has an element named <code>card-1</code> and the new page also has an element named <code>card-1</code>, the browser morphs between them — interpolating size, position, and opacity. Every name must be unique in the document at the time of transition. The <code>view-transition-class</code> property lets multiple elements share a single transition animation rule without requiring unique names for each.</p>
+	<p class="prose">GSAP enters after the View Transition completes, animating elements that did not participate in the CSS-level morph. The expanded card's title, description, and back button fade in with staggered GSAP tweens inside an <code>$effect</code> that triggers when the selected card changes. This two-layer approach — View Transitions for the spatial morph, GSAP for the content choreography — gives you the best of both systems.</p>
+	<p class="next">Next lesson: CSS 3D transforms with card flips and carousels.</p>
 </section>
 
 <style>
@@ -272,19 +279,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	.section-title {

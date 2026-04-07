@@ -372,19 +372,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Animated transitions are where physics meets rendering. Break them to understand the timing model.</p>
+	<ol class="experiments">
+		<li><strong>Replace <code>tweens[source].current</code> with the raw data value <code>renewableData[selectedYear][source]</code>.</strong> Bars will snap instantly to new heights when you change the year. The tween's <code>.current</code> property is what provides the in-between values — without it, there is no animation, just jumps.</li>
+		<li><strong>Remove the <code>$effect</code> that calls <code>tweens[s].set(d[s])</code>.</strong> The bars will freeze at their initial values regardless of which year button you press. The effect is the bridge between state changes and tween targets — without it, the tweens never receive updated values.</li>
+		<li><strong>Set the <code>Tween</code> duration to <code>5000</code> (5 seconds) for all sources.</strong> Click rapidly between years. The animations will queue and overlap, creating a sluggish, unresponsive feel. This reveals why tween duration must be tuned to match the expected interaction pace.</li>
+		<li><strong>Remove the <code>prefersReducedMotion</code> check entirely.</strong> Users who have enabled reduced motion in their OS will still see 600ms animations. This is an accessibility violation — motion-sensitive users can experience discomfort from animations they cannot control.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Create a <code>Tween</code> per data value — set <code>.target</code> to animate.</li>
-		<li>Read <code>.current</code> inside SVG attributes for smooth interpolation.</li>
-		<li>Use <code>$effect</code> to update tween targets when state changes.</li>
-		<li>Check <code>prefersReducedMotion.current</code> and set duration to 0 if true.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Svelte's <code>Tween</code> class from <code>svelte/motion</code> smoothly interpolates numeric values over time. You create one <code>Tween</code> per data value, call <code>.set()</code> to update the target, and read <code>.current</code> in your SVG attributes. The tween handles all the in-between frames using the specified easing function.</p>
+	<p class="prose">The <code>$effect</code> rune connects state changes to tween updates. When <code>selectedYear</code> changes, the effect fires and pushes new target values into each tween. This reactive bridge is what makes the chart feel alive — data changes in state, tweens interpolate, and SVG attributes update every frame.</p>
+	<p class="prose">Respecting <code>prefersReducedMotion.current</code> is not optional. When the user has requested reduced motion, set the tween duration to zero so values update instantly. This is a core accessibility requirement — motion-sensitive users must be able to use data visualizations without discomfort.</p>
+	<p class="next">Next lesson: DV.8 adds tooltips and annotations to provide context for chart data.</p>
 </section>
 
 <style>
@@ -398,9 +405,10 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.year-controls {
 		display: flex;

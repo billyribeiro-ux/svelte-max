@@ -166,20 +166,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">The fastest way to understand SVG anatomy is to break individual attributes and watch what happens. Try each experiment below, observe the result, then undo it before moving to the next.</p>
+	<ol class="experiments">
+		<li><strong>Delete the <code>viewBox</code> attribute from the <code>&lt;svg&gt;</code> element.</strong> The coordinate system disappears and the shapes either vanish or overflow their container, proving that <code>viewBox</code> is the foundation of every SVG layout.</li>
+		<li><strong>Change the circle's <code>cy</code> to <code>300</code> (outside the 200x200 viewBox).</strong> The circle moves off-canvas entirely. This shows that SVG clips to its viewBox by default, so coordinates outside the range are invisible.</li>
+		<li><strong>Remove the <code>&lt;g&gt;</code> wrapper around the star path and put the <code>transform</code> directly on the <code>&lt;path&gt;</code>.</strong> The rotation origin shifts because <code>transform-origin</code> defaults differently on <code>&lt;path&gt;</code> versus <code>&lt;g&gt;</code>, demonstrating why grouping matters for rotation.</li>
+		<li><strong>Set <code>rx="50"</code> on the rectangle.</strong> The rectangle becomes a capsule shape because <code>rx</code> rounds the corners proportionally. This reveals how a single attribute can dramatically change a primitive's appearance.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>viewBox</code> defines the SVG coordinate system — all child elements position within it.</li>
-		<li>Primitive shapes (<code>&lt;rect&gt;</code>, <code>&lt;circle&gt;</code>, <code>&lt;path&gt;</code>) are the building blocks for every SVG animation.</li>
-		<li><code>$state</code> drives attribute values reactively — sliders update the SVG in real time with zero DOM manipulation.</li>
-		<li>The <code>transform</code> attribute on <code>&lt;g&gt;</code> applies rotation around a specified origin point.</li>
-		<li>Path commands (<code>M</code>, <code>L</code>, <code>Z</code>) define shapes point-by-point — understanding them is essential for morphing and drawing animations.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>viewBox</code> attribute is the single most important property in SVG. It establishes the internal coordinate system that every child element references for positioning and sizing. Without it, your shapes have no frame of reference and the browser falls back to unpredictable defaults.</p>
+	<p class="prose">Primitive shapes like <code>&lt;rect&gt;</code>, <code>&lt;circle&gt;</code>, and <code>&lt;path&gt;</code> are the atoms of SVG animation. Each exposes numeric attributes (<code>x</code>, <code>cy</code>, <code>r</code>, <code>d</code>) that Svelte can bind directly to <code>$state</code> values, creating real-time interactivity with zero DOM manipulation. The <code>transform</code> attribute on a <code>&lt;g&gt;</code> group applies rotation around a specified origin point, which is essential for animating complex shapes that need to spin in place.</p>
+	<p class="prose">Path commands (<code>M</code> for move, <code>L</code> for line, <code>Z</code> for close) define shapes point-by-point. Understanding this command vocabulary is a prerequisite for the morphing and drawing animations you will build in the next lessons.</p>
+	<p class="next">Next up: SI.2 uses <code>stroke-dasharray</code> and <code>stroke-dashoffset</code> to make paths appear to draw themselves.</p>
 </section>
 
 <style>
@@ -217,20 +223,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.controls {
 		display: flex;

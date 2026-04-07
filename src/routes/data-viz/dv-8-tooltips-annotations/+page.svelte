@@ -453,19 +453,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Tooltips and annotations are layered on top of the base chart. Break the layering to understand how they interact.</p>
+	<ol class="experiments">
+		<li><strong>Change the tooltip from <code>position: fixed</code> to <code>position: absolute</code> without adjusting the coordinates.</strong> The tooltip will appear at the wrong location or inside the SVG's container offset. Fixed positioning uses viewport coordinates, while absolute positioning uses the nearest positioned ancestor — you need to choose one and compute coordinates accordingly.</li>
+		<li><strong>Remove <code>pointer-events: none</code> from the tooltip CSS.</strong> When the tooltip appears under the cursor, it will intercept pointer events and cause the <code>onpointerleave</code> to fire on the SVG, creating a flickering tooltip that appears and disappears rapidly.</li>
+		<li><strong>Remove the <code>bind:this={'{svgEl}'}</code> and the <code>getBoundingClientRect()</code> call in the handler.</strong> The pointer position cannot be converted to SVG coordinates without knowing the SVG element's position on the page. The hovered index will always be wrong or undefined.</li>
+		<li><strong>Delete all annotation lines and text from the SVG.</strong> The chart still shows data correctly, but loses all contextual meaning. Without the "2008 Financial Crisis" or "2020 COVID" annotations, the viewer has no framework for interpreting the dramatic drops.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Use <code>onpointermove</code> on the SVG to track cursor position and find the nearest data point.</li>
-		<li>Render tooltips as positioned HTML <code>&lt;div&gt;</code>s, not SVG text — more flexible.</li>
-		<li>Annotations are vertical dashed <code>&lt;line&gt;</code> + rotated <code>&lt;text&gt;</code> elements inside the SVG.</li>
-		<li>Use <code>$state&lt;number | null&gt;</code> for hovered index — null means no tooltip.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Tooltips work best as positioned HTML <code>&lt;div&gt;</code> elements rather than SVG text. HTML gives you rich formatting, word wrap, and easier styling. The key is tracking mouse position with <code>onpointermove</code> on the SVG, converting screen coordinates to data space, and finding the nearest data point with a simple distance loop.</p>
+	<p class="prose">Annotations are vertical dashed lines and rotated text elements placed inside the SVG at data-derived positions. They provide the editorial context that transforms a chart from raw data into a story — without them, the viewer has no framework for interpreting significant events like crashes or recoveries.</p>
+	<p class="prose">The <code>$state&lt;number | null&gt;</code> pattern for the hovered index is clean and expressive: <code>null</code> means no tooltip, a number means show the tooltip for that data point. The tooltip must have <code>pointer-events: none</code> to avoid intercepting mouse events and causing flicker.</p>
+	<p class="next">Next lesson: DV.9 builds scroll-driven storytelling where the reader's scroll position drives chart transitions.</p>
 </section>
 
 <style>
@@ -479,9 +486,10 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.chart-wrapper {
 		position: relative;

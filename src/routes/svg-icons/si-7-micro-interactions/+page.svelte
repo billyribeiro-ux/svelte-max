@@ -217,20 +217,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Micro-interactions are small but precise. Each depends on timing, state management, and CSS animation working together. Break one piece at a time to see how the system holds up.</p>
+	<ol class="experiments">
+		<li><strong>Change the <code>setTimeout</code> delay from <code>1500</code> to <code>100</code> in the trigger function.</strong> The animation barely starts before the state resets, creating a flicker instead of a satisfying confirmation. This shows that the auto-reset timing must exceed the animation duration to feel complete.</li>
+		<li><strong>Remove <code>if (getter()) return;</code> from the trigger function.</strong> Rapidly clicking the Submit button stacks multiple setTimeout callbacks, causing erratic behavior where the state flips unpredictably. The guard prevents re-triggering during an active animation cycle.</li>
+		<li><strong>Delete the <code>.check-draw</code> keyframe animation and its <code>stroke-dasharray</code>/<code>stroke-dashoffset</code> setup.</strong> The checkmark appears instantly instead of drawing itself stroke-by-stroke. This reuses the exact technique from SI.2 at a smaller scale.</li>
+		<li><strong>Change the heart's <code>cubic-bezier(0.34, 1.56, 0.64, 1)</code> to <code>ease</code>.</strong> The heart scales up without the characteristic "overshoot and settle" bounce. The custom cubic bezier with a value above 1.0 is what creates the elastic pop effect that makes the interaction feel alive.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Micro-interactions follow the <strong>trigger &rarr; animation &rarr; feedback</strong> pattern — a boolean state drives each one.</li>
-		<li>Path drawing (<code>stroke-dasharray</code>/<code>stroke-dashoffset</code>) creates the checkmark "draw-on" effect from SI.2.</li>
-		<li>CSS <code>@keyframes</code> handle shake, rotate, and scale animations without JavaScript animation libraries.</li>
-		<li><code>setTimeout</code> auto-resets each interaction, so the user can trigger it again without manual clearing.</li>
-		<li>Persistent toggles (Toggle, Expand) use direct boolean flip; one-shot interactions (Submit, Copy) use the trigger-then-reset pattern.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Micro-interactions follow the trigger, animation, feedback pattern. A <code>$state&lt;boolean&gt;</code> drives each interaction, flipped by an onclick handler and auto-reset by <code>setTimeout</code> after the animation completes. The timing between the animation duration and the reset delay must be coordinated so the user sees the full feedback before the state clears.</p>
+	<p class="prose">Path drawing creates the checkmark "draw-on" effect using the same <code>stroke-dasharray</code> and <code>stroke-dashoffset</code> technique from SI.2. CSS <code>@keyframes</code> handle shake, rotate, and scale animations without any JavaScript animation library. Custom cubic bezier curves with values above 1.0 create the elastic overshoot that makes interactions feel physically responsive.</p>
+	<p class="prose">There are two interaction categories here: persistent toggles (Toggle, Expand) use direct boolean flip and stay in their new state, while one-shot interactions (Submit, Copy, Delete) use the trigger-then-reset pattern so the user can activate them repeatedly.</p>
+	<p class="next">Next up: SI.8 makes entire SVG illustrations interactive with hover states, click handlers, and data-driven coloring.</p>
 </section>
 
 <style>
@@ -268,20 +274,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.micro-grid {
 		display: grid;

@@ -259,20 +259,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Shape morphing depends on careful alignment between source and target point arrays. Break this alignment to see why the constraints exist.</p>
+	<ol class="experiments">
+		<li><strong>Change <code>makeSquare()</code> to return only 8 points instead of 12.</strong> The morph crashes or produces wildly distorted shapes because <code>interpolatePoints</code> tries to access indices that do not exist in the shorter array. This proves that equal point counts are a hard requirement.</li>
+		<li><strong>Replace the linear interpolation <code>a + (b - a) * t</code> with just <code>b * t</code>.</strong> The intermediate shapes collapse toward the origin instead of smoothly transitioning between the two shapes, demonstrating why the full lerp formula is necessary to maintain spatial relationships.</li>
+		<li><strong>Remove the <code>.toFixed(1)</code> call inside <code>pointsToPath</code>.</strong> The <code>d</code> attribute string becomes bloated with 15-digit floating point numbers. While visually identical, this wastes memory and slows down SVG parsing on complex shapes.</li>
+		<li><strong>Set the Tween easing to <code>linear</code> instead of <code>cubicInOut</code>.</strong> The morph moves at a constant speed with no acceleration or deceleration. Compare this to the original eased version to feel how easing curves add polish and a sense of physical weight to animation.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Both source and target paths must have the <strong>same number and type</strong> of commands for smooth morphing.</li>
-		<li>Linear interpolation: <code>a + (b - a) * t</code> applied to each coordinate pair produces intermediate shapes.</li>
-		<li>A <code>Tween</code> with <code>progress</code> 0&rarr;1 drives the morph — <code>$derived</code> recomputes the path string reactively.</li>
-		<li>Manual scrubbing (a range slider controlling <code>t</code>) is invaluable for debugging morph artifacts.</li>
-		<li>Color crossfade uses layered <code>&lt;path&gt;</code> elements with animated <code>opacity</code>.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Shape morphing interpolates between two sets of SVG path coordinates. The fundamental constraint is that both source and target paths must have the same number and type of commands. If one shape has 12 points and the other has 8, the interpolation function has no matching pairs for the extra points and the morph breaks.</p>
+	<p class="prose">Linear interpolation (<code>a + (b - a) * t</code>) applied to each coordinate pair produces smooth intermediate shapes as <code>t</code> moves from 0 to 1. A <code>Tween</code> drives this progress value, and <code>$derived</code> recomputes the path string reactively on every frame. Manual scrubbing with a range slider controlling <code>t</code> directly is invaluable for debugging morph artifacts at specific transition points.</p>
+	<p class="prose">Color crossfading is achieved by layering two <code>&lt;path&gt;</code> elements and animating their <code>opacity</code> values inversely. The "from" shape fades out while the "to" shape fades in, creating a smooth blend that complements the geometric morph.</p>
+	<p class="next">Next up: SI.5 scales drawing animation to complex multi-path illustrations with sequential reveals and color transitions.</p>
 </section>
 
 <style>
@@ -310,20 +316,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.btn-row {
 		display: flex;

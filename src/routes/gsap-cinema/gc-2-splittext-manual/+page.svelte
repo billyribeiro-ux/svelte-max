@@ -193,19 +193,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Deliberately sabotaging the text animation teaches you what each piece of the system actually controls. Try each experiment, watch it fail, then revert.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>stagger</code> property from the reveal tween.</strong> All characters animate simultaneously, creating a simple fade instead of the cinematic left-to-right cascade — proving stagger is what creates the "typewriter" feel.</li>
+		<li><strong>Change the scramble pool to a single character like <code>"X"</code>.</strong> Instead of a random matrix-style effect, every character shows the same letter before resolving, which looks like a loading glitch rather than a decode effect.</li>
+		<li><strong>Set <code>display: inline</code> instead of <code>inline-block</code> on <code>.hero-char</code>.</strong> The <code>y</code> transform silently stops working because inline elements cannot be transformed — the text appears instantly with no vertical motion.</li>
+		<li><strong>Remove the <code>gsap.context()</code> wrapper and cleanup return.</strong> Switch modes rapidly and watch ghost animations from previous runs pile up, causing characters to jitter as old and new tweens fight for control of the same elements.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Split text into individual <code>&lt;span&gt;</code> elements for per-character animation control.</li>
-		<li>Use <code>stagger</code> to offset each character's animation start time.</li>
-		<li>The scramble effect uses <code>onUpdate</code> to swap text content during the tween.</li>
-		<li>OKLCH hue shifts create perceptually uniform color waves across characters.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Character-level text animation is the manual equivalent of GSAP's paid SplitText plugin. By splitting a string into individual <code>&lt;span&gt;</code> elements and binding each to an array of refs, you get full per-character control. The <code>stagger</code> property offsets each character's start time, turning a flat fade into a cascading reveal that reads left-to-right like the text itself.</p>
+	<p class="prose">The scramble mode reveals a powerful GSAP pattern: using <code>onUpdate</code> inside a proxy tween to drive DOM changes on every frame. A tween animates a dummy <code>progress</code> value from 0 to 1, and on each tick the callback swaps the character's <code>textContent</code> with a random pool pick until enough frames have passed, then locks in the real letter. This decouples the animation curve from what you animate.</p>
+	<p class="prose">The wave mode demonstrates OKLCH color animation. Because OKLCH is perceptually uniform, shifting the hue component across characters produces a smooth rainbow without the muddy greens and blown-out cyans you get with HSL. Combined with staggered delays, this creates a color ripple that feels organic rather than computed.</p>
+	<p class="next">Next lesson: SVG path drawing to create cinematic line-art reveals.</p>
 </section>
 
 <style>
@@ -244,19 +251,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	.cinema-stage {

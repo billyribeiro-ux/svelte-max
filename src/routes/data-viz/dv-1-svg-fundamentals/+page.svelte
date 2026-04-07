@@ -284,20 +284,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Experimenting with intentional breakage is the fastest way to build real intuition for SVG in Svelte. Try each of these modifications, observe what happens, then revert before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>viewBox</code> attribute from the <code>&lt;svg&gt;</code> element.</strong> The chart will lose its aspect ratio and either collapse or stretch unpredictably. This proves that <code>viewBox</code> is what makes SVG resolution-independent — without it, the coordinate system has no defined relationship to the container.</li>
+		<li><strong>Delete the <code>&lt;g transform="translate(...)"/&gt;</code> wrapper around the plot area.</strong> All axes, gridlines, and bubbles will render from the top-left corner with no padding. This shows how the <code>&lt;g&gt;</code> element acts as a coordinate-space offset for the entire chart interior.</li>
+		<li><strong>Change <code>scaleY</code> to return <code>(v - popMin) / (popMax - popMin) * plotH</code> (remove the <code>plotH -</code> prefix).</strong> The y-axis will flip — high values appear at the bottom. SVG's y-axis runs top-to-bottom, so you must invert it manually for charts.</li>
+		<li><strong>Set <code>radiusMultiplier</code> to a negative number like <code>-1</code>.</strong> The circles will disappear because SVG circles cannot have a negative <code>r</code> attribute. This demonstrates why scale functions need clamping or guards in production code.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>SVG elements (<code>&lt;circle&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;text&gt;</code>, <code>&lt;g&gt;</code>) render directly in Svelte markup.</li>
-		<li><code>viewBox</code> makes the chart resolution-independent — it scales to any container width.</li>
-		<li><code>$state</code> drives interactivity (hover, slider) and <code>$derived</code>-style inline expressions compute scales reactively.</li>
-		<li><code>{'{#each}'}</code> iterates over real data to create SVG elements — no imperative DOM manipulation.</li>
-		<li>Conditional styling (opacity, stroke) via ternary expressions creates hover effects without CSS classes.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SVG elements like <code>&lt;circle&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;text&gt;</code>, and <code>&lt;g&gt;</code> render directly in Svelte markup as first-class citizens. The <code>viewBox</code> attribute makes charts resolution-independent, scaling cleanly to any container width without pixelation or distortion.</p>
+	<p class="prose">Reactivity drives the entire interaction model. The <code>$state</code> rune powers the slider and hover state, while inline derived expressions compute scale positions on every change. Svelte's <code>{'{#each}'}</code> block iterates over real data arrays to create SVG elements declaratively — no imperative DOM manipulation, no <code>appendChild</code> loops.</p>
+	<p class="prose">Conditional styling through ternary expressions on attributes like <code>opacity</code> and <code>stroke-width</code> creates hover effects without toggling CSS classes. This pattern keeps the visual logic colocated with the data, making it easy to reason about what each bubble looks like in every state.</p>
+	<p class="next">Next lesson: DV.2 builds a horizontal bar chart with sorted data and animated reordering.</p>
 </section>
 
 <style>
@@ -329,25 +335,14 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
 	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.controls {
 		display: flex;

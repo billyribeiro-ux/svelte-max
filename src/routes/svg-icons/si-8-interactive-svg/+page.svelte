@@ -209,20 +209,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Interactive SVGs combine data-driven rendering, event handling, and accessibility. Break each concern to see how they interrelate.</p>
+	<ol class="experiments">
+		<li><strong>Replace the <code>fillColor</code> function with a static color like <code>"blue"</code> for all continents.</strong> Every continent becomes the same shade and the map loses all data encoding. This proves that the OKLCH lightness and chroma mapping is what makes the visualization informative rather than decorative.</li>
+		<li><strong>Remove <code>tabindex="0"</code> and the <code>onkeydown</code> handler from the continent paths.</strong> Try navigating the map with only the keyboard. The continents become unreachable, locking out keyboard-only users and screen reader users entirely.</li>
+		<li><strong>Delete the <code>&lt;title&gt;</code> and <code>&lt;desc&gt;</code> elements from the SVG.</strong> The SVG loses its accessible name and description. Screen readers announce it as a generic image with no context about what data it represents.</li>
+		<li><strong>Change <code>activeContinent</code> from <code>$state&lt;string | null&gt;</code> to <code>$state&lt;string&gt;('')</code>.</strong> The "nothing selected" state becomes ambiguous because an empty string is truthy in some comparisons. Using <code>null</code> for "no selection" is clearer and prevents subtle bugs in conditional rendering.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Every SVG element is individually addressable — paths can have <code>onclick</code>, <code>:hover</code>, and <code>aria-label</code> just like HTML elements.</li>
-		<li>Data-driven fill: map numeric values to OKLCH lightness/chroma for perceptually uniform color scales.</li>
-		<li><code>$state&lt;string | null&gt;</code> tracks the selected region — <code>null</code> means nothing is selected.</li>
-		<li>SVG tooltips are just <code>&lt;g&gt;</code> groups with <code>&lt;rect&gt;</code> + <code>&lt;text&gt;</code>, positioned via <code>transform</code>.</li>
-		<li>Accessible SVG illustrations need <code>&lt;title&gt;</code>, <code>&lt;desc&gt;</code>, <code>role="img"</code>, and keyboard support (<code>tabindex</code> + <code>onkeydown</code>).</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Every SVG element is individually addressable: paths can have <code>onclick</code>, <code>:hover</code>, and <code>aria-label</code> just like HTML elements. This makes SVG the ideal format for interactive data visualizations where each region, slice, or node needs its own behavior. Data-driven fill colors map numeric values to OKLCH lightness and chroma, producing perceptually uniform color scales that encode information accurately.</p>
+	<p class="prose">Selection state is tracked with <code>$state&lt;string | null&gt;</code> where <code>null</code> explicitly means "nothing is selected." SVG tooltips are simply <code>&lt;g&gt;</code> groups containing <code>&lt;rect&gt;</code> and <code>&lt;text&gt;</code> elements, positioned with the <code>transform</code> attribute based on the click coordinates within the SVG's own coordinate system.</p>
+	<p class="prose">Accessible SVG illustrations require <code>&lt;title&gt;</code> and <code>&lt;desc&gt;</code> for screen reader context, <code>role="img"</code> for semantic meaning, and keyboard support via <code>tabindex="0"</code> paired with <code>onkeydown</code> handlers. Without these, the interactive map is invisible to a significant portion of your users.</p>
+	<p class="next">Next up: SI.9 builds a Lottie-style choreographed animation from scratch using a single master progress value.</p>
 </section>
 
 <style>
@@ -260,20 +266,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.map-container {
 		position: relative;

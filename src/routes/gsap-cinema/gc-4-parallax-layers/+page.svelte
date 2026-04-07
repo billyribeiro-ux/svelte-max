@@ -197,19 +197,26 @@
 
 	<div class="scroll-spacer" aria-hidden="true"></div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Parallax is all about relative speed differences between layers. Break those relationships and the illusion of depth collapses instantly.</p>
+	<ol class="experiments">
+		<li><strong>Set every layer to the same speed value (e.g., <code>-100</code>).</strong> All layers move together as one flat sheet — the depth illusion vanishes completely because parallax requires differential motion between foreground and background.</li>
+		<li><strong>Remove <code>scrub: true</code> from the ScrollTrigger config.</strong> The animation plays once on trigger and then stops, completely disconnecting the motion from the scroll position. The layers jump to their end positions instead of tracking smoothly.</li>
+		<li><strong>Set the speed multiplier to a negative value like <code>-2</code>.</strong> The layers invert their direction — the sky moves faster than the ground, creating an unsettling upside-down parallax that breaks the viewer's spatial expectations.</li>
+		<li><strong>Remove <code>overflow: hidden</code> from <code>.parallax-scene</code>.</strong> Layers that move beyond the scene boundary become visible outside the viewport, revealing the behind-the-scenes trick and breaking the framed composition.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>ScrollTrigger <code>scrub: true</code> ties animation progress directly to scroll position.</li>
-		<li>Different <code>y</code> offsets per layer create the parallax depth illusion.</li>
-		<li>Adding <code>filter: blur()</code> to distant layers mimics camera depth-of-field.</li>
-		<li>A speed multiplier lets users control the intensity of the parallax effect.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Parallax creates the illusion of depth by moving layers at different speeds relative to the scroll position. ScrollTrigger with <code>scrub: true</code> binds each layer's <code>y</code> translation directly to scroll progress, so the motion feels physically connected to the user's input rather than playing on a timer. The key insight is that background layers move slowly (small offset) while foreground layers move fast (large offset), mimicking how real-world depth perception works.</p>
+	<p class="prose">Adding <code>filter: blur()</code> to distant layers mimics camera depth-of-field, reinforcing the depth illusion beyond just speed differences. Real cinematographers use shallow focus to draw attention to a subject — the same principle applies here. The ground and text layers stay sharp while mountains and trees soften, creating a visual hierarchy that guides the eye.</p>
+	<p class="prose">The speed multiplier demonstrates a useful pattern: exposing animation parameters as reactive Svelte state. When <code>speedMultiplier</code> changes, the <code>$effect</code> tears down the old ScrollTrigger instances via <code>ctx.revert()</code> and rebuilds them with the new multiplier. This reactive rebuild pattern is how you make GSAP animations respond to user controls in Svelte 5.</p>
+	<p class="next">Next lesson: pinned scroll sections with multi-scene choreography.</p>
 </section>
 
 <style>
@@ -236,19 +243,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	.speed-control {

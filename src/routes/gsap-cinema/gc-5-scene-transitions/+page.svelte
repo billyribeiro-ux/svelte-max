@@ -204,19 +204,26 @@
 		<button type="button" class="cta-button">Get Started Free</button>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Pinned scroll choreography has many moving parts. Breaking individual pieces reveals which config options are load-bearing and which are cosmetic.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>pin: true</code> from the ScrollTrigger config.</strong> The container scrolls away normally while the animation plays in empty space below. Without pinning, scroll-scrubbed animations lose their spatial anchor and the "scenes" concept falls apart.</li>
+		<li><strong>Remove the <code>snap</code> configuration entirely.</strong> The animation scrubs freely without locking to discrete scene positions. Stopping mid-scene leaves the phone half-rotated and features half-visible — proving that snap is what creates clean scene boundaries.</li>
+		<li><strong>Change <code>scrub: 0.8</code> to <code>scrub: 10</code>.</strong> The animation lags far behind the scroll position, creating a sluggish disconnected feeling. High scrub values add so much smoothing that the animation feels like it is ignoring the user's input.</li>
+		<li><strong>Remove all negative position offsets (<code>'-=0.3'</code>, etc.) from the timeline.</strong> Every animation waits for the previous one to fully complete before starting. The choreography loses all its overlap and feels like a slideshow rather than a flowing sequence.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>ScrollTrigger <code>pin: true</code> locks an element in place while the user scrolls through its allocated space.</li>
-		<li><code>scrub</code> ties animation progress directly to scroll position for precise control.</li>
-		<li><code>snap</code> with an array of progress values creates discrete scene stops.</li>
-		<li>Use <code>onUpdate</code> to read scroll progress and drive UI state like active indicators.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">ScrollTrigger's <code>pin: true</code> locks an element in viewport while the user scrolls through an extended scroll distance defined by <code>end: '+=300%'</code>. This creates a virtual canvas three times the viewport height where the scrollbar becomes a timeline scrubber. Combined with <code>scrub: 0.8</code>, the animation tracks scroll position with just enough smoothing to feel polished without feeling laggy.</p>
+	<p class="prose">The <code>snap</code> property accepts an array of progress values — <code>[0, 0.25, 0.5, 0.75, 1]</code> — that define discrete stopping points. When the user releases the scroll, GSAP eases to the nearest snap point, creating clean scene boundaries. The <code>onUpdate</code> callback reads <code>self.progress</code> on every frame and sets a Svelte <code>$state</code> variable, which drives the scene indicator dots reactively without any direct DOM manipulation.</p>
+	<p class="prose">The four-scene timeline demonstrates stacking: <code>fromTo</code> for entrance, <code>to</code> for mid-scene transforms, opacity cross-fades for screen swaps, and <code>back.out(1.7)</code> for the final CTA bounce. Negative position parameters overlap these animations so they feel like one continuous motion rather than four separate acts. This is the Apple product page pattern in miniature.</p>
+	<p class="next">Next lesson: cinematic video hero with layered gradient overlays.</p>
 </section>
 
 <style>
@@ -243,19 +250,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	.pinned-container {

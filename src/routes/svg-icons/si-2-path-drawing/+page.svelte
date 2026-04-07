@@ -208,20 +208,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Path drawing animation relies on a precise relationship between <code>stroke-dasharray</code> and <code>stroke-dashoffset</code>. Break that relationship to see exactly why each piece matters.</p>
+	<ol class="experiments">
+		<li><strong>Set <code>stroke-dasharray</code> to a fixed value like <code>50</code> instead of <code>pathLengths[i]</code>.</strong> The path draws in choppy segments rather than one continuous stroke, revealing that dasharray must equal the full path length for a clean reveal effect.</li>
+		<li><strong>Remove the <code>await</code> keyword before <code>tweens[i].set(0, ...)</code> in the draw function.</strong> All four paths animate simultaneously instead of sequentially, proving that <code>await</code> on <code>Tween.set()</code> is what creates the staggered effect.</li>
+		<li><strong>Change <code>stroke-linecap</code> from <code>"round"</code> to <code>"butt"</code>.</strong> The ends of each stroke become flat and sharp instead of rounded, showing how linecap affects the visual quality of drawing animations.</li>
+		<li><strong>Replace <code>prefersReducedMotion.current ? 0 : DURATION</code> with just <code>DURATION</code>.</strong> The animation ignores the user's motion preference. This demonstrates why the reduced-motion guard is essential for accessibility.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>stroke-dasharray</code> + <code>stroke-dashoffset</code> is the fundamental technique for SVG path drawing animation.</li>
-		<li><code>bind:this</code> captures the SVG path element so you can call <code>getTotalLength()</code> in an <code>$effect</code>.</li>
-		<li><code>Tween</code> from <code>svelte/motion</code> returns a promise from <code>.set()</code>, enabling sequential (staggered) animations with <code>await</code>.</li>
-		<li><code>prefersReducedMotion.current</code> lets you set duration to 0 for users who prefer no animation.</li>
-		<li>Each path needs its own tween instance — one tween per animated value is the Svelte 5 pattern.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The <code>stroke-dasharray</code> plus <code>stroke-dashoffset</code> technique is the foundational SVG drawing animation. By setting dasharray equal to the path's total length and then tweening dashoffset from that length down to zero, the stroke progressively reveals itself as if being drawn by an invisible pen.</p>
+	<p class="prose">Svelte's <code>bind:this</code> gives you a reference to each <code>&lt;path&gt;</code> element so you can call <code>getTotalLength()</code> inside an <code>$effect</code>. Each path needs its own <code>Tween</code> instance because <code>Tween.set()</code> returns a promise, enabling sequential animation with <code>await</code>. This one-tween-per-value pattern is idiomatic Svelte 5.</p>
+	<p class="prose">Accessibility is non-negotiable: <code>prefersReducedMotion.current</code> lets you set the duration to zero so users who prefer reduced motion see the final state instantly without any animation.</p>
+	<p class="next">Next up: SI.3 builds a system of animated icons that toggle between states using CSS transitions on SVG properties.</p>
 </section>
 
 <style>
@@ -259,20 +265,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.btn-row {
 		display: flex;

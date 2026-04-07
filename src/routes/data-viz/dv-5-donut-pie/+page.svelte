@@ -317,20 +317,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Donut and pie charts rely on precise trigonometry. Small mistakes produce dramatic visual bugs. Try each of these to build intuition for SVG arc commands.</p>
+	<ol class="experiments">
+		<li><strong>Change the <code>largeArc</code> flag to always be <code>1</code> (or always <code>0</code>).</strong> Slices smaller than 180 degrees will render as their complement — a 10% slice will appear as a 90% arc. The large-arc flag tells SVG which of the two possible arcs to draw between two points.</li>
+		<li><strong>Remove the <code>- Math.PI / 2</code> offset from the start and end angle calculations.</strong> The chart will start drawing from the 3 o'clock position instead of 12 o'clock. The offset rotates the starting angle to match the conventional top-center origin.</li>
+		<li><strong>Set <code>transform-origin</code> on the slices to <code>0px 0px</code> instead of <code>{'{cx}'}px {'{cy}'}px</code>.</strong> Hovering a slice will scale it from the top-left corner of the SVG, causing it to fly off in a random direction. The transform origin must match the center of the donut for the expand effect to look correct.</li>
+		<li><strong>Make the slice percentages add up to more than 100 (e.g., double Oil to 60%).</strong> Slices will overlap because the cumulative angles exceed a full circle. The chart silently breaks — no error, just a misleading visualization. Always validate that your data sums correctly.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>SVG arc commands (<code>A rx,ry rotation largeArcFlag,sweepFlag x,y</code>) draw pie/donut slices.</li>
-		<li>Cumulative percentages converted to radians determine each slice's start and end angles.</li>
-		<li>A donut uses two arcs (outer clockwise, inner counter-clockwise) connected by lines.</li>
-		<li>The <code>transform: scale()</code> with <code>transform-origin</code> at the center creates the hover-expand effect.</li>
-		<li><code>$derived</code> recalculates all arc paths when toggling between donut and pie (inner radius 0 vs 80).</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SVG arc commands (<code>A rx,ry rotation largeArcFlag,sweepFlag x,y</code>) are the building blocks of pie and donut slices. Each slice's start and end angles come from cumulative percentages converted to radians. The large-arc flag determines which of the two possible arcs to draw between two points on the circle.</p>
+	<p class="prose">A donut chart uses two arcs per slice: an outer arc drawn clockwise and an inner arc drawn counter-clockwise, connected by straight line segments. When <code>innerR</code> is zero, the path simplifies to a pie wedge — a line from center to the outer arc and back. The <code>$derived</code> rune recalculates all arc paths instantly when toggling between modes.</p>
+	<p class="prose">The hover-expand effect uses <code>transform: scale(1.04)</code> with <code>transform-origin</code> set to the chart center. This makes the slice grow outward from the center rather than from the SVG origin. A synchronized legend with <code>onpointerenter</code>/<code>onpointerleave</code> creates a bidirectional highlight between the chart and the text labels.</p>
+	<p class="next">Next lesson: DV.6 makes charts responsive to any container width with zero media queries.</p>
 </section>
 
 <style>
@@ -362,25 +368,14 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
 	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.toolbar {
 		display: flex;

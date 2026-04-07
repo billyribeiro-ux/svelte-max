@@ -273,19 +273,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Responsive animation patterns fail in specific, predictable ways when breakpoint logic is misconfigured. These experiments reveal the failure modes.</p>
+	<ol class="experiments">
+		<li><strong>Remove the entire <code>(max-width: 767px)</code> branch from <code>matchMedia</code>.</strong> Mobile users see no animations at all — elements remain invisible because their initial <code>opacity: 0</code> is never resolved. This proves that each breakpoint needs its own complete animation setup, not just "simplified desktop."</li>
+		<li><strong>Copy the full desktop parallax config into the mobile branch.</strong> The five-layer parallax with pinning runs on mobile, scroll-jacking the touch experience. The page becomes nearly unusable on phones because pinned sections fight with native touch scrolling and the GPU struggles with five animated layers.</li>
+		<li><strong>Overlap the media queries (e.g., use <code>min-width: 700px</code> for both tablet and desktop).</strong> Both branches fire simultaneously at 700-1023px, creating duplicate animations that fight each other. GSAP's <code>matchMedia</code> expects non-overlapping ranges — overlaps cause double-fired triggers and erratic behavior.</li>
+		<li><strong>Remove the <code>ctx.revert()</code> cleanup return from the effect.</strong> Resize from desktop to mobile and back — the old desktop ScrollTrigger instances persist alongside the new mobile fade-ins, causing ghost pins and animations that fire from the wrong breakpoint's configuration.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>ScrollTrigger.matchMedia()</code> defines separate animation sets per breakpoint — GSAP auto-cleans on resize.</li>
-		<li>Mobile should use simple fades, no parallax, and no pinning — scroll-jacking feels wrong on touch.</li>
-		<li>Tablet is the middle ground: fewer layers, shorter durations, no pin.</li>
-		<li>Always test animations at every breakpoint — what looks cinematic on desktop can be nauseating on mobile.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>ScrollTrigger.matchMedia()</code> is GSAP's built-in responsive animation system. You define separate animation configurations for each breakpoint range, and GSAP automatically tears down and rebuilds animations when the viewport crosses a boundary. This is cleaner than wrapping GSAP calls in your own <code>window.matchMedia</code> listeners because GSAP handles the cleanup of ScrollTrigger instances, pinned elements, and progress states internally.</p>
+	<p class="prose">The three-tier strategy is a proven pattern: desktop gets the full cinematic treatment with multi-layer parallax and pinned sections; tablet drops to fewer layers with no pinning and shorter animation durations; mobile uses simple fade-in reveals with no parallax and no scroll-jacking. Touch devices have fundamentally different scroll physics — momentum scrolling, overscroll bounce, and imprecise positioning — that make pinned scroll-scrubbed animations feel broken rather than premium.</p>
+	<p class="prose">Testing at every breakpoint is not optional. An animation that looks cinematic on a 27-inch display with a trackpad can be nauseating on a 5-inch screen with touch input. The breakpoint indicator in this demo makes viewport changes visible during development. In production, use browser DevTools' responsive mode and throttle the CPU to simulate lower-powered devices where GPU-heavy animations like parallax can drop below 60fps.</p>
+	<p class="next">Next lesson: performance optimization and accessibility for cinematic animation.</p>
 </section>
 
 <style>
@@ -323,19 +330,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	/* Breakpoint indicator */

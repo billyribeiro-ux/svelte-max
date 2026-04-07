@@ -326,20 +326,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Line charts have subtle moving parts. Break each one to understand why it matters.</p>
+	<ol class="experiments">
+		<li><strong>Change <code>buildPath</code> to use <code>M</code> for every point instead of <code>L</code> after the first.</strong> You will get disconnected dots instead of a continuous line. The <code>M</code> command moves the pen without drawing, while <code>L</code> draws a line segment to the next coordinate.</li>
+		<li><strong>Remove the <code>onpointermove</code> handler from the SVG element.</strong> Hovering over the chart will show nothing — no reference line, no tooltip. The nearest-point detection depends entirely on tracking the pointer position relative to the SVG coordinate space.</li>
+		<li><strong>Set <code>anomalyMin</code> and <code>anomalyMax</code> to the same value (e.g., both <code>0</code>).</strong> The <code>scaleY</code> function will divide by zero, producing <code>NaN</code> coordinates. The lines and dots will vanish because SVG cannot render elements at <code>NaN</code> positions.</li>
+		<li><strong>Remove the <code>stroke-linejoin: round</code> from the <code>.data-line</code> CSS.</strong> Sharp corners appear at each data point where the line changes direction. Round joins soften the path, which is the visual standard for time-series data.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>The <code>&lt;path d="M...L..."&gt;</code> element draws lines through data points — the foundation of all line charts.</li>
-		<li><code>$derived</code> computes path strings and point positions reactively from data.</li>
-		<li>Pointer tracking (<code>onpointermove</code>) on the SVG finds the nearest data point for hover interactions.</li>
-		<li>Multiple <code>&lt;path&gt;</code> elements with different strokes create multi-series charts.</li>
-		<li>In-SVG tooltips (reference line + text) keep everything in a single coordinate system.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">The SVG <code>&lt;path&gt;</code> element with its <code>d</code> attribute is the foundation of every line chart. You build the path string from data by mapping each point to an <code>M</code> (move) or <code>L</code> (line-to) command with scaled x/y coordinates. Svelte's <code>$derived</code> rune recomputes the entire path string reactively whenever the underlying data changes.</p>
+	<p class="prose">Pointer tracking via <code>onpointermove</code> on the SVG element enables hover interactions. The handler converts screen coordinates to SVG coordinates, then finds the nearest data point using a simple distance loop. This pattern works for any chart type where you need to highlight the closest data point to the cursor.</p>
+	<p class="prose">Multiple <code>&lt;path&gt;</code> elements with different stroke colors create multi-series charts. In-SVG tooltips — a reference line plus text elements — keep everything in a single coordinate system, avoiding the complexity of absolutely-positioned HTML overlays for simple cases.</p>
+	<p class="next">Next lesson: DV.4 adds area fills and sparklines to the line chart toolkit.</p>
 </section>
 
 <style>
@@ -371,25 +377,14 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
 	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.chart {
 		width: 100%;

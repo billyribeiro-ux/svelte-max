@@ -210,19 +210,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Grid staggers depend on GSAP knowing the spatial layout of your elements. Feed it wrong information and the patterns break in instructive ways.</p>
+	<ol class="experiments">
+		<li><strong>Change <code>grid: [6, 6]</code> to <code>grid: [1, 36]</code>.</strong> GSAP now thinks all 36 elements are in a single row. The "center" ripple becomes a linear outward spread from the middle element, and "edges" starts from both ends of a flat line instead of the grid perimeter.</li>
+		<li><strong>Set <code>each: 2</code> instead of <code>each: 0.04</code> in the stagger config.</strong> The total animation duration explodes to over 70 seconds. The first cells appear immediately but the last ones wait ages, demonstrating that <code>each</code> is the per-element delay and total time scales linearly with element count.</li>
+		<li><strong>Remove <code>gsap.set(validEls, {'{ scale: 0, opacity: 0 }'})</code> before the tween.</strong> Cells start at their natural visible state so the "to" tween animates from 1 to 1 — nothing moves. The initial reset is critical because <code>gsap.to</code> animates FROM the current state, not from zero.</li>
+		<li><strong>Replace <code>back.out(1.7)</code> with <code>linear</code> on the grid tween.</strong> The cells scale up mechanically without any overshoot or bounce. The playful, springy feel disappears entirely, proving that the ease does most of the emotional heavy-lifting in stagger animations.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>stagger.grid</code> tells GSAP the element layout, enabling 2D-aware patterns like <code>"center"</code> and <code>"edges"</code>.</li>
-		<li><code>from: "random"</code> shuffles the stagger order for an organic, non-deterministic feel.</li>
-		<li>Function-based delays (<code>Math.sin(i * 0.3) * 0.2</code>) create custom wave patterns impossible with built-in staggers.</li>
-		<li>For large grids (50+), GSAP's batched stagger property is more performant than manually looping with <code>delay</code>.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">GSAP's stagger system goes far beyond flat arrays. The <code>grid</code> parameter tells GSAP the 2D layout of your elements, enabling spatial patterns like <code>"center"</code> (ripple outward from the middle cell), <code>"edges"</code> (converge inward from the perimeter), and <code>"random"</code> (shuffled order for organic reveals). GSAP calculates the Euclidean distance from the origin point to each cell and uses that distance to compute the delay.</p>
+	<p class="prose">The wave pattern demonstrates function-based delays that go beyond what built-in stagger presets offer. By computing <code>Math.sin(i * 0.3) * 0.2 + (i * 0.02)</code>, each cell gets a delay that combines a sinusoidal oscillation with a linear ramp, producing a wave that sweeps diagonally across the grid. You can create spiral, checkerboard, or any other custom pattern by writing the right delay function.</p>
+	<p class="prose">For grids with 50+ elements, GSAP's declarative stagger property is significantly more performant than manually looping and calling <code>gsap.to</code> per element. The declarative approach creates a single tween that GSAP batches internally, reducing overhead and keeping the animation thread clear. Combined with <code>will-change: transform</code> and the <code>back.out</code> ease, even a 36-cell grid animates at 60fps.</p>
+	<p class="next">Next lesson: scroll-driven data storytelling with reactive state.</p>
 </section>
 
 <style>
@@ -260,19 +267,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	.section-title {

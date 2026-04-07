@@ -259,19 +259,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Performance and accessibility are invisible when done right and catastrophic when done wrong. These experiments make the impact tangible.</p>
+	<ol class="experiments">
+		<li><strong>Add <code>will-change: transform, opacity, filter, box-shadow</code> to every animated element.</strong> The browser promotes everything to GPU layers, consuming massive VRAM. On mobile devices or integrated GPUs, this can actually cause worse performance than no <code>will-change</code> at all — proving that the property is a targeted hint, not a performance blanket.</li>
+		<li><strong>Add <code>filter: blur(2px)</code> to the smooth-side animation.</strong> The previously smooth 60fps box starts showing frame drops identical to the janky side, because <code>filter</code> forces per-frame rasterization on the main thread regardless of other optimizations.</li>
+		<li><strong>Remove the <code>prefersReducedMotion</code> check entirely and test with reduced motion enabled in OS settings.</strong> Animations play at full intensity for users who have explicitly requested less motion. For vestibular disorder sufferers, this can cause nausea and dizziness — accessibility is not optional polish.</li>
+		<li><strong>Replace <code>gsap.set(elements, {'{ opacity: 1, y: 0 }'})</code> with just <code>return</code> in the reduced motion branch.</strong> Elements stay at their initial hidden state (<code>opacity: 0</code>) and the page appears blank. This is the most common reduced motion mistake — disabling animation without showing the final state leaves content inaccessible.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Only animate <code>transform</code> and <code>opacity</code> — these run on the compositor thread without triggering layout or paint.</li>
-		<li><code>filter: blur()</code> and <code>box-shadow</code> animations force per-frame repaints — use sparingly.</li>
-		<li><code>will-change: transform</code> promotes an element to its own compositor layer but costs GPU memory.</li>
-		<li><code>prefersReducedMotion</code> should show a designed static state, not a blank page — use <code>gsap.set()</code> to place everything at its final position.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Browser rendering has three phases: layout (geometry), paint (pixels), and composite (GPU layers). Only <code>transform</code> and <code>opacity</code> skip layout and paint entirely, running exclusively on the compositor thread. This means they can animate at 60fps even when the main thread is busy with JavaScript. Properties like <code>filter</code>, <code>box-shadow</code>, <code>width</code>, and <code>top</code> trigger paint or layout on every frame, creating the jank visible in the side-by-side comparison.</p>
+	<p class="prose"><code>will-change: transform</code> tells the browser to promote an element to its own GPU layer before the animation starts, avoiding the cost of layer promotion mid-animation. But every layer consumes video memory, so applying <code>will-change</code> to hundreds of elements can exhaust VRAM and cause worse performance than no hint at all. The rule is to apply it only to elements that are about to animate, and remove it (or let GSAP manage it) when the animation completes.</p>
+	<p class="prose">Accessibility means showing a designed static state, not a blank page. When <code>prefersReducedMotion.current</code> is true, use <code>gsap.set()</code> to place every element at its final animated position — opacity 1, transforms zeroed, counters at their end values. The user sees the complete page exactly as it would look after all animations finish. This respects the user's preference while preserving full content access and visual design integrity.</p>
+	<p class="next">Congratulations — you have completed the GSAP Cinema series.</p>
 </section>
 
 <style>
@@ -309,19 +316,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	.section-title {

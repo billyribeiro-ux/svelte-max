@@ -206,20 +206,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Icon animation systems rely on the interplay between CSS transitions and Svelte's <code>class:</code> directive. Break individual pieces to understand what each layer contributes.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>transform-origin: center</code> from the <code>.ham-line</code> CSS rule.</strong> The hamburger lines rotate around the wrong pivot point, creating a disjointed animation instead of a clean X shape. This proves that transform-origin is critical for rotation-based icon animations.</li>
+		<li><strong>Delete the <code>aria-label</code> binding on the hamburger button.</strong> Screen readers will announce a generic "button" with no context about what clicking it does. Toggle the hamburger and check devtools to see the accessibility gap firsthand.</li>
+		<li><strong>Change the sun/moon <code>transition</code> duration from <code>400ms</code> to <code>0ms</code>.</strong> The icon snaps instantly between states with no smooth interpolation. This highlights how transition duration creates the perception of a fluid, intentional UI.</li>
+		<li><strong>Replace <code>class:open={hamburgerOpen}</code> with a static <code>class="open"</code>.</strong> The hamburger is permanently stuck in the X state because the class no longer responds to state changes. This demonstrates how Svelte's reactive class directive drives the entire animation system.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Icon animations use CSS transitions on SVG attributes (<code>transform</code>, <code>opacity</code>) toggled by <code>$state</code> booleans.</li>
-		<li>The hamburger-to-X pattern: rotate top/bottom lines 45deg and fade the middle line.</li>
-		<li>Sun-to-moon: scale rays to zero, shift the core, and reveal a mask circle for the crescent.</li>
-		<li><code>aria-label</code> must update dynamically so screen readers announce the current action, not the icon shape.</li>
-		<li>Using <code>class:</code> directives with CSS transitions is simpler and more performant than JavaScript-driven animation for binary state toggles.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Icon animations use CSS transitions on SVG properties like <code>transform</code> and <code>opacity</code>, toggled by <code>$state</code> booleans through Svelte's <code>class:</code> directive. The hamburger-to-X pattern rotates the top and bottom lines 45 degrees in opposite directions while fading the middle line to zero opacity. The sun-to-moon pattern scales rays to zero, shifts the core circle, and reveals a mask circle to create the crescent shape.</p>
+	<p class="prose">Accessibility is a first-class concern in icon systems. The <code>aria-label</code> attribute must update dynamically so that screen readers announce the current action ("Close menu") rather than describing the icon's visual shape. Without this binding, the icon is semantically meaningless to assistive technology users.</p>
+	<p class="prose">Using <code>class:</code> directives with CSS transitions is both simpler and more performant than JavaScript-driven animation for binary state toggles. The browser's compositor handles the interpolation on the GPU, keeping the main thread free for other work.</p>
+	<p class="next">Next up: SI.4 morphs between entirely different SVG shapes by interpolating coordinate arrays.</p>
 </section>
 
 <style>
@@ -257,20 +263,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.icon-grid {
 		display: grid;

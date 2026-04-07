@@ -192,19 +192,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Intentionally breaking things is the fastest way to understand how GSAP easing actually works under the hood. Try each of these experiments, observe what happens, then undo your change before moving on.</p>
+	<ol class="experiments">
+		<li><strong>Remove the ease property entirely from the solo tween.</strong> GSAP defaults to <code>power1.out</code> — compare this to explicit eases and notice how subtle the default curve really is.</li>
+		<li><strong>Set the elastic ease amplitude to 10 (<code>elastic.out(10, 0.3)</code>).</strong> The box will wildly overshoot the track, revealing how amplitude controls the bounce intensity beyond the target value.</li>
+		<li><strong>Pass an invalid string like <code>ease: "banana"</code>.</strong> GSAP silently falls back to a linear tween with no easing curve, making the animation feel robotic and lifeless.</li>
+		<li><strong>Change the race duration to 0.1 seconds.</strong> At extremely short durations, easing differences become invisible because there are not enough frames to express the curve — proving that easing needs time to breathe.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>CustomEase.create()</code> defines reusable bezier eases from SVG path data.</li>
-		<li>Built-in eases like <code>elastic.out(1, 0.3)</code> accept amplitude and period params.</li>
-		<li>Comparing eases side-by-side reveals how dramatically timing curves change feel.</li>
-		<li>Always wrap GSAP in <code>$effect</code> with <code>gsap.context()</code> and clean up via <code>ctx.revert()</code>.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Custom easing is the single biggest lever for giving animations personality. <code>CustomEase.create()</code> accepts an SVG path string that defines any curve you can imagine, and since GSAP 3.12 it ships for free. Built-in physics eases like <code>elastic.out(1, 0.3)</code> accept amplitude and period parameters that let you fine-tune overshoot and oscillation without touching bezier math.</p>
+	<p class="prose">The race comparison makes the impact visceral. Eases that look nearly identical on a graph — <code>power1.out</code> versus <code>power4.out</code> — feel completely different when applied to the same motion. Bounce and elastic are not interchangeable either: bounce simulates a ball hitting a floor, while elastic simulates a spring that overshoots and settles. Choosing the right ease is a design decision, not a technical one.</p>
+	<p class="prose">Every GSAP animation in Svelte 5 follows the same lifecycle: create inside <code>$effect</code>, scope with <code>gsap.context()</code>, and return <code>ctx.revert()</code> for cleanup. This pattern prevents memory leaks and ensures animations are torn down when the component unmounts or reactive dependencies change.</p>
+	<p class="next">Next lesson: character-level text animation without the SplitText plugin.</p>
 </section>
 
 <style>
@@ -242,19 +249,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	.section-title {

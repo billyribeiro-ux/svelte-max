@@ -346,19 +346,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Responsive charts rely on a reactive measurement loop. Break the loop to see how things fall apart.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>bind:clientWidth</code> from the chart container and hardcode a width.</strong> The chart will no longer respond to container resizing. Drag the slider or resize the window — nothing changes. The binding is the reactive bridge between CSS layout and SVG rendering.</li>
+		<li><strong>Remove the <code>{'{#if smallWidth > 0}'}</code> guard.</strong> On first render, the chart will flash with zero-width bars because <code>clientWidth</code> starts at zero before the element is measured. The guard prevents rendering until a real measurement is available.</li>
+		<li><strong>Use a fixed <code>viewBox</code> width instead of the measured <code>containerWidth</code>.</strong> The chart will either clip or leave empty space because the SVG coordinate system no longer matches the container. The key insight is that the SVG must size itself to match its container, not the other way around.</li>
+		<li><strong>Remove the conditional font size logic in <code>labelSize</code> and use a fixed <code>12px</code>.</strong> At narrow widths, labels will overlap and become unreadable. Responsive charts need responsive typography — not just responsive geometry.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>bind:clientWidth</code> gives you a reactive container width — no ResizeObserver boilerplate.</li>
-		<li>Derive bar width, font sizes, and tick counts from the container width.</li>
-		<li>The same data and same scale logic render perfectly at 180px or 1200px.</li>
-		<li>Zero media queries needed — the chart adapts via reactive derivation.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Svelte's <code>bind:clientWidth</code> gives you a reactive container width with zero boilerplate — no manual <code>ResizeObserver</code> setup or cleanup. The measured width becomes the single source of truth from which all chart dimensions, bar widths, font sizes, and label truncation rules are derived.</p>
+	<p class="prose">The same data and the same scale logic render perfectly at 180 pixels or 1200 pixels. By computing the SVG's <code>viewBox</code> and all positioning from the container width, the chart adapts to any size without a single media query. This is the pattern used by The Pudding and other data journalism teams for responsive interactives.</p>
+	<p class="prose">The <code>{'{#if width > 0}'}</code> guard is essential because <code>clientWidth</code> starts at zero before the browser's first layout pass. Rendering with zero width produces invisible or broken elements. The guard delays rendering by exactly one frame, ensuring the chart only appears once real measurements are available.</p>
+	<p class="next">Next lesson: DV.7 adds smooth animated transitions when chart data changes.</p>
 </section>
 
 <style>
@@ -372,9 +379,10 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.chart-container {
 		overflow: hidden;

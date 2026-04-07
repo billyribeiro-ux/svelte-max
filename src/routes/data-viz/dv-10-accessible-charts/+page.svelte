@@ -325,16 +325,14 @@
 		</table>
 	</div>
 
-	<h3>Accessibility checklist</h3>
-	<ul>
-		<li><code>role="img"</code> + <code>aria-label</code> on the SVG describes the chart's key insight.</li>
-		<li><code>&lt;desc&gt;</code> inside the SVG provides a longer text summary for screen readers.</li>
-		<li>Each bar has <code>tabindex="0"</code> and <code>aria-label</code> — keyboard users tab through values.</li>
-		<li>A hidden <code>&lt;table&gt;</code> provides raw data as a fallback — toggled visible with a button.</li>
-		<li>Decorative gridlines and axis labels use <code>aria-hidden="true"</code>.</li>
-		<li>Focus and hover both highlight bars — no mouse-only interactions.</li>
-	</ul>
-
+	<h2>Break it on purpose</h2>
+	<p class="prose">Accessibility is invisible until you break it. These experiments reveal what screen readers and keyboard users actually experience.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>role="img"</code> and <code>aria-label</code> from the SVG element.</strong> A screen reader will either skip the chart entirely or attempt to read every SVG element as a separate item, producing an incomprehensible stream of coordinates and attributes. The role and label give the chart a meaningful identity.</li>
+		<li><strong>Remove <code>tabindex="0"</code> from the bar groups.</strong> Try navigating the chart with the Tab key — the bars become unreachable. Keyboard-only users lose the ability to explore individual data points. Without tabindex, SVG elements are not part of the focus order.</li>
+		<li><strong>Remove the <code>aria-hidden="true"</code> wrapper from gridlines and axis labels.</strong> A screen reader will now announce every gridline and tick label as separate elements, burying the actual data in a flood of decorative noise. Marking decorative elements as hidden is essential for usability.</li>
+		<li><strong>Delete the hidden <code>&lt;table&gt;</code> element entirely.</strong> Screen reader users lose their only way to access the raw data in a structured format. The table is the accessible fallback that makes the chart's information available to users who cannot see the visual representation.</li>
+	</ol>
 
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
@@ -342,13 +340,11 @@
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Use <code>role="img"</code> and <code>aria-label</code> on SVG charts to convey the key insight to screen readers.</li>
-		<li>Provide a hidden <code>&lt;table&gt;</code> with raw data as a fallback for assistive technologies.</li>
-		<li>Mark decorative elements like gridlines with <code>aria-hidden="true"</code> to reduce screen reader noise.</li>
-		<li>Make interactive elements keyboard-accessible with <code>tabindex="0"</code> and visible focus indicators.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Accessible charts require a multi-layered approach. <code>role="img"</code> with <code>aria-label</code> on the SVG gives screen readers a concise description of the chart's key insight. A <code>&lt;desc&gt;</code> element inside the SVG provides a longer summary. These two layers ensure that assistive technologies can convey the chart's meaning without seeing it.</p>
+	<p class="prose">A visually-hidden <code>&lt;table&gt;</code> with raw data serves as the structured fallback for users who cannot interpret the visual representation. The "View as table" button toggles visibility for sighted users who prefer tabular data. Decorative elements like gridlines and axis labels are wrapped in <code>aria-hidden="true"</code> to prevent screen reader noise.</p>
+	<p class="prose">Keyboard accessibility means every interactive element has <code>tabindex="0"</code> and visible focus indicators. Both <code>onfocus</code> and <code>onpointerenter</code> highlight bars, ensuring that no interaction is mouse-only. This dual-input pattern is the baseline for WCAG 2.1 AA compliance in data visualization.</p>
+	<p class="next">You have completed the data visualization track. Apply these patterns in the project lesson to build a complete interactive chart.</p>
 </section>
 
 <style>
@@ -362,9 +358,10 @@
 	.concept strong { color: var(--color-text); }
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	svg {
 		display: block;

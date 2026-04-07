@@ -154,20 +154,26 @@
 		<div class="grain" aria-hidden="true"></div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">The cinematic hero is a carefully layered composition. Pull out individual layers and the entire illusion degrades in revealing ways.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>.gradient-overlay</code> div entirely.</strong> The text becomes unreadable against the moving background because there is no contrast layer. The overlay is not decoration — it is the legibility infrastructure for the entire hero section.</li>
+		<li><strong>Remove <code>perspective: 600px</code> from <code>.headline</code>.</strong> The <code>rotateX</code> on each character stops producing any visible 3D tilt. Without a perspective context, 3D rotation values are ignored and the text just fades in flat.</li>
+		<li><strong>Change the timeline delay from <code>0.5</code> to <code>0</code>.</strong> The animation starts before the page has visually settled, causing the hero to feel rushed. That half-second delay gives the eye time to orient before the first character appears — a small number with outsized impact on perceived polish.</li>
+		<li><strong>Remove all <code>will-change: transform, opacity</code> from <code>.hero-char</code>.</strong> On lower-powered devices, the staggered 3D character animation may start to jank as the browser promotes and de-promotes layers on every frame instead of keeping them on the GPU from the start.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Orchestrate multi-element hero animations with a GSAP <code>timeline</code> and precise offsets.</li>
-		<li>Character-level stagger with 3D rotation (<code>rotateX</code>) creates cinematic text reveals.</li>
-		<li>OKLCH gradient overlays produce perceptually smooth darkening over dynamic backgrounds.</li>
-		<li>CSS keyframe animations can simulate video backgrounds when real video is unavailable.</li>
-		<li><code>prefersReducedMotion</code> makes all elements visible instantly without animation.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">A cinematic video hero is a layered composition: animated background, OKLCH gradient overlay for contrast, content with staggered reveals, and a film-grain texture for analog warmth. The GSAP timeline orchestrates the sequence — characters enter with <code>rotateX</code> and <code>y</code> offset, the subtitle fades up with a slight overlap, and the CTA bounces in with <code>back.out(1.7)</code>. Negative position parameters (<code>'-=0.2'</code>) create the overlap that makes it feel like one continuous gesture.</p>
+	<p class="prose">The gradient overlay uses OKLCH color space for perceptually smooth darkening. Unlike RGB gradients that can produce muddy mid-tones, OKLCH maintains consistent perceived lightness across the gradient stops. The overlay goes from near-opaque at the bottom (where text lives) to transparent in the middle (where the background shines through), creating a natural vignette that guides the eye to the content.</p>
+	<p class="prose">CSS keyframe animations on the background layers simulate a living video backdrop without any video file. Three radial gradients drift on independent timers (12s, 15s, and 18s) with alternating direction, creating organic motion that never quite repeats. For production, you would swap these for an actual <code>&lt;video&gt;</code> element, but the overlay and content animation patterns remain identical.</p>
+	<p class="next">Next lesson: advanced stagger choreography with grid-aware patterns.</p>
 </section>
 
 <style>
@@ -194,19 +200,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	/* ── Hero Section ── */

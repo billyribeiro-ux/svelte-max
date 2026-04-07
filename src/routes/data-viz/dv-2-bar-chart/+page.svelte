@@ -232,20 +232,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Deliberately breaking the bar chart reveals how each piece contributes to the whole. Try each modification, observe the result, then undo it.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>(item.country)</code> key from the <code>{'{#each}'}</code> block.</strong> Toggle the sort button — bars will no longer animate smoothly to their new positions. Without a keyed each block, Svelte cannot track which DOM node belongs to which data item, so it destroys and recreates elements instead of moving them.</li>
+		<li><strong>Change <code>scaleW</code> to divide by a fixed value like <code>5000</code> instead of <code>maxEmissions</code>.</strong> China's bar will overflow the chart area because the scale no longer adapts to the data range. This shows why data-driven scales are essential.</li>
+		<li><strong>Remove the <code>transition: transform</code> from the bar group's inline style.</strong> Sorting still works, but bars jump instantly to new positions. The CSS transition is what creates the smooth reordering animation.</li>
+		<li><strong>Set all bar colors to the same value.</strong> The chart becomes harder to scan because you lose the visual association between each bar and its country label. Distinct hues per category are not decoration — they are a readability feature.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>&lt;rect&gt;</code> elements with computed width encode quantitative data as horizontal bars.</li>
-		<li>Sorting state (<code>$state</code>) with <code>$derived</code> arrays drives animated reordering via CSS <code>transition: transform</code>.</li>
-		<li>Gridlines as dashed <code>&lt;line&gt;</code> elements provide reference scale.</li>
-		<li>Value labels on each bar provide precise readability — essential for data journalism.</li>
-		<li>OKLCH colors with distinct hues give each country a unique visual identity.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Horizontal bar charts encode quantitative data as <code>&lt;rect&gt;</code> widths computed from a linear scale function. The scale maps each value to a pixel width relative to the maximum, ensuring bars always fit within the plot area regardless of the data range.</p>
+	<p class="prose">Sorting state managed with <code>$state</code> feeds into a <code>$derived</code> array that reorders the data. Keyed <code>{'{#each}'}</code> blocks combined with CSS <code>transition: transform</code> create smooth animated reordering — Svelte moves existing DOM nodes rather than recreating them.</p>
+	<p class="prose">Value labels placed at the end of each bar provide precise readability, which is essential for data journalism where readers need exact numbers. Dashed gridlines offer reference scale without visual clutter, and OKLCH colors with distinct hues give each country a unique identity that persists across sort order changes.</p>
+	<p class="next">Next lesson: DV.3 draws multi-series line charts with hover tooltips.</p>
 </section>
 
 <style>
@@ -277,25 +283,14 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
 	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.toolbar {
 		display: flex;

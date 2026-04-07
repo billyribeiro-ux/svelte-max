@@ -294,20 +294,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Line art animation orchestrates many paths with timing and color. Break individual coordination mechanisms to understand the architecture.</p>
+	<ol class="experiments">
+		<li><strong>Change <code>await tweens[i].set(0, ...)</code> to <code>tweens[i].set(0, ...)</code> (remove <code>await</code>).</strong> All 10 paths draw simultaneously in a chaotic burst instead of the elegant sequential reveal. This shows that <code>await</code> is the synchronization mechanism for the entire choreography.</li>
+		<li><strong>Set <code>handDrawn</code> to <code>true</code> and then change the random multiplier in <code>dashArray</code> from <code>0.6</code> to <code>10</code>.</strong> The strokes become wildly broken with huge gaps, creating an illegible mess. This reveals how subtle the randomization must be to achieve an organic feel without destroying readability.</li>
+		<li><strong>Remove the <code>colorTweens[i].set(1, ...)</code> call inside the draw loop.</strong> All paths stay monochrome gray even after drawing completes. The two-layer animation system (stroke reveal + color transition) becomes apparent when you remove the second layer.</li>
+		<li><strong>Change <code>STROKE_DURATION</code> from <code>500</code> to <code>50</code>.</strong> Each path draws nearly instantly, and the overall animation feels rushed and mechanical. Experiment with values between 200 and 1000 to find the sweet spot where each path has visual weight.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Sequential path animation: <code>await</code> each <code>Tween.set()</code> to draw paths one after another.</li>
-		<li>Color transitions: start monochrome, then tween to OKLCH colors after each path completes for a reveal effect.</li>
-		<li>Hand-drawn effect: randomize <code>stroke-dasharray</code> segments to break the mechanical perfection of vector lines.</li>
-		<li>Progress tracking: increment a counter after each path completes to drive a progress bar UI.</li>
-		<li>This pattern scales to any illustration — more paths just means a longer sequence, the code structure stays the same.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Sequential path animation uses <code>await</code> on each <code>Tween.set()</code> call to draw paths one after another in a choreographed sequence. After each path completes its stroke reveal, a separate color tween transitions the stroke from monochrome to its final OKLCH color, creating a two-layer animation effect that feels polished and intentional.</p>
+	<p class="prose">The hand-drawn effect works by randomizing <code>stroke-dasharray</code> segments to break the mechanical perfection of vector lines. The randomization must be subtle: small enough to create an organic feel, large enough to be perceptible. A progress counter incremented after each path completion drives the progress bar UI, giving users a clear sense of how far through the animation they are.</p>
+	<p class="prose">This pattern scales to any illustration regardless of complexity. More paths simply mean a longer sequence; the code structure remains identical. Whether it is a floor plan with 10 paths or a detailed portrait with 200, the architecture does not change.</p>
+	<p class="next">Next up: SI.6 builds loading spinners and progress indicators from pure SVG and CSS keyframes.</p>
 </section>
 
 <style>
@@ -345,20 +351,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.btn-row {
 		display: flex;

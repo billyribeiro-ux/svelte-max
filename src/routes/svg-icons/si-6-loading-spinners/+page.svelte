@@ -196,20 +196,26 @@
 		</p>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Loading spinners combine CSS keyframes, SVG geometry, and accessibility concerns. Break each layer to understand what it contributes to the final result.</p>
+	<ol class="experiments">
+		<li><strong>Change the circular spinner's <code>stroke-dasharray</code> from <code>80 126</code> to <code>200 200</code>.</strong> The spinner becomes a full circle that rotates without the characteristic gap. The dasharray ratio is what creates the "partial arc" illusion that makes circular spinners visually effective.</li>
+		<li><strong>Remove the staggered <code>animation-delay</code> values from the three dots.</strong> All three dots pulse in unison instead of creating the wave-like rhythm. The delay offset between elements is the entire mechanism behind sequential loading patterns.</li>
+		<li><strong>Delete the <code>reducedMotion</code> conditional rendering around the spinner ring.</strong> The spinner animates even when the user has requested reduced motion. Check your OS accessibility settings to see this violation in action.</li>
+		<li><strong>Change the progress bar Tween duration from <code>400</code> to <code>0</code>.</strong> The progress bar snaps instantly to each new value instead of smoothly interpolating. This shows how even a short tween duration adds perceived quality to determinate progress indicators.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li><code>stroke-dasharray</code> + CSS <code>@keyframes rotate</code> produces a classic circular spinner from a single <code>&lt;circle&gt;</code>.</li>
-		<li>Staggered <code>animation-delay</code> on identical elements creates the pulsing-dots loading pattern.</li>
-		<li>An animated <code>&lt;linearGradient&gt;</code> sweep across <code>&lt;rect&gt;</code> elements creates skeleton shimmer without JavaScript.</li>
-		<li><code>Tween</code> from <code>svelte/motion</code> smoothly interpolates the progress bar width as the slider value changes.</li>
-		<li><code>prefersReducedMotion</code> must gate all animation — show static shapes instead of spinning/pulsing when the user prefers reduced motion.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">A circular spinner is built from a single <code>&lt;circle&gt;</code> with <code>stroke-dasharray</code> set to create a partial arc, then rotated with a CSS <code>@keyframes</code> animation. Pulsing dots use staggered <code>animation-delay</code> on identical circle elements to create the wave-like rhythm that signals ongoing activity. Skeleton shimmers animate a <code>&lt;linearGradient&gt;</code> position across placeholder rectangles, requiring zero JavaScript.</p>
+	<p class="prose">Determinate progress bars use <code>Tween</code> from <code>svelte/motion</code> to smoothly interpolate the bar width as the underlying value changes. Even a 400ms tween adds a significant quality improvement over instant snapping, making the progress feel connected to real work rather than arbitrary jumps.</p>
+	<p class="prose">Every animated loading indicator must respect <code>prefersReducedMotion</code>. When the user has requested reduced motion, show static shapes instead of spinning or pulsing elements. This is not optional polish; it is an accessibility requirement that prevents vestibular discomfort.</p>
+	<p class="next">Next up: SI.7 builds a library of micro-interaction patterns like checkmark draws, heart fills, and toggle switches.</p>
 </section>
 
 <style>
@@ -247,20 +253,9 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.spinner-grid {
 		display: grid;

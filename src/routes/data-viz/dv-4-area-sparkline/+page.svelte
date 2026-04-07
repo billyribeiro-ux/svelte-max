@@ -373,20 +373,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Area charts and sparklines share the same math. Break them to see exactly where the line between a line chart and an area chart lives.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>L$&#123;plotW&#125;,$&#123;plotH&#125; L0,$&#123;plotH&#125; Z</code> closure from the area path.</strong> The filled area disappears and you get just a line chart. Those three commands close the path back to the baseline — without them, SVG has no enclosed shape to fill.</li>
+		<li><strong>Delete the <code>&lt;linearGradient&gt;</code> from <code>&lt;defs&gt;</code> and use a solid <code>fill</code> color instead.</strong> The area becomes a heavy opaque block that obscures the gridlines. The gradient's fade-to-transparent is what keeps the fill subtle enough to not overwhelm the line itself.</li>
+		<li><strong>Change the sparkline dimensions from <code>60x20</code> to <code>60x200</code>.</strong> The sparkline balloons into a full-sized chart inside the KPI card, breaking the layout. Sparklines work because they are small enough to be read as shapes rather than precise data.</li>
+		<li><strong>Set all four metrics to the same <code>color</code> value.</strong> When you click between KPI cards, you can no longer visually confirm which metric is selected in the area chart. Color consistency between the selector and the chart is a critical UX connection.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>An area chart closes the line path back to the baseline with <code>L xN,plotH L 0,plotH Z</code>.</li>
-		<li><code>&lt;linearGradient&gt;</code> in <code>&lt;defs&gt;</code> creates the fade-to-transparent fill effect.</li>
-		<li>Sparklines are tiny area charts (60x20px) — same math, no axes, embedded in KPI cards.</li>
-		<li><code>$state</code> tracks which metric is selected; clicking a card switches the full chart.</li>
-		<li>Percent-change pills with conditional coloring communicate trend direction at a glance.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">An area chart is a line chart with one addition: the path closes back to the baseline with <code>L xN,plotH L 0,plotH Z</code>, creating an enclosed shape that SVG can fill. A <code>&lt;linearGradient&gt;</code> defined in <code>&lt;defs&gt;</code> provides the fade-to-transparent effect that keeps the fill subtle and readable.</p>
+	<p class="prose">Sparklines are the same math at a tiny scale — 60 by 20 pixels with no axes or labels. Edward Tufte's concept communicates trend at a glance. The <code>sparklinePath</code> and <code>sparklineStroke</code> functions normalize data to the viewBox dimensions, making sparklines work with any value range.</p>
+	<p class="prose">Clicking a KPI card updates <code>selectedIdx</code> via <code>$state</code>, which triggers the full area chart to re-derive its path, gradient, and axis labels from the newly selected metric. Percent-change pills with conditional green/red coloring communicate trend direction instantly without requiring the reader to study the chart shape.</p>
+	<p class="next">Next lesson: DV.5 tackles the geometry of donut and pie charts with SVG arc commands.</p>
 </section>
 
 <style>
@@ -418,25 +424,14 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
-	}
-	ul {
-		list-style: disc;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
-		line-height: 1.6;
-		margin: 0;
-	}
 	@media (min-width: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
 	}
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.kpi-grid {
 		display: grid;

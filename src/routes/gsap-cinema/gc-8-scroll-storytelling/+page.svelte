@@ -279,19 +279,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Scroll storytelling depends on precise coordination between sticky panels, scroll triggers, and reactive state. Misalign any one piece and the narrative falls apart.</p>
+	<ol class="experiments">
+		<li><strong>Remove <code>position: sticky</code> from <code>.viz-panel</code>.</strong> The visualization scrolls away with the text instead of staying pinned while the narrative flows past. The entire scrollytelling layout collapses into a normal article because the sticky panel is what creates the "visualization + scrolling text" pattern.</li>
+		<li><strong>Change the <code>onUpdate</code> callback to set state to a fixed value like <code>timelineBarProgress = 1</code>.</strong> The timeline bar jumps to full instantly and never responds to scroll position. This proves that the reactive bridge between ScrollTrigger's progress and Svelte's state is what makes the visualization feel alive.</li>
+		<li><strong>Remove <code>scrub: 1</code> from the stats ScrollTrigger.</strong> The counting animation fires once when the section enters view and plays at its own pace, completely disconnected from scroll position. The numbers race ahead even if the user stops scrolling.</li>
+		<li><strong>Set <code>min-block-size: 50vh</code> instead of <code>150vh</code> on <code>.story-row</code>.</strong> The scroll distance becomes too short for the narrative text to flow past the sticky panel. Text and visualization overlap awkwardly because there is not enough scroll runway for the story to unfold.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>ScrollTrigger <code>onUpdate</code> callbacks drive reactive Svelte state as the user scrolls.</li>
-		<li>Sticky visualization panels create a Pudding/NYT-style scroll storytelling layout.</li>
-		<li>Counting animations use <code>Math.round(start + (end - start) * progress)</code> for smooth number transitions.</li>
-		<li>Multiple ScrollTrigger instances can control independent sections of the same page.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">Scroll-driven storytelling bridges GSAP's ScrollTrigger with Svelte's reactive state system. The <code>onUpdate</code> callback receives a <code>self</code> object whose <code>progress</code> property (0 to 1) maps directly to how far the user has scrolled through the trigger zone. Assigning that progress to a <code>$state</code> variable is what makes the visualization panel reactive — the timeline bar width, stat values, and parallax positions all derive from scroll position without any imperative DOM updates.</p>
+	<p class="prose">The sticky visualization pattern — a <code>position: sticky</code> panel that stays fixed while narrative text scrolls past — is the foundation of data journalism at outlets like The Pudding and NYT Graphics. The key measurement is scroll runway: each <code>.story-row</code> needs enough vertical space (<code>min-block-size: 150vh</code>) for the text to flow past the sticky panel. Too little runway and the text overlaps the visualization; too much and the reader scrolls through empty space.</p>
+	<p class="prose">Multiple independent ScrollTrigger instances can coexist on the same page, each controlling a different section with different start and end positions. The counting animation uses a simple linear interpolation formula — <code>Math.round(start + (end - start) * progress)</code> — to drive number transitions that feel tied to the scroll rather than playing on a timer. This approach scales to any number of data points without additional GSAP tweens.</p>
+	<p class="next">Next lesson: View Transitions API combined with GSAP for route-level animation.</p>
 </section>
 
 <style>
@@ -329,19 +336,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	.section-title {

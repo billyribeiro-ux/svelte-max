@@ -196,19 +196,26 @@
 		</div>
 	</div>
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">SVG path drawing relies on a precise relationship between dash arrays and offsets. Breaking that relationship exposes exactly how the illusion works.</p>
+	<ol class="experiments">
+		<li><strong>Remove the <code>strokeDasharray</code> assignment before animating.</strong> Without setting the dash array to the path's total length, <code>strokeDashoffset</code> has nothing to offset against — the path either shows fully or not at all, with no drawing effect.</li>
+		<li><strong>Animate <code>strokeDashoffset</code> to 50 instead of 0.</strong> The path draws most of the way but stops short, leaving a visible gap at the end — showing that the offset value controls exactly how much of the path is revealed.</li>
+		<li><strong>Remove the negative position offset (<code>'-=0.2'</code>) from the timeline.</strong> Each path waits for the previous one to fully complete before starting, creating an awkward pause between segments instead of the smooth overlapping draw.</li>
+		<li><strong>Set <code>scrub: 0</code> instead of <code>scrub: 1</code> in scroll mode.</strong> The animation snaps instantly to the scroll position with no smoothing, making the drawing feel jerky and mechanical rather than fluid.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Use <code>getTotalLength()</code> to get the SVG path length, then animate <code>strokeDashoffset</code> from that length to 0.</li>
-		<li>Chain paths in a GSAP timeline with negative position offsets for overlapping draws.</li>
-		<li>Toggle between on-load and ScrollTrigger-driven drawing with the same timeline logic.</li>
-		<li>Add finishing touches like glow effects that fade in after all paths complete.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose">SVG path drawing works by exploiting the <code>strokeDasharray</code> and <code>strokeDashoffset</code> properties. You set the dash array equal to the path's total length (measured with <code>getTotalLength()</code>) so a single dash covers the entire path, then animate the offset from that full length down to zero. As the offset decreases, the dash slides into view, creating the illusion that an invisible hand is drawing the line.</p>
+	<p class="prose">Chaining multiple paths in a GSAP timeline with negative position parameters like <code>'-=0.2'</code> creates overlapping draws where the next segment starts before the current one finishes. This overlap is what makes multi-path logos and constellation effects feel connected rather than sequential. Without it, each path feels like a separate animation rather than one continuous gesture.</p>
+	<p class="prose">The same timeline logic drives both on-load and scroll-triggered modes. The only difference is the ScrollTrigger config object passed to <code>gsap.timeline()</code>. With <code>scrub: 1</code>, the drawing progress maps directly to scroll position with one second of smoothing, letting the user "draw" the SVG by scrolling. This dual-mode pattern is reusable for any animation you want to trigger both ways.</p>
+	<p class="next">Next lesson: deep parallax layer systems with scroll-driven depth.</p>
 </section>
 
 <style>
@@ -246,19 +253,45 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	h3 {
-		margin-block-start: var(--space-xl);
-		margin-block-end: var(--space-sm);
+	.prose {
+		color: var(--color-text);
+		max-inline-size: 68ch;
+		line-height: 1.7;
+		margin-block: 0.5lh;
+		text-wrap: pretty;
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
 	}
-	ul {
-		list-style: disc;
+	.experiments {
+		max-inline-size: 68ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-md);
 		padding-inline-start: var(--space-lg);
-		color: var(--color-text-muted);
+		color: var(--color-text);
 		line-height: 1.6;
-		margin: 0;
+
+		& strong { color: var(--color-text); }
+
+		& code {
+			font-family: var(--font-mono);
+			font-size: 0.9em;
+			background: var(--color-surface-2);
+			padding: 0 var(--space-xs);
+			border-radius: var(--radius-xs);
+			color: var(--color-brand);
+		}
+	}
+	.next {
+		margin-block-start: var(--space-xl);
+		color: var(--color-text);
 	}
 
 	.logo-stage {

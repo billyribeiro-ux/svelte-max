@@ -415,20 +415,26 @@
 	</div>
 
 
+	<h2>Break it on purpose</h2>
+	<p class="prose">Scroll-driven storytelling coordinates three systems: intersection detection, state management, and animated rendering. Break each one.</p>
+	<ol class="experiments">
+		<li><strong>Change the <code>IntersectionObserver</code> threshold from <code>0.5</code> to <code>1.0</code>.</strong> Chapters will only trigger when 100% visible, which may never happen if the chapter is taller than the viewport. The threshold must be tuned so transitions fire at a natural reading position.</li>
+		<li><strong>Remove <code>position: sticky</code> from the chart container.</strong> The chart will scroll away with the rest of the content, defeating the entire scroll-storytelling pattern. The sticky position is what keeps the chart visible as narrative chapters scroll past it.</li>
+		<li><strong>Remove the cleanup function (<code>return () => obs.disconnect()</code>) from the <code>$effect</code>.</strong> Navigating away and back will create duplicate observers, each one firing independently. Event listeners will accumulate, causing increasingly erratic chapter switching and memory leaks.</li>
+		<li><strong>Make all four chapters use the same <code>values</code> array.</strong> The chart will never change as you scroll. The visual impact of scroll-storytelling comes entirely from the contrast between chapters — if nothing changes, scrolling feels pointless.</li>
+	</ol>
+
 	<details class="having-issues">
 		<summary>Having issues? Here is the complete code</summary>
 		<p>If your version is not working, compare it line-by-line with this reference.</p>
 		<CodeCanvas filename="+page.svelte" code={fullCode} />
 	</details>
 
-	<h3>What you learned</h3>
-	<ul>
-		<li>Use <code>IntersectionObserver</code> to detect which scroll chapter is active.</li>
-		<li>Derive chart state (data, highlights, annotations) from the active chapter index.</li>
-		<li><code>position: sticky</code> keeps the chart visible while chapters scroll past.</li>
-		<li>Tween bar heights for smooth transitions between chapters.</li>
-		<li>Check <code>prefersReducedMotion</code> and set tween duration to 0 when active.</li>
-	</ul>
+	<h2>What you learned</h2>
+	<p class="prose"><code>IntersectionObserver</code> detects which scroll chapter is currently in the viewport and updates the <code>activeChapter</code> index. The chart state — data values, highlights, and annotations — is derived entirely from this index, creating a clean separation between scroll position and visual output.</p>
+	<p class="prose"><code>position: sticky</code> is the CSS backbone of the scroll-storytelling pattern. It pins the chart in place while the narrative chapters scroll past, creating the illusion that the chart is transforming in response to the story. Tween animations smooth the transitions between chapter states so bar heights morph rather than jump.</p>
+	<p class="prose">The <code>$effect</code> cleanup pattern is critical: returning a function that calls <code>obs.disconnect()</code> prevents observer accumulation when the component re-runs or unmounts. Combined with <code>prefersReducedMotion</code> checks that set tween duration to zero, this pattern creates accessible, leak-free scroll interactions.</p>
+	<p class="next">Next lesson: DV.10 covers accessibility requirements for charts — ARIA roles, hidden tables, and keyboard navigation.</p>
 </section>
 
 <style>
@@ -441,9 +447,10 @@
 	.concept { font-size: var(--text-base); color: var(--color-text-muted); max-inline-size: 65ch; line-height: 1.6; margin: 0; }
 	.concept strong { color: var(--color-text); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
-	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	ul { list-style: disc; display: flex; flex-direction: column; gap: var(--space-xs); padding-inline-start: var(--space-lg); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
 	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
+	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.scroll-container {
 		position: relative;

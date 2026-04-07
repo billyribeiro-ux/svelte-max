@@ -371,6 +371,16 @@
 			]
 		},
 		{
+			id: 22,
+			title: 'Real-World Forms',
+			hasProject: false,
+			routePrefix: 'contact',
+			lessons: [
+				{ slug: '', title: 'Contact Form' },
+				{ slug: 'cta', title: 'CTA + PDF Download' }
+			]
+		},
+		{
 			id: 16,
 			title: 'Capstone — PE7 Flagship',
 			hasProject: true,

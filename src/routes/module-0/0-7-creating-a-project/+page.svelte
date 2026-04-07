@@ -150,14 +150,14 @@
 		'# Choose: No (for TypeScript)\n' +
 		'\n' +
 		'# Now open src/routes/+page.svelte:\n' +
-		'#   <script>           <-- no lang="ts"\n' +
+		'#   \u003cscript>           <-- no lang="ts"\n' +
 		'#     ...\n' +
-		'#   </script>\n' +
+		'#   \u003c/script>\n' +
 		'\n' +
 		'# Compare with TypeScript project:\n' +
-		'#   <script lang="ts">  <-- TypeScript enabled\n' +
+		'#   \u003cscript lang="ts">  <-- TypeScript enabled\n' +
 		'#     ...\n' +
-		'#   </script>\n' +
+		'#   \u003c/script>\n' +
 		'\n' +
 		'# Without TypeScript, you get NO red underlines,\n' +
 		'# NO autocomplete, NO type checking.\n' +

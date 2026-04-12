@@ -232,7 +232,7 @@
     border: 1px solid light-dark(oklch(88% 0.02 270), oklch(30% 0.02 270));
   }
   .preview code {
-    background: rgb(0 0 0 / 0.5);
+    background: oklch(0% 0 0 / 0.5);
     color: white;
     padding: var(--space-xs) var(--space-sm);
   }
@@ -252,20 +252,20 @@
   }
   .label {
     color: white;
-    text-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+    text-shadow: 0 1px 2px oklch(0% 0 0 / 0.5);
     font-weight: 600;
     font-size: var(--text-xs);
   }
   .mono {
     font-size: 0.6rem;
-    background: rgb(0 0 0 / 0.5);
+    background: oklch(0% 0 0 / 0.5);
     color: white;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  @media (min-width: 768px) {
+  @media (min-inline-size: 768px) {
     h1 { font-size: var(--text-2xl); }
     .controls { flex-direction: row; }
     .controls label { flex: 1; }
@@ -297,14 +297,14 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

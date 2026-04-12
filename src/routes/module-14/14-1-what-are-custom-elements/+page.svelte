@@ -221,7 +221,7 @@
 	}
 
 	.comparison {
-		width: 100%;
+		inline-size: 100%;
 		border-collapse: collapse;
 		font-size: var(--text-sm);
 	}
@@ -240,7 +240,7 @@
 	.comparison .yes { color: var(--color-success); }
 	.comparison .no { color: var(--color-error); }
 
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -268,14 +268,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

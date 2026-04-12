@@ -294,7 +294,7 @@
 		flex-direction: column;
 		gap: var(--space-lg);
 		padding: var(--space-lg);
-		max-width: 960px;
+		max-inline-size: 960px;
 		margin: 0 auto;
 		color: var(--color-text);
 	}
@@ -402,8 +402,8 @@
 
 	.qty button {
 		font: inherit;
-		width: 32px;
-		height: 32px;
+		inline-size: 32px;
+		block-size: 32px;
 		border-radius: var(--radius-full);
 		border: 1px solid var(--color-border);
 		background: var(--color-surface);
@@ -420,7 +420,7 @@
 	.count {
 		font-family: var(--font-mono);
 		font-size: var(--text-sm);
-		min-width: 2ch;
+		min-inline-size: 2ch;
 		text-align: center;
 	}
 
@@ -432,8 +432,8 @@
 
 	.remove {
 		font: inherit;
-		width: 32px;
-		height: 32px;
+		inline-size: 32px;
+		block-size: 32px;
 		border-radius: var(--radius-full);
 		border: 1px solid var(--color-border);
 		background: var(--color-surface);
@@ -467,19 +467,19 @@
 	}
 
 	.totals .grand {
-		margin-top: var(--space-sm);
-		padding-top: var(--space-sm);
-		border-top: 1px solid var(--color-border);
+		margin-block-start: var(--space-sm);
+		padding-block-start: var(--space-sm);
+		border-block-start: 1px solid var(--color-border);
 		font-size: var(--text-lg);
 		font-weight: 700;
 		color: var(--color-text);
 	}
 
 	.lines {
-		padding-left: 0;
+		padding-inline-start: 0;
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.page {
 			padding: var(--space-2xl);
 		}
@@ -526,14 +526,14 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

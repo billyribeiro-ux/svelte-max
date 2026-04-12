@@ -313,16 +313,16 @@
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 
 	.canvas-container {
-		width: 100%;
-		height: 350px;
+		inline-size: 100%;
+		block-size: 350px;
 		border-radius: var(--radius-md);
 		overflow: hidden;
-		background: #1a1a2e;
+		background: oklch(15% 0.03 270);
 	}
 
 	.fallback {
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -333,9 +333,9 @@
 	}
 
 	.fallback-shape {
-		width: 80px;
-		height: 80px;
-		background: linear-gradient(135deg, #7c5cfc 0%, #5c3cd4 100%);
+		inline-size: 80px;
+		block-size: 80px;
+		background: linear-gradient(135deg, oklch(55% 0.25 270) 0%, oklch(42% 0.25 270) 100%);
 		border-radius: 30%;
 		opacity: 0.6;
 	}
@@ -354,9 +354,9 @@
 	}
 	.status-item strong { color: var(--color-text); }
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
-		.canvas-container { height: 450px; }
+		.canvas-container { block-size: 450px; }
 	}
 
 
@@ -385,14 +385,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

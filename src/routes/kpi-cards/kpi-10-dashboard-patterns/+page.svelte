@@ -313,19 +313,19 @@
 	}
 
 	.skeleton-line {
-		height: 12px;
+		block-size: 12px;
 		background: var(--color-border);
 		border-radius: var(--radius-xs);
 		animation: shimmer 1.5s infinite ease-in-out;
 	}
 
-	.skeleton-short { width: 40%; }
-	.skeleton-wide { width: 70%; height: 24px; }
-	.skeleton-med { width: 55%; }
+	.skeleton-short { inline-size: 40%; }
+	.skeleton-wide { inline-size: 70%; block-size: 24px; }
+	.skeleton-med { inline-size: 55%; }
 
 	.skeleton-bar {
-		height: 28px;
-		width: 100%;
+		block-size: 28px;
+		inline-size: 100%;
 		background: var(--color-border);
 		border-radius: var(--radius-xs);
 		animation: shimmer 1.5s infinite ease-in-out;
@@ -451,15 +451,15 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 		.kpi-grid { grid-template-columns: repeat(2, 1fr); }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 		.kpi-grid { grid-template-columns: repeat(4, 1fr); }
 	}

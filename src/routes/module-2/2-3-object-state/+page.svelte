@@ -454,7 +454,7 @@
 	}
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.demo {
 			grid-template-columns: 1fr 1fr;
 			align-items: start;
@@ -487,7 +487,7 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 	}
 </style>

@@ -340,7 +340,7 @@
 	}
 
 	textarea {
-		width: 100%;
+		inline-size: 100%;
 		font: inherit;
 		font-size: var(--text-base);
 		padding: var(--space-sm);
@@ -389,7 +389,7 @@
 		}
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.demo {
 			padding: var(--space-lg);
 		}
@@ -420,7 +420,7 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 	}
 </style>

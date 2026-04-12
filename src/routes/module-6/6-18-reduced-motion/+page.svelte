@@ -356,7 +356,7 @@
 	ul.inline {
 		font-size: var(--text-sm);
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
@@ -390,14 +390,14 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

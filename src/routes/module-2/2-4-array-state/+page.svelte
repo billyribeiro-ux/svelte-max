@@ -298,8 +298,8 @@
 
 	.sr-only {
 		position: absolute;
-		width: 1px;
-		height: 1px;
+		inline-size: 1px;
+		block-size: 1px;
 		padding: 0;
 		margin: -1px;
 		overflow: hidden;
@@ -420,8 +420,8 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 1.35em;
-		height: 1.35em;
+		inline-size: 1.35em;
+		block-size: 1.35em;
 		border-radius: var(--radius-full);
 		border: none;
 		background: transparent;
@@ -450,8 +450,8 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: var(--space-sm);
-		padding-top: var(--space-xs);
-		border-top: 1px solid var(--color-border);
+		padding-block-start: var(--space-xs);
+		border-block-start: 1px solid var(--color-border);
 	}
 
 	.count {
@@ -481,7 +481,7 @@
 	}
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.demo {
 			padding: var(--space-lg);
 		}
@@ -512,7 +512,7 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 	}
 </style>

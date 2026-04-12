@@ -355,9 +355,9 @@
 	}
 
 	.morph-canvas {
-		width: 100%;
-		max-width: 300px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 300px;
+		block-size: auto;
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -388,8 +388,8 @@
 		color: var(--color-text-muted);
 	}
 	.scrub-slider input[type='range'] {
-		width: 100%;
-		max-width: 300px;
+		inline-size: 100%;
+		max-inline-size: 300px;
 		accent-color: oklch(65% 0.22 270);
 	}
 	.scrub-info {
@@ -429,14 +429,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

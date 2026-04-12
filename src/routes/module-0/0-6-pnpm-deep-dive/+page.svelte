@@ -485,7 +485,7 @@ git diff pnpm-lock.yaml`;
 </section>
 
 <style>
-	.page { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); max-width: 960px; margin: 0 auto; color: var(--color-text); }
+	.page { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); max-inline-size: 960px; margin: 0 auto; color: var(--color-text); }
 	h1 { font-size: var(--text-2xl); margin: 0; text-wrap: balance; }
 	h2 { font-size: var(--text-lg); margin-block-start: var(--space-lg); color: var(--color-text); }
 	h3 { font-size: var(--text-base); margin-block-start: var(--space-md); color: var(--color-text); }
@@ -494,7 +494,7 @@ git diff pnpm-lock.yaml`;
 	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
 	.having-issues { margin-block: var(--space-xl); border: 2px dashed var(--color-warning); border-radius: var(--radius-lg); overflow: hidden; & > summary { padding: var(--space-md) var(--space-lg); font-weight: 700; font-size: var(--text-base); color: var(--color-warning); background: var(--color-surface-1); cursor: pointer; } & > p { padding: var(--space-sm) var(--space-lg); margin: 0; color: var(--color-text-muted); font-size: var(--text-sm); } }
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
-	@media (min-width: 480px) { .prose, .analogy { max-inline-size: 65ch; } }
-	@media (min-width: 768px) { h1 { font-size: var(--text-hero); } .prose, .analogy { max-inline-size: 72ch; } .page { padding: var(--space-2xl); } }
-	@media (min-width: 1024px) { .prose, .analogy { max-inline-size: 80ch; } }
+	@media (min-inline-size: 480px) { .prose, .analogy { max-inline-size: 65ch; } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-hero); } .prose, .analogy { max-inline-size: 72ch; } .page { padding: var(--space-2xl); } }
+	@media (min-inline-size: 1024px) { .prose, .analogy { max-inline-size: 80ch; } }
 </style>

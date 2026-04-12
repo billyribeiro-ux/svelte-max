@@ -168,7 +168,7 @@ const user = getContext&lt;User&gt;('user');</code></pre>
 	.prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
 	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	pre {
 		margin: 0;
@@ -214,12 +214,12 @@ const user = getContext&lt;User&gt;('user');</code></pre>
 		border: 1px solid var(--color-border);
 	}
 	.warning {
-		border-color: #e74c3c;
-		background: color-mix(in oklch, #e74c3c 5%, var(--color-surface-1));
+		border-color: var(--color-error);
+		background: color-mix(in oklch, var(--color-error) 5%, var(--color-surface-1));
 	}
 	.safe {
-		border-color: #27ae60;
-		background: color-mix(in oklch, #27ae60 5%, var(--color-surface-1));
+		border-color: var(--color-success);
+		background: color-mix(in oklch, var(--color-success) 5%, var(--color-surface-1));
 	}
 
 
@@ -248,14 +248,14 @@ const user = getContext&lt;User&gt;('user');</code></pre>
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -881,7 +881,7 @@
 		gap: var(--space-md);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.grid {
 			grid-template-columns: 1fr 1fr;
 		}
@@ -973,7 +973,7 @@
 		overflow: hidden;
 		clip: rect(0, 0, 0, 0);
 		white-space: nowrap;
-		border-width: 0;
+		border-inline-width: 0;
 	}
 
 	.footer {
@@ -1028,7 +1028,7 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 	}

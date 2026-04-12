@@ -240,21 +240,21 @@
 		color: var(--color-text-muted);
 	}
 	.controls input[type='range'] {
-		width: 180px;
+		inline-size: 180px;
 		accent-color: oklch(65% 0.22 270);
 	}
 
 	.playground {
-		width: 100%;
-		max-width: 400px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 400px;
+		block-size: auto;
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
 	}
 	.axis {
 		stroke: var(--color-text-muted);
-		stroke-width: 1;
+		stroke-inline-size: 1;
 		opacity: 0.5;
 	}
 	.axis-label {
@@ -264,7 +264,7 @@
 	}
 	.tick-mark {
 		stroke: var(--color-text-muted);
-		stroke-width: 0.75;
+		stroke-inline-size: 0.75;
 		opacity: 0.4;
 	}
 	.tick-num {
@@ -309,14 +309,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -315,17 +315,17 @@
 	.objectives {
 		color: var(--color-text);       /* text color — dark for readability */
 		line-height: 1.8;              /* vertical space between lines for readability */
-		padding-left: var(--space-lg); /* indent from the left edge */
+		padding-inline-start: var(--space-lg); /* indent from the left edge */
 	}
 
 	/* ── Analogy callout box ── */
 	.analogy {
 		background: var(--color-surface-2);  /* subtle background to stand out from page */
-		border-left: 4px solid var(--color-warning); /* left accent bar in warning-yellow */
+		border-inline-start: 4px solid var(--color-warning); /* left accent bar in warning-yellow */
 		padding: var(--space-md);            /* inner spacing */
 		border-radius: var(--radius-md);     /* softly rounded corners */
 		margin-block: var(--space-md);       /* vertical spacing above and below */
-		max-width: 60ch;                     /* limit line length for readability */
+		max-inline-size: 60ch;                     /* limit line length for readability */
 
 		& p {
 			margin: 0;                       /* remove default paragraph margin */
@@ -337,7 +337,7 @@
 	/* ── Concept paragraph ── */
 	.concept {
 		color: var(--color-text-muted);  /* slightly dimmed text for explanatory prose */
-		max-width: 60ch;                 /* limit line length — 60 characters is optimal */
+		max-inline-size: 60ch;                 /* limit line length — 60 characters is optimal */
 		line-height: 1.6;               /* comfortable spacing between lines */
 	}
 
@@ -348,7 +348,7 @@
 		padding: var(--space-lg);            /* inner spacing — clamp(1.5rem, 4vw, 2.5rem) */
 		border-radius: var(--radius-lg);     /* rounded corners — 1rem */
 		margin-block: var(--space-xl);       /* vertical margin — clamp(2rem, 6vw, 4rem) */
-		max-width: 32rem;                    /* prevent card from being too wide */
+		max-inline-size: 32rem;                    /* prevent card from being too wide */
 
 		& h2 {
 			margin: 0 0 var(--space-sm) 0;   /* space below heading only */
@@ -360,7 +360,7 @@
 			opacity: 0.9;     /* slightly transparent for visual hierarchy */
 		}
 
-		@media (min-width: 768px) {
+		@media (min-inline-size: 768px) {
 			padding: var(--space-xl);        /* more padding on wider screens */
 		}
 	}
@@ -371,8 +371,8 @@
 		color: var(--color-text);                    /* standard text color */
 		padding: var(--space-md);                    /* inner spacing */
 		border-radius: var(--radius-md);             /* rounded corners */
-		border-left: 4px solid var(--color-brand);   /* left accent bar in brand purple */
-		max-width: 60ch;                             /* limit width for readability */
+		border-inline-start: 4px solid var(--color-brand);   /* left accent bar in brand purple */
+		max-inline-size: 60ch;                             /* limit width for readability */
 
 		& code {
 			color: var(--color-brand);               /* highlight code in brand color */
@@ -386,7 +386,7 @@
 		gap: var(--space-md);                 /* space between wrong/right blocks */
 		margin-block: var(--space-md);        /* vertical spacing */
 
-		@media (min-width: 768px) {
+		@media (min-inline-size: 768px) {
 			grid-template-columns: 1fr 1fr;   /* two columns on wider screens */
 		}
 	}
@@ -403,7 +403,7 @@
 		}
 
 		& p {
-			margin-top: var(--space-sm);       /* space above explanation */
+			margin-block-start: var(--space-sm);       /* space above explanation */
 			font-size: var(--text-sm);        /* smaller explanation text */
 			line-height: 1.5;                 /* comfortable reading */
 		}
@@ -421,7 +421,7 @@
 
 	/* ── Next-step link ── */
 	.next {
-		margin-top: var(--space-xl);          /* space above */
+		margin-block-start: var(--space-xl);          /* space above */
 		color: var(--color-text);             /* standard text */
 	}
 
@@ -442,7 +442,7 @@
 	}
 
 	details[open] > summary {
-		border-bottom: 1px solid var(--color-border); /* divider when open */
+		border-block-end: 1px solid var(--color-border); /* divider when open */
 	}
 
 	details > :not(summary) {
@@ -489,7 +489,7 @@
 	   ═══════════════════════════════════ */
 
 	/* ── 480px — large phones / small tablets ── */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.analogy,
 		.concept,
 		.hint {
@@ -502,7 +502,7 @@
 	}
 
 	/* ── 768px — tablets / small desktops ── */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 {
 			font-size: var(--text-2xl);       /* scale heading up */
 		}
@@ -527,7 +527,7 @@
 	}
 
 	/* ── 1024px — desktops ── */
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.analogy,
 		.concept,
 		.hint {

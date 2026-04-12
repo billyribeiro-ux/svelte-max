@@ -201,10 +201,10 @@ gsap.from('.box', \{
   .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
   .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
-  @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+  @media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
-  .spacer { height: 40vh; }
-  .spacer-sm { height: 20vh; }
+  .spacer { block-size: 40vh; }
+  .spacer-sm { block-size: 20vh; }
 
   .scroll-hint { font-size: var(--text-sm); color: var(--color-brand); font-weight: 500; margin: 0; }
 
@@ -216,8 +216,8 @@ gsap.from('.box', \{
   .scrub-section h2 { margin: 0 0 var(--space-sm); color: var(--color-text); }
   .scrub-section p { margin: 0 0 var(--space-md); color: var(--color-text-muted); font-size: var(--text-sm); }
 
-  .bar-track { background: var(--color-surface-2); border-radius: var(--radius-full); height: 12px; overflow: hidden; }
-  .scrub-bar { height: 100%; background: var(--color-brand); border-radius: var(--radius-full); transform-origin: left; }
+  .bar-track { background: var(--color-surface-2); border-radius: var(--radius-full); block-size: 12px; overflow: hidden; }
+  .scrub-bar { block-size: 100%; background: var(--color-brand); border-radius: var(--radius-full); transform-origin: left; }
 
 	/* ── Having issues section ── */
 	.having-issues {
@@ -244,15 +244,15 @@ gsap.from('.box', \{
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

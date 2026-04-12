@@ -343,7 +343,7 @@ export const getEvents = query(async (after: Date) => {
 	.result-cat { font-size: var(--text-sm); color: var(--color-text-muted); text-transform: capitalize; }
 	.result-price { font-weight: 600; }
 	.empty { margin: 0; color: var(--color-text-muted); text-align: center; padding: var(--space-md); }
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.controls { flex-direction: row; }
 		.search-input { flex: 1; }
@@ -375,15 +375,15 @@ export const getEvents = query(async (after: Date) => {
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

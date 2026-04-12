@@ -488,9 +488,9 @@
 
 	/* ── Logo ── */
 	.logo-svg {
-		width: 100%;
-		max-width: 300px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 300px;
+		block-size: auto;
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -521,8 +521,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 56px;
-		height: 56px;
+		inline-size: 56px;
+		block-size: 56px;
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -535,8 +535,8 @@
 		transform: scale(1.08);
 	}
 	.icon-btn svg {
-		width: 28px;
-		height: 28px;
+		inline-size: 28px;
+		block-size: 28px;
 	}
 
 	/* ── Spinner row ── */
@@ -555,12 +555,12 @@
 		color: var(--color-text-muted);
 		font-weight: 600;
 	}
-	.mini-spinner { width: 48px; height: 48px; }
-	.mini-dots { width: 60px; height: 20px; }
-	.mini-skeleton { width: 120px; height: 40px; }
-	.mini-progress { width: 120px; height: 20px; }
-	.mini-range { width: 100%; max-width: 120px; accent-color: var(--pg-accent); }
-	.mini-range.wide { max-width: 100%; }
+	.mini-spinner { inline-size: 48px; block-size: 48px; }
+	.mini-dots { inline-size: 60px; block-size: 20px; }
+	.mini-skeleton { inline-size: 120px; block-size: 40px; }
+	.mini-progress { inline-size: 120px; block-size: 20px; }
+	.mini-range { inline-size: 100%; max-inline-size: 120px; accent-color: var(--pg-accent); }
+	.mini-range.wide { max-inline-size: 100%; }
 
 	.spin-ring { transform-origin: center; animation: spin 1s linear infinite; }
 	@keyframes spin { to { transform: rotate(360deg); } }
@@ -616,9 +616,9 @@
 
 	/* ── Map ── */
 	.map-svg {
-		width: 100%;
-		max-width: 500px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 500px;
+		block-size: auto;
 		background: oklch(92% 0.02 250);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -628,7 +628,7 @@
 		transition: fill 200ms ease, filter 200ms ease;
 	}
 	.continent-path:hover { filter: brightness(0.85); }
-	.continent-path.active { stroke: oklch(40% 0.20 290); stroke-width: 2; }
+	.continent-path.active { stroke: oklch(40% 0.20 290); stroke-inline-size: 2; }
 	.continent-path:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
 
 	.map-chips {
@@ -651,9 +651,9 @@
 
 	/* ── Rocket ── */
 	.rocket-svg {
-		width: 100%;
-		max-width: 500px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 500px;
+		block-size: auto;
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 	}
@@ -685,20 +685,20 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 		.micro-grid { grid-template-columns: repeat(4, 1fr); }
 		.morph-grid { grid-template-columns: repeat(3, 1fr); }
 		.spinner-row { grid-template-columns: repeat(4, 1fr); }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 		.concept-list { grid-template-columns: 1fr 1fr; }
 		.morph-grid { grid-template-columns: repeat(3, 1fr); }
 		.micro-grid { grid-template-columns: repeat(4, 1fr); }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 		.morph-grid { grid-template-columns: repeat(6, 1fr); }
 		.micro-grid { grid-template-columns: repeat(8, 1fr); }

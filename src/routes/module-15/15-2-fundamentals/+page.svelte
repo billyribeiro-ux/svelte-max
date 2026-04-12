@@ -236,16 +236,16 @@
 	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	.canvas-container {
-		width: 100%;
-		height: 350px;
+		inline-size: 100%;
+		block-size: 350px;
 		border-radius: var(--radius-md);
 		overflow: hidden;
-		background: #1a1a2e;
+		background: oklch(15% 0.03 270);
 	}
 
 	.fallback {
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		display: grid;
 		place-items: center;
 		color: var(--color-text-muted);
@@ -267,13 +267,13 @@
 	}
 
 	input[type="range"] {
-		width: 100%;
+		inline-size: 100%;
 		accent-color: var(--color-primary);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
-		.canvas-container { height: 450px; }
+		.canvas-container { block-size: 450px; }
 		.controls { flex-direction: row; }
 		.slider-label { flex: 1; }
 	}
@@ -304,14 +304,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

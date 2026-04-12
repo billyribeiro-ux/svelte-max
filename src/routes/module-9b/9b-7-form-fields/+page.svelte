@@ -302,12 +302,12 @@ export const updateProfile = form(ProfileSchema, async ({ data }) => {
 		background: var(--color-surface-2); color: var(--color-text);
 	}
 	.field-inline { display: flex; align-items: center; gap: var(--space-sm); }
-	.field-inline input[type="checkbox"] { width: 1.2rem; height: 1.2rem; }
+	.field-inline input[type="checkbox"] { inline-size: 1.2rem; block-size: 1.2rem; }
 	.field-error { font-size: var(--text-sm); color: oklch(60% 0.2 25); }
 	.preview { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-sm); font-size: var(--text-sm); }
 	.preview p { margin: var(--space-xs) 0 0 0; font-family: var(--font-mono); color: var(--color-text-muted); word-break: break-all; }
 	.preview strong { display: block; }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -335,15 +335,15 @@ export const updateProfile = form(ProfileSchema, async ({ data }) => {
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -278,20 +278,20 @@
 		font-weight: 600;
 	}
 	.spinner-svg {
-		width: 64px;
-		height: 64px;
+		inline-size: 64px;
+		block-size: 64px;
 	}
 	.dots-svg {
-		width: 80px;
-		height: 28px;
+		inline-size: 80px;
+		block-size: 28px;
 	}
 	.skeleton-svg {
-		width: 140px;
-		height: 70px;
+		inline-size: 140px;
+		block-size: 70px;
 	}
 	.progress-svg {
-		width: 160px;
-		height: 32px;
+		inline-size: 160px;
+		block-size: 32px;
 	}
 
 	/* ── Circular spinner animation ── */
@@ -332,10 +332,10 @@
 		gap: var(--space-xs);
 		font-size: var(--text-xs);
 		color: var(--color-text-muted);
-		width: 100%;
+		inline-size: 100%;
 	}
 	.progress-control input[type='range'] {
-		width: 100%;
+		inline-size: 100%;
 		accent-color: oklch(65% 0.22 270);
 	}
 
@@ -370,15 +370,15 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 		.spinner-grid { grid-template-columns: repeat(4, 1fr); }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

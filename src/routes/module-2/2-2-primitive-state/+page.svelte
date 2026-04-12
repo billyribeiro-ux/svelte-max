@@ -256,8 +256,8 @@
 		--track-h: 1.85rem;
 		--pad: 0.22rem;
 		position: relative;
-		width: var(--track-w);
-		height: var(--track-h);
+		inline-size: var(--track-w);
+		block-size: var(--track-h);
 		border-radius: var(--radius-full);
 		border: 1px solid var(--color-border);
 		background: var(--color-border);
@@ -278,10 +278,10 @@
 
 	.knob {
 		position: absolute;
-		top: var(--pad);
-		left: var(--pad);
-		width: calc(var(--track-h) - var(--pad) * 2 - 2px);
-		height: calc(var(--track-h) - var(--pad) * 2 - 2px);
+		inset-block-start: var(--pad);
+		inset-inline-start: var(--pad);
+		inline-size: calc(var(--track-h) - var(--pad) * 2 - 2px);
+		block-size: calc(var(--track-h) - var(--pad) * 2 - 2px);
 		border-radius: var(--radius-full);
 		background: var(--color-surface-1);
 		box-shadow: var(--shadow-sm);
@@ -303,7 +303,7 @@
 	}
 
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.demo {
 			padding: var(--space-lg);
 		}
@@ -356,14 +356,14 @@
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.hint { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.hint { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.hint { max-inline-size: 80ch; }
 	}
 </style>

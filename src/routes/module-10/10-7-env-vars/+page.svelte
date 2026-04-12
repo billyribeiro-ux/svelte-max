@@ -200,12 +200,12 @@ export const handle = async ({ event, resolve }) => {
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 	.table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
-	table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
-	th, td { text-align: start; padding: var(--space-sm) var(--space-md); border-bottom: 1px solid var(--color-border); vertical-align: top; }
+	table { inline-size: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+	th, td { text-align: start; padding: var(--space-sm) var(--space-md); border-block-end: 1px solid var(--color-border); vertical-align: top; }
 	th { background: var(--color-surface-2); font-weight: 600; color: var(--color-text); }
 	td { color: var(--color-text-muted); }
-	tr:last-child td { border-bottom: none; }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	tr:last-child td { border-block-end: none; }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -233,14 +233,14 @@ export const handle = async ({ event, resolve }) => {
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -232,7 +232,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		width: 100%;
+		inline-size: 100%;
 		padding: var(--space-sm) var(--space-md);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -245,7 +245,7 @@
 	.arrow { font-size: 0.75em; color: var(--color-text-muted); }
 	.field-desc { padding-inline-start: var(--space-md); }
 
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -273,14 +273,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

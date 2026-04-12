@@ -306,7 +306,7 @@
 	}
 	.empty { margin: 0; text-align: center; color: var(--color-text-muted); padding: var(--space-md); }
 	.hint { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); font-style: italic; }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -334,15 +334,15 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept, .hint { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept, .hint { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

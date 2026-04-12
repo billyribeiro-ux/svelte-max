@@ -300,14 +300,14 @@
 <style>
   .skip-link {
     position: absolute;
-    top: -40px;
-    left: 0;
+    inset-block-start: -40px;
+    inset-inline-start: 0;
     z-index: 100;
     padding: 8px;
     background: white;
   }
   .skip-link:focus {
-    top: 0;
+    inset-block-start: 0;
   }
 </style>`}</pre>
 	</div>
@@ -344,7 +344,7 @@
 	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	.checklist {
 		display: flex;
@@ -353,7 +353,7 @@
 	}
 	.check-item {
 		padding: var(--space-sm) var(--space-md);
-		border-left: 3px solid var(--color-primary);
+		border-inline-start: 3px solid var(--color-primary);
 		background: var(--color-surface-2);
 		border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 	}
@@ -361,14 +361,14 @@
 		display: flex;
 		align-items: center;
 		gap: var(--space-sm);
-		margin-bottom: var(--space-xs);
+		margin-block-end: var(--space-xs);
 	}
 	.check-num {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 24px;
-		height: 24px;
+		inline-size: 24px;
+		block-size: 24px;
 		background: var(--color-primary);
 		color: white;
 		border-radius: 50%;
@@ -409,12 +409,12 @@
 		border-radius: var(--radius-md);
 		font-size: var(--text-sm);
 		color: var(--color-text-muted);
-		border-left: 3px solid #2d8a4e;
+		border-inline-start: 3px solid var(--color-success);
 	}
 	.modal-backdrop {
 		position: fixed;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.5);
+		background: oklch(0% 0 0 / 0.5);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -425,8 +425,8 @@
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
 		padding: var(--space-lg);
-		max-width: 400px;
-		width: 90%;
+		max-inline-size: 400px;
+		inline-size: 90%;
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-md);
@@ -472,7 +472,7 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 	}
 </style>

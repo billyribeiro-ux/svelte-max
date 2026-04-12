@@ -238,7 +238,7 @@
 	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	.load-btn {
 		padding: var(--space-sm) var(--space-lg);
@@ -264,17 +264,17 @@
 	}
 	.spinner {
 		display: inline-block;
-		width: 20px;
-		height: 20px;
+		inline-size: 20px;
+		block-size: 20px;
 		border: 2px solid var(--color-border);
-		border-top-color: var(--color-primary);
+		border-block-start-color: var(--color-primary);
 		border-radius: 50%;
 		animation: spin 0.6s linear infinite;
 	}
 	@keyframes spin { to { transform: rotate(360deg); } }
 	.chart-result h4 { margin: 0; }
 	.chart-note {
-		color: #2d8a4e;
+		color: var(--color-success);
 		font-weight: 600;
 		font-size: var(--text-sm);
 		margin: 0;
@@ -283,7 +283,7 @@
 		display: flex;
 		align-items: flex-end;
 		gap: 4px;
-		height: 150px;
+		block-size: 150px;
 		padding-block-start: var(--space-sm);
 	}
 	.bar-wrapper {
@@ -291,14 +291,14 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		height: 100%;
+		block-size: 100%;
 		justify-content: flex-end;
 	}
 	.bar {
-		width: 100%;
+		inline-size: 100%;
 		background: var(--color-primary);
 		border-radius: var(--radius-xs) var(--radius-xs) 0 0;
-		min-height: 4px;
+		min-block-size: 4px;
 		transition: height 0.4s ease;
 	}
 	.bar-label {
@@ -333,14 +333,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -77,7 +77,7 @@
 		padding-block-start: var(--space-sm);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.stat-card {
 			padding: var(--space-lg) var(--space-xl);
 		}

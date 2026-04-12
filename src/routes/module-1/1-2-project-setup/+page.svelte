@@ -406,17 +406,17 @@
 	.objectives {
 		color: var(--color-text);        /* standard text color */
 		line-height: 1.8;               /* generous line spacing */
-		padding-left: var(--space-lg);  /* indent from the left */
+		padding-inline-start: var(--space-lg);  /* indent from the left */
 	}
 
 	/* ── Analogy callout box ── */
 	.analogy {
 		background: var(--color-surface-2);            /* subtle background */
-		border-left: 4px solid var(--color-warning);   /* yellow accent bar */
+		border-inline-start: 4px solid var(--color-warning);   /* yellow accent bar */
 		padding: var(--space-md);                      /* inner spacing */
 		border-radius: var(--radius-md);               /* rounded corners */
 		margin-block: var(--space-md);                 /* vertical spacing */
-		max-width: 60ch;                               /* readable line length */
+		max-inline-size: 60ch;                               /* readable line length */
 
 		& p {
 			margin: 0;                                 /* remove default margin */
@@ -428,7 +428,7 @@
 	/* ── Concept paragraph ── */
 	.concept {
 		color: var(--color-text-muted);  /* muted text for explanatory prose */
-		max-width: 60ch;                 /* 60-character line length for readability */
+		max-inline-size: 60ch;                 /* 60-character line length for readability */
 		line-height: 1.6;               /* comfortable spacing */
 	}
 
@@ -439,7 +439,7 @@
 		padding: var(--space-lg);            /* inner spacing — fluid 1.5-2.5rem */
 		border-radius: var(--radius-lg);     /* rounded corners — 1rem */
 		margin-block: var(--space-xl);       /* vertical margin — fluid 2-4rem */
-		max-width: 36rem;                    /* limit card width */
+		max-inline-size: 36rem;                    /* limit card width */
 
 		& h2 {
 			margin: 0 0 var(--space-md) 0;   /* space below heading only */
@@ -453,7 +453,7 @@
 			gap: var(--space-xs) var(--space-md); /* row and column gap */
 			margin: 0;                            /* remove default dl margin */
 
-			@media (min-width: 768px) {
+			@media (min-inline-size: 768px) {
 				grid-template-columns: max-content 1fr; /* label column + value column */
 			}
 		}
@@ -475,7 +475,7 @@
 		background: var(--color-surface-2);  /* subtle background */
 		padding: var(--space-md);            /* inner spacing */
 		border-radius: var(--radius-md);     /* rounded corners */
-		max-width: 60ch;                     /* readable width */
+		max-inline-size: 60ch;                     /* readable width */
 		margin-block: var(--space-md);       /* vertical spacing */
 
 		& h3 {
@@ -491,7 +491,7 @@
 		gap: var(--space-md);
 		margin-block: var(--space-md);
 
-		@media (min-width: 768px) {
+		@media (min-inline-size: 768px) {
 			grid-template-columns: 1fr 1fr;
 		}
 	}
@@ -508,7 +508,7 @@
 		}
 
 		& p {
-			margin-top: var(--space-sm);
+			margin-block-start: var(--space-sm);
 			font-size: var(--text-sm);
 			line-height: 1.5;
 		}
@@ -526,7 +526,7 @@
 
 	/* ── Next-step link ── */
 	.next {
-		margin-top: var(--space-xl);
+		margin-block-start: var(--space-xl);
 		color: var(--color-text);
 	}
 
@@ -547,7 +547,7 @@
 	}
 
 	details[open] > summary {
-		border-bottom: 1px solid var(--color-border);
+		border-block-end: 1px solid var(--color-border);
 	}
 
 	.detail-text {
@@ -595,18 +595,18 @@
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.analogy, .concept { max-inline-size: 65ch; }
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.analogy, .concept { max-inline-size: 72ch; }
 		.mistake-pair { grid-template-columns: 1fr 1fr; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.analogy, .concept { max-inline-size: 80ch; }
 	}
 </style>

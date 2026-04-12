@@ -368,7 +368,7 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
@@ -400,16 +400,16 @@
 		align-items: center;
 		gap: var(--space-lg);
 	}
-	@media (min-width: 600px) {
+	@media (min-inline-size: 600px) {
 		.chart-row {
 			flex-direction: row;
 			align-items: flex-start;
 		}
 	}
 	.donut-chart {
-		width: 100%;
-		max-width: 320px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 320px;
+		block-size: auto;
 	}
 	.slice {
 		cursor: pointer;
@@ -458,8 +458,8 @@
 		background: var(--color-surface-2);
 	}
 	.legend-swatch {
-		width: 12px;
-		height: 12px;
+		inline-size: 12px;
+		block-size: 12px;
 		border-radius: var(--radius-xs);
 		flex-shrink: 0;
 	}
@@ -506,14 +506,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

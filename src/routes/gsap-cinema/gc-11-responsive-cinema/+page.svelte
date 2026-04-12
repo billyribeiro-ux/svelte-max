@@ -548,22 +548,22 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 		.plx-layer-4 { display: block; }
 		.plx-layer-5 { display: none; }
 	}
-	@media (max-width: 767px) {
+	@media (max-inline-size: 767px) {
 		.plx-layer-4 { display: none; }
 		.plx-layer-5 { display: none; }
 		.parallax-scene { block-size: 50vh; }
 		.scroll-spacer { block-size: 10vh; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 		.plx-layer-4 { display: block; }
 		.plx-layer-5 { display: block; }

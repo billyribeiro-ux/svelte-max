@@ -354,7 +354,7 @@
 		color: var(--color-brand-dim);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.module-grid {
 			grid-template-columns: 1fr 1fr;
 		}
@@ -384,7 +384,7 @@
 		color: var(--color-text-muted);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.build-list {
 			grid-template-columns: 1fr 1fr;
 		}

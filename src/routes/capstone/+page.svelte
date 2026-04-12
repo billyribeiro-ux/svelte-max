@@ -1038,7 +1038,7 @@
 		margin-block-end: var(--space-lg);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.filters {
 			flex-direction: row;
 		}
@@ -1078,13 +1078,13 @@
 		gap: var(--space-lg);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.project-grid {
 			grid-template-columns: repeat(2, 1fr);
 		}
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.project-grid {
 			grid-template-columns: repeat(3, 1fr);
 		}
@@ -1197,7 +1197,7 @@
 		gap: var(--space-lg);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.stats-grid {
 			grid-template-columns: repeat(3, 1fr);
 		}
@@ -1548,7 +1548,7 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 	}

@@ -396,9 +396,9 @@
 	}
 
 	.floor-plan {
-		width: 100%;
-		max-width: 500px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 500px;
+		block-size: auto;
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -418,14 +418,14 @@
 	}
 	.progress-bar {
 		flex: 1;
-		height: 8px;
+		block-size: 8px;
 		background: var(--color-surface-2);
 		border-radius: var(--radius-sm);
 		overflow: hidden;
 		border: 1px solid var(--color-border);
 	}
 	.progress-fill {
-		height: 100%;
+		block-size: 100%;
 		background: oklch(55% 0.15 250);
 		border-radius: var(--radius-sm);
 		transition: width 200ms ease-out;
@@ -487,14 +487,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

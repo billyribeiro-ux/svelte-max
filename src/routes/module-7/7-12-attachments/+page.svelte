@@ -245,7 +245,7 @@ function gsapPulse(element: Element) \{
   .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
   .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
-  @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+  @media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
   .note { font-size: var(--text-sm); color: var(--color-text-muted); margin: 0; font-style: italic; }
 
@@ -253,17 +253,17 @@ function gsapPulse(element: Element) \{
 
   .demo-box { background: var(--color-brand); color: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-xl); text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); }
   .demo-box span { font-weight: 700; font-size: var(--text-lg); }
-  .demo-box code { background: rgba(255, 255, 255, 0.2); color: var(--color-surface); }
+  .demo-box code { background: oklch(100% 0 0 / 0.2); color: var(--color-surface); }
 
   .comparison { display: grid; grid-template-columns: 1fr; gap: var(--space-md); }
-  @media (min-width: 768px) { .comparison { grid-template-columns: 1fr 1fr; } }
+  @media (min-inline-size: 768px) { .comparison { grid-template-columns: 1fr 1fr; } }
 
   .compare-col { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); }
   .compare-col h4 { margin: 0 0 var(--space-sm); color: var(--color-text); }
   .compare-list { font-size: var(--text-sm); }
 
   .disclaimer {
-    border-left: 4px solid var(--color-warning);
+    border-inline-start: 4px solid var(--color-warning);
     background: var(--color-surface-2);
     padding: var(--space-md) var(--space-lg);
     border-radius: var(--radius-md);
@@ -299,15 +299,15 @@ function gsapPulse(element: Element) \{
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

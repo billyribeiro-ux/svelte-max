@@ -405,17 +405,17 @@
 	.objectives {
 		color: var(--color-text);        /* standard text color */
 		line-height: 1.8;               /* generous spacing */
-		padding-left: var(--space-lg);  /* indent from left */
+		padding-inline-start: var(--space-lg);  /* indent from left */
 	}
 
 	/* ── Analogy callout ── */
 	.analogy {
 		background: var(--color-surface-2);           /* subtle background */
-		border-left: 4px solid var(--color-warning);  /* yellow accent bar */
+		border-inline-start: 4px solid var(--color-warning);  /* yellow accent bar */
 		padding: var(--space-md);                     /* inner spacing */
 		border-radius: var(--radius-md);              /* rounded corners */
 		margin-block: var(--space-md);                /* vertical spacing */
-		max-width: 60ch;                              /* readable line length */
+		max-inline-size: 60ch;                              /* readable line length */
 
 		& p {
 			margin: 0;                                /* no margin */
@@ -427,7 +427,7 @@
 	/* ── Concept paragraph ── */
 	.concept {
 		color: var(--color-text-muted);  /* muted explanatory text */
-		max-width: 60ch;                 /* 60-char readable width */
+		max-inline-size: 60ch;                 /* 60-char readable width */
 		line-height: 1.6;               /* comfortable spacing */
 	}
 
@@ -437,7 +437,7 @@
 		padding: var(--space-lg);            /* inner spacing — fluid 1.5-2.5rem */
 		border-radius: var(--radius-lg);     /* rounded corners — 1rem */
 		margin-block: var(--space-xl);       /* vertical margin — fluid 2-4rem */
-		max-width: 24rem;                    /* limit width */
+		max-inline-size: 24rem;                    /* limit width */
 		display: flex;                       /* flexbox layout */
 		flex-direction: column;              /* stack children vertically */
 		gap: var(--space-sm);                /* space between children — fluid 0.5-1rem */
@@ -449,7 +449,7 @@
 			font-size: var(--text-xl);       /* fluid 1.5-2rem */
 		}
 
-		@media (min-width: 768px) {
+		@media (min-inline-size: 768px) {
 			padding: var(--space-xl);        /* more padding on desktop */
 		}
 	}
@@ -490,7 +490,7 @@
 		gap: var(--space-md);
 		margin-block: var(--space-md);
 
-		@media (min-width: 768px) {
+		@media (min-inline-size: 768px) {
 			grid-template-columns: 1fr 1fr;
 		}
 	}
@@ -507,7 +507,7 @@
 		}
 
 		& p {
-			margin-top: var(--space-sm);
+			margin-block-start: var(--space-sm);
 			font-size: var(--text-sm);
 			line-height: 1.5;
 		}
@@ -525,7 +525,7 @@
 
 	/* ── Next link ── */
 	.next {
-		margin-top: var(--space-xl);
+		margin-block-start: var(--space-xl);
 		color: var(--color-text);
 	}
 
@@ -546,7 +546,7 @@
 	}
 
 	details[open] > summary {
-		border-bottom: 1px solid var(--color-border);
+		border-block-end: 1px solid var(--color-border);
 	}
 
 	.detail-text {
@@ -594,18 +594,18 @@
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.analogy, .concept { max-inline-size: 65ch; }
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.analogy, .concept { max-inline-size: 72ch; }
 		.mistake-pair { grid-template-columns: 1fr 1fr; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.analogy, .concept { max-inline-size: 80ch; }
 	}
 </style>

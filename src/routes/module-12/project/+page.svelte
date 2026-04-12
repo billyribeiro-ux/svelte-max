@@ -535,7 +535,7 @@ self.addEventListener('fetch', (event) => {
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
 	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	/* Hero */
 	.hero {
@@ -547,14 +547,14 @@ self.addEventListener('fetch', (event) => {
 	}
 	.hero img {
 		display: block;
-		width: 100%;
-		height: auto;
+		inline-size: 100%;
+		block-size: auto;
 	}
 	.hero-overlay {
 		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
+		inset-block-end: 0;
+		inset-inline-start: 0;
+		inset-inline-end: 0;
 		background: linear-gradient(transparent, oklch(62% 0.10 55 / 0.85));
 		padding: var(--space-xl) var(--space-lg) var(--space-lg);
 		color: white;
@@ -566,14 +566,14 @@ self.addEventListener('fetch', (event) => {
 	.dropdown-wrapper { position: relative; align-self: flex-start; }
 	.dropdown-menu {
 		position: absolute;
-		top: 100%;
-		left: 0;
-		margin-top: var(--space-xs);
+		inset-block-start: 100%;
+		inset-inline-start: 0;
+		margin-block-start: var(--space-xs);
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
 		box-shadow: var(--shadow-sm);
-		min-width: 180px;
+		min-inline-size: 180px;
 		z-index: 10;
 	}
 	.dropdown-item {
@@ -596,7 +596,7 @@ self.addEventListener('fetch', (event) => {
 	}
 	.crash-btn {
 		padding: var(--space-xs) var(--space-sm);
-		background: #cc3333;
+		background: var(--color-error);
 		color: white;
 		border: none;
 		border-radius: var(--radius-sm);
@@ -616,7 +616,7 @@ self.addEventListener('fetch', (event) => {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: var(--space-md);
+		margin-block-end: var(--space-md);
 	}
 	.widget-header h4 { margin: 0; }
 	.widget-stats {
@@ -640,11 +640,11 @@ self.addEventListener('fetch', (event) => {
 		color: var(--color-text-muted);
 	}
 	.error-widget {
-		border-color: #cc3333;
-		background: #cc33330d;
+		border-color: var(--color-error);
+		background: var(--color-error)0d;
 	}
 	.error-widget h4 { margin: 0 0 var(--space-sm); }
-	.error-msg { color: #cc3333; font-weight: 600; margin: 0 0 var(--space-sm); }
+	.error-msg { color: var(--color-error); font-weight: 600; margin: 0 0 var(--space-sm); }
 
 	/* Sort controls */
 	.sort-controls, .test-tabs {
@@ -676,7 +676,7 @@ self.addEventListener('fetch', (event) => {
 		grid-template-columns: repeat(2, 1fr);
 		gap: var(--space-sm);
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.metrics-grid { grid-template-columns: repeat(3, 1fr); }
 	}
 	.metric-card {
@@ -691,18 +691,18 @@ self.addEventListener('fetch', (event) => {
 	.metric-label { font-size: var(--text-sm); color: var(--color-text-muted); }
 	.metric-value { font-size: var(--text-lg); font-weight: 700; color: var(--color-text); }
 	.metric-change { font-size: var(--text-sm); font-weight: 600; }
-	.metric-change.positive { color: #2d8a4e; }
-	.metric-change.negative { color: #cc3333; }
+	.metric-change.positive { color: var(--color-success); }
+	.metric-change.negative { color: var(--color-error); }
 
 	/* Intersect section */
 	.intersect-section {
-		min-height: 200px;
+		min-block-size: 200px;
 	}
 	.lazy-placeholder {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		min-height: 200px;
+		min-block-size: 200px;
 		border: 2px dashed var(--color-border);
 		border-radius: var(--radius-md);
 		color: var(--color-text-muted);
@@ -714,13 +714,13 @@ self.addEventListener('fetch', (event) => {
 		display: flex;
 		align-items: flex-end;
 		gap: 6px;
-		height: 120px;
+		block-size: 120px;
 	}
 	.lazy-bar {
 		flex: 1;
 		background: oklch(62% 0.10 55);
 		border-radius: var(--radius-xs) var(--radius-xs) 0 0;
-		min-height: 4px;
+		min-block-size: 4px;
 		animation: growUp 0.5s ease;
 	}
 	@keyframes growUp {
@@ -748,14 +748,14 @@ self.addEventListener('fetch', (event) => {
 	.check-item.checked span { text-decoration: line-through; opacity: 0.6; }
 	.check-item input[type="checkbox"] { accent-color: oklch(62% 0.10 55); }
 	.progress-bar {
-		height: 6px;
+		block-size: 6px;
 		background: var(--color-surface-2);
 		border-radius: 3px;
 		overflow: hidden;
 	}
 	.progress-fill {
-		height: 100%;
-		background: #2d8a4e;
+		block-size: 100%;
+		background: var(--color-success);
 		border-radius: 3px;
 		transition: width 0.3s;
 	}
@@ -775,7 +775,7 @@ self.addEventListener('fetch', (event) => {
 		font-weight: 600;
 	}
 	.footer-sub {
-		margin-top: var(--space-xs) !important;
+		margin-block-start: var(--space-xs) !important;
 		font-weight: 400 !important;
 		color: var(--color-text-muted) !important;
 		font-size: var(--text-sm);
@@ -807,15 +807,15 @@ self.addEventListener('fetch', (event) => {
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

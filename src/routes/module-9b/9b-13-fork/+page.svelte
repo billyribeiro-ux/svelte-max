@@ -375,8 +375,8 @@
 		font-size: var(--text-sm); color: var(--color-text-muted);
 	}
 	.spinner {
-		display: inline-block; width: 1rem; height: 1rem;
-		border: 2px solid var(--color-border); border-top-color: var(--color-text);
+		display: inline-block; inline-size: 1rem; block-size: 1rem;
+		border: 2px solid var(--color-border); border-block-start-color: var(--color-text);
 		border-radius: 50%; animation: spin 0.6s linear infinite;
 	}
 	.button-row { display: flex; gap: var(--space-sm); }
@@ -398,7 +398,7 @@
 	.detail-price { margin: var(--space-sm) 0 0 0; font-size: var(--text-lg); font-weight: 700; }
 	@keyframes spin { to { transform: rotate(360deg); } }
 	@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -426,15 +426,15 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

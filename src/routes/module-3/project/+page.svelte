@@ -511,7 +511,7 @@
     border-radius: var(--radius-xs);
   }
 
-  @media (min-width: 768px) {
+  @media (min-inline-size: 768px) {
     h1 { font-size: var(--text-hero); }
     .buttons-grid {
       grid-template-columns: repeat(3, 1fr);
@@ -548,15 +548,15 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -168,7 +168,7 @@
 	button { align-self: flex-start; padding: var(--space-sm) var(--space-md); background: var(--color-brand); color: var(--color-surface); border: none; border-radius: var(--radius-md); font-size: var(--text-base); cursor: pointer; transition: background var(--dur-fast) var(--ease-out); }
 	button:hover { background: var(--color-brand-dim); }
 	.hint { margin: 0; color: var(--color-text-muted); font-size: var(--text-sm); line-height: 1.6; }
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 	}
 
@@ -197,14 +197,14 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept, .hint { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept, .hint { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

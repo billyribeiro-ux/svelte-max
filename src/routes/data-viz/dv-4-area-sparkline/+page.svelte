@@ -424,7 +424,7 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
@@ -483,24 +483,24 @@
 		background: oklch(90% 0.06 25);
 	}
 	.sparkline {
-		width: 60px;
-		height: 20px;
+		inline-size: 60px;
+		block-size: 20px;
 		align-self: flex-end;
 		margin-block-start: auto;
 	}
 	.area-chart {
-		width: 100%;
-		max-width: 680px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 680px;
+		block-size: auto;
 	}
 	.gridline {
 		stroke: var(--color-border);
-		stroke-width: 1;
+		stroke-inline-size: 1;
 		stroke-dasharray: 3 3;
 	}
 	.axis-line {
 		stroke: var(--color-text-muted);
-		stroke-width: 1;
+		stroke-inline-size: 1;
 	}
 	.tick-label {
 		font-size: 10px;
@@ -541,14 +541,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

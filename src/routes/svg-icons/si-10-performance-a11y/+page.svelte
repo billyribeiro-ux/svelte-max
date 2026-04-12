@@ -345,9 +345,9 @@
 		accent-color: oklch(65% 0.22 270);
 	}
 	.perf-svg {
-		width: 100%;
-		max-width: 300px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 300px;
+		block-size: auto;
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -419,10 +419,10 @@
 		padding: var(--space-xs) var(--space-sm);
 		background: var(--color-surface-2);
 		border-radius: var(--radius-sm);
-		border-left: 3px solid oklch(65% 0.22 150);
+		border-inline-start: 3px solid oklch(65% 0.22 150);
 	}
 	.audit-item.warn {
-		border-left-color: oklch(70% 0.18 85);
+		border-inline-start-color: oklch(70% 0.18 85);
 	}
 	.audit-icon {
 		font-size: var(--text-base);
@@ -481,15 +481,15 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 		.comparison-row { grid-template-columns: 1fr 1fr; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

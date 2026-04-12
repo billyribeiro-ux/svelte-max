@@ -291,16 +291,16 @@ npm run preview
 	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	.table-wrapper {
 		overflow-x: auto;
 	}
 	.adapter-table {
-		width: 100%;
+		inline-size: 100%;
 		border-collapse: collapse;
 		font-size: var(--text-sm);
-		min-width: 600px;
+		min-inline-size: 600px;
 	}
 	.adapter-table th,
 	.adapter-table td {
@@ -340,14 +340,14 @@ npm run preview
 		accent-color: var(--color-primary);
 	}
 	.progress-bar {
-		height: 6px;
+		block-size: 6px;
 		background: var(--color-surface-2);
 		border-radius: 3px;
 		overflow: hidden;
 	}
 	.progress-fill {
-		height: 100%;
-		background: #2d8a4e;
+		block-size: 100%;
+		background: var(--color-success);
 		border-radius: 3px;
 		transition: width 0.3s;
 	}
@@ -378,14 +378,14 @@ npm run preview
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

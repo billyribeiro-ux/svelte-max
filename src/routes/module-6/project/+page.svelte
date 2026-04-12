@@ -876,12 +876,12 @@
 	}
 
 	/* RESPONSIVE */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.feature-grid {
 			grid-template-columns: repeat(2, 1fr);
 		}
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.landing {
 			padding: var(--space-xl);
 		}
@@ -918,15 +918,15 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		h1 { max-inline-size: 65ch; }
 		h2 { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		h1 { max-inline-size: 80ch; }
 		h2 { max-inline-size: 80ch; }
 	}

@@ -640,7 +640,7 @@ export function increment(): void { count++; }
 	.comparison {
 		display: flex;                       /* side by side */
 		flex-direction: column;              /* stack on mobile */
-		gap: 1rem;                           /* spacing */
+		gap: var(--space-md);                           /* spacing */
 		margin-block: 0.5rem;                /* vertical spacing */
 	}
 
@@ -662,7 +662,7 @@ export function increment(): void { count++; }
 	}
 
 	table {
-		width: 100%;                         /* full width */
+		inline-size: 100%;                         /* full width */
 		border-collapse: collapse;           /* no double borders */
 		font-size: var(--text-sm);           /* small text */
 	}
@@ -696,7 +696,7 @@ export function increment(): void { count++; }
 	.mistakes {
 		display: flex;                       /* side by side */
 		flex-direction: column;              /* stack on mobile */
-		gap: 1.5rem;                         /* spacing */
+		gap: var(--space-lg);                         /* spacing */
 
 		& h4 {
 			font-size: var(--text-sm);         /* small heading */
@@ -716,7 +716,7 @@ export function increment(): void { count++; }
 	details {
 		border: 1px solid var(--color-border); /* boundary */
 		border-radius: 0.5rem;               /* rounded */
-		padding: 1rem;                       /* inner spacing */
+		padding: var(--space-md);                       /* inner spacing */
 
 		& summary {
 			cursor: pointer;                   /* clickable */
@@ -755,7 +755,7 @@ export function increment(): void { count++; }
 	.next {
 		font-size: var(--text-base);         /* body size */
 		margin-block-start: 2rem;            /* space above */
-		padding: 1rem;                       /* inner padding */
+		padding: var(--space-md);                       /* inner padding */
 		background: var(--color-surface);    /* subtle bg */
 		border-radius: 0.5rem;               /* rounded */
 		border: 1px solid var(--color-border); /* boundary */
@@ -791,7 +791,7 @@ export function increment(): void { count++; }
 	}
 
 	/* ── Responsive ──────────────────────────────────────── */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.comparison {
 			flex-direction: row;               /* side by side */
 
@@ -811,17 +811,17 @@ export function increment(): void { count++; }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.analogy, .concept, .hint { max-inline-size: 65ch; }
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.analogy, .concept, .hint { max-inline-size: 72ch; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.analogy, .concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

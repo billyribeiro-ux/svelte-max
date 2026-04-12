@@ -256,7 +256,7 @@ export const getProducts = query(async () => {
 	.price { margin: 0; font-weight: 600; font-size: var(--text-lg); }
 	.stock { font-size: var(--text-sm); color: oklch(60% 0.15 145); }
 	.stock.out { color: oklch(60% 0.15 25); }
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.product-grid { grid-template-columns: 1fr 1fr; }
 	}
@@ -287,15 +287,15 @@ export const getProducts = query(async () => {
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

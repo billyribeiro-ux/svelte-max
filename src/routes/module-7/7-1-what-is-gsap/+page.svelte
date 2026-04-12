@@ -217,21 +217,21 @@
   .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
   .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
   .next { margin-block-start: var(--space-xl); color: var(--color-text); }
-  @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+  @media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
   .layers { display: flex; flex-direction: column; gap: var(--space-sm); }
-  .layer { background: var(--color-surface-2); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-md); border-left: 3px solid var(--color-brand); }
+  .layer { background: var(--color-surface-2); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-md); border-inline-start: 3px solid var(--color-brand); }
   .layer p { margin: var(--space-xs) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
   .layer-label { font-weight: 600; color: var(--color-text); }
 
   .demos { display: grid; grid-template-columns: 1fr; gap: var(--space-md); }
-  @media (min-width: 768px) { .demos { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-inline-size: 768px) { .demos { grid-template-columns: repeat(3, 1fr); } }
 
   .demo-col { display: flex; flex-direction: column; gap: var(--space-sm); align-items: center; }
   .demo-col h4 { margin: 0; font-size: var(--text-sm); color: var(--color-text); }
 
-  .card { background: var(--color-brand); color: var(--color-surface); padding: var(--space-md) var(--space-lg); border-radius: var(--radius-md); font-weight: 600; text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center; }
-  .card-placeholder { min-height: 60px; }
+  .card { background: var(--color-brand); color: var(--color-surface); padding: var(--space-md) var(--space-lg); border-radius: var(--radius-md); font-weight: 600; text-align: center; min-block-size: 60px; display: flex; align-items: center; justify-content: center; }
+  .card-placeholder { min-block-size: 60px; }
 
   .css-card { animation: cssSlideIn 0.6s ease-out; }
   :global(.css-enter) { animation: cssSlideIn 0.6s ease-out; }
@@ -265,15 +265,15 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -406,17 +406,17 @@
 	.objectives {
 		color: var(--color-text);        /* standard text color */
 		line-height: 1.8;               /* generous spacing */
-		padding-left: var(--space-lg);  /* indent from left */
+		padding-inline-start: var(--space-lg);  /* indent from left */
 	}
 
 	/* ── Analogy callout ── */
 	.analogy {
 		background: var(--color-surface-2);           /* subtle background */
-		border-left: 4px solid var(--color-warning);  /* yellow accent */
+		border-inline-start: 4px solid var(--color-warning);  /* yellow accent */
 		padding: var(--space-md);                     /* inner spacing */
 		border-radius: var(--radius-md);              /* rounded corners */
 		margin-block: var(--space-md);                /* vertical spacing */
-		max-width: 60ch;                              /* readable line length */
+		max-inline-size: 60ch;                              /* readable line length */
 
 		& p {
 			margin: 0;                                /* no default margin */
@@ -428,22 +428,22 @@
 	/* ── Concept paragraph ── */
 	.concept {
 		color: var(--color-text-muted);  /* muted for explanatory text */
-		max-width: 60ch;                 /* 60-char line length */
+		max-inline-size: 60ch;                 /* 60-char line length */
 		line-height: 1.6;               /* comfortable spacing */
 	}
 
 	/* ── Name tag component ── */
 	.name-tag {
-		width: 100%;                            /* fill parent width */
-		max-width: 20rem;                       /* cap at 320px */
+		inline-size: 100%;                            /* fill parent width */
+		max-inline-size: 20rem;                       /* cap at 320px */
 		margin-block: var(--space-xl);          /* vertical spacing */
 		border-radius: var(--radius-lg);        /* 1rem rounded corners */
 		overflow: hidden;                       /* clip to rounded shape */
 		background: var(--color-surface-1);     /* near-white background */
 		box-shadow: var(--shadow-md);           /* subtle depth shadow */
 
-		@media (min-width: 768px) {
-			max-width: 24rem;                   /* wider on desktop */
+		@media (min-inline-size: 768px) {
+			max-inline-size: 24rem;                   /* wider on desktop */
 		}
 	}
 
@@ -494,7 +494,7 @@
 		gap: var(--space-md);
 		margin-block: var(--space-md);
 
-		@media (min-width: 768px) {
+		@media (min-inline-size: 768px) {
 			grid-template-columns: 1fr 1fr;
 		}
 	}
@@ -511,7 +511,7 @@
 		}
 
 		& p {
-			margin-top: var(--space-sm);
+			margin-block-start: var(--space-sm);
 			font-size: var(--text-sm);
 			line-height: 1.5;
 		}
@@ -529,7 +529,7 @@
 
 	/* ── Next link ── */
 	.next {
-		margin-top: var(--space-xl);
+		margin-block-start: var(--space-xl);
 		color: var(--color-text);
 	}
 
@@ -550,7 +550,7 @@
 	}
 
 	details[open] > summary {
-		border-bottom: 1px solid var(--color-border);
+		border-block-end: 1px solid var(--color-border);
 	}
 
 	.detail-text {
@@ -598,18 +598,18 @@
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.analogy, .concept { max-inline-size: 65ch; }
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.analogy, .concept { max-inline-size: 72ch; }
 		.mistake-pair { grid-template-columns: 1fr 1fr; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.analogy, .concept { max-inline-size: 80ch; }
 	}
 </style>

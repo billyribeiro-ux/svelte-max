@@ -234,7 +234,7 @@
     font-size: var(--text-xs);
   }
 
-  @container (min-width: 20rem) {
+  @container (min-inline-size: 20rem) {
     .stat-card {
       flex-direction: row;
       align-items: center;
@@ -267,7 +267,7 @@
     border-radius: var(--radius-xs);
   }
 
-  @media (min-width: 768px) {
+  @media (min-inline-size: 768px) {
     h1 { font-size: var(--text-2xl); }
     .demo {
       flex-direction: row;
@@ -323,14 +323,14 @@
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

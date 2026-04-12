@@ -225,7 +225,7 @@ export const createPost = form(PostSchema, async ({ data }) => {
 	.diagram-row { display: flex; align-items: center; gap: var(--space-sm); justify-content: center; }
 	.diagram-box {
 		padding: var(--space-xs) var(--space-md); border-radius: var(--radius-sm);
-		font-weight: 600; font-size: var(--text-sm); min-width: 4rem; text-align: center;
+		font-weight: 600; font-size: var(--text-sm); min-inline-size: 4rem; text-align: center;
 	}
 	.diagram-box.client { background: oklch(60% 0.12 250); color: white; }
 	.diagram-box.server { background: oklch(60% 0.12 145); color: white; }
@@ -237,13 +237,13 @@ export const createPost = form(PostSchema, async ({ data }) => {
 	.diagram-step { display: flex; align-items: center; gap: var(--space-sm); font-size: var(--text-sm); }
 	.step-num {
 		display: inline-flex; align-items: center; justify-content: center;
-		width: 1.5rem; height: 1.5rem; border-radius: 50%;
+		inline-size: 1.5rem; block-size: 1.5rem; border-radius: 50%;
 		background: var(--color-border); font-weight: 700; font-size: var(--text-sm);
 		flex-shrink: 0;
 	}
 	.diagram-step.highlight { background: oklch(80% 0.08 145 / 0.2); padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-sm); }
 	.diagram-step.highlight .step-num { background: oklch(60% 0.15 145); color: white; }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -271,15 +271,15 @@ export const createPost = form(PostSchema, async ({ data }) => {
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -230,7 +230,7 @@ export const getPost = prerender(
 	.config-key { font-weight: 600; }
 	.config-value { color: var(--color-text-muted); font-family: var(--font-mono); font-size: var(--text-sm); }
 	.note { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); font-size: var(--text-sm); }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -258,15 +258,15 @@ export const getPost = prerender(
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

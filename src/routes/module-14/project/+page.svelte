@@ -544,7 +544,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		width: 100%;
+		inline-size: 100%;
 		padding: var(--space-md);
 		background: var(--color-surface-1);
 		border: none;
@@ -563,7 +563,7 @@
 	}
 
 	.props-table {
-		width: 100%;
+		inline-size: 100%;
 		border-collapse: collapse;
 		font-size: var(--text-sm);
 	}
@@ -585,7 +585,7 @@
 		font-size: var(--text-sm);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.gallery { grid-template-columns: repeat(2, 1fr); }
 	}
@@ -616,14 +616,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

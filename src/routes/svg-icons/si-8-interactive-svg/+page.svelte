@@ -274,9 +274,9 @@
 		position: relative;
 	}
 	.world-map {
-		width: 100%;
-		max-width: 600px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 600px;
+		block-size: auto;
 		background: oklch(92% 0.02 220);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -290,7 +290,7 @@
 	}
 	.continent-path.active {
 		stroke: oklch(40% 0.20 270);
-		stroke-width: 2;
+		stroke-inline-size: 2;
 	}
 	.continent-path:focus-visible {
 		outline: 2px solid oklch(65% 0.22 270);
@@ -319,10 +319,10 @@
 		display: flex;
 		flex-direction: column;
 		gap: 2px;
-		max-width: 200px;
+		max-inline-size: 200px;
 	}
 	.legend-gradient {
-		height: 12px;
+		block-size: 12px;
 		border-radius: var(--radius-xs);
 		background: linear-gradient(to right, oklch(75% 0.08 250), oklch(45% 0.22 250));
 	}
@@ -389,14 +389,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

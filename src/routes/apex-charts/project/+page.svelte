@@ -667,7 +667,7 @@
 	}
 
 	/* ── Responsive ── */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.kpi-row { grid-template-columns: repeat(4, 1fr); }
 
 		.cc-header {
@@ -677,12 +677,12 @@
 		}
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.chart-grid { grid-template-columns: 1fr 1fr; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.range-selector button {
 			padding: var(--space-xs) var(--space-md);
 			font-size: var(--text-sm);

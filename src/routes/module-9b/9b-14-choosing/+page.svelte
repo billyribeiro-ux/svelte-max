@@ -311,9 +311,9 @@
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	h2 { margin: 0; font-size: var(--text-lg); }
 	.table-wrap { overflow-x: auto; }
-	table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
-	th, td { padding: var(--space-sm); text-align: left; border-bottom: 1px solid var(--color-border); }
-	th { font-weight: 600; background: var(--color-surface-2); position: sticky; top: 0; }
+	table { inline-size: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+	th, td { padding: var(--space-sm); text-align: left; border-block-end: 1px solid var(--color-border); }
+	th { font-weight: 600; background: var(--color-surface-2); position: sticky; inset-block-start: 0; }
 	td { color: var(--color-text-muted); }
 	.flow { display: flex; flex-direction: column; gap: 0; }
 	.flow-step {
@@ -323,7 +323,7 @@
 	.flow-question { display: flex; align-items: center; gap: var(--space-sm); font-weight: 500; }
 	.flow-num {
 		display: inline-flex; align-items: center; justify-content: center;
-		width: 1.5rem; height: 1.5rem; border-radius: 50%;
+		inline-size: 1.5rem; block-size: 1.5rem; border-radius: 50%;
 		background: var(--color-border); font-size: var(--text-sm); font-weight: 700;
 		flex-shrink: 0;
 	}
@@ -331,7 +331,7 @@
 	.flow-yes { color: oklch(60% 0.15 145); }
 	.flow-no { color: var(--color-text-muted); }
 	.flow-connector {
-		width: 2px; height: var(--space-sm); background: var(--color-border);
+		inline-size: 2px; block-size: var(--space-sm); background: var(--color-border);
 		margin-inline-start: 1.4rem;
 	}
 	.rules { display: flex; flex-direction: column; gap: var(--space-sm); }
@@ -341,7 +341,7 @@
 		color: var(--color-text-muted); line-height: 1.6;
 	}
 	.rule strong { color: var(--color-text); }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -369,15 +369,15 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

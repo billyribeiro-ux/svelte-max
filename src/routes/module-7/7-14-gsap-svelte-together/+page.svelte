@@ -278,35 +278,35 @@
   .prose { color: var(--color-text); max-inline-size: 68ch; line-height: 1.7; margin-block: 0.5lh; text-wrap: pretty; & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
   .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
   .next { margin-block-start: var(--space-xl); color: var(--color-text); }
-  @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+  @media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
   .guide-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-md); }
-  @media (min-width: 768px) { .guide-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-inline-size: 768px) { .guide-grid { grid-template-columns: 1fr 1fr; } }
 
   .guide-card { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); }
   .guide-card h4 { margin: 0 0 var(--space-sm); color: var(--color-text); }
   .guide-list { font-size: var(--text-sm); }
-  .svelte-side { border-left: 3px solid var(--color-success); }
-  .gsap-side { border-left: 3px solid var(--color-brand); }
+  .svelte-side { border-inline-start: 3px solid var(--color-success); }
+  .gsap-side { border-inline-start: 3px solid var(--color-brand); }
 
   .scroll-hint { font-size: var(--text-sm); color: var(--color-brand); font-weight: 500; margin: 0; }
 
   button { background: var(--color-brand); color: var(--color-surface); border: none; padding: var(--space-xs) var(--space-md); border-radius: var(--radius-sm); cursor: pointer; font-size: var(--text-sm); font-weight: 500; align-self: flex-start; }
   button:hover { background: var(--color-brand-dim); }
 
-  .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: var(--space-md); }
-  .modal { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-xl); max-width: 480px; width: 100%; box-shadow: var(--shadow-lg); }
+  .overlay { position: fixed; inset: 0; background: oklch(0% 0 0 / 0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: var(--space-md); }
+  .modal { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-xl); max-inline-size: 480px; inline-size: 100%; box-shadow: var(--shadow-lg); }
   .modal h2 { margin: 0 0 var(--space-sm); color: var(--color-text); }
   .modal p { margin: 0 0 var(--space-md); color: var(--color-text-muted); font-size: var(--text-sm); }
 
-  .spacer { height: 30vh; }
-  .spacer-sm { height: 10vh; }
+  .spacer { block-size: 30vh; }
+  .spacer-sm { block-size: 10vh; }
 
-  .scroll-card { background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-xl); margin-bottom: var(--space-lg); box-shadow: var(--shadow-sm); }
+  .scroll-card { background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-xl); margin-block-end: var(--space-lg); box-shadow: var(--shadow-sm); }
   .scroll-card h4 { margin: 0 0 var(--space-xs); color: var(--color-text); }
   .scroll-card p { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
 
-  .parallax-section { position: relative; overflow: hidden; border-radius: var(--radius-lg); min-height: 300px; margin-bottom: var(--space-lg); }
+  .parallax-section { position: relative; overflow: hidden; border-radius: var(--radius-lg); min-block-size: 300px; margin-block-end: var(--space-lg); }
   .parallax-bg { position: absolute; inset: -60px 0; background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-brand-dim) 100%); z-index: 0; }
   .parallax-content { position: relative; z-index: 1; padding: var(--space-2xl) var(--space-xl); color: var(--color-surface); }
   .parallax-content h2 { margin: 0 0 var(--space-sm); }
@@ -337,15 +337,15 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -277,7 +277,7 @@ npm publish --access public`}</pre>
 	.semver-row {
 		padding: var(--space-md);
 		border-radius: var(--radius-md);
-		border-left: 4px solid;
+		border-inline-start: 4px solid;
 	}
 	.major { border-color: var(--color-error); background: var(--color-surface-2); }
 	.minor { border-color: var(--color-warning); background: var(--color-surface-2); }
@@ -300,13 +300,13 @@ npm publish --access public`}</pre>
 	}
 
 	.progress-bar {
-		height: 0.5rem;
+		block-size: 0.5rem;
 		background: var(--color-surface-2);
 		border-radius: var(--radius-xs);
 		overflow: hidden;
 	}
 	.progress-fill {
-		height: 100%;
+		block-size: 100%;
 		background: var(--color-primary);
 		border-radius: var(--radius-xs);
 		transition: width 0.3s ease;
@@ -334,7 +334,7 @@ npm publish --access public`}</pre>
 		font-weight: 600;
 	}
 
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -362,14 +362,14 @@ npm publish --access public`}</pre>
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

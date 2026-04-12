@@ -477,8 +477,8 @@ const user: User = {
 	.profile {
 		display: flex;                       /* horizontal layout */
 		flex-direction: column;              /* stack on mobile */
-		gap: 1.25rem;                        /* space between avatar and content */
-		padding: 1.5rem;                     /* inner spacing */
+		gap: var(--space-md);                        /* space between avatar and content */
+		padding: var(--space-lg);                     /* inner spacing */
 		border: 1px solid var(--color-border); /* card border */
 		border-radius: 1rem;                 /* large rounding */
 		background: var(--color-surface);    /* card background */
@@ -500,7 +500,7 @@ const user: User = {
 		& .content {
 			display: flex;                     /* vertical stack */
 			flex-direction: column;            /* top to bottom */
-			gap: 0.5rem;                       /* tight spacing */
+			gap: var(--space-sm);                       /* tight spacing */
 
 			& h2 {
 				font-size: var(--text-2xl);      /* large name */
@@ -527,14 +527,14 @@ const user: User = {
 	.tags {
 		list-style: none;                    /* remove bullets */
 		padding: 0;                          /* remove default padding */
-		margin: 0.5rem 0 0;                  /* small top margin */
+		margin: var(--space-sm) 0 0;                  /* small top margin */
 		display: flex;                       /* horizontal layout */
 		flex-wrap: wrap;                     /* wrap to next line */
-		gap: 0.5rem;                         /* space between pills */
+		gap: var(--space-sm);                         /* space between pills */
 
 		& .tag {
 			font-size: var(--text-xs);         /* extra small */
-			padding: 0.35rem 0.75rem;          /* pill padding */
+			padding: var(--space-xs) var(--space-sm);          /* pill padding */
 			border-radius: 999px;              /* pill shape */
 			background: var(--color-brand-dim); /* subtle brand bg */
 			color: var(--color-text);          /* readable text */
@@ -546,7 +546,7 @@ const user: User = {
 	.mistakes {
 		display: flex;                       /* side by side */
 		flex-direction: column;              /* stack on mobile */
-		gap: 1.5rem;                         /* spacing */
+		gap: var(--space-lg);                         /* spacing */
 
 		& h4 {
 			font-size: var(--text-sm);         /* small heading */
@@ -566,7 +566,7 @@ const user: User = {
 	details {
 		border: 1px solid var(--color-border); /* boundary */
 		border-radius: 0.5rem;               /* rounded */
-		padding: 1rem;                       /* inner spacing */
+		padding: var(--space-md);                       /* inner spacing */
 
 		& summary {
 			cursor: pointer;                   /* clickable */
@@ -586,7 +586,7 @@ const user: User = {
 	.next {
 		font-size: var(--text-base);         /* body size */
 		margin-block-start: 2rem;            /* space above */
-		padding: 1rem;                       /* inner padding */
+		padding: var(--space-md);                       /* inner padding */
 		background: var(--color-surface);    /* subtle bg */
 		border-radius: 0.5rem;               /* rounded */
 		border: 1px solid var(--color-border); /* boundary */
@@ -622,12 +622,12 @@ const user: User = {
 	}
 
 	/* ── Responsive ──────────────────────────────────────── */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.profile {
 			flex-direction: row;               /* side by side */
 			align-items: flex-start;           /* top-align */
-			gap: 2rem;                         /* wider gap */
-			padding: 2rem;                     /* more padding */
+			gap: var(--space-xl);                         /* wider gap */
+			padding: var(--space-xl);                     /* more padding */
 
 			& .avatar {
 				inline-size: 7rem;               /* larger avatar */
@@ -666,17 +666,17 @@ const user: User = {
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.analogy, .concept, .hint { max-inline-size: 65ch; }
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.analogy, .concept, .hint { max-inline-size: 72ch; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.analogy, .concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

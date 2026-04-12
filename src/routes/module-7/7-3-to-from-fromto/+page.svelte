@@ -192,18 +192,18 @@ gsap.fromTo(el,
   .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
   .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
-  @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+  @media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
   .demo-row { display: grid; grid-template-columns: 1fr; gap: var(--space-md); }
-  @media (min-width: 768px) { .demo-row { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-inline-size: 768px) { .demo-row { grid-template-columns: repeat(3, 1fr); } }
 
   .demo { display: flex; flex-direction: column; gap: var(--space-sm); }
   .demo h4 { margin: 0; font-size: var(--text-sm); color: var(--color-text); }
 
-  .track { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); min-height: 70px; display: flex; align-items: center; }
+  .track { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); min-block-size: 70px; display: flex; align-items: center; }
   .track.center { justify-content: center; }
 
-  .box { width: 56px; height: 56px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--color-surface); font-weight: 700; font-size: var(--text-xs); }
+  .box { inline-size: 56px; block-size: 56px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--color-surface); font-weight: 700; font-size: var(--text-xs); }
   .box.to { background: var(--color-brand); }
   .box.from { background: var(--color-success); }
   .box.fromto { background: var(--color-warning); }
@@ -236,14 +236,14 @@ gsap.fromTo(el,
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

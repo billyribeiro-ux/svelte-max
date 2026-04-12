@@ -262,7 +262,7 @@
 		flex-direction: column;
 		gap: var(--space-lg);
 		padding: var(--space-lg);
-		max-width: 960px;
+		max-inline-size: 960px;
 		margin: 0 auto;
 		color: var(--color-text);
 	}
@@ -351,7 +351,7 @@
 	.meta {
 		font-size: var(--text-sm);
 		color: var(--color-text-muted);
-		margin-left: auto;
+		margin-inline-start: auto;
 	}
 
 	.table {
@@ -369,11 +369,11 @@
 		gap: var(--space-sm);
 		padding: var(--space-sm) var(--space-md);
 		font-size: var(--text-sm);
-		border-bottom: 1px solid var(--color-border);
+		border-block-end: 1px solid var(--color-border);
 	}
 
 	.row:last-child {
-		border-bottom: none;
+		border-block-end: none;
 	}
 
 	.row.head {
@@ -404,11 +404,11 @@
 		margin: 0;
 		padding: var(--space-sm) var(--space-md);
 		background: var(--color-surface-1);
-		border-left: 3px solid var(--color-brand);
+		border-inline-start: 3px solid var(--color-brand);
 		border-radius: var(--radius-sm);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.page {
 			padding: var(--space-2xl);
 		}
@@ -448,14 +448,14 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept, .hint { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept, .hint { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

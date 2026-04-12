@@ -299,7 +299,7 @@
 
 	.built-with { margin-block-start: var(--space-xl); padding-block-start: var(--space-lg); border-block-start: 1px solid var(--color-border); }
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.notes-grid { grid-template-columns: repeat(2, 1fr); }
 		.note-foot { flex-direction: row; align-items: center; }
@@ -331,14 +331,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -545,7 +545,7 @@
 		flex: 1;
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.shell {
 			flex-direction: row;
 		}

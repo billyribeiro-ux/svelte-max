@@ -207,7 +207,7 @@
 		display: inline-block;
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);
-		border-bottom-width: 2px;
+		border-block-end-width: 2px;
 		border-radius: var(--radius-sm);
 		padding: var(--space-xs) var(--space-sm);
 		font-family: var(--font-mono);
@@ -224,7 +224,7 @@
 		color: var(--color-text-muted);
 		font-size: var(--text-sm);
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
@@ -255,14 +255,14 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept, .hint { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept, .hint { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

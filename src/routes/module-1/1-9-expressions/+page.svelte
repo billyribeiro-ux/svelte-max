@@ -527,7 +527,7 @@
 	.pricing {
 		position: relative;                  /* for absolute badge */
 		margin-block: 2rem;                  /* vertical spacing */
-		padding: 2rem 1.5rem;                /* inner spacing */
+		padding: var(--space-xl) var(--space-lg);                /* inner spacing */
 		border-radius: 1rem;                 /* rounded corners */
 		border: 1px solid var(--color-border); /* card border */
 		background: var(--color-surface);    /* card background */
@@ -548,20 +548,20 @@
 			font-weight: 700;                  /* bold */
 			text-transform: uppercase;         /* all caps */
 			letter-spacing: 0.08em;            /* slight tracking */
-			padding: 0.35rem 0.75rem;          /* pill padding */
+			padding: var(--space-xs) var(--space-sm);          /* pill padding */
 			border-radius: 999px;              /* pill shape */
 		}
 
 		& h2 {
 			font-size: var(--text-2xl);        /* large title */
-			margin: 0 0 0.5rem;                /* bottom spacing only */
+			margin: 0 0 var(--space-sm);                /* bottom spacing only */
 		}
 
 		& .price {
 			margin: 0;                         /* remove default */
 			display: flex;                     /* inline layout */
 			align-items: baseline;             /* align text baselines */
-			gap: 0.25rem;                      /* tight gap */
+			gap: var(--space-xs);                      /* tight gap */
 
 			& .amount {
 				font-size: var(--text-hero);    /* huge price */
@@ -577,7 +577,7 @@
 		}
 
 		& .savings {
-			margin: 0.25rem 0 1.25rem;         /* vertical spacing */
+			margin: var(--space-xs) 0 var(--space-md);         /* vertical spacing */
 			color: var(--color-brand);         /* brand accent */
 			font-size: var(--text-sm);         /* small text */
 			font-weight: 600;                  /* semi-bold */
@@ -586,15 +586,15 @@
 		& .features {
 			list-style: none;                  /* remove bullets */
 			padding: 0;                        /* remove padding */
-			margin: 0 0 1.5rem;                /* bottom spacing */
+			margin: 0 0 var(--space-lg);                /* bottom spacing */
 			display: flex;                     /* vertical stack */
 			flex-direction: column;            /* top to bottom */
-			gap: 0.5rem;                       /* space between items */
+			gap: var(--space-sm);                       /* space between items */
 
 			& li {
 				display: flex;                   /* inline icon + text */
 				align-items: center;             /* vertically centered */
-				gap: 0.6rem;                     /* icon-text gap */
+				gap: var(--space-sm);                     /* icon-text gap */
 				font-size: var(--text-base);     /* body size */
 				color: var(--color-text);        /* primary text */
 			}
@@ -609,7 +609,7 @@
 
 		& .cta {
 			inline-size: 100%;                 /* full width button */
-			padding: 0.85rem 1rem;             /* comfortable target */
+			padding: 0.85rem var(--space-md);             /* comfortable target */
 			border: none;                      /* no border */
 			border-radius: 0.6rem;             /* rounded */
 			background: var(--color-brand);    /* brand fill */
@@ -633,7 +633,7 @@
 		background: var(--color-surface);    /* card background */
 		border: 1px solid var(--color-border); /* border */
 		border-radius: 1rem;                 /* rounded */
-		padding: 1.5rem;                     /* inner spacing */
+		padding: var(--space-lg);                     /* inner spacing */
 		margin-block: 2rem;                  /* vertical breathing room */
 		max-inline-size: 40rem;              /* constrain width */
 	}
@@ -651,7 +651,7 @@
 	}
 
 	.html-output {
-		padding: 0.75rem 1rem;               /* inner spacing */
+		padding: var(--space-sm) var(--space-md);               /* inner spacing */
 		background: var(--color-surface);    /* subtle bg */
 		border: 1px solid var(--color-border); /* border */
 		border-radius: 0.5rem;               /* rounded */
@@ -660,7 +660,7 @@
 
 	.xss-example {
 		margin: 0;                           /* remove default */
-		padding: 0.75rem 1rem;               /* inner spacing */
+		padding: var(--space-sm) var(--space-md);               /* inner spacing */
 		background: var(--color-surface);    /* subtle bg */
 		border: 1px solid var(--color-border); /* border */
 		border-radius: 0.5rem;               /* rounded */
@@ -668,9 +668,9 @@
 	}
 
 	.danger-note {
-		border-left: 4px solid var(--color-brand); /* accent bar */
+		border-inline-start: 4px solid var(--color-brand); /* accent bar */
 		background: var(--color-surface);    /* subtle bg */
-		padding: 0.75rem 1rem;               /* inner spacing */
+		padding: var(--space-sm) var(--space-md);               /* inner spacing */
 		border-radius: 0.5rem;               /* rounded */
 		font-size: var(--text-sm);           /* small text */
 		color: var(--color-text-muted);      /* secondary */
@@ -681,7 +681,7 @@
 	.mistakes {
 		display: flex;                       /* side by side */
 		flex-direction: column;              /* stack on mobile */
-		gap: 1.5rem;                         /* spacing */
+		gap: var(--space-lg);                         /* spacing */
 
 		& h4 {
 			font-size: var(--text-sm);         /* small heading */
@@ -701,7 +701,7 @@
 	details {
 		border: 1px solid var(--color-border); /* boundary */
 		border-radius: 0.5rem;               /* rounded */
-		padding: 1rem;                       /* inner spacing */
+		padding: var(--space-md);                       /* inner spacing */
 
 		& summary {
 			cursor: pointer;                   /* clickable */
@@ -740,7 +740,7 @@
 	.next {
 		font-size: var(--text-base);         /* body size */
 		margin-block-start: 2rem;            /* space above */
-		padding: 1rem;                       /* inner padding */
+		padding: var(--space-md);                       /* inner padding */
 		background: var(--color-surface);    /* subtle bg */
 		border-radius: 0.5rem;               /* rounded */
 		border: 1px solid var(--color-border); /* boundary */
@@ -776,9 +776,9 @@
 	}
 
 	/* ── Responsive ──────────────────────────────────────── */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.pricing {
-			padding: 2.5rem 2rem;              /* more padding on wide */
+			padding: var(--space-xl) var(--space-xl);              /* more padding on wide */
 		}
 
 		.mistakes {
@@ -792,17 +792,17 @@
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.analogy, .concept { max-inline-size: 65ch; }
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.analogy, .concept { max-inline-size: 72ch; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.analogy, .concept { max-inline-size: 80ch; }
 	}
 </style>

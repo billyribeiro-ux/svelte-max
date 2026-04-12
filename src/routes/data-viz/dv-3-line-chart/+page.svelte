@@ -377,7 +377,7 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
@@ -387,24 +387,24 @@
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.chart {
-		width: 100%;
-		max-width: 680px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 680px;
+		block-size: auto;
 	}
 	.gridline {
 		stroke: var(--color-border);
-		stroke-width: 1;
+		stroke-inline-size: 1;
 		stroke-dasharray: 3 3;
 	}
 	.zero-line {
 		stroke: var(--color-text-muted);
-		stroke-width: 1;
+		stroke-inline-size: 1;
 		stroke-dasharray: 6 3;
 		opacity: 0.5;
 	}
 	.axis-line {
 		stroke: var(--color-text-muted);
-		stroke-width: 1;
+		stroke-inline-size: 1;
 	}
 	.tick-label {
 		font-size: 11px;
@@ -425,14 +425,14 @@
 	}
 	.ref-line {
 		stroke: var(--color-text-muted);
-		stroke-width: 1;
+		stroke-inline-size: 1;
 		stroke-dasharray: 4 3;
 		opacity: 0.6;
 	}
 	.tooltip-bg {
 		fill: var(--color-surface-2);
 		stroke: var(--color-border);
-		stroke-width: 1;
+		stroke-inline-size: 1;
 	}
 	.tooltip-text {
 		font-size: 11px;
@@ -475,14 +475,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -269,8 +269,8 @@
 	}
 
 	.activity-dot {
-		width: 8px;
-		height: 8px;
+		inline-size: 8px;
+		block-size: 8px;
 		border-radius: 50%;
 		flex-shrink: 0;
 	}
@@ -312,15 +312,15 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 		.kpi-grid { grid-template-columns: repeat(2, 1fr); }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 		.kpi-grid { grid-template-columns: repeat(4, 1fr); }
 	}

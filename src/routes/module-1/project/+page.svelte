@@ -142,7 +142,7 @@
     gap: var(--space-md);                   /* consistent gap */
   }
 
-  @media (min-width: 768px) {
+  @media (min-inline-size: 768px) {
     .stats {
       grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
     }
@@ -506,13 +506,13 @@ const me = {
 	.mistake-list {
 		display: flex;                       /* vertical stack */
 		flex-direction: column;              /* top to bottom */
-		gap: 1rem;                           /* space between items */
+		gap: var(--space-md);                           /* space between items */
 	}
 
 	.mistake-list details {
 		border: 1px solid var(--color-border); /* boundary */
 		border-radius: 0.5rem;               /* rounded */
-		padding: 1rem;                       /* inner spacing */
+		padding: var(--space-md);                       /* inner spacing */
 
 		& summary {
 			cursor: pointer;                   /* clickable */
@@ -575,13 +575,13 @@ const me = {
 	}
 
 	/* ── Responsive ──────────────────────────────────────── */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.stats {
 			grid-template-columns: repeat(3, 1fr); /* 3 columns on tablet+ */
 		}
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.hero h1 {
 			font-size: clamp(3rem, 9vw, 6rem); /* extra large on desktop */
 		}
@@ -593,17 +593,17 @@ const me = {
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -284,8 +284,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 64px;
-		height: 64px;
+		inline-size: 64px;
+		block-size: 64px;
 		background: var(--color-surface-2);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -300,8 +300,8 @@
 	}
 
 	.icon-btn svg {
-		width: 32px;
-		height: 32px;
+		inline-size: 32px;
+		block-size: 32px;
 	}
 
 	.icon-label {
@@ -347,7 +347,7 @@
 	}
 	.rays line {
 		stroke: oklch(75% 0.18 85);
-		stroke-width: 2;
+		stroke-inline-size: 2;
 		stroke-linecap: round;
 		transition: opacity 300ms ease, transform 300ms ease;
 	}
@@ -398,15 +398,15 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 		.icon-grid { grid-template-columns: repeat(4, 1fr); }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

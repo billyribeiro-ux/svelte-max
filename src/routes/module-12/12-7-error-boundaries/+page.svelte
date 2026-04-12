@@ -269,7 +269,7 @@
 	.experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	.widget {
 		border: 1px solid var(--color-border);
@@ -280,11 +280,11 @@
 	.widget h4 { margin: 0 0 var(--space-sm); }
 	.widget-text { margin: 0 0 var(--space-sm); color: var(--color-text-muted); }
 	.error-widget {
-		border-color: #cc3333;
-		background: #cc33330d;
+		border-color: var(--color-error);
+		background: var(--color-error)0d;
 	}
 	.error-msg {
-		color: #cc3333;
+		color: var(--color-error);
 		font-weight: 600;
 		margin: 0 0 var(--space-sm);
 	}
@@ -303,7 +303,7 @@
 		border: 1px solid var(--color-border);
 	}
 	.demo-btn.danger {
-		background: #cc3333;
+		background: var(--color-error);
 	}
 	.loading-state {
 		display: flex;
@@ -313,10 +313,10 @@
 	}
 	.spinner {
 		display: inline-block;
-		width: 18px;
-		height: 18px;
+		inline-size: 18px;
+		block-size: 18px;
 		border: 2px solid var(--color-border);
-		border-top-color: var(--color-primary);
+		border-block-start-color: var(--color-primary);
 		border-radius: 50%;
 		animation: spin 0.6s linear infinite;
 	}
@@ -325,9 +325,9 @@
 		display: flex;
 		align-items: center;
 		gap: var(--space-sm);
-		color: #2d8a4e;
+		color: var(--color-success);
 		font-weight: 600;
-		margin-bottom: var(--space-sm);
+		margin-block-end: var(--space-sm);
 	}
 	.check { font-size: 1.2em; }
 
@@ -357,14 +357,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

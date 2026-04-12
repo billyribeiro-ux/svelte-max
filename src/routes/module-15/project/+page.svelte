@@ -334,9 +334,9 @@
 	/* Hero */
 	.hero {
 		position: relative;
-		height: 100vh;
-		min-height: 500px;
-		max-height: 900px;
+		block-size: 100vh;
+		min-block-size: 500px;
+		max-block-size: 900px;
 		overflow: hidden;
 	}
 
@@ -347,17 +347,17 @@
 	}
 
 	.hero-fallback {
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		display: grid;
 		place-items: center;
 		background: oklch(45% 0.25 280);
 	}
 
 	.fallback-geo {
-		width: 120px;
-		height: 120px;
-		background: linear-gradient(135deg, #6b3fa0, #9d6eff);
+		inline-size: 120px;
+		block-size: 120px;
+		background: linear-gradient(135deg, oklch(42% 0.22 290), oklch(62% 0.25 280));
 		clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 		opacity: 0.5;
 	}
@@ -377,21 +377,21 @@
 
 	.hero-overlay h1 {
 		font-size: clamp(1.5rem, 5vw, 3rem);
-		color: #fff;
-		text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+		color: oklch(100% 0 0);
+		text-shadow: 0 2px 20px oklch(0% 0 0 / 0.5);
 		margin: 0;
 	}
 
 	.hero-subtitle {
 		font-size: clamp(1rem, 3vw, 1.5rem);
-		color: rgba(255, 255, 255, 0.85);
+		color: oklch(100% 0 0 / 0.85);
 		margin: var(--space-sm) 0 0;
-		text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+		text-shadow: 0 1px 10px oklch(0% 0 0 / 0.4);
 	}
 
 	.hero-desc {
 		font-size: var(--text-sm);
-		color: rgba(255, 255, 255, 0.6);
+		color: oklch(100% 0 0 / 0.6);
 		margin: var(--space-xs) 0 0;
 	}
 
@@ -423,7 +423,7 @@
 	}
 
 	.section-content {
-		max-width: 50rem;
+		max-inline-size: 50rem;
 		margin: 0 auto;
 	}
 
@@ -455,12 +455,12 @@
 	.feature-card span { color: var(--color-text-muted); font-size: var(--text-sm); }
 
 	.feature-icon {
-		width: 2.5rem;
-		height: 2.5rem;
+		inline-size: 2.5rem;
+		block-size: 2.5rem;
 		display: grid;
 		place-items: center;
 		background: oklch(45% 0.25 280);
-		color: #fff;
+		color: oklch(100% 0 0);
 		border-radius: var(--radius-md);
 		font-weight: 700;
 		font-size: var(--text-base);
@@ -481,12 +481,12 @@
 	}
 
 	.step-number {
-		width: 2rem;
-		height: 2rem;
+		inline-size: 2rem;
+		block-size: 2rem;
 		display: grid;
 		place-items: center;
 		background: oklch(45% 0.25 280);
-		color: #fff;
+		color: oklch(100% 0 0);
 		border-radius: 50%;
 		font-weight: 700;
 		font-size: var(--text-sm);
@@ -505,7 +505,7 @@
 		border-block-start: 1px solid var(--color-border);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.feature-grid { grid-template-columns: repeat(3, 1fr); }
 		.scroll-section { padding: var(--space-xl); }
 		.section-content h2 { font-size: var(--text-2xl); }
@@ -537,15 +537,15 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

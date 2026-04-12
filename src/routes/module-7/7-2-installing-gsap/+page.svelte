@@ -134,10 +134,10 @@ $effect(() => \{
   .experiments { max-inline-size: 68ch; display: flex; flex-direction: column; gap: var(--space-md); padding-inline-start: var(--space-lg); color: var(--color-text); line-height: 1.6; & strong { color: var(--color-text); } & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); } }
   .next { margin-block-start: var(--space-xl); color: var(--color-text); }
   pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
-  @media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+  @media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
-  .track { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); min-height: 80px; display: flex; align-items: center; }
-  .box { width: 60px; height: 60px; background: var(--color-brand); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--color-surface); font-size: var(--text-lg); font-weight: 700; }
+  .track { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); min-block-size: 80px; display: flex; align-items: center; }
+  .box { inline-size: 60px; block-size: 60px; background: var(--color-brand); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--color-surface); font-size: var(--text-lg); font-weight: 700; }
   .arrow { line-height: 1; }
   .note { font-size: var(--text-sm); color: var(--color-text-muted); margin: 0; }
   button { background: var(--color-brand); color: var(--color-surface); border: none; padding: var(--space-xs) var(--space-md); border-radius: var(--radius-sm); cursor: pointer; font-size: var(--text-sm); font-weight: 500; align-self: flex-start; }
@@ -168,15 +168,15 @@ $effect(() => \{
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

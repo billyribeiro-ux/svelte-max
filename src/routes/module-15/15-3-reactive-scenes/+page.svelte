@@ -283,16 +283,16 @@
 	pre { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; }
 
 	.canvas-container {
-		width: 100%;
-		height: 350px;
+		inline-size: 100%;
+		block-size: 350px;
 		border-radius: var(--radius-md);
 		overflow: hidden;
-		background: #1a1a2e;
+		background: oklch(15% 0.03 270);
 	}
 
 	.fallback {
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		display: grid;
 		place-items: center;
 		color: var(--color-text-muted);
@@ -314,20 +314,20 @@
 	}
 
 	input[type="range"] {
-		width: 100%;
+		inline-size: 100%;
 		accent-color: var(--color-primary);
 	}
 
 	.color-preview {
-		width: 2rem;
-		height: 1rem;
+		inline-size: 2rem;
+		block-size: 1rem;
 		border-radius: var(--radius-xs);
 		border: 1px solid var(--color-border);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
-		.canvas-container { height: 450px; }
+		.canvas-container { block-size: 450px; }
 		.controls { flex-direction: row; }
 		.slider-label { flex: 1; }
 	}
@@ -358,14 +358,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

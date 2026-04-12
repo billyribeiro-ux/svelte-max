@@ -272,11 +272,11 @@ export const getStats = query.batch(async (keys: string[]) => {
 	.widget-trend.up { color: oklch(60% 0.15 145); }
 	.widget-trend.down { color: oklch(60% 0.15 25); }
 	.skeleton { animation: pulse 1.2s ease-in-out infinite; }
-	.skel-label { width: 60%; height: 1rem; background: var(--color-border); border-radius: var(--radius-xs); }
-	.skel-value { width: 80%; height: 1.5rem; background: var(--color-border); border-radius: var(--radius-xs); }
+	.skel-label { inline-size: 60%; block-size: 1rem; background: var(--color-border); border-radius: var(--radius-xs); }
+	.skel-value { inline-size: 80%; block-size: 1.5rem; background: var(--color-border); border-radius: var(--radius-xs); }
 	.note { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); font-size: var(--text-sm); }
 	@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 
 	/* ── Having issues section ── */
@@ -304,15 +304,15 @@ export const getStats = query.batch(async (keys: string[]) => {
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

@@ -344,9 +344,9 @@
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	.rocket-canvas {
-		width: 100%;
-		max-width: 500px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 500px;
+		block-size: auto;
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 	}
@@ -389,8 +389,8 @@
 		color: var(--color-text-muted);
 	}
 	.scrubber input[type='range'] {
-		width: 100%;
-		max-width: 500px;
+		inline-size: 100%;
+		max-inline-size: 500px;
 		accent-color: oklch(55% 0.15 270);
 	}
 
@@ -425,14 +425,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

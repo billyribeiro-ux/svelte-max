@@ -225,7 +225,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-sm);
-		min-height: 60px;
+		min-block-size: 60px;
 		/* interpolate-size: allow-keywords — enables animating to/from keyword sizes like 'auto' alongside Svelte transitions */
 		interpolate-size: allow-keywords;
 	}
@@ -256,7 +256,7 @@
 		font-size: var(--text-base);
 		padding: 0 var(--space-xs);
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
@@ -287,14 +287,14 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

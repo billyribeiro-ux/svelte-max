@@ -220,7 +220,7 @@
   .content h4 { margin: 0; color: var(--color-text); font-size: var(--text-base); }
   .content p { margin: 0; color: var(--color-text-muted); font-size: var(--text-sm); }
 
-  @container (min-width: 20rem) {
+  @container (min-inline-size: 20rem) {
     .widget {
       flex-direction: row;
       text-align: start;
@@ -237,7 +237,7 @@
     }
   }
 
-  @media (min-width: 768px) {
+  @media (min-inline-size: 768px) {
     h1 { font-size: var(--text-2xl); }
   }
 
@@ -266,14 +266,14 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

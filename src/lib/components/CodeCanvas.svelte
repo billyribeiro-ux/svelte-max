@@ -131,7 +131,7 @@
 		opacity: 0.5;
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.canvas-scroll {
 			max-block-size: 48rem;
 		}

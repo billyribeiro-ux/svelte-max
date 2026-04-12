@@ -283,7 +283,7 @@
 		padding: 0 var(--space-xs);
 		border-radius: var(--radius-xs);
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
@@ -310,13 +310,13 @@
 		background: var(--color-border);
 	}
 	.chart {
-		width: 100%;
-		max-width: 640px;
-		height: auto;
+		inline-size: 100%;
+		max-inline-size: 640px;
+		block-size: auto;
 	}
 	.gridline {
 		stroke: var(--color-border);
-		stroke-width: 1;
+		stroke-inline-size: 1;
 		stroke-dasharray: 4 4;
 	}
 	.grid-label {
@@ -371,14 +371,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

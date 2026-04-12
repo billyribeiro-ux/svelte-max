@@ -253,7 +253,7 @@
 		grid-template-columns: 1fr;
 		gap: var(--space-md);
 
-		@media (min-width: 768px) {
+		@media (min-inline-size: 768px) {
 			grid-template-columns: 1fr 1fr;
 		}
 	}

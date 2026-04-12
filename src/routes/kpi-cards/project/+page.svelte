@@ -325,19 +325,19 @@
 	}
 
 	.skel-line {
-		height: 12px;
+		block-size: 12px;
 		background: var(--color-border);
 		border-radius: var(--radius-xs);
 		animation: shimmer 1.5s infinite ease-in-out;
 	}
 
-	.skel-short { width: 40%; }
-	.skel-wide { width: 70%; height: 24px; }
-	.skel-med { width: 55%; }
+	.skel-short { inline-size: 40%; }
+	.skel-wide { inline-size: 70%; block-size: 24px; }
+	.skel-med { inline-size: 55%; }
 
 	.skel-bar {
-		height: 28px;
-		width: 100%;
+		block-size: 28px;
+		inline-size: 100%;
 		background: var(--color-border);
 		border-radius: var(--radius-xs);
 		animation: shimmer 1.5s infinite ease-in-out;
@@ -468,8 +468,8 @@
 	}
 
 	.mc-feed-dot {
-		width: 8px;
-		height: 8px;
+		inline-size: 8px;
+		block-size: 8px;
 		border-radius: 50%;
 		flex-shrink: 0;
 	}
@@ -573,19 +573,19 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.mc-kpi-row {
 			grid-template-columns: repeat(2, 1fr);
 		}
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.mc-title {
 			font-size: var(--text-3xl);
 		}
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.mc-kpi-row {
 			grid-template-columns: repeat(4, 1fr);
 		}

@@ -308,15 +308,15 @@
 	}
 
 	.placeholder-dot {
-		width: 8px;
-		height: 8px;
+		inline-size: 8px;
+		block-size: 8px;
 		border-radius: 50%;
 		background: var(--color-border);
 		flex-shrink: 0;
 	}
 
 	.placeholder-line {
-		height: 10px;
+		block-size: 10px;
 		background: var(--color-border);
 		border-radius: var(--radius-xs);
 	}
@@ -346,10 +346,10 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 
@@ -361,7 +361,7 @@
 				'main activity';
 		}
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 
 		.kpi-row {

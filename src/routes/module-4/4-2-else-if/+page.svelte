@@ -172,7 +172,7 @@
 
 	.pill {
 		display: inline-block;
-		width: fit-content;
+		inline-size: fit-content;
 		font-size: var(--text-sm);
 		font-weight: 600;
 		padding: var(--space-xs) var(--space-md);
@@ -189,7 +189,7 @@
 		margin: 0;
 	}
 
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	/* ── Having issues section ── */
 	.having-issues {
@@ -227,14 +227,14 @@
 	.next { margin-block-start: var(--space-xl); color: var(--color-text); }
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

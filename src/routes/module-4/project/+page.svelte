@@ -394,14 +394,14 @@
 		border-radius: var(--radius-lg);
 		margin-block-end: var(--space-lg);
 		position: sticky;
-		top: var(--space-sm);
+		inset-block-start: var(--space-sm);
 		z-index: 2;
 		box-shadow: var(--shadow-sm);
 	}
 	.sr-only {
 		position: absolute;
-		width: 1px;
-		height: 1px;
+		inline-size: 1px;
+		block-size: 1px;
 		padding: 0;
 		margin: -1px;
 		overflow: hidden;
@@ -415,7 +415,7 @@
 	}
 	input[type='search'],
 	select {
-		width: 100%;
+		inline-size: 100%;
 		padding: var(--space-sm) var(--space-md);
 		background: var(--color-surface);
 		color: var(--color-text);
@@ -571,23 +571,23 @@
 		background: var(--color-surface-1);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
-		min-height: 180px;
+		min-block-size: 180px;
 	}
 	.skeleton-line {
-		height: 12px;
+		block-size: 12px;
 		background: var(--color-surface-2);
 		border-radius: var(--radius-xs);
 		animation: pulse 1.4s var(--ease-in-out) infinite;
 	}
 	.skeleton-title {
-		height: 18px;
-		width: 70%;
+		block-size: 18px;
+		inline-size: 70%;
 	}
 	.skeleton-sub {
-		width: 90%;
+		inline-size: 90%;
 	}
 	.skeleton-sub.short {
-		width: 40%;
+		inline-size: 40%;
 	}
 
 	@keyframes pulse {
@@ -610,7 +610,7 @@
 	.built-with {
 		margin-block-start: var(--space-2xl);
 		padding-block-start: var(--space-lg);
-		border-top: 1px solid var(--color-border);
+		border-block-start: 1px solid var(--color-border);
 	}
 	.built-with h3 {
 		margin: 0 0 var(--space-sm) 0;
@@ -627,12 +627,12 @@
 		margin: 0;
 	}
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.grid {
 			grid-template-columns: repeat(2, 1fr);
 		}
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 {
 			font-size: var(--text-2xl);
 		}
@@ -644,7 +644,7 @@
 			grid-template-columns: repeat(3, 1fr);
 		}
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.grid {
 			grid-template-columns: repeat(4, 1fr);
 		}
@@ -675,7 +675,7 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 	}

@@ -545,7 +545,7 @@
 		box-shadow: var(--shadow-sm);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.topbar {
 			flex-direction: row;
 			align-items: center;
@@ -598,13 +598,13 @@
 		gap: var(--space-md);
 	}
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.metric-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.metric-grid {
 			grid-template-columns: repeat(4, minmax(0, 1fr));
 		}
@@ -720,7 +720,7 @@
 		justify-content: space-between;
 	}
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.feed-head {
 			flex-direction: row;
 			align-items: center;
@@ -852,7 +852,7 @@
 		color: var(--color-text-muted);
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.built ul {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
@@ -888,7 +888,7 @@
 	}
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 	}

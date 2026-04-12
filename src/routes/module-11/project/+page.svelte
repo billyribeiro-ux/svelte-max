@@ -601,7 +601,7 @@
 	.build { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface-1); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow-sm); margin-block: var(--space-lg); }
 	code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); }
 	h3 { margin-block-start: var(--space-xl); margin-block-end: var(--space-sm); }
-	@media (min-width: 768px) { h1 { font-size: var(--text-2xl); } }
+	@media (min-inline-size: 768px) { h1 { font-size: var(--text-2xl); } }
 
 	/* Status Bar */
 	.status-bar {
@@ -672,7 +672,7 @@
 	}
 	.search-input {
 		flex: 1;
-		min-width: 200px;
+		min-inline-size: 200px;
 		padding: var(--space-sm) var(--space-md);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -694,14 +694,14 @@
 		overflow-x: auto;
 	}
 	table {
-		width: 100%;
+		inline-size: 100%;
 		border-collapse: collapse;
 		font-size: 0.85em;
 	}
 	th, td {
 		padding: var(--space-xs) var(--space-sm);
 		text-align: left;
-		border-bottom: 1px solid var(--color-border);
+		border-block-end: 1px solid var(--color-border);
 	}
 	th {
 		background: var(--color-surface-2);
@@ -744,8 +744,8 @@
 		transition: all 0.2s ease;
 	}
 	.like-btn.liked {
-		color: #e74c3c;
-		border-color: #e74c3c;
+		color: var(--color-error);
+		border-color: var(--color-error);
 	}
 	.like-btn.pending-like {
 		opacity: 0.5;
@@ -782,15 +782,15 @@
 	.cart-overlay {
 		position: fixed;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.4);
+		background: oklch(0% 0 0 / 0.4);
 		z-index: 90;
 	}
 	.cart-sidebar {
 		position: fixed;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		width: min(360px, 90vw);
+		inset-block-start: 0;
+		inset-inline-end: 0;
+		inset-block-end: 0;
+		inline-size: min(360px, 90vw);
 		background: var(--color-surface-1);
 		border-inline-start: 1px solid var(--color-border);
 		z-index: 100;
@@ -845,14 +845,14 @@
 		border-radius: var(--radius-sm);
 		cursor: pointer;
 		font-weight: 700;
-		width: 28px;
-		height: 28px;
+		inline-size: 28px;
+		block-size: 28px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 	.cart-items {
-		border-top: 1px solid var(--color-border);
+		border-block-start: 1px solid var(--color-border);
 		padding-block-start: var(--space-md);
 		display: flex;
 		flex-direction: column;
@@ -876,8 +876,8 @@
 	}
 	.remove-btn {
 		background: none;
-		border: 1px solid #e74c3c;
-		color: #e74c3c;
+		border: 1px solid var(--color-error);
+		color: var(--color-error);
 		border-radius: var(--radius-sm);
 		cursor: pointer;
 		font-size: 0.75em;
@@ -888,7 +888,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding-block-start: var(--space-sm);
-		border-top: 1px solid var(--color-border);
+		border-block-start: 1px solid var(--color-border);
 		color: var(--color-text);
 	}
 	.clear-btn {
@@ -911,7 +911,7 @@
 	.project-footer {
 		margin-block-start: var(--space-xl);
 		padding-block-start: var(--space-md);
-		border-top: 1px solid var(--color-border);
+		border-block-start: 1px solid var(--color-border);
 	}
 	.project-footer p {
 		font-size: 0.85em;
@@ -946,14 +946,14 @@
 	}
 
 	/* === RESPONSIVE BREAKPOINTS === */
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.concept { max-inline-size: 65ch; }
 	}
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		.concept { max-inline-size: 72ch; }
 	}
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.concept { max-inline-size: 80ch; }
 	}
 </style>

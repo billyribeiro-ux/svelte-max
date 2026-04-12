@@ -501,7 +501,7 @@ h1 {
 	.specimen {
 		display: flex;                       /* vertical stack */
 		flex-direction: column;              /* rows top to bottom */
-		gap: 1.5rem;                         /* space between rows */
+		gap: var(--space-lg);                         /* space between rows */
 		margin-block: 2rem;                  /* vertical breathing room */
 
 		& .row {
@@ -511,7 +511,7 @@ h1 {
 			& .label {
 				display: flex;                   /* inline layout */
 				flex-direction: column;          /* stack token + formula */
-				gap: 0.25rem;                    /* tight gap */
+				gap: var(--space-xs);                    /* tight gap */
 				margin-block-end: 0.5rem;        /* space before sample text */
 			}
 
@@ -541,7 +541,7 @@ h1 {
 	.mistakes {
 		display: flex;                       /* side by side on wide screens */
 		flex-direction: column;              /* stack on mobile */
-		gap: 1.5rem;                         /* space between wrong/right */
+		gap: var(--space-lg);                         /* space between wrong/right */
 
 		& h4 {
 			font-size: var(--text-sm);         /* small heading */
@@ -561,7 +561,7 @@ h1 {
 	details {
 		border: 1px solid var(--color-border);  /* visible boundary */
 		border-radius: 0.5rem;                  /* rounded corners */
-		padding: 1rem;                          /* inner spacing */
+		padding: var(--space-md);                          /* inner spacing */
 
 		& summary {
 			cursor: pointer;                    /* clickable indicator */
@@ -581,7 +581,7 @@ h1 {
 	.next {
 		font-size: var(--text-base);         /* body size */
 		margin-block-start: 2rem;            /* space above */
-		padding: 1rem;                       /* inner padding */
+		padding: var(--space-md);                       /* inner padding */
 		background: var(--color-surface);    /* subtle background */
 		border-radius: 0.5rem;               /* rounded corners */
 		border: 1px solid var(--color-border); /* visible boundary */
@@ -617,13 +617,13 @@ h1 {
 	}
 
 	/* ── Responsive — tablet and up ──────────────────────── */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.specimen {
 			& .row {
 				display: grid;                   /* switch to grid for alignment */
 				grid-template-columns: 18rem 1fr; /* fixed label, fluid sample */
 				align-items: baseline;           /* align text baselines */
-				gap: 2rem;                       /* space between columns */
+				gap: var(--space-xl);                       /* space between columns */
 
 				& .label {
 					margin-block-end: 0;           /* no bottom margin in grid */
@@ -642,17 +642,17 @@ h1 {
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.analogy, .concept, .hint { max-inline-size: 65ch; }
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.analogy, .concept, .hint { max-inline-size: 72ch; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.analogy, .concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

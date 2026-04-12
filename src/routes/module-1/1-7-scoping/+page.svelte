@@ -39,7 +39,7 @@
     background: var(--color-brand);  /* solid fill */
     color: var(--color-surface);     /* white text */
     border: none;                    /* no border */
-    padding: 0.65rem 1.2rem;        /* comfortable click target */
+    padding: var(--space-sm) var(--space-md);        /* comfortable click target */
     border-radius: 0.5rem;          /* rounded corners */
   }
 
@@ -47,7 +47,7 @@
     background: transparent;         /* no fill */
     color: var(--color-brand);       /* brand-colored text */
     border: 2px solid var(--color-brand); /* outline only */
-    padding: 0.55rem 1.1rem;        /* slightly smaller */
+    padding: var(--space-sm) var(--space-md);        /* slightly smaller */
     border-radius: 999px;           /* pill shape */
   }
 </style>`;
@@ -114,7 +114,7 @@
     /* Matches <path> elements created by D3 at runtime.
        The .chart-wrapper prefix keeps it scoped. */
     stroke: var(--color-brand);
-    stroke-width: 2;
+    stroke-inline-size: 2;
   }
 </style>`;
 
@@ -454,12 +454,12 @@
 	.demo {
 		display: flex;                       /* horizontal on wide */
 		flex-direction: column;              /* stack on mobile */
-		gap: 1.5rem;                         /* space between cards */
+		gap: var(--space-lg);                         /* space between cards */
 		margin-block: 2rem;                  /* vertical breathing room */
 	}
 
 	.card {
-		padding: 1.5rem;                     /* inner spacing */
+		padding: var(--space-lg);                     /* inner spacing */
 		border-radius: 0.75rem;              /* rounded corners */
 		border: 1px solid var(--color-border); /* subtle border */
 
@@ -482,7 +482,7 @@
 			background: var(--color-brand);    /* solid brand fill */
 			color: var(--color-surface);       /* white text on brand */
 			border: none;                      /* no border */
-			padding: 0.65rem 1.2rem;           /* comfortable target */
+			padding: var(--space-sm) var(--space-md);           /* comfortable target */
 			border-radius: 0.5rem;             /* rounded corners */
 			font-size: var(--text-base);       /* body text size */
 			font-weight: 600;                  /* semi-bold */
@@ -502,7 +502,7 @@
 			background: transparent;           /* no fill — ghost style */
 			color: var(--color-brand);         /* brand-colored text */
 			border: 2px solid var(--color-brand); /* outline border */
-			padding: 0.55rem 1.1rem;           /* slightly smaller */
+			padding: var(--space-sm) var(--space-md);           /* slightly smaller */
 			border-radius: 999px;              /* pill shape */
 			font-size: var(--text-base);       /* body text size */
 			font-weight: 600;                  /* semi-bold */
@@ -519,7 +519,7 @@
 	.mistakes {
 		display: flex;                       /* side by side */
 		flex-direction: column;              /* stack on mobile */
-		gap: 1.5rem;                         /* spacing */
+		gap: var(--space-lg);                         /* spacing */
 
 		& h4 {
 			font-size: var(--text-sm);         /* small heading */
@@ -539,7 +539,7 @@
 	details {
 		border: 1px solid var(--color-border); /* boundary */
 		border-radius: 0.5rem;               /* rounded */
-		padding: 1rem;                       /* inner spacing */
+		padding: var(--space-md);                       /* inner spacing */
 
 		& summary {
 			cursor: pointer;                   /* clickable */
@@ -559,7 +559,7 @@
 	.next {
 		font-size: var(--text-base);         /* body size */
 		margin-block-start: 2rem;            /* space above */
-		padding: 1rem;                       /* inner padding */
+		padding: var(--space-md);                       /* inner padding */
 		background: var(--color-surface);    /* subtle bg */
 		border-radius: 0.5rem;               /* rounded */
 		border: 1px solid var(--color-border); /* boundary */
@@ -595,7 +595,7 @@
 	}
 
 	/* ── Responsive ──────────────────────────────────────── */
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.demo {
 			flex-direction: row;               /* side by side */
 
@@ -636,17 +636,17 @@
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.analogy, .concept, .hint { max-inline-size: 65ch; }
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.analogy, .concept, .hint { max-inline-size: 72ch; }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.analogy, .concept, .hint { max-inline-size: 80ch; }
 	}
 </style>

@@ -134,7 +134,7 @@
 		font-weight: 500;
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		.kpi-card {
 			padding: var(--space-lg) var(--space-xl);
 		}

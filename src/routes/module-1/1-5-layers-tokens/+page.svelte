@@ -548,7 +548,7 @@
 		gap: var(--space-xl);
 		margin-block: var(--space-xl);
 
-		@media (min-width: 768px) {
+		@media (min-inline-size: 768px) {
 			grid-template-columns: repeat(3, 1fr);
 			align-items: start;
 		}
@@ -571,7 +571,7 @@
 		grid-template-columns: repeat(2, 1fr);
 		gap: var(--space-md);
 
-		@media (min-width: 768px) {
+		@media (min-inline-size: 768px) {
 			grid-template-columns: repeat(2, 1fr);
 		}
 	}
@@ -584,7 +584,7 @@
 	}
 
 	.swatch__chip {
-		width: 100%;
+		inline-size: 100%;
 		aspect-ratio: 1 / 1;
 		border-radius: var(--radius-sm);
 		border: 1px solid var(--color-surface-1);
@@ -610,7 +610,7 @@
 	}
 
 	.bar-row__label {
-		width: 2.5rem;
+		inline-size: 2.5rem;
 		font-family: var(--font-mono, monospace);
 		font-size: var(--text-xs);
 		color: var(--color-text-muted);
@@ -618,7 +618,7 @@
 
 	.bar-row__bar {
 		display: inline-block;
-		height: 0.75rem;
+		block-size: 0.75rem;
 		background: var(--color-brand);
 		border-radius: var(--radius-xs);
 	}
@@ -628,7 +628,7 @@
 		grid-template-columns: repeat(2, 1fr);
 		gap: var(--space-md);
 
-		@media (min-width: 768px) {
+		@media (min-inline-size: 768px) {
 			grid-template-columns: repeat(2, 1fr);
 		}
 	}
@@ -642,7 +642,7 @@
 	}
 
 	.radius__box {
-		width: 100%;
+		inline-size: 100%;
 		aspect-ratio: 1 / 1;
 		background: var(--color-brand-dim);
 		border: 2px solid var(--color-brand);
@@ -679,18 +679,18 @@
 
 	/* ═══ RESPONSIVE BREAKPOINTS ═══ */
 
-	@media (min-width: 480px) {
+	@media (min-inline-size: 480px) {
 		.prose { max-inline-size: 68ch; }
 	}
 
-	@media (min-width: 768px) {
+	@media (min-inline-size: 768px) {
 		h1 { font-size: var(--text-2xl); }
 		h2 { font-size: var(--text-xl); }
 		.prose { max-inline-size: 72ch; }
 		.layer-table { font-size: var(--text-base); }
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-inline-size: 1024px) {
 		.prose { max-inline-size: 80ch; }
 	}
 </style>

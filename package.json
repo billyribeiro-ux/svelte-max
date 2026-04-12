@@ -13,18 +13,18 @@
   "devDependencies": {
     "@playwright/test": "^1.59.1",
     "@sveltejs/adapter-auto": "^7.0.1",
-    "@sveltejs/kit": "^2.56.1",
+    "@sveltejs/kit": "^2.57.1",
     "@sveltejs/package": "^2.5.7",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@testing-library/svelte": "^5.3.1",
-    "@types/node": "^25.5.2",
+    "@types/node": "^25.6.0",
     "@types/three": "^0.183.1",
-    "jsdom": "^29.0.1",
-    "svelte": "5.55.1",
-    "svelte-check": "4.4.6",
+    "jsdom": "^29.0.2",
+    "svelte": "^5.55.3",
+    "svelte-check": "^4.4.6",
     "typescript": "^6.0.2",
-    "vite": "^8.0.5",
-    "vitest": "^4.1.2"
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -32,10 +32,10 @@
     ]
   },
   "dependencies": {
-    "@tanstack/svelte-table": "8.21.3",
-    "@threlte/core": "^8.5.6",
-    "@threlte/extras": "^9.14.4",
-    "apexcharts": "^5.10.5",
+    "@tanstack/svelte-table": "^8.21.3",
+    "@threlte/core": "^8.5.9",
+    "@threlte/extras": "^9.14.5",
+    "apexcharts": "^5.10.6",
     "dompurify": "3.3.3",
     "gsap": "^3.14.2",
     "three": "^0.183.2",

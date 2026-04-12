@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { prefersReducedMotion } from 'svelte/motion';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { onNavigate } from '$app/navigation';
 	import gsap from 'gsap';
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
@@ -46,8 +46,8 @@
 	];
 
 	let selectedId: number | null = $derived(
-		$page.url.searchParams.has('id')
-			? Number($page.url.searchParams.get('id'))
+		page.url.searchParams.has('id')
+			? Number(page.url.searchParams.get('id'))
 			: null
 	);
 
@@ -107,7 +107,7 @@
 	const fullCode = `<script lang="ts">
   import { prefersReducedMotion } from 'svelte/motion';
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { onNavigate } from '$app/navigation';
   import gsap from 'gsap';
 
@@ -119,8 +119,8 @@
   const cards: CardDef[] = [ /* ... */ ];
 
   let selectedId: number | null = $derived(
-    $page.url.searchParams.has('id')
-      ? Number($page.url.searchParams.get('id'))
+    page.url.searchParams.has('id')
+      ? Number(page.url.searchParams.get('id'))
       : null
   );
 

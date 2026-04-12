@@ -38,6 +38,21 @@
 			svelte4: 'import { writable } from "svelte/store"',
 			svelte5: '.svelte.ts files with $state',
 			notes: 'Create a .svelte.ts module, export let count = $state(0). Importers get reactive state without subscribe.'
+		},
+		{
+			svelte4: 'use:action={params}',
+			svelte5: '{@attach fn} / use:action',
+			notes: 'Attachments are the new declarative pattern. use: actions still work. fromAction() converts actions to attachments. createAttachmentKey() for programmatic use.'
+		},
+		{
+			svelte4: 'import { page } from "$app/stores"',
+			svelte5: 'import { page } from "$app/state"',
+			notes: '$app/stores is deprecated. $app/state exports a reactive object — no $ prefix, no store subscription needed.'
+		},
+		{
+			svelte4: 'Manual fetch + loading state',
+			svelte5: 'Remote functions + await in markup',
+			notes: 'query/form/command/prerender from $app/server. Type-safe, no manual fetch. await directly in templates with experimental.async.'
 		}
 	];
 
@@ -79,6 +94,21 @@
       svelte4: 'writable from "svelte/store"',
       svelte5: '.svelte.ts files with $state',
       notes: 'Rune-based shared state.'
+    },
+    {
+      svelte4: 'use:action={params}',
+      svelte5: '{@attach fn} / use:action',
+      notes: 'Attachments are the new declarative pattern.'
+    },
+    {
+      svelte4: 'import { page } from "$app/stores"',
+      svelte5: 'import { page } from "$app/state"',
+      notes: '$app/stores deprecated — use $app/state.'
+    },
+    {
+      svelte4: 'Manual fetch + loading state',
+      svelte5: 'Remote functions + await in markup',
+      notes: 'Type-safe server functions from $app/server.'
     }
   ];
 \u003c/script\u003e

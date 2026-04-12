@@ -1,7 +1,7 @@
 # Svelte 5 + SvelteKit 2 — Complete Frontend Course Curriculum (v2)
 
 > **Stack**: Svelte 5 · SvelteKit 2 · TypeScript Strict Mode · CSS PE7 Architecture · GSAP · Svelte Built-in Animations
-> **Syntax Standard**: April 2026 — all runes, APIs, and best practices current as of svelte@5.55.x / kit@2.55.x
+> **Syntax Standard**: April 12, 2026 — all runes, APIs, and best practices current as of svelte@5.55.3 / kit@2.57.1 / vite@8.0.8 / typescript@6.0.2 — includes async/await, remote functions, attachments, `$state.eager`, `fork()`, `hydratable()`, `transformError`
 > **Target Student**: Complete beginner — zero JS, zero TS, basic HTML/CSS
 > **Philosophy**: DiCenso root-level understanding — never memorize surface patterns, always understand why
 > **Package Manager**: pnpm exclusively
@@ -142,16 +142,47 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 | `$state()` | Reactive state — deep by default |
 | `$state.raw()` | Non-deep reactive state — performance sensitive |
 | `$state.snapshot()` | Plain object from reactive state — for API calls |
+| `$state.eager()` | Immediate UI update — bypasses synchronized async batching (since 5.x) |
 | `$derived()` | Computed value — pure, no side effects |
 | `$derived.by()` | Complex derived — multiple statements |
 | `$effect()` | Side effect — runs after DOM update |
 | `$effect.pre()` | Side effect — runs before DOM update |
-| `$effect.pending()` | Detect ongoing async work (experimental) |
+| `$effect.pending()` | Detect ongoing async work inside boundaries (experimental) |
 | `$props()` | Component props |
 | `$bindable()` | Two-way bindable prop |
 | `$inspect()` | Dev-only logging of reactive values |
 | `$inspect.trace()` | Dev-only reactive dependency tracer |
 | `$host()` | Access host element in custom elements |
+
+### Async & Concurrency APIs (Svelte 5 — April 2026)
+
+| API | Purpose |
+|-----|---------|
+| `await` in markup | Top-level `await` in `<script>` and `{await expr}` in templates — requires `compilerOptions.experimental.async: true` |
+| `hydratable(key, fn)` | Serialize async results during SSR, skip re-fetch during hydration — used internally by remote functions |
+| `fork(fn)` | Pre-run async work (preloading) before committing state changes — `fork().commit()` / `fork().discard()` (since 5.42) |
+| `settled()` | Returns a Promise that resolves when all pending async updates are complete |
+| `<svelte:boundary pending={}>` | Show placeholder UI while boundary's `await` expressions first resolve; `failed` snippet for error recovery (since 5.3) |
+| `transformError` | Server-side error sanitization for `<svelte:boundary>` during SSR — passed to `render()` (since 5.51) |
+
+### Attachments (Svelte 5 — April 2026)
+
+| API | Purpose |
+|-----|---------|
+| `{@attach fn}` | Declarative element attachment — runs on mount, optional cleanup on unmount |
+| `createAttachmentKey()` | Programmatic attachment via object spreading — for library authors (since 5.29) |
+| `fromAction(action, () => arg)` | Convert a `use:` action into an `{@attach}` attachment — migration bridge |
+
+### SvelteKit Hooks & Server APIs (Kit 2.27+ — April 2026)
+
+| API | Purpose |
+|-----|---------|
+| Remote functions (`query`, `form`, `command`, `prerender`) | Type-safe server functions callable from client — `$app/server` (since Kit 2.27) |
+| `getRequestEvent()` | Access current `RequestEvent` inside remote functions |
+| `handleValidationError` hook | Customize 400 responses for remote function schema validation failures |
+| `transport` hook | Encode/decode custom types across server/client boundary (e.g. `Vector`, `Date` subclasses) |
+| `reroute` (async) | Async reroute hook — can `fetch` to decide where to reroute (since Kit 2.18) |
+| Standard Schema validation | Remote functions accept any Standard Schema (valibot, zod, arktype) for argument validation |
 
 ---
 
@@ -165,13 +196,13 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 4. **Module 4 — Control Flow & Special Elements** ✅ shipped — see expanded detail below (Lessons 4.1–4.12, Dynamic Product Listing)
 5. **Module 5 — Events & Interaction** ✅ shipped — see expanded detail below (Lessons 5.1–5.12, Interactive Form with Live Validation)
 6. **Module 6 — Styling Mastery** ✅ shipped — see expanded detail below (Lessons 6.1–6.18, Animated Landing Page)
-7. **Module 7 — GSAP Integration** ✅ shipped — timelines, ScrollTrigger, actions, attachments (Lessons 7.1–7.14, Marketing Page)
+7. **Module 7 — GSAP Integration** ✅ shipped — timelines, ScrollTrigger, `use:` actions, `{@attach}` attachments, `createAttachmentKey`, `fromAction` (Lessons 7.1–7.14, Marketing Page)
 8. **Module 8 — SvelteKit Routing & Layouts** ✅ shipped — see expanded detail below (Lessons 8.1–8.14, Multi-Page Portfolio Site)
 9. **Module 9A — Data Loading (load)** ✅ shipped — see expanded detail below (Lessons 9A.1–9A.10, Weather Dashboard)
-10. **Module 9B — Remote Functions** ✅ shipped — query/form/command/prerender, single-flight mutations (Lessons 9B.1–9B.14, Real-Time Data App)
+10. **Module 9B — Remote Functions** ✅ shipped — `query`/`form`/`command`/`prerender` from `$app/server`, Standard Schema validation, `fork()`, `hydratable()`, async `await` in markup, `<svelte:boundary pending={}>` (Lessons 9B.1–9B.14, Real-Time Data App)
 11. **Module 10 — API Routes & Forms** ✅ shipped — see expanded detail below (Lessons 10.1–10.9, CRUD Note-Taking App)
 12. **Module 11 — State Management at Scale** ✅ shipped — context, .svelte.ts, TanStack Table (Lessons 11.1–11.11, Admin Dashboard)
-13. **Module 12 — Performance & Production** ✅ shipped — Core Web Vitals, error boundaries, testing, service workers (Lessons 12.1–12.12, Production App)
+13. **Module 12 — Performance & Production** ✅ shipped — Core Web Vitals, `<svelte:boundary>` with `pending`/`failed`/`onerror`/`transformError`, testing, service workers (Lessons 12.1–12.12, Production App)
 14. **Module 13 — SEO** ✅ shipped — see expanded detail below (Lessons 13.1–13.14, SEO-Optimized Content Site)
 15. **Module 14 — Custom Elements & Library Publishing** ✅ shipped — `<svelte:options customElement>`, `@sveltejs/package` (Lessons 14.1–14.6, Library + CE Suite)
 16. **Module 15 — 3D & Immersive with Threlte** ✅ shipped — Three.js via Threlte (Lessons 15.1–15.5, Immersive Landing)
@@ -273,7 +304,7 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 ## Module 8 — SvelteKit Routing & Layouts (expanded)
 
 **Goal**: Student understands file-based routing, SSR, hydration, and SvelteKit's application architecture in depth.
-**New concepts**: SSR, hydration, nested layouts, dynamic routes, `$app/state`, `$app/navigation`, hooks, shallow routing, snapshots, view transitions, rendering modes.
+**New concepts**: SSR, hydration, nested layouts, dynamic routes, `$app/state` (replaces deprecated `$app/stores`), `$app/navigation`, hooks (`handle`, `handleError`, `handleFetch`, `reroute` (async since Kit 2.18), `transport`), shallow routing, snapshots, view transitions, rendering modes.
 
 - **8.1 — What SvelteKit adds to Svelte**. Svelte is the component compiler; SvelteKit is the full-stack framework on top. `src/routes/` directory. Server vs client. Adapter system. Mini-build: a walkthrough page that inspects the full file structure with each file's role explained.
 - **8.2 — What SSR actually is**. The server renders full HTML per request. Contrast with SPA (empty `<div id="app">`). View source on both to see. Mini-build: an SSR inspection page that shows the student what to look for in DevTools "view source" vs "Elements".
@@ -284,7 +315,7 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 - **8.7 — `$app/state`**. `page` from `$app/state` — reactive page object with `.url`, `.params`, `.data`, `.status`, `.state`. Replaces legacy `$app/stores`. Mini-build: a page that reads `page.url.pathname` and `page.url.searchParams` reactively and displays them live.
 - **8.8 — `$app/navigation`**. `goto()`, `invalidate()`, `invalidateAll()`, `preloadData()`, `afterNavigate()`, `beforeNavigate()`. Mini-build: a programmatic-navigation demo with "Go home", "Open with preload on hover", and a beforeNavigate confirmation hook.
 - **8.9 — Link options**. `data-sveltekit-preload-data="hover"`, `data-sveltekit-preload-code="viewport"`, `data-sveltekit-reload`, `data-sveltekit-replacestate`, `data-sveltekit-keepfocus`, `data-sveltekit-noscroll`. Mini-build: a navigation bar with optimized preloading applied to different link types.
-- **8.10 — `hooks.server.ts`**. `handle`, `handleError`, `handleFetch`. `sequence()` from `@sveltejs/kit/hooks`. Mini-build: a page explaining what a realistic `hooks.server.ts` does (logging, auth, custom headers) with a code sample rendered in a `<pre>` — the actual hooks file is the Module 8 project's concern.
+- **8.10 — `hooks.server.ts`**. `handle`, `handleError`, `handleFetch`, `handleValidationError` (for remote function schema failures), `reroute` (async since Kit 2.18), `transport` (custom type serialization). `sequence()` from `@sveltejs/kit/hooks`. Mini-build: a page explaining what a realistic `hooks.server.ts` does (logging, auth, custom headers) with a code sample rendered in a `<pre>` — the actual hooks file is the Module 8 project's concern.
 - **8.11 — Shallow routing**. `pushState('', { modal: true })` and `replaceState()` from `$app/navigation`. `page.state` for reading shallow routing state. Mini-build: a photo-gallery pattern where clicking a thumbnail pushes a modal via shallow routing, Escape or history back dismisses it, direct URL works as a fallback page.
 - **8.12 — Snapshots**. `export const snapshot = { capture, restore }` to preserve ephemeral DOM state across navigation. Mini-build: a multi-field form whose inputs survive navigation via snapshots, demonstrated by a "Go home and come back" flow.
 - **8.13 — Page transitions**. `onNavigate()` hook plus the View Transitions API for cross-document morphs. Mini-build: a smooth fade between three sibling lesson pages via an `onNavigate` handler calling `document.startViewTransition`.
@@ -374,7 +405,7 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 ## Module 2 — Reactivity (expanded)
 
 **Goal**: Student masters every Svelte 5 rune and reactive primitive.
-**Concepts**: `$state`, `$state.raw`, `$state.snapshot`, `$derived`, `$derived.by`, `$effect`, `$effect.pre`, effect cleanup, `SvelteMap`/`SvelteSet`, `MediaQuery`, reactive CSS, typed state.
+**Concepts**: `$state`, `$state.raw`, `$state.snapshot`, `$state.eager`, `$derived`, `$derived.by`, `$effect`, `$effect.pre`, `$effect.pending`, effect cleanup, `SvelteMap`/`SvelteSet`/`SvelteDate`/`SvelteURL`/`SvelteURLSearchParams`, `MediaQuery`, reactive CSS, typed state.
 
 - **2.1 — What state is**. Reactivity as a concept — data changes, UI updates automatically.
 - **2.2 — Primitive `$state`**. `let count = $state(0)` — the simplest reactive value.
@@ -411,7 +442,7 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 - **7.9 — ScrollTrigger**. `ScrollTrigger.create()` for scroll-driven animations — pin, scrub, snap.
 - **7.10 — ScrollTrigger + nav**. Combining ScrollTrigger with navigation state for active-section highlighting.
 - **7.11 — use: actions**. Encapsulating GSAP logic in reusable Svelte actions via `use:gsapFade`.
-- **7.12 — Attachments**. Using `{@attach}` for declarative GSAP integration on elements.
+- **7.12 — Attachments**. Using `{@attach}` for declarative GSAP integration on elements. `createAttachmentKey()` for programmatic attachments (since 5.29). `fromAction()` to convert existing `use:` actions to attachments.
 - **7.13 — Scroll reveal**. A production scroll-reveal pattern combining ScrollTrigger + stagger + actions.
 - **7.14 — GSAP + Svelte together**. When to use GSAP vs Svelte transitions vs CSS — decision framework.
 - **Module 7 Project — Marketing Page**. A full marketing landing page with GSAP-powered hero animation, scroll-triggered feature reveals, staggered testimonial cards, and smooth section transitions. OKLCH personality: magenta.
@@ -420,24 +451,24 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 
 ## Module 9B — Remote Functions (expanded)
 
-**Goal**: Student masters SvelteKit's remote function API for type-safe client-server communication without manual fetch.
-**Concepts**: Remote query functions, remote form functions, remote command functions, prerender compatibility, single-flight mutations, simulated demos.
+**Goal**: Student masters SvelteKit's remote function API (since Kit 2.27) for type-safe client-server communication without manual fetch.
+**Concepts**: `.remote.ts` files, `query`, `form`, `command`, `prerender` from `$app/server`, Standard Schema validation (valibot), `getRequestEvent()`, `handleValidationError` hook, `transport` hook, `$state.eager`, `fork()`, async `await` in markup, `<svelte:boundary pending={}>`, `$effect.pending()`, single-flight mutations, simulated demos.
 
-- **9B.1 — What remote functions are**. Server functions callable from the client with full type safety — no manual `fetch`.
-- **9B.2 — Remote query functions**. Reading data from the server via typed query functions.
-- **9B.3 — Query parameters**. Passing typed arguments to remote queries.
-- **9B.4 — Remote form functions**. Progressive-enhancement-friendly form submissions via remote functions.
-- **9B.5 — Form validation**. Server-side validation with typed error returns in remote form functions.
-- **9B.6 — Remote command functions**. Imperative mutations that don't need a form — button clicks, toggles.
-- **9B.7 — Single-flight mutations**. Deduplicating concurrent mutations automatically.
-- **9B.8 — Optimistic updates**. Updating the UI before the server responds, rolling back on failure.
-- **9B.9 — Error handling**. Typed error responses and client-side error narrowing.
-- **9B.10 — Prerender compatibility**. Making remote functions work with prerendered pages.
-- **9B.11 — Streaming responses**. Returning streamed data from remote functions.
-- **9B.12 — Combining with load**. Using remote functions alongside traditional load functions.
-- **9B.13 — Testing remote functions**. Unit testing remote function logic with Vitest.
-- **9B.14 — Production patterns**. Real-world patterns: auth-gated remotes, rate limiting, cache invalidation.
-- **Module 9B Project — Real-Time Data App**. A data-driven application using remote functions for all server communication, with optimistic UI, streaming updates, and full type safety. All demos simulated. OKLCH personality: cyan.
+- **9B.1 — What remote functions are**. Server functions callable from the client with full type safety — no manual `fetch`. Exported from `.remote.ts` files; four flavours: `query`, `form`, `command`, `prerender`.
+- **9B.2 — Remote query functions**. Reading data from the server via `query()` from `$app/server`. Returns a Promise usable with `await` in markup.
+- **9B.3 — Query arguments**. Passing typed arguments to remote queries with Standard Schema validation (valibot).
+- **9B.4 — Query batching**. Multiple queries resolve concurrently — no waterfalls. Independent `await` expressions run in parallel.
+- **9B.5 — Remote prerender functions**. `prerender()` for static data — saved at build time, served without a running server. `inputs` option and `dynamic: true` for hybrid.
+- **9B.6 — Remote form functions**. Progressive-enhancement-friendly form submissions via `form()` from `$app/server`. Works without JS.
+- **9B.7 — Form fields and validation**. Standard Schema validation on form data. `handleValidationError` hook for custom 400 responses.
+- **9B.8 — Form validation deep dive**. Server-side validation with typed error returns, `fail()` integration, inline error display.
+- **9B.9 — Remote command functions**. Imperative mutations via `command()` — button clicks, toggles, no form needed.
+- **9B.10 — Single-flight mutations (server)**. Deduplicating concurrent server mutations automatically. `getRequestEvent()` for auth context.
+- **9B.11 — Single-flight mutations (client)**. Client-side deduplication. `$state.eager()` for immediate UI feedback during async work.
+- **9B.12 — Async SSR and `<svelte:boundary>`**. `compilerOptions.experimental.async: true`. `await` in markup. `<svelte:boundary pending={}>` for loading states. `$effect.pending()` for subsequent updates. `settled()` for coordinating updates. `hydratable()` for SSR-to-client data handoff.
+- **9B.13 — `fork()` for preloading**. `fork(fn)` pre-runs async work on hover/focus before committing. `fork().commit()` and `fork().discard()` (since 5.42).
+- **9B.14 — Choosing the right pattern**. Decision framework: `load` vs `query` vs `form` vs `command` vs `prerender`. When to use `transport` hook for custom types. `reroute` (async) for dynamic routing.
+- **Module 9B Project — Real-Time Data App**. A data-driven application using remote functions for all server communication, with `<svelte:boundary>` loading states, `fork()` preloading on hover, optimistic UI via `$state.eager`, and full type safety. All demos simulated. OKLCH personality: cyan.
 
 ---
 
@@ -472,7 +503,7 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 - **12.4 — Effect performance**. Avoiding unnecessary `$effect` runs, batching, fine-grained reactivity.
 - **12.5 — Memoization**. Caching expensive computations with `$derived` and manual memoization patterns.
 - **12.6 — Actions for performance**. Using `use:` actions for DOM-heavy operations outside Svelte's reactivity.
-- **12.7 — Error boundaries**. `<svelte:boundary>` for graceful degradation — catching render errors without crashing the app.
+- **12.7 — Error boundaries**. `<svelte:boundary>` for graceful degradation — `failed` snippet for error recovery, `pending` snippet for async loading states, `onerror` handler for error reporting. `transformError` (since 5.51) for server-side error sanitization during SSR.
 - **12.8 — Accessibility**. `a11y` compile warnings, ARIA patterns, focus management, screen reader testing.
 - **12.9 — Vitest**. Unit testing Svelte components and utility functions with Vitest.
 - **12.10 — Playwright**. End-to-end testing SvelteKit routes, forms, and navigation flows.
@@ -530,23 +561,34 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 
 ---
 
-## Version Reference
+## Version Reference (April 12, 2026 — all latest)
 
 | Package | Version | Notes |
 |---|---|---|
-| svelte | 5.55.x+ | Runes, attachments stable, function-based config |
-| @sveltejs/kit | 2.55.x+ | Matcher type narrowing, server error boundaries, remote functions |
+| svelte | 5.55.3 | Runes, attachments, `$state.eager`, async `await` in markup, `fork()`, `hydratable()`, `transformError` |
+| @sveltejs/kit | 2.57.1 | Remote functions (`query`/`form`/`command`/`prerender`), `transport` hook, `handleValidationError`, async `reroute`, Standard Schema validation |
+| @sveltejs/adapter-auto | 7.0.1 | Zero-config deployment adapter |
+| @sveltejs/vite-plugin-svelte | 7.0.0 | Vite 8 compatible Svelte plugin |
+| @sveltejs/package | 2.5.7 | Component library packaging |
 | @sveltejs/cli (sv) | 0.12.6+ | better-auth addon |
-| @sveltejs/package | Latest | Component library packaging |
-| vite | 7.x | Rolldown-powered |
-| typescript | 5.x | Strict mode always |
-| gsap | 3.12+ | Built-in TypeScript types |
-| three + @threlte/core + @threlte/extras | Latest | 3D rendering |
-| @tanstack/svelte-table | Latest | Svelte 5 adapter |
-| valibot | Latest | Remote form schema validation |
-| vitest | Latest | Unit testing |
-| @playwright/test | Latest | E2E testing |
-| pnpm | 9.x+ | Package manager — always |
+| vite | 8.0.8 | Rolldown-powered — TanStack Table excluded from optimizer via `vite.config.ts` |
+| typescript | 6.0.2 | Strict mode always |
+| svelte-check | 4.4.6 | Type checking & diagnostics |
+| gsap | 3.14.2 | Built-in TypeScript types |
+| three | 0.183.2 | 3D rendering engine |
+| @threlte/core | 8.5.9 | Svelte 5 Three.js wrapper |
+| @threlte/extras | 9.14.5 | Threlte helper components |
+| @tanstack/svelte-table | 8.21.3 | Data table — uses Svelte 3/4 internals, requires `ssr = false` on pages that import it; v9 (Svelte 5 native) still alpha |
+| valibot | 1.3.1 | Remote form schema validation — Standard Schema compatible |
+| vitest | 4.1.4 | Unit testing |
+| @playwright/test | 1.59.1 | E2E testing |
+| @testing-library/svelte | 5.3.1 | Component testing utilities |
+| @types/node | 25.6.0 | Node.js type definitions |
+| @types/three | 0.183.1 | Three.js type definitions |
+| jsdom | 29.0.2 | DOM simulation for tests |
+| apexcharts | 5.10.6 | Charting library |
+| dompurify | 3.3.3 | HTML sanitizer |
+| pnpm | 10.x+ | Package manager — always |
 
 ---
 
@@ -561,7 +603,7 @@ A student who completes all 17 modules and the capstone can:
 - **Style with intention** — apply the full PE7 layer stack, OKLCH color, fluid typography, container queries, logical properties, and per-page color personalities without any utility framework.
 - **Animate professionally** — use Svelte transitions, Tween, Spring, `animate:flip`, and GSAP (timelines, ScrollTrigger, stagger) with proper lifecycle cleanup and reduced-motion respect.
 - **Architect full-stack routes** — implement SSR, SSG, CSR, and hybrid rendering; nested layouts; dynamic routes; shallow routing; snapshots; view transitions.
-- **Load and mutate data** — write typed load functions, streaming responses, form actions, `use:enhance`, remote functions, and optimistic UI patterns.
+- **Load and mutate data** — write typed load functions, streaming responses, form actions, `use:enhance`, remote functions (`query`/`form`/`command`/`prerender`), `fork()` preloading, `$state.eager` for immediate feedback, `<svelte:boundary pending={}>` for loading states, and optimistic UI patterns.
 - **Manage state at scale** — use context, `.svelte.ts` modules, reactive classes, URL state, and TanStack Table for data-heavy interfaces.
 - **Ship production quality** — optimize Core Web Vitals, implement error boundaries, write Vitest and Playwright tests, configure deployment adapters, and add service workers.
 - **Optimize for discovery** — implement SEO with `<svelte:head>`, JSON-LD structured data, Open Graph, sitemaps, and AI Overview optimization.

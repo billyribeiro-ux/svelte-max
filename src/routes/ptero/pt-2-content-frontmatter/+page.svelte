@@ -44,20 +44,20 @@ order: 3
 
 You can use Svelte components directly in markdown:
 
-<script>
+${'<'}script>
   import Counter from '$lib/components/Counter.svelte';
   import { Callout } from '$lib/components/pterodactyl/Callout.svelte';
 
-  let count = $state(0);
-</script>
+  let count = ${'$'}state(0);
+${'<'}/script>
 
 Here is an interactive counter:
 
-<Counter bind:count />
+${'<'}Counter bind:count />
 
-<Callout type="info">
-  The counter value is **{count}**. This is reactive!
-</Callout>
+${'<'}Callout type="info">
+  The counter value is **${'{'} count ${'}'} **. This is reactive!
+${'<'}/Callout>
 
 Regular markdown continues below the component...`;
 
@@ -81,11 +81,11 @@ interface User {
 
 Tabbed code blocks with CodeTabs:
 
-<script>
+${'<'}script>
   import { CodeTabs } from '$lib/components/pterodactyl/CodeTabs.svelte';
-</script>
+${'<'}/script>
 
-<CodeTabs labels={['npm', 'pnpm', 'yarn']}>
+${'<'}CodeTabs labels=${'{'} ['npm', 'pnpm', 'yarn'] ${'}'} >
 
 \`\`\`bash
 npm install my-package
@@ -99,7 +99,7 @@ pnpm add my-package
 yarn add my-package
 \`\`\`
 
-</CodeTabs>`;
+${'<'}/CodeTabs>`;
 
 	const fullCode =
 		"<script lang=\"ts\">\n  // Content & frontmatter\n<\/script>\n\n" +

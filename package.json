@@ -43,6 +43,11 @@
     "gsap": "^3.14.2",
     "three": "^0.183.2",
     "@motion-core/motion-gpu": "^0.4.0",
+    "sv-agentation": "latest",
+    "svelte-realtime": "latest",
+    "svelte-adapter-uws": "latest",
+    "ptero": "latest",
+    "mdsvex": "latest",
     "valibot": "^1.3.1"
   }
 }

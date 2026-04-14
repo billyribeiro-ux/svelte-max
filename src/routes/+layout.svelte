@@ -478,6 +478,58 @@
 				{ slug: 'mg-7-textures', title: 'MG.7 — Textures & images' },
 				{ slug: 'mg-8-performance', title: 'MG.8 — Performance & modes' }
 			]
+		},
+		{
+			id: 25,
+			title: 'Bonus — sv-agentation',
+			routePrefix: 'sv-agentation',
+			lessons: [
+				{ slug: 'ag-1-what-is-agentation', title: 'AG.1 — What is sv-agentation?' },
+				{ slug: 'ag-2-inspection-source', title: 'AG.2 — Inspection & source' },
+				{ slug: 'ag-3-annotations-copy', title: 'AG.3 — Annotations & copy' },
+				{ slug: 'ag-4-ai-workflows', title: 'AG.4 — AI workflows' }
+			]
+		},
+		{
+			id: 26,
+			title: 'Bonus — svelte-realtime',
+			routePrefix: 'svelte-realtime',
+			lessons: [
+				{ slug: 'rt-1-what-is-realtime', title: 'RT.1 — What is svelte-realtime?' },
+				{ slug: 'rt-2-rpc-basics', title: 'RT.2 — RPC basics' },
+				{ slug: 'rt-3-streams-merge', title: 'RT.3 — Streams & merge' },
+				{ slug: 'rt-4-optimistic-offline', title: 'RT.4 — Optimistic & offline' },
+				{ slug: 'rt-5-auth-channels', title: 'RT.5 — Auth & channels' },
+				{ slug: 'rt-6-rooms-signals', title: 'RT.6 — Rooms & signals' },
+				{ slug: 'rt-7-derived-effects', title: 'RT.7 — Derived & effects' },
+				{ slug: 'rt-8-scaling-production', title: 'RT.8 — Scaling & production' }
+			]
+		},
+		{
+			id: 27,
+			title: 'Bonus — Pterodactyl',
+			routePrefix: 'ptero',
+			lessons: [
+				{ slug: 'pt-1-what-is-ptero', title: 'PT.1 — What is Pterodactyl?' },
+				{ slug: 'pt-2-content-frontmatter', title: 'PT.2 — Content & frontmatter' },
+				{ slug: 'pt-3-theming-css', title: 'PT.3 — Theming & CSS' },
+				{ slug: 'pt-4-components-layout', title: 'PT.4 — Components & layout' },
+				{ slug: 'pt-5-search-versioning', title: 'PT.5 — Search & versioning' },
+				{ slug: 'pt-6-cli-deployment', title: 'PT.6 — CLI & deployment' }
+			]
+		},
+		{
+			id: 28,
+			title: 'Bonus — MDsveX',
+			routePrefix: 'mdsvex',
+			lessons: [
+				{ slug: 'mx-1-what-is-mdsvex', title: 'MX.1 — What is MDsveX?' },
+				{ slug: 'mx-2-frontmatter-layouts', title: 'MX.2 — Frontmatter & layouts' },
+				{ slug: 'mx-3-components-in-markdown', title: 'MX.3 — Components in markdown' },
+				{ slug: 'mx-4-syntax-highlighting', title: 'MX.4 — Syntax highlighting' },
+				{ slug: 'mx-5-remark-rehype', title: 'MX.5 — Remark & rehype' },
+				{ slug: 'mx-6-blog-patterns', title: 'MX.6 — Blog patterns' }
+			]
 		}
 	] as const;
 </script>

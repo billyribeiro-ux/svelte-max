@@ -1,105 +1,115 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 
-	const perModuleAuth = `// Per-module auth: restrict access at the module level
-// src/live/admin.ts
-${"import"} { live, LiveError } from 'svelte-realtime/server';
+	const perModuleAuth = [
+		"// Per-module auth: restrict access at the module level",
+		"// src/live/admin.ts",
+		"import { live, LiveError } from 'svelte-realtime/server';",
+		"",
+		"// Module-level auth guard",
+		"export const auth = (ctx) => {",
+		"  if (!ctx.user) throw new LiveError('UNAUTHORIZED', 'Login required');",
+		"  if (ctx.user.role !== 'admin') throw new LiveError('FORBIDDEN', 'Admin only');",
+		"};",
+		"",
+		"// All functions in this module require admin access",
+		"export const getUsers = live(async (ctx) => {",
+		"  // auth() already ran — ctx.user is guaranteed to be an admin",
+		"  return db.users.all();",
+		"});",
+		"",
+		"export const deleteUser = live(async (ctx, userId) => {",
+		"  await db.users.delete(userId);",
+		"  ctx.publish('admin:users', 'deleted', { id: userId });",
+		"});"
+	].join("\n");
 
-// Module-level auth guard
-export const auth = (ctx) => {
-  if (!ctx.user) throw new LiveError('UNAUTHORIZED', 'Login required');
-  if (ctx.user.role !== 'admin') throw new LiveError('FORBIDDEN', 'Admin only');
-};
+	const dynamicTopics = [
+		"// Dynamic topics: parameterized subscriptions",
+		"// src/live/chat.ts",
+		"",
+		"// Topic is a function of the arguments",
+		"export const messages = live.stream(",
+		"  (ctx, roomId) => 'chat:' + roomId,  // dynamic topic",
+		"  async (ctx, roomId) => {",
+		"    return db.messages.forRoom(roomId);",
+		"  },",
+		"  { merge: 'crud', key: 'id', prepend: true }",
+		");",
+		"",
+		"// Client subscribes to a specific room:",
+		"// <script>",
+		"//   import { messages } from '$live/chat';",
+		"//   const msgs = messages(data.roomId);",
+		"// </" + "script>",
+		"//",
+		"// Each roomId creates a separate subscription",
+		"// with its own initial data and live events."
+	].join("\n");
 
-// All functions in this module require admin access
-export const getUsers = live(async (ctx) => {
-  // auth() already ran — ctx.user is guaranteed to be an admin
-  return db.users.all();
-});
+	const channels = [
+		"// Channels: namespace related topics",
+		"// src/live/game.ts",
+		"import { live } from 'svelte-realtime/server';",
+		"",
+		"// All topics under 'game:lobby:*' share a namespace",
+		"export const lobbyPresence = live.stream(",
+		"  (ctx, lobbyId) => `game:lobby:${lobbyId}:presence`,",
+		"  async (ctx, lobbyId) => [],",
+		"  { merge: 'presence' }",
+		");",
+		"",
+		"export const lobbyChat = live.stream(",
+		"  (ctx, lobbyId) => `game:lobby:${lobbyId}:chat`,",
+		"  async (ctx, lobbyId) => db.chat.forLobby(lobbyId),",
+		"  { merge: 'crud', key: 'id' }",
+		");",
+		"",
+		"// Server-side: ctx.publish targets specific channels",
+		"export const sendLobbyMessage = live(async (ctx, lobbyId, text) => {",
+		"  const msg = await db.chat.insert({ lobbyId, userId: ctx.user.id, text });",
+		"  ctx.publish(`game:lobby:${lobbyId}:chat`, 'created', msg);",
+		"  return msg;",
+		"});"
+	].join("\n");
 
-export const deleteUser = live(async (ctx, userId) => {
-  await db.users.delete(userId);
-  ctx.publish('admin:users', 'deleted', { id: userId });
-});`;
+	const accessControl = [
+		"// Access control on streams",
+		"export const privateNotes = live.stream(",
+		"  'notes',",
+		"  async (ctx) => db.notes.forUser(ctx.user.id),",
+		"  {",
+		"    merge: 'crud',",
+		"    key: 'id',",
+		"    // access: filter which events each subscriber receives",
+		"    access: (ctx, event, data) => {",
+		"      // Only receive events for own notes",
+		"      return data.userId === ctx.user.id;",
+		"    }",
+		"  }",
+		");",
+		"",
+		"// Without access control: all subscribers see all events",
+		"// With access control: each subscriber sees only their data",
+		"// The filter runs server-side — unauthorized data never reaches the client"
+	].join("\n");
 
-	const dynamicTopics = `// Dynamic topics: parameterized subscriptions
-// src/live/chat.ts
-
-// Topic is a function of the arguments
-export const messages = live.stream(
-  (ctx, roomId) => 'chat:' + roomId,  // dynamic topic
-  async (ctx, roomId) => {
-    return db.messages.forRoom(roomId);
-  },
-  { merge: 'crud', key: 'id', prepend: true }
-);
-
-// Client subscribes to a specific room:
-// <script>
-//   import { messages } from '$live/chat';
-//   const msgs = messages(data.roomId);
-// </script>
-//
-// Each roomId creates a separate subscription
-// with its own initial data and live events.`;
-
-	const channels = `// Channels: namespace related topics
-// src/live/game.ts
-${"import"} { live } from 'svelte-realtime/server';
-
-// All topics under 'game:lobby:*' share a namespace
-export const lobbyPresence = live.stream(
-  (ctx, lobbyId) => \`game:lobby:\${lobbyId}:presence\`,
-  async (ctx, lobbyId) => [],
-  { merge: 'presence' }
-);
-
-export const lobbyChat = live.stream(
-  (ctx, lobbyId) => \`game:lobby:\${lobbyId}:chat\`,
-  async (ctx, lobbyId) => db.chat.forLobby(lobbyId),
-  { merge: 'crud', key: 'id' }
-);
-
-// Server-side: ctx.publish targets specific channels
-export const sendLobbyMessage = live(async (ctx, lobbyId, text) => {
-  const msg = await db.chat.insert({ lobbyId, userId: ctx.user.id, text });
-  ctx.publish(\`game:lobby:\${lobbyId}:chat\`, 'created', msg);
-  return msg;
-});`;
-
-	const accessControl = `// Access control on streams
-export const privateNotes = live.stream(
-  'notes',
-  async (ctx) => db.notes.forUser(ctx.user.id),
-  {
-    merge: 'crud',
-    key: 'id',
-    // access: filter which events each subscriber receives
-    access: (ctx, event, data) => {
-      // Only receive events for own notes
-      return data.userId === ctx.user.id;
-    }
-  }
-);
-
-// Without access control: all subscribers see all events
-// With access control: each subscriber sees only their data
-// The filter runs server-side — unauthorized data never reaches the client`;
-
-	const schemaValidation = `// Schema validation with Valibot
-${"import"} { live } from 'svelte-realtime/server';
-${"import"} * as v from 'valibot';
-
-const MessageSchema = v.object({
-  text: v.pipe(v.string(), v.minLength(1), v.maxLength(500)),
-  roomId: v.string()
-});
-
-export const sendMessage = live(async (ctx, input) => {
-  // Validate input against schema
-  const { text, roomId } = v.parse(MessageSchema, input);
-  // ... rest of the function
-}, { schema: MessageSchema });`;
+	const schemaValidation = [
+		"// Schema validation with Valibot",
+		"import { live } from 'svelte-realtime/server';",
+		"import * as v from 'valibot';",
+		"",
+		"const MessageSchema = v.object({",
+		"  text: v.pipe(v.string(), v.minLength(1), v.maxLength(500)),",
+		"  roomId: v.string()",
+		"});",
+		"",
+		"export const sendMessage = live(async (ctx, input) => {",
+		"  // Validate input against schema",
+		"  const { text, roomId } = v.parse(MessageSchema, input);",
+		"  // ... rest of the function",
+		"}, { schema: MessageSchema });"
+	].join("\n");
 
 	const fullCode =
 		"<script lang=\"ts\">\n  // Auth & channels\n<\/script>\n\n" +

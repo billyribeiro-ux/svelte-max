@@ -35,8 +35,8 @@ export default {
   }
 } satisfies PterodactylConfig;`;
 
-	const layoutCode = `<!-- src/routes/docs/[...path]/+layout.svelte -->
-<script lang="ts">
+	const layoutCode = `${'<'}!-- src/routes/docs/[...path]/+layout.svelte -->
+${'<'}script lang="ts">
   ${"import"} DocsLayout from '$lib/components/pterodactyl/DocsLayout.svelte';
   ${"import"} Header from '$lib/components/pterodactyl/Header.svelte';
   ${"import"} Sidebar from '$lib/components/pterodactyl/Sidebar.svelte';
@@ -47,32 +47,32 @@ export default {
   ${"import"} VersionSelector from '$lib/components/pterodactyl/VersionSelector.svelte';
   ${"import"} type { Snippet } from 'svelte';
 
-  let { children }: { children: Snippet } = $props();
-<\/script>
+  let { children }: { children: Snippet } = ${'$'}props();
+${'<'}/script>
 
-<Header title="Acme SDK Docs">
-  {#snippet actions()}
-    <VersionSelector />
-  {/snippet}
-</Header>
+${'<'}Header title="Acme SDK Docs">
+  ${'{'} #snippet actions() ${'}'}
+    ${'<'}VersionSelector />
+  ${'{'} /snippet ${'}'}
+${'<'}/Header>
 
-<SearchModal />
+${'<'}SearchModal />
 
-<DocsLayout>
-  {#snippet sidebar()}
-    <Sidebar />
-  {/snippet}
+${'<'}DocsLayout>
+  ${'{'} #snippet sidebar() ${'}'}
+    ${'<'}Sidebar />
+  ${'{'} /snippet ${'}'}
 
-  {#snippet content()}
-    <Breadcrumbs />
-    {@render children()}
-    <PrevNext />
-  {/snippet}
+  ${'{'} #snippet content() ${'}'}
+    ${'<'}Breadcrumbs />
+    ${'{'} @render children() ${'}'}
+    ${'<'}PrevNext />
+  ${'{'} /snippet ${'}'}
 
-  {#snippet toc()}
-    <TOC />
-  {/snippet}
-</DocsLayout>`;
+  ${'{'} #snippet toc() ${'}'}
+    ${'<'}TOC />
+  ${'{'} /snippet ${'}'}
+${'<'}/DocsLayout>`;
 
 	const contentCode = `---
 title: Authentication
@@ -81,24 +81,24 @@ section: guides
 order: 2
 ---
 
-<script>
+${'<'}script>
   import { CodeTabs } from '$lib/components/pterodactyl/CodeTabs.svelte';
   import { Callout } from '$lib/components/pterodactyl/Callout.svelte';
   import LiveExample from '$lib/components/pterodactyl/LiveExample.svelte';
-</script>
+${'<'}/script>
 
 # Authentication
 
 The Acme SDK supports API key and OAuth2 authentication.
 
-<Callout type="info">
+${'<'}Callout type="info">
   API keys are recommended for server-side usage.
   Use OAuth2 for client-side applications.
-</Callout>
+${'<'}/Callout>
 
 ## Quick Start
 
-<CodeTabs labels={['API Key', 'OAuth2']}>
+${'<'}CodeTabs labels=${'{'} ['API Key', 'OAuth2'] ${'}'} >
 
 \\\`\\\`\\\`typescript
 import { Acme } from '@acme/sdk';
@@ -110,14 +110,14 @@ import { Acme } from '@acme/sdk';
 const client = new Acme({ oauth: { clientId: '...' } });
 \\\`\\\`\\\`
 
-</CodeTabs>
+${'<'}/CodeTabs>
 
 ## Interactive Example
 
-<LiveExample>
-  <input placeholder="Enter API key" />
-  <button>Test Connection</button>
-</LiveExample>`;
+${'<'}LiveExample>
+  ${'<'}input placeholder="Enter API key" />
+  ${'<'}button>Test Connection${'<'}/button>
+${'<'}/LiveExample>`;
 
 	const fullCode =
 		"// Pterodactyl project: complete docs site with versioning, search, theming";

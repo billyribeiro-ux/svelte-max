@@ -49,22 +49,22 @@ author: Jane Developer
 date: 2026-04-13
 ---
 
-<script>
+${'<'}script>
   // Frontmatter values are available as module-level exports
   // Access them via the layout component
 
-  let count = $state(0);
-</script>
+  let count = ${'$'}state(0);
+${'<'}/script>
 
-# {title}
+# ${'{'} title ${'}'}
 
-Written by **{author}** on {date}.
+Written by **${'{'} author ${'}'}** on ${'{'} date ${'}'}.
 
 This is regular markdown with a **Svelte counter**:
 
-<button onclick={() => count++}>
-  Clicked {count} times
-</button>
+${'<'}button onclick=${'{'} () => count++ ${'}'}>
+  Clicked ${'{'} count ${'}'} times
+${'<'}/button>
 
 ## Code Example
 

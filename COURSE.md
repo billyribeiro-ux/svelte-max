@@ -207,6 +207,10 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 15. **Module 14 — Custom Elements & Library Publishing** ✅ shipped — `<svelte:options customElement>`, `@sveltejs/package` (Lessons 14.1–14.6, Library + CE Suite)
 16. **Module 15 — 3D & Immersive with Threlte** ✅ shipped — Three.js via Threlte (Lessons 15.1–15.5, Immersive Landing)
 17. **Capstone — PE7 Flagship Project** ✅ shipped — surgical-reveal chunk system across every skill
+18. **Bonus — sv-agentation** ✅ shipped — dev-mode inspector, source resolution, browser annotations, AI workflow integration (Lessons AG.1–AG.4, Inspector Integration project)
+19. **Bonus — svelte-realtime** ✅ shipped — WebSocket RPC, reactive streams, merge strategies, rooms, signals, auth, scaling (Lessons RT.1–RT.8, Realtime Chat project)
+20. **Bonus — Pterodactyl** ✅ shipped — documentation engine for SvelteKit, MDsveX content, theming, components, search, versioning, CLI (Lessons PT.1–PT.6, SDK Docs project)
+21. **Bonus — MDsveX** ✅ shipped — markdown preprocessor, frontmatter, layouts, components in markdown, syntax highlighting, remark/rehype plugins, blog patterns (Lessons MX.1–MX.6, Blog Platform project)
 
 ---
 
@@ -622,6 +626,11 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 | dompurify | 3.3.3 | HTML sanitizer |
 | @motion-core/motion-gpu | 0.4.0 | WebGPU shader runtime — Svelte 5 adapter, `FragCanvas`, `defineMaterial`, `ComputePass`, `ShaderPass`; requires `ssr = false` on pages |
 | @jlacostaec/svgtosvelte | 2.0.0 | SVG → Svelte 5 component CLI — V2 string-based (no AST), TypeScript, barrel exports, registry JSON |
+| sv-agentation | latest | Dev-mode Svelte inspector — source resolution, browser annotations, structured copy output, AI workflow integration |
+| svelte-realtime | latest | WebSocket RPC + reactive subscriptions — built on `svelte-adapter-uws`, merge strategies, rooms, signals, auth |
+| svelte-adapter-uws | latest | uWebSockets.js adapter for SvelteKit — native WebSocket server, 100K+ connections |
+| ptero | latest | Documentation engine for SvelteKit — MDsveX, theming, search, versioning, 17 Svelte 5 components |
+| mdsvex | latest | Markdown preprocessor for Svelte — frontmatter, layouts, Svelte components in markdown, remark/rehype plugins |
 | pnpm | 10.x+ | Package manager — always |
 
 ---
@@ -644,4 +653,8 @@ A student who completes all 17 modules and the capstone can:
 - **Extend the platform** — build custom elements from Svelte components, publish typed libraries with `@sveltejs/package`, and render 3D scenes with Threlte.
 - **Build icon systems** — convert raw SVG files into typed Svelte 5 components with `@jlacostaec/svgtosvelte`, build dynamic icon registries with `import.meta.glob`, and animate SVG icons with stroke-dasharray, Svelte transitions, Spring, and GSAP.
 - **Write GPU shaders** — author WGSL fragment and compute shaders with `@motion-core/motion-gpu`, build multi-pass rendering pipelines, drive GPU animations from Svelte `$state` via uniforms, and optimize with render modes and scheduler presets.
+- **Inspect & annotate** — use `sv-agentation` for dev-mode element inspection, source resolution, browser annotations, and AI-assisted debugging workflows.
+- **Build realtime apps** — implement WebSocket RPC and reactive subscriptions with `svelte-realtime`, including merge strategies, rooms, signals, auth, and production scaling.
+- **Create documentation sites** — scaffold and customize documentation with `ptero` (Pterodactyl), including MDsveX content, theming, search, and multi-version management.
+- **Author markdown content** — use `mdsvex` for markdown preprocessing with Svelte component embedding, custom layouts, syntax highlighting, and remark/rehype plugin pipelines.
 - **Prove it all** — deliver a capstone e-commerce storefront that integrates every skill into one cohesive, tested, accessible, performant application.

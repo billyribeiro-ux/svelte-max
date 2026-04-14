@@ -5,38 +5,38 @@
 title: Interactive Guide
 ---
 
-<script>
+${'<'}script>
   ${"import"} Chart from '$lib/components/Chart.svelte';
   ${"import"} Alert from '$lib/components/Alert.svelte';
   ${"import"} Tabs from '$lib/components/Tabs.svelte';
 
-  let selectedTab = $state('overview');
-  let data = $state([10, 25, 40, 30, 55]);
-</script>
+  let selectedTab = ${'$'}state('overview');
+  let data = ${'$'}state([10, 25, 40, 30, 55]);
+${'<'}/script>
 
 # Interactive Dashboard Guide
 
 Use the tabs to explore different views:
 
-<Tabs bind:selected={selectedTab} items={['overview', 'details', 'api']} />
+${'<'}Tabs bind:selected=${'{'} selectedTab ${'}'} items=${'{'} ['overview', 'details', 'api'] ${'}'} />
 
-{#if selectedTab === 'overview'}
+${'{'} #if selectedTab === 'overview' ${'}'}
   ## Overview
 
   Here's a live chart of the data:
 
-  <Chart {data} type="bar" />
+  ${'<'}Chart ${'{'} data ${'}'} type="bar" />
 
   Click the bars to update values.
 
-{:else if selectedTab === 'details'}
+${'{'} :else if selectedTab === 'details' ${'}'}
   ## Details
 
-  <Alert type="info">
+  ${'<'}Alert type="info">
     This section shows advanced configuration.
-  </Alert>
+  ${'<'}/Alert>
 
-{:else}
+${'{'} :else ${'}'}
   ## API Reference
 
   \`\`\`typescript
@@ -45,7 +45,7 @@ Use the tabs to explore different views:
     type: 'bar' | 'line' | 'pie';
   }
   \`\`\`
-{/if}`;
+${'{'} /if ${'}'}`;
 
 	const customElements = `// Replace HTML elements with custom Svelte components
 // svelte.config.js
@@ -66,16 +66,16 @@ export default {
 
 // In your layout, provide custom renderers:
 // src/lib/layouts/Default.svelte
-<script>
+${'<'}script>
   ${"import"} CustomH1 from '$lib/md/H1.svelte';
   ${"import"} CustomCode from '$lib/md/Code.svelte';
   ${"import"} CustomA from '$lib/md/Link.svelte';
 
-  let { children } = $props();
-<\/script>
+  let { children } = ${'$'}props();
+${'<'}/script>
 
-<!-- MDsveX automatically uses these if named correctly -->
-{@render children()}`;
+${'<'}!-- MDsveX automatically uses these if named correctly -->
+${'{'} @render children() ${'}'}`;
 
 	const globalComponents = `// Global components: available in ALL markdown files
 // without importing them
@@ -105,35 +105,35 @@ export default {
 title: Reactive Content
 ---
 
-<script>
-  let temperature = $state(72);
-  let unit = $state<'F' | 'C'>('F');
+${'<'}script>
+  let temperature = ${'$'}state(72);
+  let unit = ${'$'}state${'<'}'F' | 'C'>('F');
 
-  const celsius = $derived(
+  const celsius = ${'$'}derived(
     unit === 'F' ? ((temperature - 32) * 5 / 9).toFixed(1) : temperature
   );
-  const fahrenheit = $derived(
+  const fahrenheit = ${'$'}derived(
     unit === 'C' ? ((temperature * 9 / 5) + 32).toFixed(1) : temperature
   );
-</script>
+${'<'}/script>
 
 # Temperature Converter
 
-Current: **{temperature}°{unit}**
-({unit === 'F' ? celsius + '°C' : fahrenheit + '°F'})
+Current: **${'{'} temperature ${'}'}°${'{'} unit ${'}'}**
+(${'{'} unit === 'F' ? celsius + '°C' : fahrenheit + '°F' ${'}'})
 
-<input type="range" bind:value={temperature} min={0} max={212} />
-<label>
-  <input type="radio" bind:group={unit} value="F" /> Fahrenheit
-</label>
-<label>
-  <input type="radio" bind:group={unit} value="C" /> Celsius
-</label>
+${'<'}input type="range" bind:value=${'{'} temperature ${'}'} min=${'{'} 0 ${'}'} max=${'{'} 212 ${'}'} />
+${'<'}label>
+  ${'<'}input type="radio" bind:group=${'{'} unit ${'}'} value="F" /> Fahrenheit
+${'<'}/label>
+${'<'}label>
+  ${'<'}input type="radio" bind:group=${'{'} unit ${'}'} value="C" /> Celsius
+${'<'}/label>
 
 ## How it works
 
-The temperature is stored as \`$state({temperature})\` and
-the conversion uses \`$derived()\` for reactive computation.`;
+The temperature is stored as \`${'$'}state(${'{'} temperature ${'}'})\` and
+the conversion uses \`${'$'}derived()\` for reactive computation.`;
 
 	const fullCode =
 		"<script lang=\"ts\">\n  // Components in markdown\n<\/script>\n\n" +

@@ -4,11 +4,11 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [sveltekit()],
 	optimizeDeps: {
-		exclude: ['@tanstack/svelte-table']
+		exclude: ['@tanstack/svelte-table', '@motion-core/motion-gpu']
 	},
 	ssr: {
 		noExternal: [],
-		external: ['@tanstack/svelte-table']
+		external: ['@tanstack/svelte-table', '@motion-core/motion-gpu']
 	},
 	build: {
 		rollupOptions: {

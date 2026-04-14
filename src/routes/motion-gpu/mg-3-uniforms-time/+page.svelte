@@ -3,8 +3,8 @@
 
 	const timeUniform = `<!-- App.svelte -->
 <script lang="ts">
-  import { FragCanvas, defineMaterial } from '@motion-core/motion-gpu/svelte';
-  import Runtime from './Runtime.svelte';
+  ${"import"} { FragCanvas, defineMaterial } from '@motion-core/motion-gpu/svelte';
+  ${"import"} Runtime from './Runtime.svelte';
 
   const material = defineMaterial({
     fragment: \`
@@ -39,7 +39,7 @@
 
 	const runtimeComponent = `<!-- Runtime.svelte -->
 <script lang="ts">
-  import { useFrame } from '@motion-core/motion-gpu/svelte';
+  ${"import"} { useFrame } from '@motion-core/motion-gpu/svelte';
 
   // useFrame runs once per frame — 60fps on most displays
   // state.time = elapsed seconds since mount
@@ -71,7 +71,7 @@
 
 	const svelteStateToUniform = `<!-- Connecting Svelte $state to GPU uniforms -->
 <script lang="ts">
-  import { FragCanvas, defineMaterial, useFrame } from '@motion-core/motion-gpu/svelte';
+  ${"import"} { FragCanvas, defineMaterial, useFrame } from '@motion-core/motion-gpu/svelte';
 
   let speed = $state(1.0);
   let intensity = $state(0.5);
@@ -116,7 +116,7 @@
 
 	const frameDriverCode = `<!-- FrameDriver.svelte -->
 <script lang="ts">
-  import { useFrame } from '@motion-core/motion-gpu/svelte';
+  ${"import"} { useFrame } from '@motion-core/motion-gpu/svelte';
 
   let { speed, intensity, color }: {
     speed: number;

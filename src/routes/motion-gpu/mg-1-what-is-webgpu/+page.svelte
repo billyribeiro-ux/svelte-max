@@ -25,7 +25,7 @@ const renderer = new THREE.WebGLRenderer();
 // ... 50+ lines to render a single shader
 
 // Motion GPU: minimal fullscreen shader runtime
-import { FragCanvas, defineMaterial } from '@motion-core/motion-gpu/svelte';
+${"import"} { FragCanvas, defineMaterial } from '@motion-core/motion-gpu/svelte';
 const material = defineMaterial({
   fragment: \`
     fn frag(uv: vec2f) -> vec4f {

@@ -2,7 +2,7 @@
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 
 	const minimalShader = `<script lang="ts">
-  import { FragCanvas, defineMaterial } from '@motion-core/motion-gpu/svelte';
+  ${"import"} { FragCanvas, defineMaterial } from '@motion-core/motion-gpu/svelte';
 
   // Step 1: Define an immutable material
   const material = defineMaterial({

@@ -448,6 +448,36 @@
 				{ slug: '13-13-ai-overviews', title: '13.13 — AI Overviews' },
 				{ slug: '13-14-international', title: '13.14 — International SEO' }
 			]
+		},
+		{
+			id: 23,
+			title: 'SVG to Svelte',
+			hasProject: true,
+			routePrefix: 'svg-to-svelte',
+			lessons: [
+				{ slug: 's2s-1-why-svg-to-svelte', title: 'S2S.1 — Why SVG to Svelte?' },
+				{ slug: 's2s-2-cli-setup', title: 'S2S.2 — CLI setup' },
+				{ slug: 's2s-3-typed-icon-component', title: 'S2S.3 — Typed icon component' },
+				{ slug: 's2s-4-attribute-overrides', title: 'S2S.4 — Attribute overrides' },
+				{ slug: 's2s-5-registry-dynamic', title: 'S2S.5 — Registry & dynamic icons' },
+				{ slug: 's2s-6-animation-pipeline', title: 'S2S.6 — Animation pipeline' }
+			]
+		},
+		{
+			id: 24,
+			title: 'Motion GPU (WebGPU Shaders)',
+			hasProject: true,
+			routePrefix: 'motion-gpu',
+			lessons: [
+				{ slug: 'mg-1-what-is-webgpu', title: 'MG.1 — What is WebGPU?' },
+				{ slug: 'mg-2-first-shader', title: 'MG.2 — Your first shader' },
+				{ slug: 'mg-3-uniforms-time', title: 'MG.3 — Uniforms & time' },
+				{ slug: 'mg-4-pointer-interaction', title: 'MG.4 — Pointer interaction' },
+				{ slug: 'mg-5-multi-pass', title: 'MG.5 — Multi-pass pipelines' },
+				{ slug: 'mg-6-compute-shaders', title: 'MG.6 — Compute shaders' },
+				{ slug: 'mg-7-textures', title: 'MG.7 — Textures & images' },
+				{ slug: 'mg-8-performance', title: 'MG.8 — Performance & modes' }
+			]
 		}
 	] as const;
 </script>

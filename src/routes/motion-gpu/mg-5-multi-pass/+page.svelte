@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 
-	const shaderPassCode = `import { FragCanvas, defineMaterial, ShaderPass } from '@motion-core/motion-gpu/svelte';
+	const shaderPassCode = `${"import"} { FragCanvas, defineMaterial, ShaderPass } from '@motion-core/motion-gpu/svelte';
 
 const material = defineMaterial({
   fragment: \`
@@ -58,7 +58,7 @@ const vignette = new ShaderPass({
   3. vignette ShaderPass → reads B, writes vignetted to canvas
 -->`;
 
-	const blitPassCode = `import { BlitPass, CopyPass } from '@motion-core/motion-gpu/svelte';
+	const blitPassCode = `${"import"} { BlitPass, CopyPass } from '@motion-core/motion-gpu/svelte';
 
 // BlitPass: copy one texture to another with format conversion
 const blit = new BlitPass({

@@ -67,7 +67,7 @@
 </svg>`;
 
 	const usageCode = `<script lang="ts">
-  import IconClock from '$lib/icons/IconClock.svelte';
+  ${"import"} IconClock from '$lib/icons/IconClock.svelte';
 <\/script>
 
 <!-- Default: 24px, currentColor, stroke 2 -->

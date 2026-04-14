@@ -68,7 +68,7 @@
 
 	const springHoverExample = `<script lang="ts">
   import { Spring } from 'svelte/motion';
-  import IconHeart from '$lib/icons/IconHeart.svelte';
+  ${"import"} IconHeart from '$lib/icons/IconHeart.svelte';
 
   let hovered = $state(false);
   const springScale = new Spring(1, { stiffness: 0.2, damping: 0.4 });
@@ -91,7 +91,7 @@
 
 	const gsapIconExample = `<script lang="ts">
   import gsap from 'gsap';
-  import IconStar from '$lib/icons/IconStar.svelte';
+  ${"import"} IconStar from '$lib/icons/IconStar.svelte';
 
   let iconRef: HTMLDivElement;
 

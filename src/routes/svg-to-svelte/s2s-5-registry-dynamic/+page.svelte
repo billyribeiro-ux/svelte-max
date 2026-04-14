@@ -81,7 +81,7 @@
 {/if}`;
 
 	const iconPickerCode = `<script lang="ts">
-  import registry from '$lib/icons/registry.json';
+  ${"import"} registry from '$lib/icons/registry.json';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -195,7 +195,7 @@
 	<p class="prose">Dynamic icon rendering introduces async boundaries and import paths. Test each failure mode.</p>
 	<ol class="experiments">
 		<li><strong>Request an icon name that does not exist in the registry.</strong> The <code>iconModules[path]</code> lookup returns <code>undefined</code>. Without the null check, you get a runtime error when calling <code>loader()</code>. Always guard dynamic imports with existence checks.</li>
-		<li><strong>Use a hardcoded import path instead of <code>import.meta.glob</code>.</strong> A static <code>import()</code> with a variable path (<code>import(\`./icons/\${name}.svelte\`)</code>) cannot be analyzed by Vite at build time. It either fails or bundles every possible module. <code>import.meta.glob</code> is the Vite-native solution for this exact problem.</li>
+		<li><strong>Use a hardcoded import path instead of <code>import.meta.glob</code>.</strong> A static <code>import()</code> with a variable path (<code>import(\`./icons/${'$'}{'{name}'}.svelte\`)</code>) cannot be analyzed by Vite at build time. It either fails or bundles every possible module. <code>import.meta.glob</code> is the Vite-native solution for this exact problem.</li>
 		<li><strong>Import the registry JSON and try to render a component from it.</strong> The registry contains metadata (names, files) but not component references. You need a second step — using the name to dynamically import the actual <code>.svelte</code> module. The registry is an index; <code>import.meta.glob</code> is the loader.</li>
 		<li><strong>Add a non-SVG file to the icons directory and run the converter.</strong> The CLI ignores non-<code>.svg</code> files, but the registry might reference stale entries if you delete an SVG without re-running. Always regenerate the registry when the icon set changes.</li>
 	</ol>

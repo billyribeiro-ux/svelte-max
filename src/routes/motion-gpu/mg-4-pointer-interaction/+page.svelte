@@ -3,7 +3,7 @@
 
 	const usePointerCode = `<!-- Runtime.svelte -->
 <script lang="ts">
-  import { useFrame, usePointer } from '@motion-core/motion-gpu/svelte';
+  ${"import"} { useFrame, usePointer } from '@motion-core/motion-gpu/svelte';
 
   // usePointer returns reactive pointer state
   // position: normalized 0→1 UV coordinates over the canvas
@@ -60,8 +60,8 @@
 
 	const svelteBridgePattern = `<!-- Combining Svelte pointer events with Motion GPU -->
 <script lang="ts">
-  import { FragCanvas, defineMaterial } from '@motion-core/motion-gpu/svelte';
-  import Runtime from './Runtime.svelte';
+  ${"import"} { FragCanvas, defineMaterial } from '@motion-core/motion-gpu/svelte';
+  ${"import"} Runtime from './Runtime.svelte';
 
   // Option A: usePointer() inside Runtime (preferred)
   // Reads directly from the canvas element

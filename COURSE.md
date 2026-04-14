@@ -542,6 +542,38 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 
 ---
 
+## SVG to Svelte (bonus module)
+
+**Goal**: Student masters the `@jlacostaec/svgtosvelte` pipeline for converting raw SVG files into typed, reactive, PE7-compliant Svelte 5 icon components.
+**Concepts**: SVG → Svelte conversion, CLI tool, typed `IconProps` interface, `$props()` for size/color/stroke, `currentColor` theme integration, attribute overrides (`-a fill.currentColor`), barrel exports, `registry.json`, `import.meta.glob` for dynamic icon rendering, SVG animation pipeline (stroke-dasharray, Svelte transitions, Spring, GSAP).
+
+- **S2S.1 — Why SVG to Svelte?** Raw SVG is static XML — no props, no reactivity, no scoping. Converting to Svelte components gives typed props, tree-shaking, and PE7 token integration. Mini-build: side-by-side comparison of raw SVG vs Svelte component with live preview at multiple sizes and colors.
+- **S2S.2 — CLI setup & first conversion**. Installing `@jlacostaec/svgtosvelte`, basic usage, flags (`-p`, `-s`, `-c`, `-t`, `-a`), output structure, barrel exports, programmatic API. Mini-build: interactive command builder that generates the CLI command from user-selected options.
+- **S2S.3 — Building a typed icon component**. The `IconProps` interface: `size`, `color`, `strokeWidth`, `class`, `ariaLabel`. Conditional accessibility (`aria-hidden` vs `role="img"`). Rest props via `extends SVGAttributes<SVGSVGElement>`. Mini-build: interactive icon playground with size/stroke/color controls.
+- **S2S.4 — Attribute overrides & theme integration**. `fill.currentColor` for theme-aware icons, `width.100%`/`height.auto` for responsive sizing, Figma export cleanup. PE7 token integration: icons inherit `var(--color-*)` from parents. Mini-build: fill mode comparison with dark mode toggle.
+- **S2S.5 — Registry & dynamic icon rendering**. The `-r` flag generates `registry.json` for runtime lookup. `import.meta.glob` for lazy loading icons by name. Icon picker component pattern. Mini-build: searchable, filterable icon explorer with category tabs.
+- **S2S.6 — SVG-to-Svelte animation pipeline**. Three animation tiers: SVG-native (`stroke-dasharray`/`dashoffset` via Tween), Svelte transitions (`fade`, `fly`, `scale` on wrappers), physics (`Spring`, GSAP on wrapper elements). Mini-build: transition type selector with live icon animation and Spring hover heart.
+- **Module Project — Icon Gallery**. A searchable, filterable icon gallery with category tabs, size/color controls, live usage code preview, and Svelte transitions on grid updates. OKLCH personality `oklch(62% 0.20 190)` (teal-blue).
+
+---
+
+## Motion GPU — WebGPU Shaders in Svelte (bonus module)
+
+**Goal**: Student writes WGSL fragment shaders, compute shaders, and multi-pass GPU pipelines in Svelte 5 using `@motion-core/motion-gpu`.
+**Concepts**: WebGPU vs WebGL, WGSL language, `defineMaterial()`, `FragCanvas`, `useFrame`, `usePointer`, `useTexture`, uniforms, storage buffers, `ComputePass`, `PingPongComputePass`, `ShaderPass`, `BlitPass`, `CopyPass`, render modes, scheduler presets, `maxDelta`, `captureSchedulerDebugSnapshot`, error normalization.
+
+- **MG.1 — What is WebGPU & why Motion GPU?** WebGPU replaces WebGL with compute shaders, storage buffers, and command buffers. Motion GPU wraps it in a Svelte 5 workflow: `defineMaterial()` → `<FragCanvas>` → `useFrame()`. Mini-build: WebGPU feature detection, comparison table, WGSL basics overview with type system and built-in functions.
+- **MG.2 — Your first shader**. Fragment shader = function from UV to RGBA. `fn frag(uv: vec2f) -> vec4f` contract. UV gradient, color mixing, SDF circles with `length()` and `smoothstep()`. Mini-build: code examples for gradients, hard circles, and anti-aliased circles with WGSL function reference.
+- **MG.3 — Uniforms & time animation**. Uniforms declared in `defineMaterial()`, updated via `state.setUniform()` in `useFrame()`. `state.time` drives all animation. Svelte `$state` → `$props` → `useFrame` → GPU pipeline. Mini-build: time-animated pulsing circle with color cycling, reactive data flow diagram.
+- **MG.4 — Pointer interaction**. `usePointer()` provides normalized UV coordinates. Distance-based effects: spotlight (Gaussian), ripples (sine), repulsion, zoom lens, click ripples. Mini-build: interactive shader patterns catalog with code for each technique.
+- **MG.5 — Multi-pass pipelines**. `ShaderPass` (`fn shade(inputColor, uv) -> vec4f`), `BlitPass`, `CopyPass`. Pass chaining via `passes` array. Named render targets for branching pipelines (bloom extraction → blur → composite). Mini-build: pipeline architecture diagram with blur + vignette chain.
+- **MG.6 — Compute shaders**. `ComputePass` with `@compute @workgroup_size(64)` and `fn compute()`. Storage buffers (`array<vec4f>`, `read-write`). `PingPongComputePass` for iterative simulations. GPU → CPU readback via `state.readStorageBuffer()`. Mini-build: dispatch model visualization, Game of Life compute shader.
+- **MG.7 — Textures & image processing**. `useTexture()` for URL loading, `state.setTexture()` for runtime updates. `textureSample()` in WGSL. Multiple textures, procedural textures from Canvas. GPU image processing: grayscale, invert, Sobel edge detection, chromatic aberration. Mini-build: texture loading + distortion + image processing pattern library.
+- **MG.8 — Performance & render modes**. `renderMode`: `always` (60fps), `on-demand` (invalidation), `manual` (explicit). `maxDelta` for tab-background safety. `applySchedulerPreset()`, `captureSchedulerDebugSnapshot()`. DPR scaling, uniform packing, branchless patterns. Error normalization with `toMotionGPUErrorReport()`. Mini-build: render mode comparison, optimization pattern reference.
+- **Module Project — GPU Particle System**. 1,024-particle system with compute physics (mouse gravity, damping, edge wrapping), storage buffer bridge, additive glow rendering, bloom + vignette post-processing, and Svelte-reactive controls for gravity/damping. OKLCH personality `oklch(55% 0.25 300)` (electric violet).
+
+---
+
 ## Capstone — PE7 Flagship Project (expanded)
 
 **Goal**: Student composes every skill from every module into a single production-grade SvelteKit application.
@@ -588,6 +620,8 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 | jsdom | 29.0.2 | DOM simulation for tests |
 | apexcharts | 5.10.6 | Charting library |
 | dompurify | 3.3.3 | HTML sanitizer |
+| @motion-core/motion-gpu | 0.4.0 | WebGPU shader runtime — Svelte 5 adapter, `FragCanvas`, `defineMaterial`, `ComputePass`, `ShaderPass`; requires `ssr = false` on pages |
+| @jlacostaec/svgtosvelte | 2.0.0 | SVG → Svelte 5 component CLI — V2 string-based (no AST), TypeScript, barrel exports, registry JSON |
 | pnpm | 10.x+ | Package manager — always |
 
 ---
@@ -608,4 +642,6 @@ A student who completes all 17 modules and the capstone can:
 - **Ship production quality** — optimize Core Web Vitals, implement error boundaries, write Vitest and Playwright tests, configure deployment adapters, and add service workers.
 - **Optimize for discovery** — implement SEO with `<svelte:head>`, JSON-LD structured data, Open Graph, sitemaps, and AI Overview optimization.
 - **Extend the platform** — build custom elements from Svelte components, publish typed libraries with `@sveltejs/package`, and render 3D scenes with Threlte.
+- **Build icon systems** — convert raw SVG files into typed Svelte 5 components with `@jlacostaec/svgtosvelte`, build dynamic icon registries with `import.meta.glob`, and animate SVG icons with stroke-dasharray, Svelte transitions, Spring, and GSAP.
+- **Write GPU shaders** — author WGSL fragment and compute shaders with `@motion-core/motion-gpu`, build multi-pass rendering pipelines, drive GPU animations from Svelte `$state` via uniforms, and optimize with render modes and scheduler presets.
 - **Prove it all** — deliver a capstone e-commerce storefront that integrates every skill into one cohesive, tested, accessible, performant application.

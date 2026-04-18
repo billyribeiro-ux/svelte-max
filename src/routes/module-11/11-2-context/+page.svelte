@@ -1,35 +1,29 @@
 <script lang="ts">
-	import { setContext, getContext } from 'svelte';
+	import { createContext } from 'svelte';
 
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
-	// Typed ThemeContext factory using Symbol key
+
+	// Typed context created with createContext (Svelte 5.40+)
 	interface ThemeState {
-		mode: 'light' | 'dark';
-		accent: string;
+		readonly mode: 'light' | 'dark';
+		readonly accent: string;
 	}
 
-	function createThemeContext() {
-		const key = Symbol('theme');
-		return {
-			set: (v: ThemeState) => setContext(key, v),
-			get: () => getContext<ThemeState>(key)
-		};
-	}
+	// createContext returns a typed [get, set] tuple — no keys, no collisions
+	const [getTheme, setTheme] = createContext<ThemeState>();
 
-	const ThemeContext = createThemeContext();
-
-	// Parent sets context
+	// Parent owns the reactive state
 	let mode = $state<'light' | 'dark'>('light');
 	let accent = $state('#7c3aed');
 
-	// We use a getter-based object so context always reflects current state
-	ThemeContext.set({
+	// Pass a getter-based object so descendants always see current state
+	setTheme({
 		get mode() { return mode; },
 		get accent() { return accent; }
 	});
 
-	// Deeply nested child reads context
-	const theme = ThemeContext.get();
+	// A descendant reads context — no props, no prop-drilling
+	const theme = getTheme();
 
 	function toggleMode() {
 		mode = mode === 'light' ? 'dark' : 'light';
@@ -38,36 +32,29 @@
 
 	/* ── Complete code for "Having issues?" ── */
 	const fullCode = "\u003cscript lang=\"ts\"\u003e\n" +
-		"import { setContext, getContext } from 'svelte';\n" +
+		"import { createContext } from 'svelte';\n" +
 		"\n" +
-		"	// Typed ThemeContext factory using Symbol key\n" +
+		"	// Typed context created with createContext (Svelte 5.40+)\n" +
 		"	interface ThemeState {\n" +
-		"		mode: 'light' | 'dark';\n" +
-		"		accent: string;\n" +
+		"		readonly mode: 'light' | 'dark';\n" +
+		"		readonly accent: string;\n" +
 		"	}\n" +
 		"\n" +
-		"	function createThemeContext() {\n" +
-		"		const key = Symbol('theme');\n" +
-		"		return {\n" +
-		"			set: (v: ThemeState) =\u003e setContext(key, v),\n" +
-		"			get: () =\u003e getContext\u003cThemeState\u003e(key)\n" +
-		"		};\n" +
-		"	}\n" +
+		"	// createContext returns a typed [get, set] tuple \u2014 no keys, no collisions\n" +
+		"	const [getTheme, setTheme] = createContext\u003cThemeState\u003e();\n" +
 		"\n" +
-		"	const ThemeContext = createThemeContext();\n" +
-		"\n" +
-		"	// Parent sets context\n" +
+		"	// Parent owns the reactive state\n" +
 		"	let mode = $state\u003c'light' | 'dark'\u003e('light');\n" +
 		"	let accent = $state('#7c3aed');\n" +
 		"\n" +
-		"	// We use a getter-based object so context always reflects current state\n" +
-		"	ThemeContext.set({\n" +
+		"	// Pass a getter-based object so descendants always see current state\n" +
+		"	setTheme({\n" +
 		"		get mode() { return mode; },\n" +
 		"		get accent() { return accent; }\n" +
 		"	});\n" +
 		"\n" +
-		"	// Deeply nested child reads context\n" +
-		"	const theme = ThemeContext.get();\n" +
+		"	// A descendant reads context \u2014 no props, no prop-drilling\n" +
+		"	const theme = getTheme();\n" +
 		"\n" +
 		"	function toggleMode() {\n" +
 		"		mode = mode === 'light' ? 'dark' : 'light';\n" +
@@ -78,23 +65,24 @@
 		"	\u003ch1\u003e11.2 — Typed Context Pattern\u003c/h1\u003e\n" +
 		"\n" +
 		"	\u003cp class=\"concept\"\u003e\n" +
-		"		The \u003cstrong\u003etyped context pattern\u003c/strong\u003e uses a factory function with a \u003ccode\u003eSymbol\u003c/code\u003e key\n" +
-		"		to create type-safe context accessors. This prevents key collisions and gives you full\n" +
-		"		TypeScript inference on both the setter and getter sides.\n" +
+		"		\u003cstrong\u003ecreateContext\u003c/strong\u003e (since 5.40) returns a typed \u003ccode\u003e[get, set]\u003c/code\u003e tuple.\n" +
+		"		It replaces the legacy \u003ccode\u003esetContext\u003c/code\u003e/\u003ccode\u003egetContext\u003c/code\u003e pair and eliminates\n" +
+		"		the need for string or Symbol keys — the tuple itself is the key, so collisions are impossible.\n" +
 		"	\u003c/p\u003e\n" +
 		"\n" +
 		"	\u003ch3\u003eThe Pattern\u003c/h3\u003e\n" +
 		"	\u003cdiv class=\"build\"\u003e\n" +
-		"		\u003cpre\u003e\u003ccode\u003efunction createThemeContext() &#123;\n" +
-		"  const key = Symbol('theme');\n" +
-		"  return &#123;\n" +
-		"    set: (v: ThemeState) =&gt; setContext(key, v),\n" +
-		"    get: () =&gt; getContext&lt;ThemeState&gt;(key)\n" +
-		"  &#125;;\n" +
-		"&#125;\u003c/code\u003e\u003c/pre\u003e\n" +
+		"		\u003cpre\u003e\u003ccode\u003eimport &#123; createContext &#125; from 'svelte';\n" +
+		"\n" +
+		"interface ThemeState &#123;\n" +
+		"  readonly mode: 'light' | 'dark';\n" +
+		"  readonly accent: string;\n" +
+		"&#125;\n" +
+		"\n" +
+		"export const [getTheme, setTheme] = createContext&lt;ThemeState&gt;();\u003c/code\u003e\u003c/pre\u003e\n" +
 		"		\u003cp class=\"concept\"\u003e\n" +
-		"			Using \u003ccode\u003eSymbol()\u003c/code\u003e as the key guarantees uniqueness — no two contexts\n" +
-		"			can accidentally collide, even if they share the same string description.\n" +
+		"			TypeScript narrows \u003ccode\u003egetTheme()\u003c/code\u003e to return \u003ccode\u003eThemeState\u003c/code\u003e and\n" +
+		"			\u003ccode\u003esetTheme(v)\u003c/code\u003e to require that exact shape — mismatches fail at compile time.\n" +
 		"		\u003c/p\u003e\n" +
 		"	\u003c/div\u003e\n" +
 		"\n" +
@@ -138,26 +126,27 @@
 </script>
 
 <section class="page">
-	<h1>11.2 — Typed Context Pattern</h1>
+	<h1>11.2 — Typed Context with <code>createContext</code></h1>
 
 	<p class="concept">
-		The <strong>typed context pattern</strong> uses a factory function with a <code>Symbol</code> key
-		to create type-safe context accessors. This prevents key collisions and gives you full
-		TypeScript inference on both the setter and getter sides.
+		<strong><code>createContext</code></strong> (since Svelte 5.40) returns a typed <code>[get, set]</code> tuple.
+		It replaces the legacy <code>setContext</code>/<code>getContext</code> pair and eliminates
+		the need for string or Symbol keys — the tuple itself is the key, so collisions are impossible.
 	</p>
 
 	<h3>The Pattern</h3>
 	<div class="build">
-		<pre><code>function createThemeContext() &#123;
-  const key = Symbol('theme');
-  return &#123;
-    set: (v: ThemeState) =&gt; setContext(key, v),
-    get: () =&gt; getContext&lt;ThemeState&gt;(key)
-  &#125;;
-&#125;</code></pre>
+		<pre><code>import &#123; createContext &#125; from 'svelte';
+
+interface ThemeState &#123;
+  readonly mode: 'light' | 'dark';
+  readonly accent: string;
+&#125;
+
+export const [getTheme, setTheme] = createContext&lt;ThemeState&gt;();</code></pre>
 		<p class="concept">
-			Using <code>Symbol()</code> as the key guarantees uniqueness — no two contexts
-			can accidentally collide, even if they share the same string description.
+			TypeScript narrows <code>getTheme()</code> to return <code>ThemeState</code> and
+			<code>setTheme(v)</code> to require that exact shape — mismatches fail at compile time.
 		</p>
 	</div>
 
@@ -196,31 +185,30 @@
 		</div>
 	</div>
 
-	<h3>Modern Alternative: Svelte 5.40+</h3>
+	<h3>Legacy alternative (Svelte 5.0 – 5.39)</h3>
 	<p class="concept">
-		Svelte 5.40 introduced a built-in <code>createContext</code> helper that works
-		similarly to this pattern. However, the manual <code>setContext</code> / <code>getContext</code>
-		approach shown above works across <strong>all Svelte 5.x versions</strong> and gives
-		you full control over the typing and key strategy.
+		Before 5.40, you had to use <code>setContext(key, value)</code> / <code>getContext&lt;T&gt;(key)</code>
+		with a <code>Symbol()</code> key to avoid collisions. <code>createContext</code> is preferred
+		because it provides better type safety and eliminates keys entirely.
 	</p>
 
 	<h3>Key Takeaways</h3>
 	<ul>
-		<li><code>Symbol()</code> keys prevent accidental collisions between contexts</li>
-		<li>The factory pattern gives you a typed <code>[set, get]</code> pair</li>
-		<li>Context is set during component initialization and read by any descendant</li>
-		<li>Context values can be reactive objects — descendants see updates automatically</li>
-		<li>Use <code>setContext</code>/<code>getContext</code> for maximum compatibility across Svelte 5.x</li>
+		<li><code>createContext&lt;T&gt;()</code> returns a typed <code>[get, set]</code> tuple — no keys required</li>
+		<li>Each <code>createContext()</code> call creates a unique context — collisions are impossible</li>
+		<li>Context is set during parent initialization; descendants read it with <code>get()</code></li>
+		<li>Pass a getter-based object to keep context values reactive across updates</li>
+		<li>Scopes state per-request — safe for SSR (unlike module-level <code>$state</code>)</li>
 	</ul>
 
 
 	<h2>Break it on purpose</h2>
 	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
 	<ol class="experiments">
-		<li><strong>Replace the <code>Symbol('theme')</code> key with a plain string <code>'theme'</code> in one factory but not the other.</strong> The getter returns <code>undefined</code> because the keys no longer match, showing how Symbol guarantees uniqueness.</li>
-		<li><strong>Remove the getter syntax from the context value (use a plain object instead of one with <code>get mode()</code>).</strong> The grandchild component reads the initial value but never sees updates when you toggle, proving that reactive context requires getter-based objects.</li>
-		<li><strong>Call <code>ThemeContext.get()</code> in a module-level <code>.ts</code> file outside the component tree.</strong> It returns <code>undefined</code> because <code>getContext</code> only works within Svelte's component initialization phase, not in arbitrary modules.</li>
-		<li><strong>Create two different factories that both use <code>Symbol('theme')</code> and try to share the context between them.</strong> Each <code>Symbol()</code> call creates a unique key even with the same description, so the second factory cannot read the first factory's context.</li>
+		<li><strong>Call <code>getTheme()</code> in a parent component that never calls <code>setTheme()</code>.</strong> It throws at runtime because no provider exists — <code>createContext</code>'s getter requires a matching setter higher in the tree.</li>
+		<li><strong>Remove the getter syntax from the context value (use a plain <code>&#123; mode, accent &#125;</code> object instead of <code>&#123; get mode() &#123; return mode &#125; &#125;</code>).</strong> The grandchild reads the initial value but never sees updates when you toggle, proving that reactive context requires getter-based objects.</li>
+		<li><strong>Call <code>getTheme()</code> in a module-level <code>.ts</code> file outside the component tree.</strong> It throws because <code>createContext</code>'s getter only works during Svelte's component initialization phase.</li>
+		<li><strong>Pass a shape that doesn't match <code>ThemeState</code> to <code>setTheme()</code>.</strong> TypeScript refuses to compile — the <code>&lt;ThemeState&gt;</code> type parameter enforces the contract at both the setter and getter sides.</li>
 	</ol>
 
 	<details class="having-issues">
@@ -230,9 +218,9 @@
 	</details>
 
 	<h2>What you learned</h2>
-	<p class="prose">The typed context pattern wraps <code>setContext</code> and <code>getContext</code> in a factory function that owns a <code>Symbol</code> key. Because every <code>Symbol()</code> call produces a globally unique value, two factories can never accidentally collide, even if they share the same human-readable description.</p>
+	<p class="prose"><code>createContext&lt;T&gt;()</code> returns a typed <code>[get, set]</code> tuple that owns its own unique context identity. Every call to <code>createContext()</code> produces a fresh tuple, so two independent contexts can never accidentally collide — you simply can't call the wrong getter with the wrong setter because they come as a pair.</p>
 	<p class="prose">Making the context value reactive requires passing an object with getter properties rather than plain values. Getters are evaluated lazily at read time, so when a descendant accesses <code>theme.mode</code> inside the template, Svelte tracks the underlying <code>$state</code> variable and re-renders when it changes.</p>
-	<p class="prose">This pattern is compatible with all Svelte 5.x versions and gives you full control over the key strategy and TypeScript typing. Svelte 5.40 later introduced a built-in <code>createContext</code> helper that works similarly, but understanding the manual approach equips you to customise context behaviour for advanced use cases.</p>
+	<p class="prose">Context is the canonical pattern for sharing reactive state across a component subtree — especially important in SvelteKit, where module-level <code>$state</code> can leak between requests during SSR. Because context is scoped to a component tree (and therefore a request), it is always safe.</p>
 	<p class="next"><strong>Next:</strong> <a href="/module-11/11-3-svelte-ts">11.3 — Universal Reactive State</a> — use <code>$state</code> at the module level in <code>.svelte.ts</code> files.</p>
 </section>
 

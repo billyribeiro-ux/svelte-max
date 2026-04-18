@@ -426,6 +426,8 @@ JavaScript and TypeScript are never taught in isolation. Every JS/TS concept is 
 - **2.13 — URL & MediaQuery**. Reactive `MediaQuery` and URL primitives from `svelte/reactivity`.
 - **2.14 — Reactive CSS**. Driving CSS custom properties from reactive state.
 - **2.15 — Typed state**. Generics with `$state<T>()`, ensuring type safety across the reactive graph.
+- **2.16 — Decision tree**. Interactive flow chart for picking the right rune (`$state` vs `$derived` vs `$effect` vs their variants) based on your use case.
+- **2.17 — `$inspect` & `$inspect.trace`**. Dev-only reactive debugging. `$inspect(values)` logs on every change and tracks deeply. `$inspect(...).with(callback)` for custom handlers (breakpoints, logging services). `$inspect.trace(label)` (since 5.14) answers "why did this effect/derived re-run?" by naming the exact triggering dependency. Mini-build: a live state dashboard that logs every change to an on-page timeline via `.with()`.
 - **Module 2 Project — Interactive Dashboard**. A multi-widget dashboard exercising every rune and reactive primitive. OKLCH personality: amber.
 
 ---

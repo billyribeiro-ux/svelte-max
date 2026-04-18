@@ -55,7 +55,8 @@
 				{ slug: '1-6-fluid-typography', title: '1.6 — Fluid typography' },
 				{ slug: '1-7-scoping', title: '1.7 — Scoped styles' },
 				{ slug: '1-8-interfaces', title: '1.8 — Interfaces' },
-				{ slug: '1-9-expressions', title: '1.9 — Template expressions' }
+				{ slug: '1-9-expressions', title: '1.9 — Template expressions' },
+				{ slug: '1-10-svelte5-changes', title: '1.10 — Svelte 5 changes' }
 			]
 		},
 		{
@@ -77,7 +78,9 @@
 				{ slug: '2-12-reactive-map-set', title: '2.12 — SvelteMap/Set' },
 				{ slug: '2-13-reactive-url-media', title: '2.13 — URL & MediaQuery' },
 				{ slug: '2-14-reactive-css', title: '2.14 — Reactive CSS' },
-				{ slug: '2-15-typescript-reactive', title: '2.15 — Typed state' }
+				{ slug: '2-15-typescript-reactive', title: '2.15 — Typed state' },
+				{ slug: '2-16-decision-tree', title: '2.16 — Decision tree' },
+				{ slug: '2-17-inspect-debugging', title: '2.17 — $inspect & $inspect.trace' }
 			]
 		},
 		{
@@ -260,15 +263,15 @@
 			hasProject: true,
 			lessons: [
 				{ slug: '12-1-core-web-vitals', title: '12.1 — Vitals fundamentals' },
-				{ slug: '12-2-images', title: '12.2 — Image optimization' },
+				{ slug: '12-2-image-optimization', title: '12.2 — Image optimization' },
 				{ slug: '12-3-code-splitting', title: '12.3 — Code splitting' },
-				{ slug: '12-4-effect-perf', title: '12.4 — $effect performance' },
+				{ slug: '12-4-effect-performance', title: '12.4 — $effect performance' },
 				{ slug: '12-5-memoization', title: '12.5 — Memoization' },
-				{ slug: '12-6-actions-attachments', title: '12.6 — Actions + attachments' },
+				{ slug: '12-6-reusable-actions', title: '12.6 — Actions + attachments' },
 				{ slug: '12-7-error-boundaries', title: '12.7 — Error boundaries' },
 				{ slug: '12-8-accessibility', title: '12.8 — Accessibility' },
-				{ slug: '12-9-vitest', title: '12.9 — Vitest unit tests' },
-				{ slug: '12-10-playwright', title: '12.10 — Playwright E2E' },
+				{ slug: '12-9-vitest-unit-tests', title: '12.9 — Vitest unit tests' },
+				{ slug: '12-10-playwright-e2e', title: '12.10 — Playwright E2E' },
 				{ slug: '12-11-deployment', title: '12.11 — Deployment' },
 				{ slug: '12-12-service-worker', title: '12.12 — Service workers' }
 			]

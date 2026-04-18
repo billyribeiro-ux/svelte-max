@@ -1,80 +1,72 @@
 <script lang="ts">
 	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
-  import gsap from 'gsap';
-  import type { Action } from 'svelte/action';
+	import gsap from 'gsap';
+	import type { Attachment } from 'svelte/attachments';
 
-  const gsapPulse: Action<HTMLElement> = (node) => {
-    const tween = gsap.to(node, {
-      scale: 1.05,
-      duration: 0.8,
-      ease: 'sine.inOut',
-      yoyo: true,
-      repeat: -1
-    });
+	// Attachment: a function that runs on mount and returns a cleanup function.
+	// No destroy() method, no object wrapper — just (node) => cleanup.
+	const gsapPulse: Attachment = (node) => {
+		const tween = gsap.to(node, {
+			scale: 1.05,
+			duration: 0.8,
+			ease: 'sine.inOut',
+			yoyo: true,
+			repeat: -1
+		});
+		return () => tween.kill();
+	};
 
-    return {
-      destroy() {
-        tween.kill();
-      }
-    };
-  };
+	// Parameterized attachment: a factory that returns an Attachment.
+	// Closure captures reactive deps — the attachment re-runs when they change.
+	function gsapGlow(color: string): Attachment {
+		return (node) => {
+			const tween = gsap.to(node, {
+				boxShadow: `0 0 20px ${color}`,
+				duration: 1,
+				ease: 'sine.inOut',
+				yoyo: true,
+				repeat: -1
+			});
+			return () => tween.kill();
+		};
+	}
 
-  const gsapGlow: Action<HTMLElement, { color?: string } | undefined> = (node, params) => {
-    const color = params?.color ?? 'var(--color-brand)';
-    const tween = gsap.to(node, {
-      boxShadow: `0 0 20px ${color}`,
-      duration: 1,
-      ease: 'sine.inOut',
-      yoyo: true,
-      repeat: -1
-    });
-
-    return {
-      destroy() {
-        tween.kill();
-      }
-    };
-  };
+	let glowColor = $state('oklch(60% 0.20 320)');
 
 	/* ── Complete code for CodeCanvas ── */
 	const fullCode =
 		"\u003cscript lang=\"ts\"\u003e\n" +
 		"import gsap from 'gsap';\n" +
-		"  import type { Action } from 'svelte/action';\n" +
+		"import type { Attachment } from 'svelte/attachments';\n" +
 		"\n" +
-		"  const gsapPulse: Action\u003cHTMLElement\u003e = (node) =\u003e {\n" +
-		"    const tween = gsap.to(node, {\n" +
-		"      scale: 1.05,\n" +
-		"      duration: 0.8,\n" +
-		"      ease: 'sine.inOut',\n" +
-		"      yoyo: true,\n" +
-		"      repeat: -1\n" +
-		"    });\n" +
+		"// Attachment: runs on mount, returns cleanup \u2014 no destroy() method.\n" +
+		"const gsapPulse: Attachment = (node) =\u003e {\n" +
+		"  const tween = gsap.to(node, {\n" +
+		"    scale: 1.05, duration: 0.8, ease: 'sine.inOut',\n" +
+		"    yoyo: true, repeat: -1\n" +
+		"  });\n" +
+		"  return () =\u003e tween.kill();\n" +
+		"};\n" +
 		"\n" +
-		"    return {\n" +
-		"      destroy() {\n" +
-		"        tween.kill();\n" +
-		"      }\n" +
-		"    };\n" +
-		"  };\n" +
-		"\n" +
-		"  const gsapGlow: Action\u003cHTMLElement, { color?: string } | undefined\u003e = (node, params) =\u003e {\n" +
-		"    const color = params?.color ?? 'var(--color-brand)';\n" +
+		"// Parameterized attachment: factory that returns Attachment.\n" +
+		"// Closure captures reactive deps \u2014 re-runs when color changes.\n" +
+		"function gsapGlow(color: string): Attachment {\n" +
+		"  return (node) =\u003e {\n" +
 		"    const tween = gsap.to(node, {\n" +
 		"      boxShadow: `0 0 20px ${color}`,\n" +
-		"      duration: 1,\n" +
-		"      ease: 'sine.inOut',\n" +
-		"      yoyo: true,\n" +
-		"      repeat: -1\n" +
+		"      duration: 1, ease: 'sine.inOut',\n" +
+		"      yoyo: true, repeat: -1\n" +
 		"    });\n" +
-		"\n" +
-		"    return {\n" +
-		"      destroy() {\n" +
-		"        tween.kill();\n" +
-		"      }\n" +
-		"    };\n" +
+		"    return () =\u003e tween.kill();\n" +
 		"  };\n" +
+		"}\n" +
+		"\n" +
+		"let glowColor = $state('oklch(60% 0.20 320)');\n" +
 		"\u003c/script\u003e\n" +
+		"\n" +
+		"\u003cdiv class=\"box\" {@attach gsapPulse}\u003ePulse\u003c/div\u003e\n" +
+		"\u003cdiv class=\"box\" {@attach gsapGlow(glowColor)}\u003eGlow\u003c/div\u003e\n" +
+		"\u003cinput type=\"color\" bind:value={glowColor} /\u003e\n" +
 		"\n" +
 		"\u003csection class=\"page\"\u003e\n" +
 		"  \u003ch1\u003e7.12 — Attachments\u003c/h1\u003e\n" +
@@ -151,76 +143,96 @@
 </script>
 
 <section class="page">
-  <h1>7.12 — Attachments</h1>
-  <aside class="disclaimer"><strong>Experimental:</strong> <code>{'{@attach}'}</code> was introduced in Svelte 5.29 and may change. For production code today, use <code>use:</code> actions. This lesson teaches the concept so you're ready when it stabilizes.</aside>
+  <h1>7.12 — Attachments with <code>{'{@attach}'}</code></h1>
 
-  <p class="concept"><strong>Concept.</strong> Svelte 5.29 introduced the experimental <code>{'{@attach}'}</code> directive as a modern replacement for <code>use:</code> actions. While <code>{'{@attach}'}</code> provides a more declarative API with better TypeScript support, <code>use:</code> actions remain the stable, production-ready approach. Here we teach both.</p>
+  <p class="concept"><strong>Concept.</strong> <code>{'{@attach}'}</code> is Svelte 5's declarative element-lifecycle API (stable since 5.29). An <code>Attachment</code> is a plain function that runs when an element mounts, receives the element, and returns an optional cleanup function. It is the recommended replacement for <code>use:</code> actions — simpler shape, automatic reactive re-runs, better TypeScript inference.</p>
 
   <div class="build">
-    <h2>The {'{@attach}'} Concept (Experimental)</h2>
-    <pre>{`// {@attach} syntax (Svelte 5.29+, experimental)
-// Attachments are functions that return a cleanup function
+    <h2>The <code>{'{@attach}'}</code> pattern</h2>
+    <pre>{`import gsap from 'gsap';
+import type { Attachment } from 'svelte/attachments';
 
-function gsapPulse(element: Element) \{
-  const tween = gsap.to(element, \{
-    scale: 1.05, yoyo: true, repeat: -1
-  \});
+const gsapPulse: Attachment = (node) => {
+  const tween = gsap.to(node, { scale: 1.05, yoyo: true, repeat: -1 });
   return () => tween.kill();
-\}
+};
 
 // Usage in template:
-// <div \{@attach gsapPulse\}>Pulsing</div>
+// <div {@attach gsapPulse}>Pulsing</div>
 
-// Key differences from use: actions:
-// 1. Returns cleanup directly (no destroy method)
-// 2. Receives Element, not HTMLElement
-// 3. Re-runs when dependencies change
-// 4. More composable — multiple attachments easy`}</pre>
+// Parameterized — a factory that returns an Attachment:
+function gsapGlow(color: string): Attachment {
+  return (node) => {
+    const tween = gsap.to(node, { boxShadow: \`0 0 20px \${color}\` });
+    return () => tween.kill();
+  };
+}
 
-    <h2>Working Demo (use: action)</h2>
-    <p class="note">The demos below use the stable <code>use:</code> action API, which works identically in practice.</p>
+// <div {@attach gsapGlow(color)}>Glow</div>`}</pre>
+
+    <h2>Live demo — real <code>{'{@attach}'}</code></h2>
+    <p class="note">These boxes are driven by attachments — not <code>use:</code>. Change the color and watch the glow attachment re-run because its argument changed.</p>
 
     <div class="demo-row">
-      <div class="demo-box" use:gsapPulse>
+      <div class="demo-box" {@attach gsapPulse}>
         <span>Pulse</span>
-        <code>use:gsapPulse</code>
+        <code>{'{@attach gsapPulse}'}</code>
       </div>
-      <div class="demo-box glow-box" use:gsapGlow={{ color: 'oklch(60% 0.20 320)' }}>
+      <div class="demo-box glow-box" {@attach gsapGlow(glowColor)}>
         <span>Glow</span>
-        <code>use:gsapGlow</code>
+        <code>{'{@attach gsapGlow(glowColor)}'}</code>
       </div>
     </div>
 
-    <h2>Comparing use: vs {'{@attach}'}</h2>
+    <label class="color-control">
+      Glow color:
+      <input type="color" bind:value={glowColor} />
+      <code>{glowColor}</code>
+    </label>
+
+    <h2>Migrating from <code>use:</code> actions</h2>
+    <p class="note">If you have an existing library action, wrap it with <code>fromAction</code> to use it as an attachment — no rewrite needed.</p>
+    <pre>{`import { fromAction } from 'svelte/attachments';
+import { myLibraryAction } from 'some-library';
+
+// use: form
+// <div use:myLibraryAction={options}>...</div>
+
+// attach form
+// <div {@attach fromAction(myLibraryAction, () => options)}>...</div>`}</pre>
+
+    <h2>Attachment vs <code>use:</code> action</h2>
     <div class="comparison">
-      <div class="compare-col">
-        <h4><code>use:</code> Action</h4>
+      <div class="compare-col recommended">
+        <h4><code>{'{@attach}'}</code> — recommended</h4>
         <ul class="compare-list">
-          <li>Stable, production-ready</li>
-          <li>Returns <code>{'{ destroy() {} }'}}</code> object</li>
-          <li>Params via second argument</li>
-          <li>Well-supported tooling</li>
+          <li>Stable since Svelte 5.29</li>
+          <li>Returns cleanup function directly</li>
+          <li>Re-runs automatically on reactive dep changes</li>
+          <li>Works on components, not just DOM elements</li>
+          <li>Composable via <code>createAttachmentKey</code></li>
         </ul>
       </div>
       <div class="compare-col">
-        <h4><code>{'{@attach}'}</code> Directive</h4>
+        <h4><code>use:</code> action — legacy</h4>
         <ul class="compare-list">
-          <li>Experimental (Svelte 5.29+)</li>
-          <li>Returns cleanup function directly</li>
-          <li>Closure captures reactive deps</li>
-          <li>More declarative composition</li>
+          <li>Predates runes mode</li>
+          <li>Returns <code>{'{ update, destroy }'}</code> object</li>
+          <li>Requires manual <code>update()</code> method</li>
+          <li>DOM elements only</li>
+          <li>Still supported — migrate with <code>fromAction</code></li>
         </ul>
       </div>
     </div>
   </div>
 
 	<h2>Break it on purpose</h2>
-	<p class="prose">These experiments highlight the differences between actions and attachments, and the edge cases of the experimental API.</p>
+	<p class="prose">Try each of these changes one at a time, observe what breaks, then revert before moving on.</p>
 	<ol class="experiments">
-		<li><strong>Remove the <code>destroy()</code> method from the <code>gsapPulse</code> action and let the component unmount.</strong> The infinite <code>yoyo</code> tween keeps running in GSAP's internal ticker, targeting a node that no longer exists in the DOM. This wastes CPU cycles and can cause errors if GSAP tries to read computed styles on the detached node.</li>
-		<li><strong>Change the <code>gsapGlow</code> action to return a cleanup function directly (attachment style) instead of <code>{'{'} destroy() {'{'}{'}'}  {'}'}</code>.</strong> Svelte's <code>use:</code> directive expects the action to return an object with optional <code>update</code> and <code>destroy</code> methods. A bare function return is silently ignored, so cleanup never runs.</li>
-		<li><strong>Pass a reactive <code>$state</code> variable as the <code>color</code> parameter to <code>use:gsapGlow</code> and change it after mount.</strong> Without an <code>update()</code> method on the action, the new color is ignored. The attachment API would handle this automatically because it re-runs when dependencies change.</li>
-		<li><strong>Apply both <code>use:gsapPulse</code> and <code>use:gsapGlow</code> to the same element.</strong> Both tweens run simultaneously, and since they animate different properties (<code>scale</code> vs <code>boxShadow</code>), they compose without conflict. If they targeted the same property, the last one to start would overwrite the other.</li>
+		<li><strong>Remove the cleanup <code>return</code> from the <code>gsapPulse</code> attachment and let the component unmount.</strong> The infinite <code>yoyo</code> tween keeps running in GSAP's internal ticker, targeting a node that no longer exists in the DOM. This wastes CPU cycles and can cause errors if GSAP tries to read computed styles on the detached node — the cleanup function is not optional for long-running animations.</li>
+		<li><strong>Pass the attachment function directly instead of a call: <code>{'{@attach gsapGlow}'}</code> vs <code>{'{@attach gsapGlow(glowColor)}'}</code>.</strong> The first form passes the factory itself as the attachment — it doesn't match the <code>Attachment</code> signature (the factory expects a <code>color</code> argument, not a node), so TypeScript errors at compile time.</li>
+		<li><strong>Inline a reactive value inside the attachment closure (e.g. <code>gsap.to(node, &#123; scale: currentScale &#125;)</code>) and change that value after mount.</strong> The attachment re-runs and rebuilds the tween — the DOM doesn't update incrementally. For smooth transitions, drive the value through GSAP's own <code>to()</code> rather than re-creating the tween each time.</li>
+		<li><strong>Apply both <code>{'{@attach gsapPulse}'}</code> and <code>{'{@attach gsapGlow(glowColor)}'}</code> to the same element.</strong> Both tweens run simultaneously. Because they animate different properties (<code>scale</code> vs <code>boxShadow</code>), they compose without conflict — <code>{'{@attach}'}</code> can be stacked on one element as many times as needed.</li>
 	</ol>
 
 	<details class="having-issues">
@@ -230,10 +242,10 @@ function gsapPulse(element: Element) \{
 	</details>
 
 	<h2>What you learned</h2>
-	<p class="prose">Svelte 5.29 introduced the experimental <code>{'{@attach}'}</code> directive as an alternative to <code>use:</code> actions. While both achieve the same goal -- running imperative code when an element mounts -- they differ in API shape. An attachment is a function that receives the element and returns a cleanup function directly. An action returns an object with optional <code>update</code> and <code>destroy</code> methods. The attachment pattern is simpler for one-shot effects, while actions provide the <code>update</code> hook for reacting to parameter changes.</p>
-	<p class="prose">The key architectural difference is reactivity. Attachments automatically re-run when any reactive dependency captured in their closure changes, tearing down and rebuilding the effect. Actions require an explicit <code>update()</code> method to handle parameter changes incrementally. For GSAP animations that need to respond to runtime parameter changes (e.g., a user-selected color), the attachment model is more ergonomic. For stable, one-shot animations, both approaches are equivalent.</p>
-	<p class="prose">In production code today, <code>use:</code> actions remain the stable, well-tested choice. The attachment API may change before stabilization. However, understanding both patterns prepares you to adopt whichever becomes standard. The core lesson is the same for both: always clean up GSAP tweens when the element is removed, whether via <code>destroy()</code> on an action or the cleanup return value of an attachment.</p>
-	<p class="next">Next, you will build a production-grade scroll reveal action combining IntersectionObserver with GSAP.</p>
+	<p class="prose"><code>{'{@attach}'}</code> is the canonical Svelte 5 pattern for element-level side effects. An <code>Attachment</code> is a plain function <code>(node) =&gt; cleanup</code> — no object wrappers, no <code>destroy()</code> method, no special lifecycle API. The attachment runs when the element mounts and the returned cleanup runs when it unmounts, exactly like a focused <code>$effect()</code> scoped to one element.</p>
+	<p class="prose">Parameterized attachments are just higher-order functions: a factory like <code>gsapGlow(color)</code> returns a fresh <code>Attachment</code>. Because the factory call appears in the markup (<code>{'{@attach gsapGlow(color)}'}</code>), Svelte tracks reactive dependencies of its arguments. When <code>color</code> changes, the attachment is torn down and re-run — no manual <code>update()</code> method required.</p>
+	<p class="prose">For existing <code>use:</code> actions from third-party libraries, <code>fromAction</code> wraps them as attachments without any rewrite. Over time, migrate your own actions to the <code>Attachment</code> signature and your entire codebase converges on one API. The core lesson: whatever you attach to an element must clean itself up — the cleanup return value is the contract.</p>
+	<p class="next">Next, you will build a production-grade scroll reveal attachment combining IntersectionObserver with GSAP.</p>
 </section>
 
 <style>
@@ -255,24 +267,16 @@ function gsapPulse(element: Element) \{
   .demo-box span { font-weight: 700; font-size: var(--text-lg); }
   .demo-box code { background: oklch(100% 0 0 / 0.2); color: var(--color-surface); }
 
+  .color-control { display: flex; align-items: center; gap: var(--space-sm); color: var(--color-text-muted); font-size: var(--text-sm); }
+  .color-control input[type="color"] { inline-size: 2.5rem; block-size: 2rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; background: none; }
+
   .comparison { display: grid; grid-template-columns: 1fr; gap: var(--space-md); }
   @media (min-inline-size: 768px) { .comparison { grid-template-columns: 1fr 1fr; } }
 
   .compare-col { background: var(--color-surface-2); border-radius: var(--radius-md); padding: var(--space-md); }
+  .compare-col.recommended { border: 1px solid var(--color-brand); background: color-mix(in oklch, var(--color-brand) 8%, var(--color-surface-2)); }
   .compare-col h4 { margin: 0 0 var(--space-sm); color: var(--color-text); }
   .compare-list { font-size: var(--text-sm); }
-
-  .disclaimer {
-    border-inline-start: 4px solid var(--color-warning);
-    background: var(--color-surface-2);
-    padding: var(--space-md) var(--space-lg);
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    line-height: 1.6;
-    color: var(--color-text-muted);
-    margin-block-end: var(--space-md);
-  }
-  .disclaimer strong { color: var(--color-text); }
 
 	/* ── Having issues section ── */
 	.having-issues {

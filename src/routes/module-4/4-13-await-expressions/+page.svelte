@@ -398,18 +398,6 @@
 		box-shadow: var(--shadow-sm);
 	}
 
-	pre {
-		background: var(--color-surface-2);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-md);
-		padding: var(--space-md);
-		overflow-x: auto;
-		font-family: var(--font-mono);
-		font-size: var(--text-sm);
-		margin: 0;
-		line-height: 1.5;
-	}
-
 	.controls {
 		display: flex;
 		flex-wrap: wrap;

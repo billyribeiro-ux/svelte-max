@@ -81,7 +81,8 @@
 				{ slug: '2-15-typescript-reactive', title: '2.15 — Typed state' },
 				{ slug: '2-16-decision-tree', title: '2.16 — Decision tree' },
 				{ slug: '2-17-debug-rune', title: '2.17 — {@debug} rune' },
-				{ slug: '2-17-inspect-debugging', title: '2.17 — $inspect & $inspect.trace' }
+				{ slug: '2-17-inspect-debugging', title: '2.17 — $inspect & $inspect.trace' },
+				{ slug: '2-18-reactive-window', title: '2.18 — Reactive window values' }
 			]
 		},
 		{
@@ -163,7 +164,8 @@
 				{ slug: '6-15-spring', title: '6.15 — Spring class' },
 				{ slug: '6-16-custom-transitions', title: '6.16 — Custom transitions' },
 				{ slug: '6-17-stagger-patterns', title: '6.17 — Stagger patterns' },
-				{ slug: '6-18-reduced-motion', title: '6.18 — Reduced motion' }
+				{ slug: '6-18-reduced-motion', title: '6.18 — Reduced motion' },
+				{ slug: '6-19-class-arrays', title: '6.19 — Class arrays & objects' }
 			]
 		},
 		{
@@ -201,7 +203,8 @@
 				{ slug: '9a-7-depends-invalidate', title: '9A.7 — depends/invalidate' },
 				{ slug: '9a-8-error-redirect', title: '9A.8 — error() + redirect()' },
 				{ slug: '9a-9-streaming', title: '9A.9 — Streaming' },
-				{ slug: '9a-10-prerender', title: '9A.10 — SSG prerender' }
+				{ slug: '9a-10-prerender', title: '9A.10 — SSG prerender' },
+				{ slug: '9a-11-hydratable', title: '9A.11 — Hydratable data' }
 			]
 		},
 		{
@@ -277,7 +280,8 @@
 				{ slug: '12-10-playwright-e2e', title: '12.10 — Playwright E2E' },
 				{ slug: '12-11-deployment', title: '12.11 — Deployment' },
 				{ slug: '12-12-service-worker', title: '12.12 — Service workers' },
-				{ slug: '12-13-effect-tracking', title: '12.13 — $effect.tracking()' }
+				{ slug: '12-13-effect-tracking', title: '12.13 — $effect.tracking()' },
+				{ slug: '12-14-testing-svelte', title: '12.14 — Testing Svelte' }
 			]
 		},
 		{

@@ -485,6 +485,7 @@
 		{
 			id: 25,
 			title: 'Bonus — sv-agentation',
+			hasProject: false,
 			routePrefix: 'sv-agentation',
 			lessons: [
 				{ slug: 'ag-1-what-is-agentation', title: 'AG.1 — What is sv-agentation?' },
@@ -496,6 +497,7 @@
 		{
 			id: 26,
 			title: 'Bonus — svelte-realtime',
+			hasProject: false,
 			routePrefix: 'svelte-realtime',
 			lessons: [
 				{ slug: 'rt-1-what-is-realtime', title: 'RT.1 — What is svelte-realtime?' },
@@ -511,6 +513,7 @@
 		{
 			id: 27,
 			title: 'Bonus — Pterodactyl',
+			hasProject: false,
 			routePrefix: 'ptero',
 			lessons: [
 				{ slug: 'pt-1-what-is-ptero', title: 'PT.1 — What is Pterodactyl?' },
@@ -524,6 +527,7 @@
 		{
 			id: 28,
 			title: 'Bonus — MDsveX',
+			hasProject: false,
 			routePrefix: 'mdsvex',
 			lessons: [
 				{ slug: 'mx-1-what-is-mdsvex', title: 'MX.1 — What is MDsveX?' },

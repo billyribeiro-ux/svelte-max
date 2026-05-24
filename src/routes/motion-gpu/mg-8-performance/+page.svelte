@@ -1,5 +1,5 @@
 <script lang="ts">
-	 CodeCanvas from '$lib/components/CodeCanvas.svelte';
+	import CodeCanvas from '$lib/components/CodeCanvas.svelte';
 
 	const renderModes = `// FragCanvas render modes
 <FragCanvas {material} renderMode="always" />    // Default: renders every frame

@@ -80,6 +80,7 @@
 				{ slug: '2-14-reactive-css', title: '2.14 — Reactive CSS' },
 				{ slug: '2-15-typescript-reactive', title: '2.15 — Typed state' },
 				{ slug: '2-16-decision-tree', title: '2.16 — Decision tree' },
+				{ slug: '2-17-debug-rune', title: '2.17 — {@debug} rune' },
 				{ slug: '2-17-inspect-debugging', title: '2.17 — $inspect & $inspect.trace' }
 			]
 		},
@@ -117,7 +118,8 @@
 				{ slug: '4-9-catch-errors', title: '4.9 — {:catch} errors' },
 				{ slug: '4-10-promise-types', title: '4.10 — Promise<T>' },
 				{ slug: '4-11-svelte-window', title: '4.11 — <svelte:window>' },
-				{ slug: '4-12-svelte-element', title: '4.12 — <svelte:element>' }
+				{ slug: '4-12-svelte-element', title: '4.12 — <svelte:element>' },
+				{ slug: '4-13-await-expressions', title: '4.13 — Await expressions' }
 			]
 		},
 		{
@@ -236,7 +238,8 @@
 				{ slug: '7-11-actions', title: '7.11 — use: actions' },
 				{ slug: '7-12-attachments', title: '7.12 — Attachments' },
 				{ slug: '7-13-scroll-reveal', title: '7.13 — Scroll reveal' },
-				{ slug: '7-14-gsap-svelte-together', title: '7.14 — GSAP + Svelte' }
+				{ slug: '7-14-gsap-svelte-together', title: '7.14 — GSAP + Svelte' },
+				{ slug: '7-15-attachments-advanced', title: '7.15 — Advanced attachments' }
 			]
 		},
 		{
@@ -273,7 +276,8 @@
 				{ slug: '12-9-vitest-unit-tests', title: '12.9 — Vitest unit tests' },
 				{ slug: '12-10-playwright-e2e', title: '12.10 — Playwright E2E' },
 				{ slug: '12-11-deployment', title: '12.11 — Deployment' },
-				{ slug: '12-12-service-worker', title: '12.12 — Service workers' }
+				{ slug: '12-12-service-worker', title: '12.12 — Service workers' },
+				{ slug: '12-13-effect-tracking', title: '12.13 — $effect.tracking()' }
 			]
 		},
 		{

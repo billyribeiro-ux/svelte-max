@@ -186,7 +186,9 @@
 				{ slug: '8-11-shallow-routing', title: '8.11 — Shallow routing' },
 				{ slug: '8-12-snapshots', title: '8.12 — Snapshots' },
 				{ slug: '8-13-page-transitions', title: '8.13 — Page transitions' },
-				{ slug: '8-14-rendering-modes', title: '8.14 — Rendering modes' }
+				{ slug: '8-14-rendering-modes', title: '8.14 — Rendering modes' },
+				{ slug: '8-15-environment-variables', title: '8.15 — Environment variables' },
+				{ slug: '8-16-deployment', title: '8.16 — Deployment deep dive' }
 			]
 		},
 		{
@@ -220,7 +222,8 @@
 				{ slug: '10-6-validation', title: '10.6 — Server validation' },
 				{ slug: '10-7-env-vars', title: '10.7 — Environment vars' },
 				{ slug: '10-8-auth', title: '10.8 — Cookie auth' },
-				{ slug: '10-9-file-uploads', title: '10.9 — File uploads' }
+				{ slug: '10-9-file-uploads', title: '10.9 — File uploads' },
+				{ slug: '10-10-file-uploads', title: '10.10 — File uploads' }
 			]
 		},
 		{
@@ -281,7 +284,9 @@
 				{ slug: '12-11-deployment', title: '12.11 — Deployment' },
 				{ slug: '12-12-service-worker', title: '12.12 — Service workers' },
 				{ slug: '12-13-effect-tracking', title: '12.13 — $effect.tracking()' },
-				{ slug: '12-14-testing-svelte', title: '12.14 — Testing Svelte' }
+				{ slug: '12-14-testing-svelte', title: '12.14 — Testing Svelte' },
+				{ slug: '12-15-image-optimization', title: '12.15 — Image optimization' },
+				{ slug: '12-16-error-monitoring', title: '12.16 — Error monitoring' }
 			]
 		},
 		{
@@ -457,7 +462,8 @@
 				{ slug: '13-11-core-web-vitals', title: '13.11 — Core Web Vitals' },
 				{ slug: '13-12-e-e-a-t', title: '13.12 — E-E-A-T signals' },
 				{ slug: '13-13-ai-overviews', title: '13.13 — AI Overviews' },
-				{ slug: '13-14-international', title: '13.14 — International SEO' }
+				{ slug: '13-14-international', title: '13.14 — International SEO' },
+				{ slug: '13-15-internationalization', title: '13.15 — Internationalization (i18n)' }
 			]
 		},
 		{

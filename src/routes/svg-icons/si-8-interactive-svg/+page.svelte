@@ -290,7 +290,7 @@
 	}
 	.continent-path.active {
 		stroke: oklch(40% 0.20 270);
-		stroke-inline-size: 2;
+		stroke-width: 2;
 	}
 	.continent-path:focus-visible {
 		outline: 2px solid oklch(65% 0.22 270);

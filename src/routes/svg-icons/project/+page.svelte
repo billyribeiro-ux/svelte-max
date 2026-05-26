@@ -628,7 +628,7 @@
 		transition: fill 200ms ease, filter 200ms ease;
 	}
 	.continent-path:hover { filter: brightness(0.85); }
-	.continent-path.active { stroke: oklch(40% 0.20 290); stroke-inline-size: 2; }
+	.continent-path.active { stroke: oklch(40% 0.20 290); stroke-width: 2; }
 	.continent-path:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
 
 	.map-chips {

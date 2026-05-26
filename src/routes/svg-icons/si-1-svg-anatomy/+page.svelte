@@ -254,7 +254,7 @@
 	}
 	.axis {
 		stroke: var(--color-text-muted);
-		stroke-inline-size: 1;
+		stroke-width: 1;
 		opacity: 0.5;
 	}
 	.axis-label {
@@ -264,7 +264,7 @@
 	}
 	.tick-mark {
 		stroke: var(--color-text-muted);
-		stroke-inline-size: 0.75;
+		stroke-width: 0.75;
 		opacity: 0.4;
 	}
 	.tick-num {

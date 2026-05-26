@@ -114,7 +114,7 @@
     /* Matches <path> elements created by D3 at runtime.
        The .chart-wrapper prefix keeps it scoped. */
     stroke: var(--color-brand);
-    stroke-inline-size: 2;
+    stroke-width: 2;
   }
 </style>`;
 

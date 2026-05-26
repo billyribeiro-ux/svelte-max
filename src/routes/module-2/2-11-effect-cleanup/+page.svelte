@@ -333,13 +333,13 @@
 	.track {
 		fill: none;
 		stroke: var(--color-surface-2);
-		stroke-inline-size: 8;
+		stroke-width: 8;
 	}
 
 	.progress {
 		fill: none;
 		stroke: var(--color-brand);
-		stroke-inline-size: 8;
+		stroke-width: 8;
 		stroke-linecap: round;
 		transition: stroke-dashoffset var(--dur-slow) var(--ease-out);
 	}

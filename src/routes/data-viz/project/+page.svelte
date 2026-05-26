@@ -546,8 +546,8 @@
 								onpointerenter={(e: PointerEvent) => handleTempHover(e, point)}
 								onpointermove={(e: PointerEvent) => handleTempHover(e, point)}
 								onpointerleave={clearTooltip}
+								role="button"
 								tabindex="0"
-								role="listitem"
 								aria-label="{point.decade}: {point.anomaly > 0 ? '+' : ''}{point.anomaly}°C anomaly"
 							/>
 						{/each}
@@ -622,8 +622,8 @@
 								onpointerenter={(e: PointerEvent) => handleCO2Hover(e, point)}
 								onpointermove={(e: PointerEvent) => handleCO2Hover(e, point)}
 								onpointerleave={clearTooltip}
+								role="button"
 								tabindex="0"
-								role="listitem"
 								aria-label="{point.year}: {point.ppm} ppm CO2"
 							/>
 						{/each}
@@ -683,8 +683,8 @@
 								onpointerenter={(e: PointerEvent) => handleSeaHover(e, point)}
 								onpointermove={(e: PointerEvent) => handleSeaHover(e, point)}
 								onpointerleave={clearTooltip}
+								role="button"
 								tabindex="0"
-								role="listitem"
 								aria-label="{point.period}: {point.rate} mm per year sea level rise"
 							/>
 							<text
@@ -747,6 +747,8 @@
 								<rect
 									{x} y={yBottom - h} width={bw} height={h}
 									fill={colors[j]}
+									role="img"
+									aria-label="{point.year} {['Solar','Wind','Hydro','Other'][j]}: {v} GW"
 									onpointerenter={(e: PointerEvent) => handleRenewHover(e, point)}
 									onpointermove={(e: PointerEvent) => handleRenewHover(e, point)}
 									onpointerleave={clearTooltip}

@@ -21,8 +21,6 @@
 		id = nextId(),
 		error
 	}: Props = $props();
-
-	const fieldId = id;
 </script>
 
 <label class="field" for={id}>
@@ -30,18 +28,18 @@
 	{#if type === 'email'}
 		<input {id} type="email" bind:value {placeholder}
 			aria-invalid={error ? 'true' : undefined}
-			aria-describedby={error ? `${fieldId}-error` : undefined} />
+			aria-describedby={error ? `${id}-error` : undefined} />
 	{:else if type === 'tel'}
 		<input {id} type="tel" bind:value {placeholder}
 			aria-invalid={error ? 'true' : undefined}
-			aria-describedby={error ? `${fieldId}-error` : undefined} />
+			aria-describedby={error ? `${id}-error` : undefined} />
 	{:else}
 		<input {id} type="text" bind:value {placeholder}
 			aria-invalid={error ? 'true' : undefined}
-			aria-describedby={error ? `${fieldId}-error` : undefined} />
+			aria-describedby={error ? `${id}-error` : undefined} />
 	{/if}
 	{#if error}
-		<p class="error" id="{fieldId}-error" aria-live="polite">{error}</p>
+		<p class="error" id="{id}-error" aria-live="polite">{error}</p>
 	{/if}
 </label>
 

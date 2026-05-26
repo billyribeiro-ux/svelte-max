@@ -195,7 +195,7 @@ $effect(() => &#123;
 	h1 { font-size: var(--text-2xl); margin: 0; }
 
 	.concept { font-size: var(--text-base); line-height: 1.6; color: var(--color-text-muted); margin: 0; }
-	.concept code, .concept strong { color: var(--color-text); }
+	.concept code { color: var(--color-text); }
 
 	.note { font-size: var(--text-sm); color: var(--color-text-muted); margin: 0; font-style: italic; }
 

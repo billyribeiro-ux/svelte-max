@@ -495,12 +495,12 @@
 	}
 	.gridline {
 		stroke: var(--color-border);
-		stroke-inline-size: 1;
+		stroke-width: 1;
 		stroke-dasharray: 3 3;
 	}
 	.axis-line {
 		stroke: var(--color-text-muted);
-		stroke-inline-size: 1;
+		stroke-width: 1;
 	}
 	.tick-label {
 		font-size: 10px;

@@ -316,7 +316,7 @@
 	}
 	.gridline {
 		stroke: var(--color-border);
-		stroke-inline-size: 1;
+		stroke-width: 1;
 		stroke-dasharray: 4 4;
 	}
 	.grid-label {

@@ -8,9 +8,17 @@
 
 	let { challenge, starter, expected, hints }: Props = $props();
 
-	let code = $state(starter);
+	let code = $state('');
 	let result = $state<'idle' | 'correct' | 'wrong'>('idle');
 	let hintIndex = $state(0);
+	let initialized = false;
+
+	$effect(() => {
+		if (!initialized) {
+			code = starter;
+			initialized = true;
+		}
+	});
 
 	function check(): void {
 		const trimmed = code.replace(/\s+/g, ' ').trim();

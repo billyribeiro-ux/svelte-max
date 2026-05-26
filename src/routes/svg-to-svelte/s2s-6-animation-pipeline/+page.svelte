@@ -192,6 +192,7 @@
 			<button
 				type="button"
 				class="spring-btn"
+				aria-label="Spring hover demo"
 				onpointerenter={() => hovered = true}
 				onpointerleave={() => hovered = false}
 				style:transform="scale({springScale.current})"

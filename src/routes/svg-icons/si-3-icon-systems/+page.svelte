@@ -347,7 +347,7 @@
 	}
 	.rays line {
 		stroke: oklch(75% 0.18 85);
-		stroke-inline-size: 2;
+		stroke-width: 2;
 		stroke-linecap: round;
 		transition: opacity 300ms ease, transform 300ms ease;
 	}

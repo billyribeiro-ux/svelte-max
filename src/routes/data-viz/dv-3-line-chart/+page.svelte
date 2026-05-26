@@ -393,18 +393,18 @@
 	}
 	.gridline {
 		stroke: var(--color-border);
-		stroke-inline-size: 1;
+		stroke-width: 1;
 		stroke-dasharray: 3 3;
 	}
 	.zero-line {
 		stroke: var(--color-text-muted);
-		stroke-inline-size: 1;
+		stroke-width: 1;
 		stroke-dasharray: 6 3;
 		opacity: 0.5;
 	}
 	.axis-line {
 		stroke: var(--color-text-muted);
-		stroke-inline-size: 1;
+		stroke-width: 1;
 	}
 	.tick-label {
 		font-size: 11px;
@@ -425,14 +425,14 @@
 	}
 	.ref-line {
 		stroke: var(--color-text-muted);
-		stroke-inline-size: 1;
+		stroke-width: 1;
 		stroke-dasharray: 4 3;
 		opacity: 0.6;
 	}
 	.tooltip-bg {
 		fill: var(--color-surface-2);
 		stroke: var(--color-border);
-		stroke-inline-size: 1;
+		stroke-width: 1;
 	}
 	.tooltip-text {
 		font-size: 11px;

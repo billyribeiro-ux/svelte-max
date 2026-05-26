@@ -340,7 +340,6 @@
 		margin-block: 0.5lh;
 		text-wrap: pretty;
 		& code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-surface-2); padding: 0 var(--space-xs); border-radius: var(--radius-xs); color: var(--color-brand); }
-		& strong { font-weight: 700; }
 	}
 	.experiments {
 		max-inline-size: 68ch;

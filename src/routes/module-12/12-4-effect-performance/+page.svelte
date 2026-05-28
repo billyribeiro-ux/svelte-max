@@ -11,12 +11,16 @@
 		// $inspect.trace — logs which dependency triggered this re-run (dev-only)
 		$inspect.trace();
 		const q = wrongQuery;
-		if (q.length > 0) {
-			wrongRunCount++;
-			wrongResults = [`Result for "${q}" (run #${wrongRunCount})`];
-		} else {
-			wrongResults = [];
-		}
+		// untrack the writes so we don't create a read→write→re-run infinite loop,
+		// while still demonstrating that this effect fires on every keystroke.
+		untrack(() => {
+			if (q.length > 0) {
+				wrongRunCount++;
+				wrongResults = [`Result for "${q}" (run #${wrongRunCount})`];
+			} else {
+				wrongResults = [];
+			}
+		});
 	});
 
 	// --- Right way: debounced with cleanup ---
@@ -46,8 +50,10 @@
 	$effect(() => {
 		const _tracked = trackedValue;
 		const _untracked = untrack(() => otherValue);
-		logCount++;
-		untrackedLog = `Effect ran #${logCount} — tracked: "${_tracked}", untracked: ${_untracked}`;
+		untrack(() => {
+			logCount++;
+			untrackedLog = `Effect ran #${logCount} — tracked: "${_tracked}", untracked: ${_untracked}`;
+		});
 	});
 
 

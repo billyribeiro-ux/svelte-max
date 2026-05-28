@@ -141,7 +141,7 @@
 					</label>
 				</div>
 				<svg viewBox="0 0 280 150" class="perf-svg" aria-hidden="true">
-					{#each circles as c}
+					{#each circles as c (c)}
 						{#if showBefore && !reducedMotion}
 							<circle
 								cx={c.cx}
@@ -171,7 +171,7 @@
 					</label>
 				</div>
 				<svg viewBox="0 0 280 150" class="perf-svg" aria-hidden="true">
-					{#each circles as c}
+					{#each circles as c (c)}
 						{#if showAfter && !reducedMotion}
 							<circle
 								cx={c.cx}
@@ -207,7 +207,7 @@
 	<div class="build">
 		<h4>Accessibility audit</h4>
 		<div class="audit-list">
-			{#each auditItems as item}
+			{#each auditItems as item (item)}
 				<div class="audit-item" class:warn={item.status === 'warn'}>
 					<span class="audit-icon">{item.status === 'pass' ? '\u2713' : '\u26A0'}</span>
 					<div class="audit-content">

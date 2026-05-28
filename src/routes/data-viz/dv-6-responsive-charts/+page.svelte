@@ -188,7 +188,7 @@
 					role="img"
 					aria-label="GDP per capita bar chart, small view"
 				>
-					{#each data as item, i}
+					{#each data as item, i (item)}
 						{@const y = gap + i * (bh + gap)}
 						{@const barW = (item.gdp / maxGDP) * barArea}
 						<text
@@ -240,7 +240,7 @@
 					role="img"
 					aria-label="GDP per capita bar chart, full-width view"
 				>
-					{#each data as item, i}
+					{#each data as item, i (item)}
 						{@const y = gap + i * (bh + gap)}
 						{@const barW = (item.gdp / maxGDP) * barArea}
 						<text
@@ -307,7 +307,7 @@
 					role="img"
 					aria-label="GDP per capita bar chart, adjustable view"
 				>
-					{#each data as item, i}
+					{#each data as item, i (item)}
 						{@const y = gap + i * (bh + gap)}
 						{@const barW = (item.gdp / maxGDP) * barArea}
 						<text

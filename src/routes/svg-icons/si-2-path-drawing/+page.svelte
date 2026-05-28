@@ -181,7 +181,7 @@
 		</div>
 
 		<svg viewBox="0 0 200 200" class="drawing" role="img" aria-label="Logo-style SVG with staggered path drawing animation">
-			{#each pathDefs as p, i}
+			{#each pathDefs as p, i (p)}
 				<path
 					d={p.d}
 					bind:this={pathEls[i]}
@@ -196,7 +196,7 @@
 		</svg>
 
 		<div class="lengths">
-			{#each pathDefs as p, i}
+			{#each pathDefs as p, i (p)}
 				<span class="length-badge" style:border-color={p.color}>
 					{p.label}: {pathLengths[i].toFixed(1)}px
 				</span>

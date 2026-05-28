@@ -162,7 +162,7 @@
 					<svg viewBox="0 0 24 24" class="sun-moon" class:dark={isDark}>
 						<circle cx="12" cy="12" r="5" class="sun-core" />
 						<g class="rays">
-							{#each [0, 45, 90, 135, 180, 225, 270, 315] as angle}
+							{#each [0, 45, 90, 135, 180, 225, 270, 315] as angle (angle)}
 								<line
 									x1="12" y1="1" x2="12" y2="4"
 									transform="rotate({angle}, 12, 12)"

@@ -81,7 +81,7 @@
 		<div class="count">{Math.round(progress.current)}%</div>
 
 		<div class="controls">
-			{#each stops as value}
+			{#each stops as value (value)}
 				<button type="button" onclick={() => setTo(value)}>{value}%</button>
 			{/each}
 			<button type="button" class="reset" onclick={() => setTo(0)}>Reset</button>

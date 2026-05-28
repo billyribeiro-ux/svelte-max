@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import { dev } from '$app/environment';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -7,6 +8,12 @@
 	}
 
 	let { children }: Props = $props();
+
+	let navOpen = $state(false);
+
+	if (!dev && typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+		navigator.serviceWorker.register('/service-worker.js', { type: 'module' });
+	}
 
 	interface Lesson {
 		slug: string;
@@ -557,17 +564,22 @@
 
 <div class="shell">
 	<aside class="sidebar">
-		<a href="/" class="brand">svelte-max</a>
-		<nav aria-label="Course navigation">
+		<div class="sidebar-header">
+			<a href="/" class="brand">svelte-max</a>
+			<button class="nav-toggle" onclick={() => navOpen = !navOpen} aria-label="Toggle navigation">
+				{navOpen ? '✕' : '☰'}
+			</button>
+		</div>
+		<nav aria-label="Course navigation" class:nav-open={navOpen}>
 			{#each modules as m (m.id)}
 				<p class="nav-heading">{m.title}</p>
 				<ul>
 					{#each m.lessons as lesson (lesson.slug)}
-						<li><a href="/{m.routePrefix ?? `module-${m.id}`}/{lesson.slug}">{lesson.title}</a></li>
+						<li><a href="/{m.routePrefix ?? `module-${m.id}`}/{lesson.slug}" onclick={() => navOpen = false}>{lesson.title}</a></li>
 					{/each}
 					{#if m.hasProject}
 						<li>
-							<a href="/{m.routePrefix ?? `module-${m.id}`}/project" class="project-link">
+							<a href="/{m.routePrefix ?? `module-${m.id}`}/project" class="project-link" onclick={() => navOpen = false}>
 								→ Module {m.id} Project
 							</a>
 						</li>
@@ -576,7 +588,7 @@
 			{/each}
 		</nav>
 	</aside>
-	<main class="content">
+	<main class="content" id="lesson-content">
 		{@render children()}
 	</main>
 </div>
@@ -585,13 +597,42 @@
 	.shell {
 		display: flex;
 		flex-direction: column;
-		min-block-size: 100dvh;
+		block-size: 100dvh;
 	}
 
 	.sidebar {
 		background: var(--color-surface-2);
 		border-block-end: 1px solid var(--color-border);
 		padding: var(--space-md);
+		flex-shrink: 0;
+	}
+
+	.sidebar-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.nav-toggle {
+		font-size: var(--text-lg);
+		background: none;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		padding: var(--space-xs) var(--space-sm);
+		cursor: pointer;
+		color: var(--color-text);
+		line-height: 1;
+	}
+
+	.sidebar nav {
+		display: none;
+	}
+
+	.sidebar nav.nav-open {
+		display: block;
+		max-block-size: 60dvh;
+		overflow-y: auto;
+		margin-block-start: var(--space-sm);
 	}
 
 	.brand {
@@ -600,7 +641,6 @@
 		font-weight: 800;
 		color: var(--color-text);
 		text-decoration: none;
-		margin-block-end: var(--space-sm);
 	}
 
 	.nav-heading {
@@ -646,6 +686,7 @@
 
 	.content {
 		flex: 1;
+		overflow-y: auto;
 	}
 
 	@media (min-inline-size: 768px) {
@@ -653,14 +694,21 @@
 			flex-direction: row;
 		}
 
+		.nav-toggle {
+			display: none;
+		}
+
 		.sidebar {
 			inline-size: 18rem;
 			border-block-end: none;
 			border-inline-end: 1px solid var(--color-border);
-			position: sticky;
-			inset-block-start: 0;
 			block-size: 100dvh;
 			overflow-y: auto;
+			flex-shrink: 0;
+		}
+
+		.sidebar nav {
+			display: block;
 		}
 	}
 </style>

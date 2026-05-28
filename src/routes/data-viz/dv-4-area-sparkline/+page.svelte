@@ -330,7 +330,7 @@
 			</defs>
 			<g transform="translate({pad.left}, {pad.top})">
 				<!-- y gridlines -->
-				{#each areaChartData.yTicks as tick, i}
+				{#each areaChartData.yTicks as tick, i (tick)}
 					{@const y = plotH - ((tick - areaChartData.yMin) / (areaChartData.yMax - areaChartData.yMin)) * plotH}
 					<line x1={0} y1={y} x2={plotW} y2={y} class="gridline" />
 					<text x={-8} y={y + 4} class="tick-label" text-anchor="end">
@@ -340,7 +340,7 @@
 
 				<!-- x axis months -->
 				<line x1={0} y1={plotH} x2={plotW} y2={plotH} class="axis-line" />
-				{#each months as month, i}
+				{#each months as month, i (month)}
 					{@const x = (i / (months.length - 1)) * plotW}
 					<text x={x} y={plotH + 18} class="tick-label" text-anchor="middle">
 						{month}

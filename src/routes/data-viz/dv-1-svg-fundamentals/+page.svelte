@@ -193,7 +193,7 @@
 		<svg viewBox="0 0 {chartW} {chartH}" class="chart" role="img" aria-label="Scatter plot of world cities by area and population">
 			<g transform="translate({pad.left}, {pad.top})">
 				<!-- gridlines -->
-				{#each yTicks as tick}
+				{#each yTicks as tick (tick)}
 					<line
 						x1={0}
 						y1={scaleY(tick)}
@@ -205,7 +205,7 @@
 
 				<!-- x axis -->
 				<line x1={0} y1={plotH} x2={plotW} y2={plotH} class="axis-line" />
-				{#each xTicks as tick}
+				{#each xTicks as tick (tick)}
 					<line x1={scaleX(tick)} y1={plotH} x2={scaleX(tick)} y2={plotH + 6} class="axis-line" />
 					<text x={scaleX(tick)} y={plotH + 22} class="tick-label" text-anchor="middle">
 						{tick === 0 ? '0' : `${(tick / 1000).toFixed(0)}k`}
@@ -217,7 +217,7 @@
 
 				<!-- y axis -->
 				<line x1={0} y1={0} x2={0} y2={plotH} class="axis-line" />
-				{#each yTicks as tick}
+				{#each yTicks as tick (tick)}
 					<line x1={-6} y1={scaleY(tick)} x2={0} y2={scaleY(tick)} class="axis-line" />
 					<text x={-12} y={scaleY(tick) + 4} class="tick-label" text-anchor="end">
 						{tick}M

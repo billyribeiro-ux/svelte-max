@@ -116,7 +116,7 @@
 			<text x="195" y="12" class="axis-label">x</text>
 			<text x="6" y="198" class="axis-label">y</text>
 			<!-- Tick marks every 50 units -->
-			{#each [0, 50, 100, 150, 200] as tick}
+			{#each [0, 50, 100, 150, 200] as tick (tick)}
 				<line x1={tick} y1="0" x2={tick} y2="4" class="tick-mark" />
 				<line x1="0" y1={tick} x2="4" y2={tick} class="tick-mark" />
 				{#if tick > 0 && tick < 200}

@@ -148,7 +148,7 @@
 				<title>World Population Map</title>
 				<desc>A simplified world map where each continent is colored by population density. Click a continent to see its population.</desc>
 
-				{#each continents as continent}
+				{#each continents as continent (continent)}
 					{@const isActive = activeContinent === continent.id}
 					<path
 						d={continent.d}
@@ -191,7 +191,7 @@
 
 		<!-- Data table -->
 		<div class="data-list">
-			{#each continents as continent}
+			{#each continents as continent (continent)}
 				<button
 					type="button"
 					class="data-chip"

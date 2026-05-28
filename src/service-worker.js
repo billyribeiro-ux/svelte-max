@@ -21,6 +21,9 @@ import { build, files, version } from '$service-worker';
 
 const sw = /** @type {ServiceWorkerGlobalScope} */ (/** @type {unknown} */ (self));
 
+// In dev mode, build is empty — skip all SW logic to avoid interfering with Vite HMR.
+const DEV = build.length === 0;
+
 const CACHE_NAME = `pe7-cache-${version}`;
 
 /** All assets to precache: build output + static files. */
@@ -29,6 +32,10 @@ const PRECACHE_ASSETS = [...build, ...files];
 // ─── INSTALL: precache the app shell ───────────────────────────────
 
 sw.addEventListener('install', (event) => {
+	if (DEV) {
+		sw.skipWaiting();
+		return;
+	}
 	event.waitUntil(
 		caches
 			.open(CACHE_NAME)
@@ -57,6 +64,9 @@ sw.addEventListener('activate', (event) => {
 // ─── FETCH: cache-first for assets, network-first for pages ────────
 
 sw.addEventListener('fetch', (event) => {
+	// In dev, let all requests pass through to Vite unintercepted.
+	if (DEV) return;
+
 	const { request } = event;
 
 	// Skip non-GET requests (form submissions, API mutations)

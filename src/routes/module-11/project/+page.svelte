@@ -432,7 +432,7 @@
 
 	<!-- URL Filter Tabs -->
 	<div class="filter-tabs">
-		{#each roles as role}
+		{#each roles as role (role)}
 			<button
 				class="tab-btn"
 				class:active={roleFilter === role}
@@ -461,9 +461,9 @@
 		<div class="table-wrapper" bind:this={tableWrapperEl}>
 			<table>
 				<thead>
-					{#each $table.getHeaderGroups() as headerGroup}
+					{#each $table.getHeaderGroups() as headerGroup (headerGroup)}
 						<tr>
-							{#each headerGroup.headers as header}
+							{#each headerGroup.headers as header (header)}
 								<th
 									style:width="{header.getSize()}px"
 									onclick={header.column.getToggleSortingHandler()}
@@ -489,10 +489,10 @@
 					{/each}
 				</thead>
 				<tbody>
-					{#each $table.getRowModel().rows as row}
+					{#each $table.getRowModel().rows as row (row)}
 						{@const member = row.original}
 						<tr>
-							{#each row.getVisibleCells() as cell}
+							{#each row.getVisibleCells() as cell (cell)}
 								<td>
 									{#if true}
 										{@const Rendered = flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -548,7 +548,7 @@
 			</div>
 
 			<div class="product-list">
-				{#each products as product}
+				{#each products as product (product)}
 					<div class="product-row">
 						<span>{product.name}</span>
 						<span class="product-price">${product.price.toFixed(2)}</span>
@@ -560,7 +560,7 @@
 			{#if cart.items.length > 0}
 				<div class="cart-items">
 					<h4>In Cart</h4>
-					{#each cart.items as item}
+					{#each cart.items as item (item)}
 						<div class="cart-row">
 							<span>{item.name} x{item.quantity}</span>
 							<span>${(item.price * item.quantity).toFixed(2)}</span>

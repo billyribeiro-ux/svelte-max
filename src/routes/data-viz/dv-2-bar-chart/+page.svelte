@@ -175,7 +175,7 @@
 		<svg viewBox="0 0 {chartW} {chartH}" class="chart" role="img" aria-label="Horizontal bar chart of CO2 emissions by country">
 			<g transform="translate({pad.left}, {pad.top})">
 				<!-- gridlines -->
-				{#each gridTicks as tick}
+				{#each gridTicks as tick (tick)}
 					<line
 						x1={scaleW(tick)}
 						y1={0}

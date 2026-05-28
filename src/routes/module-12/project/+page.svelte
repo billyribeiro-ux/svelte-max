@@ -360,7 +360,7 @@
 			<button class="sort-btn" class:active={sortBy === 'change'} onclick={() => sortBy = 'change'}>Change</button>
 		</div>
 		<div class="metrics-grid">
-			{#each sortedMetrics as metric}
+			{#each sortedMetrics as metric (metric)}
 				<div class="metric-card">
 					<span class="metric-label">{metric.label}</span>
 					<span class="metric-value">{metric.value.toLocaleString()}</span>
@@ -386,7 +386,7 @@
 					<p>This content was lazy-loaded when the section scrolled into view.
 					In a real app, this could trigger a data fetch or render a heavy component.</p>
 					<div class="lazy-chart">
-						{#each [65, 42, 78, 55, 90, 38, 72, 85, 60, 45] as val}
+						{#each [65, 42, 78, 55, 90, 38, 72, 85, 60, 45] as val (val)}
 							<div class="lazy-bar" style="height: {val}%"></div>
 						{/each}
 					</div>
@@ -409,7 +409,7 @@
 			<div class="progress-fill" style="width: {(deployDone / deployChecklist.length) * 100}%"></div>
 		</div>
 		<div class="checklist">
-			{#each deployChecklist as item, i}
+			{#each deployChecklist as item, i (item)}
 				<label class="check-item" class:checked={item.done}>
 					<input type="checkbox" checked={item.done} onchange={() => toggleDeploy(i)} />
 					<span>{item.label}</span>

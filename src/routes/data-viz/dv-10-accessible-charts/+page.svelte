@@ -187,7 +187,7 @@
 				<g transform="translate({padding.left}, {padding.top})">
 					<!-- Grid lines (decorative) -->
 					<g aria-hidden="true">
-						{#each [0, 3000, 6000, 9000, 12000] as val}
+						{#each [0, 3000, 6000, 9000, 12000] as val (val)}
 							{@const x = (val / maxEmissions) * plotW}
 							<line
 								x1={x}
@@ -220,7 +220,7 @@
 
 					<!-- Country labels (decorative — data is in hidden table) -->
 					<g aria-hidden="true">
-						{#each data as d, i}
+						{#each data as d, i (d)}
 							{@const y = i * (barHeight + barGap)}
 							<text
 								x={-8}
@@ -236,7 +236,7 @@
 					</g>
 
 					<!-- Bars (interactive, focusable) -->
-					{#each data as d, i}
+					{#each data as d, i (d)}
 						{@const y = i * (barHeight + barGap)}
 						{@const w = barWidth(d.emissions)}
 						{@const isActive = activeIndex === i}
@@ -314,7 +314,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as d, i}
+				{#each data as d, i (d)}
 					<tr>
 						<td>{i + 1}</td>
 						<td>{d.country}</td>

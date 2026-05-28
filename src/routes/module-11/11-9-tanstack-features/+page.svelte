@@ -230,9 +230,9 @@
 		<div class="table-wrapper">
 			<table>
 				<thead>
-					{#each $table.getHeaderGroups() as headerGroup}
+					{#each $table.getHeaderGroups() as headerGroup (headerGroup)}
 						<tr>
-							{#each headerGroup.headers as header}
+							{#each headerGroup.headers as header (header)}
 								<th
 									style:width="{header.getSize()}px"
 									onclick={header.column.getToggleSortingHandler()}
@@ -257,9 +257,9 @@
 					{/each}
 				</thead>
 				<tbody>
-					{#each $table.getRowModel().rows as row}
+					{#each $table.getRowModel().rows as row (row)}
 						<tr>
-							{#each row.getVisibleCells() as cell}
+							{#each row.getVisibleCells() as cell (cell)}
 								<td>
 									{#if true}
 										{@const Rendered = flexRender(cell.column.columnDef.cell, cell.getContext())}

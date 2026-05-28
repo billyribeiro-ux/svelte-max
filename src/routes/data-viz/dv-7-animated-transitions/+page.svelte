@@ -255,7 +255,7 @@
 	<div class="build" bind:clientWidth={containerWidth}>
 		<div class="year-controls">
 			<span class="year-label">Year:</span>
-			{#each years as year}
+			{#each years as year (year)}
 				<button
 					type="button"
 					class="year-btn"
@@ -289,7 +289,7 @@
 			>
 				<g transform="translate({chartPadding.left}, {chartPadding.top})">
 					<!-- Grid lines -->
-					{#each gridLines as val}
+					{#each gridLines as val (val)}
 						<line
 							x1={0}
 							y1={scaleY(val)}
@@ -325,7 +325,7 @@
 					</text>
 
 					<!-- Bars -->
-					{#each sources as source, i}
+					{#each sources as source, i (source)}
 						{@const cx = i * barGroupWidth + barGroupWidth / 2}
 						{@const val = tweens[source].current}
 						{@const h = (val / maxValue) * plotH}
@@ -362,7 +362,7 @@
 		{/if}
 
 		<div class="legend">
-			{#each sources as source}
+			{#each sources as source (source)}
 				<span class="legend-item">
 					<span class="swatch" style:background={sourceColors[source]}></span>
 					{sourceLabels[source]}

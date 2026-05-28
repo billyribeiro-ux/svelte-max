@@ -244,13 +244,13 @@
 				<line x1={0} y1={scaleY(0)} x2={plotW} y2={scaleY(0)} class="zero-line" />
 
 				<!-- gridlines -->
-				{#each yTicks as tick}
+				{#each yTicks as tick (tick)}
 					<line x1={0} y1={scaleY(tick)} x2={plotW} y2={scaleY(tick)} class="gridline" />
 				{/each}
 
 				<!-- x axis -->
 				<line x1={0} y1={plotH} x2={plotW} y2={plotH} class="axis-line" />
-				{#each xTicks as tick}
+				{#each xTicks as tick (tick)}
 					<line x1={scaleX(tick)} y1={plotH} x2={scaleX(tick)} y2={plotH + 6} class="axis-line" />
 					<text x={scaleX(tick)} y={plotH + 22} class="tick-label" text-anchor="middle">
 						{tick}
@@ -260,7 +260,7 @@
 
 				<!-- y axis -->
 				<line x1={0} y1={0} x2={0} y2={plotH} class="axis-line" />
-				{#each yTicks as tick}
+				{#each yTicks as tick (tick)}
 					<text x={-10} y={scaleY(tick) + 4} class="tick-label" text-anchor="end">
 						{tick === 0 ? '0' : `+${tick.toFixed(1)}`}°C
 					</text>

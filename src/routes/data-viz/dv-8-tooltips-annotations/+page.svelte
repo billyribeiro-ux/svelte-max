@@ -327,7 +327,7 @@
 						/>
 
 						<!-- Y grid lines -->
-						{#each yTicks() as val}
+						{#each yTicks() as val (val)}
 							<line
 								x1={0}
 								y1={yScale(val)}
@@ -349,7 +349,7 @@
 						{/each}
 
 						<!-- X axis labels -->
-						{#each xTicks as year}
+						{#each xTicks as year (year)}
 							<text
 								x={xScale(year)}
 								y={plotH + 24}
@@ -362,7 +362,7 @@
 						{/each}
 
 						<!-- Annotation lines -->
-						{#each annotations as ann}
+						{#each annotations as ann (ann)}
 							{@const ax = xScale(ann.year)}
 							<line
 								x1={ax}
@@ -397,7 +397,7 @@
 						/>
 
 						<!-- Data dots -->
-						{#each sp500Data as d, i}
+						{#each sp500Data as d, i (d)}
 							<circle
 								cx={xScale(d.year)}
 								cy={yScale(d.return_pct)}
@@ -443,7 +443,7 @@
 		</div>
 
 		<div class="annotations-legend">
-			{#each annotations as ann}
+			{#each annotations as ann (ann)}
 				<span class="ann-item">
 					<span class="ann-dash" style:border-color={ann.color}></span>
 					{ann.label}

@@ -217,7 +217,7 @@
 
 	<div class="build">
 		<div class="btn-row">
-			{#each shapes as shape, i}
+			{#each shapes as shape, i (shape)}
 				<button
 					type="button"
 					class="shape-btn"

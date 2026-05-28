@@ -251,7 +251,7 @@
 			<text x="215" y="75" class="room-label">Living</text>
 			<text x="215" y="165" class="room-label">Kitchen</text>
 
-			{#each pathDefs as p, i}
+			{#each pathDefs as p, i (p)}
 				{@const ct = colorTweens[i].current}
 				<path
 					d={p.d}
@@ -278,7 +278,7 @@
 
 		<!-- Path legend -->
 		<div class="path-legend">
-			{#each pathDefs as p, i}
+			{#each pathDefs as p, i (p)}
 				<span
 					class="legend-chip"
 					class:completed={completedCount > i}

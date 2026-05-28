@@ -258,8 +258,8 @@
   <section class="group">
     <h2>Buttons</h2>
     <div class="buttons-grid">
-      {#each variants as variant}
-        {#each sizes as size}
+      {#each variants as variant (variant)}
+        {#each sizes as size (size)}
           <Button {variant} {size}>{variant} / {size}</Button>
         {/each}
       {/each}
@@ -275,12 +275,12 @@
   <section class="group">
     <h2>Badges</h2>
     <div class="row">
-      {#each tones as tone}
+      {#each tones as tone (tone)}
         <Badge {tone}>{tone}</Badge>
       {/each}
     </div>
     <div class="row">
-      {#each tones as tone}
+      {#each tones as tone (tone)}
         <Badge {tone} rounded>{tone}</Badge>
       {/each}
     </div>

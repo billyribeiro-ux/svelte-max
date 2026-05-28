@@ -37,13 +37,13 @@
 		<details>
 			<summary class="canvas-expand">Show full code ({lines.length} lines)</summary>
 			<div class="canvas-scroll">
-				<pre><code>{#each lines as line, i}<span class="ln">{String(i + 1).padStart(3, ' ')}</span>  {line}
+				<pre><code>{#each lines as line, i (i)}<span class="ln">{String(i + 1).padStart(3, ' ')}</span>  {line}
 {/each}</code></pre>
 			</div>
 		</details>
 	{:else}
 		<div class="canvas-scroll">
-			<pre><code>{#each lines as line, i}<span class="ln">{String(i + 1).padStart(3, ' ')}</span>  {line}
+			<pre><code>{#each lines as line, i (i)}<span class="ln">{String(i + 1).padStart(3, ' ')}</span>  {line}
 {/each}</code></pre>
 		</div>
 	{/if}

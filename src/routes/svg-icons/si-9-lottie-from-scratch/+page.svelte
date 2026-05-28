@@ -207,7 +207,7 @@
 			<!-- Static final frame for reduced motion -->
 			<svg viewBox="0 0 320 200" class="rocket-canvas" role="img" aria-label="Rocket launch animation (static final frame)">
 				<rect x="0" y="0" width="320" height="200" fill="oklch(18% 0.04 270)" rx="8" />
-				{#each stars as star}
+				{#each stars as star (star)}
 					<circle cx={star.cx} cy={star.cy} r={star.r} fill="oklch(95% 0.05 60)" opacity="0.9" />
 				{/each}
 				<rect x="0" y="180" width="320" height="20" fill="oklch(35% 0.06 150)" rx="0" />
@@ -220,7 +220,7 @@
 				<rect x="0" y="0" width="320" height="200" fill="oklch(18% 0.04 270)" rx="8" />
 
 				<!-- Stars with twinkle -->
-				{#each stars as star, i}
+				{#each stars as star, i (star)}
 					<circle cx={star.cx} cy={star.cy} r={star.r} fill="oklch(95% 0.05 60)" opacity={starOpacities[i]} />
 				{/each}
 
@@ -231,7 +231,7 @@
 				<rect x="145" y="170" width="30" height="10" rx="2" fill="oklch(50% 0.08 250)" />
 
 				<!-- Smoke trail -->
-				{#each smokeParticles as particle}
+				{#each smokeParticles as particle (particle)}
 					<circle cx={particle.cx} cy={particle.cy} r={particle.r}
 						fill="oklch(75% 0.03 250)" opacity={particle.opacity} />
 				{/each}

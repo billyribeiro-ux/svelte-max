@@ -204,9 +204,9 @@ const table = createSvelteTable(options);</code></pre>
 		<div class="table-wrapper">
 			<table>
 				<thead>
-					{#each $table.getHeaderGroups() as headerGroup}
+					{#each $table.getHeaderGroups() as headerGroup (headerGroup.id)}
 						<tr>
-							{#each headerGroup.headers as header}
+							{#each headerGroup.headers as header (header.id)}
 								<th
 									style:width="{header.getSize()}px"
 									onclick={header.column.getToggleSortingHandler()}
@@ -234,7 +234,7 @@ const table = createSvelteTable(options);</code></pre>
 					<!-- animate:flip — rows animate smoothly when sort order changes -->
 					{#each $table.getRowModel().rows as row (row.id)}
 						<tr animate:flip={{ duration: 250 }}>
-							{#each row.getVisibleCells() as cell}
+							{#each row.getVisibleCells() as cell (cell.id)}
 								<td>
 									{#if true}
 										{@const Rendered = flexRender(cell.column.columnDef.cell, cell.getContext())}

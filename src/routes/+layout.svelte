@@ -434,6 +434,7 @@
 			id: 99,
 			title: 'Module 9B — Remote Functions',
 			hasProject: true,
+			routePrefix: 'module-9b',
 			lessons: [
 				{ slug: '9b-1-what-are-remote-functions', title: '9B.1 — What remote functions are' },
 				{ slug: '9b-2-query', title: '9B.2 — query()' },
